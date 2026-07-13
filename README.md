@@ -1,10 +1,10 @@
-# FunkFit Builder v0.3 Family
+# FunkFit Builder v0.3.1
 
-Nyt:
-- Familiedeltagelse til/fra
-- Antal juniorer og voksne
-- Junior kg., reps/tid og note
-- Voksen kg., reps/tid og note
-- Samme voksenøvelse som standard
-- Mulighed for anden voksenøvelse
-- Kropsområder og filter: core, arme, ben, bryst, ryg, skuldre, balder, kondition og helkrop
+Rettet familielogik:
+
+- Familietræning er ikke længere en særskilt skabelon.
+- FunkFit Junior er standardtræningen.
+- Familiedeltagelse slås til med en tydelig kontakt.
+- Voksne bruger samme øvelse som juniorerne som standard.
+- Voksenøvelse, kg., reps/tid og note vises kun, når familiedeltagelse er aktiv.
+- Den enkelte voksenøvelse kan ændres uafhængigt.

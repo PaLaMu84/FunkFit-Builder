@@ -24,27 +24,5 @@
         "minutes": 5
       }
     ]
-  },
-  {
-    "id": "family-45",
-    "name": "Familietræning 45 min",
-    "sections": [
-      {
-        "name": "Legende opvarmning",
-        "minutes": 8
-      },
-      {
-        "name": "Makkerteknik",
-        "minutes": 10
-      },
-      {
-        "name": "Familiecirkel",
-        "minutes": 20
-      },
-      {
-        "name": "Fælles afslutning",
-        "minutes": 7
-      }
-    ]
   }
 ]
