@@ -36,10 +36,10 @@
       {
         "name": "Hovedtræning 2",
         "minutes": 15,
-        "format": "HIIT-intervaller",
-        "style": "HIIT / Hyrox-inspireret",
-        "work": 40,
-        "rest": 20,
+        "format": "You go, I go",
+        "style": "Funktionel",
+        "work": 0,
+        "rest": 0,
         "rounds": 3,
         "exercises": []
       },
@@ -48,6 +48,128 @@
         "minutes": 5,
         "format": "Team workout",
         "style": "Funktionel",
+        "work": 0,
+        "rest": 0,
+        "rounds": 1,
+        "exercises": []
+      }
+    ]
+  },
+  {
+    "id": "hiit-45",
+    "name": "HIIT 45 min",
+    "sections": [
+      {
+        "name": "Dynamisk opvarmning",
+        "minutes": 8,
+        "format": "Fælles flow",
+        "style": "HIIT / Hyrox-inspireret",
+        "work": 30,
+        "rest": 15,
+        "rounds": 2,
+        "exercises": []
+      },
+      {
+        "name": "HIIT blok 1",
+        "minutes": 12,
+        "format": "HIIT-intervaller",
+        "style": "HIIT / Hyrox-inspireret",
+        "work": 40,
+        "rest": 20,
+        "rounds": 3,
+        "exercises": []
+      },
+      {
+        "name": "HIIT blok 2",
+        "minutes": 12,
+        "format": "Tabata",
+        "style": "HIIT / Hyrox-inspireret",
+        "work": 20,
+        "rest": 10,
+        "rounds": 8,
+        "exercises": []
+      },
+      {
+        "name": "Finisher",
+        "minutes": 8,
+        "format": "AMRAP",
+        "style": "HIIT / Hyrox-inspireret",
+        "work": 0,
+        "rest": 0,
+        "rounds": 1,
+        "exercises": []
+      },
+      {
+        "name": "Nedkøling",
+        "minutes": 5,
+        "format": "Fælles flow",
+        "style": "Mobilitet",
+        "work": 0,
+        "rest": 0,
+        "rounds": 1,
+        "exercises": []
+      }
+    ]
+  },
+  {
+    "id": "hyrox-60",
+    "name": "Hyrox-inspireret 60 min",
+    "sections": [
+      {
+        "name": "Løbeopvarmning",
+        "minutes": 10,
+        "format": "Fælles flow",
+        "style": "HIIT / Hyrox-inspireret",
+        "work": 30,
+        "rest": 15,
+        "rounds": 2,
+        "exercises": []
+      },
+      {
+        "name": "Teknik og stationer",
+        "minutes": 10,
+        "format": "Teknik",
+        "style": "HIIT / Hyrox-inspireret",
+        "work": 0,
+        "rest": 0,
+        "rounds": 1,
+        "exercises": []
+      },
+      {
+        "name": "Hyrox blok 1",
+        "minutes": 15,
+        "format": "Hyrox station",
+        "style": "HIIT / Hyrox-inspireret",
+        "work": 60,
+        "rest": 30,
+        "rounds": 3,
+        "exercises": []
+      },
+      {
+        "name": "Hyrox blok 2",
+        "minutes": 15,
+        "format": "Hyrox station",
+        "style": "HIIT / Hyrox-inspireret",
+        "work": 60,
+        "rest": 30,
+        "rounds": 3,
+        "exercises": []
+      },
+      {
+        "name": "Partner-finisher",
+        "minutes": 7,
+        "format": "You go, I go",
+        "style": "HIIT / Hyrox-inspireret",
+        "work": 0,
+        "rest": 0,
+        "rounds": 1,
+        "exercises": []
+      },
+      {
+        "name": "Nedkøling",
+        "minutes": 3,
+        "format": "Fælles flow",
+        "style": "Mobilitet",
         "work": 0,
         "rest": 0,
         "rounds": 1,
