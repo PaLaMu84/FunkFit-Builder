@@ -1,31 +1,186 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="da">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f97316">
-<title>FunkFit Builder v0.4.4</title>
-<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="css/app.css">
-<script src="js/app.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f97316">
+  <title>FunkFit Builder v0.5.0</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-<header class="topbar"><p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.4.4</p><h1>FunkFit Builder</h1><p>Stærkere, hurtigere, sammen.</p></header>
-<nav class="app-nav"><button data-scroll="builder">Byg træning</button><button data-scroll="library">Øvelser</button><button data-scroll="saved">Gemte pas</button></nav>
+<header class="topbar">
+  <div>
+    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.5.0</p>
+    <h1>FunkFit Builder</h1>
+    <p>Stærkere, hurtigere, sammen.</p>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <button class="nav-tab active" data-view="designView">Design træning</button>
+  <button class="nav-tab" data-view="savedView">Gemte pas</button>
+</nav>
+
 <main>
-<section class="hero"><div><h2>Byg træningen sektion for sektion</h2><p>Hver sektion kan have sit eget format, træningsspor og egne øvelser.</p></div><button data-scroll="builder">Start træning</button></section>
-<section id="builder" class="panel">
-<div class="section-heading"><div><p class="eyebrow">TRÆNINGSBYGGER</p><h2>Dagens træning</h2></div><div class="actions"><select id="templateSelect"></select><button id="loadTemplateBtn" class="secondary">Indlæs skabelon</button><button id="addSectionBtn">+ Ny sektion</button></div></div>
-<div class="meta-grid"><label>Træningens navn<input id="workoutName" value="FunkFit Junior – dagens træning"></label><label>Dato<input id="workoutDate" type="date"></label><label>Juniorer<input id="participantCount" type="number" min="1" value="20"></label><label class="toggle-card"><span><strong>Familiedeltagelse</strong><small>Voksne følger juniorøvelsen som standard.</small></span><input id="familyMode" type="checkbox"></label><label id="adultCountLabel" class="hidden">Voksne<input id="adultCount" type="number" min="0" value="10"></label></div>
-<section class="music-panel"><div><p class="eyebrow">MUSIK</p><h3>Playlister</h3></div><div class="music-grid"><label>Spotify<input id="spotifyPlaylistUrl" type="url" placeholder="https://open.spotify.com/playlist/..."></label><button id="openSpotifyBtn" class="spotify">Åbn Spotify</button><label>Telmore Musik<input id="telmorePlaylistUrl" type="url" placeholder="https://musik.telmore.dk/..."></label><button id="openTelmoreBtn" class="telmore">Åbn Telmore</button></div></section>
-<div class="play-bar"><div><strong>Klar til at afvikle træningen?</strong><small>Fuld skærm · tap eller mellemrum går videre</small></div><button id="playWorkoutBtn">▶ Afspil træning</button></div>
-<div id="workoutSections"></div>
-<div class="summary"><strong>Samlet tid: <span id="totalMinutes">0</span> min</strong><div class="actions"><button id="saveWorkoutBtn">Gem</button><button id="participantPdfBtn" class="secondary">Deltager-PDF</button><button id="instructorPdfBtn" class="secondary">Instruktør-PDF</button><button id="clearWorkoutBtn" class="ghost">Ryd øvelser</button></div></div>
+<section id="designView" class="app-view active">
+  <div class="stepper">
+    <button class="step active" data-step="1"><span>1</span><strong>Rammer</strong><small>Navn, deltagere, sektioner</small></button>
+    <button class="step" data-step="2"><span>2</span><strong>Øvelser</strong><small>Byg indholdet</small></button>
+    <button class="step" data-step="3"><span>3</span><strong>Musik</strong><small>Tilknyt playlister</small></button>
+  </div>
+
+  <section id="step1" class="step-panel active panel">
+    <div class="section-heading">
+      <div><p class="eyebrow">TRIN 1</p><h2>Overordnede rammer</h2></div>
+    </div>
+
+    <div class="meta-grid">
+      <label>Træningens navn<input id="workoutName" value="FunkFit Junior – dagens træning"></label>
+      <label>Dato<input id="workoutDate" type="date"></label>
+      <label>Juniorer<input id="participantCount" type="number" min="1" value="20"></label>
+      <label class="toggle-card"><span><strong>Familiedeltagelse</strong><small>Voksne følger juniorøvelsen som standard.</small></span><input id="familyMode" type="checkbox"></label>
+      <label id="adultCountLabel" class="hidden">Voksne<input id="adultCount" type="number" min="0" value="10"></label>
+    </div>
+
+    <div class="template-row">
+      <label>Skabelon<select id="templateSelect"></select></label>
+      <button id="loadTemplateBtn" class="secondary">Indlæs skabelon</button>
+      <button id="addSectionBtn">+ Ny sektion</button>
+    </div>
+
+    <div id="frameworkSections"></div>
+
+    <div class="step-actions">
+      <button data-next-step="2">Næste: Tilføj øvelser →</button>
+    </div>
+  </section>
+
+  <section id="step2" class="step-panel panel">
+    <div class="section-heading">
+      <div><p class="eyebrow">TRIN 2</p><h2>Tilføj øvelser</h2></div>
+      <strong>Samlet tid: <span id="totalMinutes">0</span> min</strong>
+    </div>
+
+    <div id="exerciseSections"></div>
+
+    <div class="step-actions two-sided">
+      <button class="ghost" data-next-step="1">← Tilbage</button>
+      <button data-next-step="3">Næste: Musik →</button>
+    </div>
+  </section>
+
+  <section id="step3" class="step-panel panel">
+    <div class="section-heading">
+      <div><p class="eyebrow">TRIN 3</p><h2>Tilknyt musik</h2></div>
+    </div>
+
+    <div class="music-service-grid">
+      <article class="music-service">
+        <h3>Spotify</h3>
+        <input id="spotifyPlaylistUrl" type="url" placeholder="https://open.spotify.com/playlist/...">
+        <button id="openSpotifyBtn" class="spotify-btn">Åbn Spotify</button>
+      </article>
+      <article class="music-service">
+        <h3>TIDAL</h3>
+        <input id="tidalPlaylistUrl" type="url" placeholder="https://tidal.com/browse/playlist/...">
+        <button id="openTidalBtn" class="tidal-btn">Åbn TIDAL</button>
+      </article>
+      <article class="music-service">
+        <h3>Telmore Musik</h3>
+        <input id="telmorePlaylistUrl" type="url" placeholder="https://musik.telmore.dk/...">
+        <button id="openTelmoreBtn" class="telmore-btn">Åbn Telmore</button>
+      </article>
+    </div>
+
+    <div class="review-card">
+      <h3>Klar til at gemme</h3>
+      <p><strong id="reviewName"></strong></p>
+      <p><span id="reviewSections"></span> sektioner · <span id="reviewMinutes"></span> minutter</p>
+    </div>
+
+    <div class="step-actions two-sided">
+      <button class="ghost" data-next-step="2">← Tilbage</button>
+      <div class="actions">
+        <button id="saveWorkoutBtn">Gem træning</button>
+        <button id="playCurrentBtn" class="secondary">Afspil</button>
+      </div>
+    </div>
+  </section>
 </section>
-<section id="library" class="panel"><div class="section-heading"><div><p class="eyebrow">ØVELSESBIBLIOTEK</p><h2>Find eller opret øvelse</h2></div><button id="newExerciseBtn">+ Opret øvelse</button></div><div class="filters"><input id="librarySearch" type="search" placeholder="Søg i øvelser"><select id="libraryBody"><option value="">Alle kropsområder</option></select><select id="libraryStyle"><option value="">Alle træningsspor</option></select><select id="libraryEquipment"><option value="">Alt udstyr</option></select><label class="fav-filter"><input id="favoritesOnly" type="checkbox"> Kun favoritter</label></div><div id="libraryGrid" class="exercise-grid"></div></section>
-<section id="saved" class="panel"><div class="section-heading"><div><p class="eyebrow">GEMTE PAS</p><h2>Mine træninger</h2></div></div><div id="savedWorkouts"></div></section>
+
+<section id="savedView" class="app-view">
+  <section class="panel">
+    <div class="section-heading">
+      <div><p class="eyebrow">GEMTE PAS</p><h2>Mine træninger</h2></div>
+      <button id="newWorkoutBtn">+ Ny træning</button>
+    </div>
+    <div id="savedWorkouts" class="saved-grid"></div>
+  </section>
+</section>
 </main>
-<footer>FunkFit Builder v0.4.4 · Build 2026-07-13 · © Paw Lalicata Munk</footer>
-<dialog id="newExerciseDialog"><button class="close" data-close="newExerciseDialog">×</button><form id="newExerciseForm"><p class="eyebrow">EGEN ØVELSE</p><h2>Opret øvelse</h2><div class="form-grid"><label>Navn<input name="name" required></label><label>Kategori<input name="category" required></label><label>Kropsområder<input name="bodyAreas" placeholder="Core, Arme"></label><label>Udstyr<input name="equipment" placeholder="Kettlebell, Boks"></label><label>Træningsspor<input name="styles" placeholder="Funktionel, HIIT"></label><label>Sværhedsgrad<select name="difficulty"><option>Begynder</option><option>Øvet</option></select></label><label class="span-2">Beskrivelse<textarea name="description" required></textarea></label><label>Junior-standard<input name="junior"></label><label>Voksen-standard<input name="adult"></label></div><button type="submit">Gem øvelse</button></form></dialog>
-<dialog id="exerciseDetailDialog"><button class="close" data-close="exerciseDetailDialog">×</button><div id="exerciseDetailContent"></div></dialog>
-<dialog id="workoutPlayer" class="player"><div class="player-shell"><header class="player-head"><div><p id="playerCounter" class="counter"></p><h2 id="playerWorkoutName"></h2></div><div class="actions"><button id="playerMusicBtn" class="secondary">♫ Musik</button><button id="playerFullscreenBtn" class="secondary">Fuld skærm</button><button id="playerCloseBtn" class="ghost">Luk</button></div></header><div class="progress"><span id="playerProgressBar"></span></div><section id="playerTapArea" class="player-stage" tabindex="0"><p id="playerSection" class="eyebrow"></p><div><span id="playerFormat" class="pill"></span><span id="playerTiming" class="pill"></span></div><h1 id="playerExercise"></h1><div class="prescriptions"><article><p class="eyebrow">JUNIOR</p><strong id="playerJunior"></strong><small id="playerJuniorNote"></small></article><article id="playerAdultCard" class="hidden"><p class="eyebrow">VOKSEN</p><strong id="playerAdult"></strong><small id="playerAdultNote"></small></article></div><p class="hint">Tap eller tryk mellemrum for næste øvelse</p></section><footer class="player-controls"><button id="playerPrevBtn" class="secondary">← Forrige</button><button id="playerNextBtn">Næste →</button></footer></div></dialog>
+
+<dialog id="exercisePickerDialog">
+  <button class="close" data-close="exercisePickerDialog">×</button>
+  <h2>Tilføj øvelse</h2>
+  <div class="filters">
+    <input id="pickerSearch" type="search" placeholder="Søg efter øvelse">
+    <select id="pickerBody"><option value="">Alle kropsområder</option></select>
+    <select id="pickerStyle"><option value="">Alle træningsspor</option></select>
+    <label class="favorite-filter"><input id="pickerFavorites" type="checkbox"> Favoritter</label>
+  </div>
+  <button id="pickerCreateBtn" class="secondary">+ Opret ny øvelse</button>
+  <div id="pickerGrid" class="picker-list"></div>
+</dialog>
+
+<dialog id="newExerciseDialog">
+  <button class="close" data-close="newExerciseDialog">×</button>
+  <form id="newExerciseForm">
+    <p class="eyebrow">EGEN ØVELSE</p><h2>Opret øvelse</h2>
+    <div class="form-grid">
+      <label>Navn<input name="name" required></label>
+      <label>Kategori<input name="category" required></label>
+      <label>Kropsområder<input name="bodyAreas" placeholder="Core, Arme"></label>
+      <label>Udstyr<input name="equipment" placeholder="Kettlebell, Boks"></label>
+      <label>Træningsspor<input name="styles" placeholder="Funktionel, HIIT"></label>
+      <label>Sværhedsgrad<select name="difficulty"><option>Begynder</option><option>Øvet</option></select></label>
+      <label class="span-2">Beskrivelse<textarea name="description" required></textarea></label>
+      <label>Junior-standard<input name="junior"></label>
+      <label>Voksen-standard<input name="adult"></label>
+    </div>
+    <button type="submit">Gem øvelse</button>
+  </form>
+</dialog>
+
+<dialog id="workoutPlayer" class="workout-player">
+  <div class="player-shell">
+    <header class="player-header">
+      <div><p id="playerCounter" class="player-counter">1 / 1</p><h2 id="playerWorkoutName">Træning</h2></div>
+      <div class="player-header-actions">
+        <button id="playerSpotifyBtn" class="spotify-btn">Spotify</button>
+        <button id="playerTidalBtn" class="tidal-btn">TIDAL</button>
+        <button id="playerTelmoreBtn" class="telmore-btn">Telmore</button>
+        <button id="playerFullscreenBtn" class="secondary">Fuld skærm</button>
+        <button id="playerCloseBtn" class="ghost">Luk</button>
+      </div>
+    </header>
+    <div class="player-progress"><span id="playerProgressBar"></span></div>
+    <main id="playerTapArea" class="player-stage" tabindex="0">
+      <p id="playerSection" class="player-section">Sektion</p>
+      <div class="player-format-row"><span id="playerFormat" class="player-pill"></span><span id="playerTiming" class="player-pill"></span></div>
+      <h1 id="playerExercise">Øvelse</h1>
+      <div class="player-prescriptions">
+        <article><p class="player-label">JUNIOR</p><strong id="playerJunior">–</strong><small id="playerJuniorNote"></small></article>
+        <article id="playerAdultCard" class="hidden"><p class="player-label">VOKSEN</p><strong id="playerAdult">–</strong><small id="playerAdultNote"></small></article>
+      </div>
+      <p class="player-hint">Tap eller mellemrum = næste øvelse</p>
+    </main>
+    <footer class="player-controls"><button id="playerPrevBtn" class="secondary">← Forrige</button><button id="playerNextBtn">Næste →</button></footer>
+  </div>
+</dialog>
+
 <section id="printView" class="print-view"></section>
-</body></html>
+<footer>FunkFit Builder v0.5.0 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
