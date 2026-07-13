@@ -1,0 +1,6 @@
+VIGTIGT:
+1. Slet alle gamle app-filer og mapper i GitHub-repositoryet.
+2. Behold kun den skjulte .git-mappe lokalt.
+3. Kopiér ALLE filer og mapper fra denne v0.4.4-clean-pakke ind.
+4. Commit og Push.
+5. Åbn reset-cache.html én gang på telefonen, hvis VERSION 0.4.4 ikke vises.
