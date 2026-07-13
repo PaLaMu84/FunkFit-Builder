@@ -1,0 +1,10 @@
+
+const CACHE='funkfit-v1';
+const ASSETS=[
+  './','./index.html','./manifest.json',
+  './css/base.css','./css/exercises.css','./css/workout-builder.css',
+  './js/app.js','./js/exercises.js','./js/workoutBuilder.js','./js/storage.js',
+  './data/exercises.json','./data/workoutTemplates.json'
+];
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
+self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));

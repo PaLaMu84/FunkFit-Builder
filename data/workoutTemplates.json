@@ -1,0 +1,50 @@
+[
+  {
+    "id": "funkfit-60",
+    "name": "FunkFit 60 min",
+    "sections": [
+      {
+        "name": "Opvarmning",
+        "minutes": 10
+      },
+      {
+        "name": "Teknik",
+        "minutes": 10
+      },
+      {
+        "name": "Hovedtræning",
+        "minutes": 25
+      },
+      {
+        "name": "Teamchallenge",
+        "minutes": 10
+      },
+      {
+        "name": "Afrunding",
+        "minutes": 5
+      }
+    ]
+  },
+  {
+    "id": "family-45",
+    "name": "Familietræning 45 min",
+    "sections": [
+      {
+        "name": "Legende opvarmning",
+        "minutes": 8
+      },
+      {
+        "name": "Makkerteknik",
+        "minutes": 10
+      },
+      {
+        "name": "Familiecirkel",
+        "minutes": 20
+      },
+      {
+        "name": "Fælles afslutning",
+        "minutes": 7
+      }
+    ]
+  }
+]

@@ -1,0 +1,13 @@
+
+.workout-section{border:1px solid var(--line);border-radius:16px;margin:.8rem 0;overflow:hidden}
+.workout-section-header{display:grid;grid-template-columns:1fr 110px auto;gap:.7rem;align-items:center;background:#f8fafc;padding:.8rem}
+.workout-section-header input{font-weight:800}
+.section-dropzone{min-height:70px;padding:.8rem;display:grid;gap:.6rem}
+.workout-exercise{display:grid;grid-template-columns:1fr minmax(150px,240px) auto;gap:.7rem;align-items:center;border:1px solid var(--line);border-radius:12px;padding:.7rem;background:white}
+.workout-exercise strong{display:block}
+.workout-exercise small{color:var(--muted)}
+.remove-btn{background:#fee2e2;color:#991b1b;padding:.55rem .7rem}
+.empty-section{color:var(--muted);font-style:italic;padding:.8rem}
+@media(max-width:650px){
+  .workout-section-header,.workout-exercise{grid-template-columns:1fr}
+}

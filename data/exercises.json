@@ -1,0 +1,380 @@
+[
+  {
+    "id": "air-squat",
+    "name": "Air squat",
+    "category": "Squat",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Stå med fødderne omkring skulderbredde. Sæt hoften bagud og ned, hold brystet løftet og pres op gennem hele foden.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "easier": "Squat til bænk eller boks.",
+    "harder": "Tempo squat eller squat jump.",
+    "junior": "8-12 rolige gentagelser.",
+    "adult": "12-20 gentagelser eller tempo 3-1-1.",
+    "mistakes": "Knæ falder ind, hælene løfter sig, ryggen kollapser."
+  },
+  {
+    "id": "goblet-squat",
+    "name": "Goblet squat",
+    "category": "Squat",
+    "equipment": [
+      "Kettlebell",
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Hold vægten tæt foran brystet. Sæt dig kontrolleret ned og pres op med rank overkrop.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "easier": "Air squat eller lettere vægt.",
+    "harder": "Tungere vægt eller pause i bunden.",
+    "junior": "Let vægt og 6-10 gentagelser.",
+    "adult": "8-15 gentagelser med passende belastning.",
+    "mistakes": "Vægten langt fra kroppen, hæle løftes, for dyb bevægelse uden kontrol."
+  },
+  {
+    "id": "farmer-carry",
+    "name": "Farmer carry",
+    "category": "Carry",
+    "equipment": [
+      "Kettlebell",
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker",
+      "Stafet",
+      "Teamchallenge"
+    ],
+    "description": "Gå med vægte langs siden, rank krop og rolige, kontrollerede skridt.",
+    "focus": [
+      "Greb",
+      "Core",
+      "Skuldre"
+    ],
+    "easier": "Én let vægt eller kortere distance.",
+    "harder": "Tungere vægte eller suitcase carry.",
+    "junior": "10-20 meter med let vægt.",
+    "adult": "20-40 meter med moderat til tung vægt.",
+    "mistakes": "Skuldrene løftes, kroppen læner, løb med vægtene."
+  },
+  {
+    "id": "bear-crawl",
+    "name": "Bear crawl",
+    "category": "Core",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Stafet",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "Bevæg dig frem på hænder og fødder med knæene tæt over gulvet og ryggen stabil.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Koordination"
+    ],
+    "easier": "Kort distance eller højere hofte.",
+    "harder": "Baglæns crawl eller skuldertap undervejs.",
+    "junior": "5-10 meter.",
+    "adult": "10-20 meter.",
+    "mistakes": "Hofterne vipper, for lange skridt, knæene rammer gulvet."
+  },
+  {
+    "id": "push-up",
+    "name": "Push-up",
+    "category": "Push",
+    "equipment": [
+      "Kropsvægt",
+      "Boks"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Hold kroppen i en lige linje, sænk brystet kontrolleret og pres op uden at tabe hoften.",
+    "focus": [
+      "Bryst",
+      "Triceps",
+      "Core"
+    ],
+    "easier": "Hænder på boks eller væg.",
+    "harder": "Tempo, smal håndstilling eller shoulder tap.",
+    "junior": "5-10 gentagelser på passende højde.",
+    "adult": "8-20 gentagelser.",
+    "mistakes": "Hænger i lænden, albuerne flyver ud, hovedet falder."
+  },
+  {
+    "id": "db-row",
+    "name": "Enarms row",
+    "category": "Pull",
+    "equipment": [
+      "Håndvægt",
+      "Kettlebell"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "Makker"
+    ],
+    "description": "Støt den ene hånd på låret eller en boks. Træk vægten mod hoften og sænk roligt.",
+    "focus": [
+      "Ryg",
+      "Biceps",
+      "Bagskulder"
+    ],
+    "easier": "Let vægt og støtte på boks.",
+    "harder": "Tungere vægt eller langsom sænkefase.",
+    "junior": "6-10 pr. side.",
+    "adult": "8-15 pr. side.",
+    "mistakes": "Drejning i overkroppen, træk mod skulderen, for tung vægt."
+  },
+  {
+    "id": "kb-deadlift",
+    "name": "Kettlebell deadlift",
+    "category": "Hinge",
+    "equipment": [
+      "Kettlebell"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Skub hoften bagud, hold ryggen neutral og rejs dig ved at spænde balderne.",
+    "focus": [
+      "Baglår",
+      "Balder",
+      "Ryg"
+    ],
+    "easier": "Hæv vægten på en boks.",
+    "harder": "Tungere vægt eller tempo.",
+    "junior": "6-10 tekniske gentagelser.",
+    "adult": "8-15 gentagelser.",
+    "mistakes": "Squatter bevægelsen, rund ryg, vægten for langt fra kroppen."
+  },
+  {
+    "id": "step-up",
+    "name": "Step-up",
+    "category": "Ben",
+    "equipment": [
+      "Boks",
+      "Bænk"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "Makker",
+      "Stafet"
+    ],
+    "description": "Træd op med hele foden på boksen, pres gennem benet og stå helt op.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Balance"
+    ],
+    "easier": "Lavere boks.",
+    "harder": "Hold vægte eller brug højere boks.",
+    "junior": "6-10 pr. ben.",
+    "adult": "8-15 pr. ben.",
+    "mistakes": "Skubber for meget fra med det bagerste ben, knæ falder ind, for høj boks."
+  },
+  {
+    "id": "plank-shoulder-tap",
+    "name": "Plank shoulder tap",
+    "category": "Core",
+    "equipment": [
+      "Kropsvægt",
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Stå i høj planke og rør modsatte skulder uden at dreje hoften.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Stabilitet"
+    ],
+    "easier": "Bredere fodstilling eller hænder på boks.",
+    "harder": "Smal fodstilling eller langsomt tempo.",
+    "junior": "6-12 skift.",
+    "adult": "12-24 skift.",
+    "mistakes": "Hofterne roterer, hænger i lænden, hastværk."
+  },
+  {
+    "id": "medball-slam",
+    "name": "Medicinbold slam",
+    "category": "Power",
+    "equipment": [
+      "Medicinbold"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "Løft bolden over hovedet og kast den kontrolleret og kraftfuldt i gulvet.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Puls"
+    ],
+    "easier": "Let bold og roligere tempo.",
+    "harder": "Tungere bold eller højere gentagelsestal.",
+    "junior": "5-8 gentagelser.",
+    "adult": "8-15 gentagelser.",
+    "mistakes": "Overstræk i lænden, bolden kastes tæt på fødderne, dårlig afstand."
+  },
+  {
+    "id": "shuttle-run",
+    "name": "Shuttle run",
+    "category": "Kondition",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Stafet",
+      "Teamchallenge"
+    ],
+    "description": "Løb mellem to markeringer med kontrollerede vendinger og tydelig berøring af linjen.",
+    "focus": [
+      "Kondition",
+      "Ben",
+      "Agility"
+    ],
+    "easier": "Kortere distance eller rask gang.",
+    "harder": "Længere distance eller flere vendinger.",
+    "junior": "5-10 meter pr. tur.",
+    "adult": "10-20 meter pr. tur.",
+    "mistakes": "Ukontrollerede vendinger, glider på gulvet, for tæt trafik."
+  },
+  {
+    "id": "wall-ball",
+    "name": "Wall ball",
+    "category": "Power",
+    "equipment": [
+      "Medicinbold",
+      "Væg"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Lav en squat og kast bolden mod et mål på væggen. Grib den blødt og fortsæt.",
+    "focus": [
+      "Ben",
+      "Skuldre",
+      "Puls"
+    ],
+    "easier": "Let bold, lavere mål eller kun squat-to-press.",
+    "harder": "Tungere bold eller højere mål.",
+    "junior": "Let bold og lavt mål, 5-8 gentagelser.",
+    "adult": "8-15 gentagelser.",
+    "mistakes": "Bolden rammer for tæt på ansigtet, dårlig squatdybde, for tung bold."
+  }
+]

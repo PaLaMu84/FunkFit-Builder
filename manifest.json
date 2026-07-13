@@ -1,0 +1,10 @@
+{
+  "name": "FunkFit Builder",
+  "short_name": "FunkFit",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#f97316",
+  "description": "Træningsbygger til FunkFit Junior og pårørende",
+  "icons": []
+}

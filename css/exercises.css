@@ -1,0 +1,11 @@
+
+.exercise-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:1rem}
+.exercise-card{border:1px solid var(--line);border-radius:16px;padding:1rem;display:flex;flex-direction:column;gap:.7rem;background:white}
+.exercise-card h3{margin:0}
+.exercise-card p{margin:0;color:var(--muted);line-height:1.45}
+.badges{display:flex;gap:.35rem;flex-wrap:wrap}
+.badge{display:inline-flex;border-radius:999px;background:#f1f5f9;padding:.28rem .55rem;font-size:.78rem;font-weight:800}
+.exercise-actions{display:flex;gap:.5rem;margin-top:auto}
+.exercise-actions button{flex:1}
+.exercise-actions .details{background:#e2e8f0;color:var(--ink)}
+.empty-state{padding:2rem;text-align:center;color:var(--muted);border:2px dashed var(--line);border-radius:16px}

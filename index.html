@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f97316">
+  <title>FunkFit Builder</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/exercises.css">
+  <link rel="stylesheet" href="css/workout-builder.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">FUNKFIT JUNIOR</p>
+      <h1>FunkFit Builder</h1>
+      <p class="tagline">Stærkere, hurtigere, sammen.</p>
+    </div>
+    <button id="installBtn" class="secondary hidden">Installér app</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h2>Byg en træning, der passer til både juniorer og voksne</h2>
+        <p>Find øvelser, filtrér efter udstyr og niveau, og saml et komplet træningspas.</p>
+      </div>
+      <div class="hero-actions">
+        <button data-scroll="library">Find øvelse</button>
+        <button data-scroll="builder" class="secondary">Byg træning</button>
+      </div>
+    </section>
+
+    <section id="library" class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">ØVELSESBIBLIOTEK</p>
+          <h2>Find den rigtige øvelse</h2>
+        </div>
+        <span id="exerciseCount" class="count-badge"></span>
+      </div>
+
+      <div class="filters">
+        <input id="searchInput" type="search" placeholder="Søg efter øvelse, muskelgruppe eller udstyr">
+        <select id="categoryFilter"><option value="">Alle bevægelser</option></select>
+        <select id="equipmentFilter"><option value="">Alt udstyr</option></select>
+        <select id="audienceFilter">
+          <option value="">Alle deltagere</option>
+          <option value="Junior">Junior</option>
+          <option value="Voksen">Voksen</option>
+        </select>
+        <select id="difficultyFilter">
+          <option value="">Alle niveauer</option>
+          <option value="Begynder">Begynder</option>
+          <option value="Øvet">Øvet</option>
+        </select>
+      </div>
+
+      <div id="exerciseGrid" class="exercise-grid"></div>
+    </section>
+
+    <section id="builder" class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">TRÆNINGSBYGGER</p>
+          <h2>Dagens træning</h2>
+        </div>
+        <div class="builder-actions">
+          <select id="templateSelect"></select>
+          <button id="loadTemplateBtn" class="secondary">Indlæs skabelon</button>
+        </div>
+      </div>
+
+      <div class="workout-meta">
+        <label>Træningens navn<input id="workoutName" value="FunkFit Junior – dagens træning"></label>
+        <label>Dato<input id="workoutDate" type="date"></label>
+        <label>Antal deltagere<input id="participantCount" type="number" min="1" value="20"></label>
+      </div>
+
+      <div id="workoutSections"></div>
+
+      <div class="summary-bar">
+        <strong>Samlet tid: <span id="totalMinutes">0</span> min</strong>
+        <div>
+          <button id="saveWorkoutBtn">Gem træning</button>
+          <button id="printWorkoutBtn" class="secondary">Print</button>
+          <button id="clearWorkoutBtn" class="ghost">Ryd</button>
+        </div>
+      </div>
+      <div id="warningBox" class="warning-box hidden"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">GEMTE PAS</p>
+          <h2>Mine træninger</h2>
+        </div>
+      </div>
+      <div id="savedWorkouts" class="saved-list"></div>
+    </section>
+  </main>
+
+  <dialog id="exerciseDialog">
+    <button id="closeDialog" class="dialog-close" aria-label="Luk">×</button>
+    <div id="dialogContent"></div>
+  </dialog>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
