@@ -1,6 +1,6 @@
 {
-  "name": "FunkFit Builder",
-  "short_name": "FunkFit",
+  "name": "FunkFit Builder v0.3.2",
+  "short_name": "FunkFit 0.3.2",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",

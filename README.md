@@ -1,10 +1,14 @@
-# FunkFit Builder v0.3.1
+# FunkFit Builder v0.3.2
 
-Rettet familielogik:
+## Nyt i denne version
 
-- Familietræning er ikke længere en særskilt skabelon.
-- FunkFit Junior er standardtræningen.
-- Familiedeltagelse slås til med en tydelig kontakt.
-- Voksne bruger samme øvelse som juniorerne som standard.
-- Voksenøvelse, kg., reps/tid og note vises kun, når familiedeltagelse er aktiv.
-- Den enkelte voksenøvelse kan ændres uafhængigt.
+- Synligt versionsnummer i appens overskrift
+- Versionsnummer i footer
+- Manifest opdateret til v0.3.2
+- Service Worker-cache opdateret til v0.3.2
+- Øvelsesbibliotek udvidet til 50 øvelser
+- Kropsområder og familiedeltagelse bevaret
+
+## Sådan opdaterer du
+
+Kopiér filerne ind i dit eksisterende GitHub-repository, erstat de gamle filer, commit og push til main.

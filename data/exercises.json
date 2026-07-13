@@ -436,5 +436,1352 @@
       "Skuldre",
       "Helkrop"
     ]
+  },
+  {
+    "id": "reverse-lunge",
+    "name": "Reverse lunge",
+    "category": "Ben",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Træd bagud og sænk knæet kontrolleret mod gulvet.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "6-10 pr. ben.",
+    "adult": "8-12 pr. ben.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "walking-lunge",
+    "name": "Walking lunge",
+    "category": "Ben",
+    "equipment": [
+      "Kropsvægt",
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Gå frem i kontrollerede lunges med rank overkrop.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "8-12 skridt.",
+    "adult": "12-20 skridt.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "split-squat",
+    "name": "Split squat",
+    "category": "Ben",
+    "equipment": [
+      "Kropsvægt",
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Stå i forskudt position og sænk lodret ned.",
+    "focus": [
+      "Ben",
+      "Balder"
+    ],
+    "bodyAreas": [
+      "Ben",
+      "Balder"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "6-10 pr. ben.",
+    "adult": "8-12 pr. ben.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "box-squat",
+    "name": "Box squat",
+    "category": "Squat",
+    "equipment": [
+      "Boks",
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Sæt dig kontrolleret til boksen og rejs dig igen.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "8-12 reps.",
+    "adult": "10-15 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "squat-jump",
+    "name": "Squat jump",
+    "category": "Power",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Lav squat og eksplosivt hop med blød landing.",
+    "focus": [
+      "Ben",
+      "Kondition",
+      "Helkrop"
+    ],
+    "bodyAreas": [
+      "Ben",
+      "Kondition",
+      "Helkrop"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "5-8 reps.",
+    "adult": "8-12 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "glute-bridge",
+    "name": "Glute bridge",
+    "category": "Core",
+    "equipment": [
+      "Måtte",
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Løft hoften ved at spænde balderne.",
+    "focus": [
+      "Balder",
+      "Baglår",
+      "Core"
+    ],
+    "bodyAreas": [
+      "Balder",
+      "Baglår",
+      "Core"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "10-15 reps.",
+    "adult": "12-20 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "single-leg-glute-bridge",
+    "name": "Single leg glute bridge",
+    "category": "Core",
+    "equipment": [
+      "Måtte",
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Løft hoften på ét ben uden at rotere.",
+    "focus": [
+      "Balder",
+      "Baglår",
+      "Core"
+    ],
+    "bodyAreas": [
+      "Balder",
+      "Baglår",
+      "Core"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "6-10 pr. side.",
+    "adult": "8-12 pr. side.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "romanian-deadlift",
+    "name": "Romanian deadlift",
+    "category": "Hinge",
+    "equipment": [
+      "Håndvægt",
+      "Kettlebell"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Skub hoften bagud med let bøjede knæ.",
+    "focus": [
+      "Baglår",
+      "Balder",
+      "Ryg"
+    ],
+    "bodyAreas": [
+      "Baglår",
+      "Balder",
+      "Ryg"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "8-12 reps.",
+    "adult": "8-15 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "single-leg-rdl",
+    "name": "Single leg RDL",
+    "category": "Hinge",
+    "equipment": [
+      "Kropsvægt",
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Hæng frem over ét ben med stabil hofte.",
+    "focus": [
+      "Baglår",
+      "Balder",
+      "Balance"
+    ],
+    "bodyAreas": [
+      "Baglår",
+      "Balder",
+      "Balance"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "5-8 pr. side.",
+    "adult": "6-10 pr. side.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "kb-swing",
+    "name": "Kettlebell swing",
+    "category": "Power",
+    "equipment": [
+      "Kettlebell"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Sving vægten med kraft fra hoften, ikke armene.",
+    "focus": [
+      "Balder",
+      "Baglår",
+      "Core",
+      "Helkrop"
+    ],
+    "bodyAreas": [
+      "Balder",
+      "Baglår",
+      "Core",
+      "Helkrop"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "8-12 lette reps.",
+    "adult": "12-20 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "sumo-deadlift",
+    "name": "Sumo deadlift",
+    "category": "Hinge",
+    "equipment": [
+      "Kettlebell",
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Bred stand, vægten mellem fødderne, pres op.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Ryg"
+    ],
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Ryg"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "8-12 reps.",
+    "adult": "10-15 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "calf-raise",
+    "name": "Calf raise",
+    "category": "Ben",
+    "equipment": [
+      "Kropsvægt",
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Løft hælene og sænk kontrolleret.",
+    "focus": [
+      "Lægge",
+      "Balance"
+    ],
+    "bodyAreas": [
+      "Lægge",
+      "Balance"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "12-20 reps.",
+    "adult": "15-25 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "box-jump",
+    "name": "Box jump",
+    "category": "Power",
+    "equipment": [
+      "Boks"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Hop kontrolleret op på boksen og træd ned.",
+    "focus": [
+      "Ben",
+      "Kondition",
+      "Helkrop"
+    ],
+    "bodyAreas": [
+      "Ben",
+      "Kondition",
+      "Helkrop"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "3-6 reps lav boks.",
+    "adult": "5-10 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "lateral-step-up",
+    "name": "Lateral step-up",
+    "category": "Ben",
+    "equipment": [
+      "Boks"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Træd sidelæns op på boksen.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Balance"
+    ],
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Balance"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "6-10 pr. side.",
+    "adult": "8-12 pr. side.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "mountain-climber",
+    "name": "Mountain climber",
+    "category": "Core",
+    "equipment": [
+      "Kropsvægt",
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Træk skiftevis knæene frem i høj planke.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Kondition"
+    ],
+    "bodyAreas": [
+      "Core",
+      "Skuldre",
+      "Kondition"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "20-30 sek.",
+    "adult": "30-45 sek.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "dead-bug",
+    "name": "Dead bug",
+    "category": "Core",
+    "equipment": [
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Sænk modsat arm og ben uden at løfte lænden.",
+    "focus": [
+      "Core"
+    ],
+    "bodyAreas": [
+      "Core"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "6-10 pr. side.",
+    "adult": "8-12 pr. side.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "bird-dog",
+    "name": "Bird dog",
+    "category": "Core",
+    "equipment": [
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Stræk modsat arm og ben fra firefodsstilling.",
+    "focus": [
+      "Core",
+      "Ryg",
+      "Balance"
+    ],
+    "bodyAreas": [
+      "Core",
+      "Ryg",
+      "Balance"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "6-10 pr. side.",
+    "adult": "8-12 pr. side.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "side-plank",
+    "name": "Side plank",
+    "category": "Core",
+    "equipment": [
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Hold kroppen i en lige linje på siden.",
+    "focus": [
+      "Core",
+      "Skuldre"
+    ],
+    "bodyAreas": [
+      "Core",
+      "Skuldre"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "15-25 sek.",
+    "adult": "25-45 sek.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "hollow-hold",
+    "name": "Hollow hold",
+    "category": "Core",
+    "equipment": [
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Pres lænden i gulvet og hold kroppen spændt.",
+    "focus": [
+      "Core"
+    ],
+    "bodyAreas": [
+      "Core"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "10-20 sek.",
+    "adult": "20-40 sek.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "sit-up",
+    "name": "Sit-up",
+    "category": "Core",
+    "equipment": [
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Rul kontrolleret op og ned.",
+    "focus": [
+      "Core"
+    ],
+    "bodyAreas": [
+      "Core"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "8-12 reps.",
+    "adult": "12-20 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "russian-twist",
+    "name": "Russian twist",
+    "category": "Core",
+    "equipment": [
+      "Medicinbold",
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Rotér overkroppen kontrolleret fra side til side.",
+    "focus": [
+      "Core",
+      "Rotation"
+    ],
+    "bodyAreas": [
+      "Core",
+      "Rotation"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "10-16 skift.",
+    "adult": "16-24 skift.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "plank",
+    "name": "Plank",
+    "category": "Core",
+    "equipment": [
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Hold kroppen stabil fra hoved til hæl.",
+    "focus": [
+      "Core",
+      "Skuldre"
+    ],
+    "bodyAreas": [
+      "Core",
+      "Skuldre"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "20-30 sek.",
+    "adult": "30-60 sek.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "bench-dip",
+    "name": "Bench dip",
+    "category": "Push",
+    "equipment": [
+      "Boks",
+      "Bænk"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Sænk kroppen tæt ved boksen og pres op.",
+    "focus": [
+      "Arme",
+      "Bryst",
+      "Skuldre"
+    ],
+    "bodyAreas": [
+      "Arme",
+      "Bryst",
+      "Skuldre"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "5-8 reps.",
+    "adult": "8-15 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "db-shoulder-press",
+    "name": "DB shoulder press",
+    "category": "Push",
+    "equipment": [
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Pres håndvægtene over hovedet uden svaj.",
+    "focus": [
+      "Skuldre",
+      "Arme",
+      "Core"
+    ],
+    "bodyAreas": [
+      "Skuldre",
+      "Arme",
+      "Core"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "6-10 reps.",
+    "adult": "8-12 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "floor-press",
+    "name": "Floor press",
+    "category": "Push",
+    "equipment": [
+      "Håndvægt",
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Pres håndvægtene op fra gulvet.",
+    "focus": [
+      "Bryst",
+      "Arme"
+    ],
+    "bodyAreas": [
+      "Bryst",
+      "Arme"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "8-12 reps.",
+    "adult": "10-15 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "incline-push-up",
+    "name": "Incline push-up",
+    "category": "Push",
+    "equipment": [
+      "Boks",
+      "Bænk"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Lav push-up med hænderne på en forhøjning.",
+    "focus": [
+      "Bryst",
+      "Arme",
+      "Core"
+    ],
+    "bodyAreas": [
+      "Bryst",
+      "Arme",
+      "Core"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "6-12 reps.",
+    "adult": "10-20 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "pike-push-up",
+    "name": "Pike push-up",
+    "category": "Push",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Pres hovedet ned mellem hænderne fra omvendt V.",
+    "focus": [
+      "Skuldre",
+      "Arme",
+      "Core"
+    ],
+    "bodyAreas": [
+      "Skuldre",
+      "Arme",
+      "Core"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "4-8 reps.",
+    "adult": "6-12 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "band-row",
+    "name": "Band row",
+    "category": "Pull",
+    "equipment": [
+      "Elastik"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Træk elastikken mod kroppen og saml skulderbladene.",
+    "focus": [
+      "Ryg",
+      "Arme",
+      "Skuldre"
+    ],
+    "bodyAreas": [
+      "Ryg",
+      "Arme",
+      "Skuldre"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "10-15 reps.",
+    "adult": "12-20 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "band-pull-apart",
+    "name": "Band pull-apart",
+    "category": "Pull",
+    "equipment": [
+      "Elastik"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Træk elastikken fra hinanden i brysthøjde.",
+    "focus": [
+      "Ryg",
+      "Skuldre"
+    ],
+    "bodyAreas": [
+      "Ryg",
+      "Skuldre"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "10-15 reps.",
+    "adult": "15-20 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "biceps-curl",
+    "name": "Biceps curl",
+    "category": "Pull",
+    "equipment": [
+      "Håndvægt",
+      "Elastik"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Bøj albuerne uden at svinge kroppen.",
+    "focus": [
+      "Arme"
+    ],
+    "bodyAreas": [
+      "Arme"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "8-12 reps.",
+    "adult": "10-15 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "triceps-extension",
+    "name": "Triceps extension",
+    "category": "Push",
+    "equipment": [
+      "Håndvægt",
+      "Elastik"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Stræk albuerne kontrolleret over hovedet eller fremad.",
+    "focus": [
+      "Arme"
+    ],
+    "bodyAreas": [
+      "Arme"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "8-12 reps.",
+    "adult": "10-15 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "lateral-raise",
+    "name": "Lateral raise",
+    "category": "Push",
+    "equipment": [
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Løft armene ud til siden med let bøjede albuer.",
+    "focus": [
+      "Skuldre"
+    ],
+    "bodyAreas": [
+      "Skuldre"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "8-12 reps.",
+    "adult": "10-15 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "front-raise",
+    "name": "Front raise",
+    "category": "Push",
+    "equipment": [
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Løft vægtene frem til skulderhøjde.",
+    "focus": [
+      "Skuldre",
+      "Arme"
+    ],
+    "bodyAreas": [
+      "Skuldre",
+      "Arme"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "8-12 reps.",
+    "adult": "10-15 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "renegade-row",
+    "name": "Renegade row",
+    "category": "Pull",
+    "equipment": [
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Træk én håndvægt ad gangen fra høj planke.",
+    "focus": [
+      "Ryg",
+      "Arme",
+      "Core"
+    ],
+    "bodyAreas": [
+      "Ryg",
+      "Arme",
+      "Core"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "4-6 pr. side.",
+    "adult": "6-10 pr. side.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "suitcase-carry",
+    "name": "Suitcase carry",
+    "category": "Carry",
+    "equipment": [
+      "Kettlebell",
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Gå med én vægt uden at læne kroppen.",
+    "focus": [
+      "Core",
+      "Arme",
+      "Helkrop"
+    ],
+    "bodyAreas": [
+      "Core",
+      "Arme",
+      "Helkrop"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "10-20 m pr. side.",
+    "adult": "20-40 m pr. side.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "front-rack-carry",
+    "name": "Front rack carry",
+    "category": "Carry",
+    "equipment": [
+      "Kettlebell",
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Bær vægtene foran skuldrene med rank krop.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Helkrop"
+    ],
+    "bodyAreas": [
+      "Core",
+      "Skuldre",
+      "Helkrop"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "10-20 m.",
+    "adult": "20-40 m.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "overhead-carry",
+    "name": "Overhead carry",
+    "category": "Carry",
+    "equipment": [
+      "Kettlebell",
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Gå med vægten stabilt over hovedet.",
+    "focus": [
+      "Skuldre",
+      "Core",
+      "Helkrop"
+    ],
+    "bodyAreas": [
+      "Skuldre",
+      "Core",
+      "Helkrop"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "8-15 m.",
+    "adult": "15-30 m.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+  },
+  {
+    "id": "burpee",
+    "name": "Burpee",
+    "category": "Kondition",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Gå eller hop ned i planke og rejs dig eksplosivt.",
+    "focus": [
+      "Helkrop",
+      "Kondition"
+    ],
+    "bodyAreas": [
+      "Helkrop",
+      "Kondition"
+    ],
+    "easier": "Reducer belastning, tempo eller bevægeudslag.",
+    "harder": "Øg belastning, tempo eller teknisk krav.",
+    "junior": "4-8 reps.",
+    "adult": "8-15 reps.",
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
   }
 ]
