@@ -12,6 +12,40 @@ const customs=()=>read(CKEY,[]);
 const favorites=()=>new Set(read(FKEY,[]));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 
+const collapsedSections=new Set();
+
+function sectionVisual(section){
+  const n=(section.name||'').toLowerCase();
+  const style=(section.style||'').toLowerCase();
+  const format=(section.format||'').toLowerCase();
+  if(n.includes('opvarm')||n.includes('warm'))return{color:'var(--section-warmup)',icon:'🔥',label:'Opvarmning'};
+  if(n.includes('teknik')||style.includes('teknik'))return{color:'var(--section-technique)',icon:'🎯',label:'Teknik'};
+  if(n.includes('hyrox')||style.includes('hyrox')||format.includes('hyrox'))return{color:'var(--section-hyrox)',icon:'🏃',label:'Hyrox'};
+  if(n.includes('hiit')||style.includes('hiit')||format.includes('hiit')||format.includes('tabata'))return{color:'var(--section-hiit)',icon:'⚡',label:'HIIT'};
+  if(n.includes('finisher'))return{color:'var(--section-finisher)',icon:'🏁',label:'Finisher'};
+  if(n.includes('team')||n.includes('stafet')||style.includes('leg'))return{color:'var(--section-team)',icon:'🤝',label:'Team'};
+  if(n.includes('nedkøl')||n.includes('cool')||style.includes('mobilitet'))return{color:'var(--section-cooldown)',icon:'😌',label:'Nedkøling'};
+  if(style.includes('crossfit')||style.includes('funktionel'))return{color:'var(--section-strength)',icon:'🏋️',label:'Funktionel'};
+  return{color:'var(--section-default)',icon:'●',label:'Sektion'};
+}
+function moveSection(from,to){
+  if(to<0||to>=sections.length||from===to)return;
+  const [item]=sections.splice(from,1);
+  sections.splice(to,0,item);
+  renderFramework();renderExerciseSections();updateReview();
+}
+function duplicateSection(index){
+  const copy=structuredClone(sections[index]);
+  copy.name=`${copy.name} – kopi`;
+  sections.splice(index+1,0,copy);
+  renderFramework();renderExerciseSections();updateReview();
+}
+function toggleSectionCollapse(index){
+  collapsedSections.has(index)?collapsedSections.delete(index):collapsedSections.add(index);
+  renderFramework();renderExerciseSections();
+}
+
+
 async function init(){
   const base=await fetch('data/exercises.json').then(r=>r.json());
   templates=await fetch('data/workoutTemplates.json').then(r=>r.json());
@@ -72,37 +106,111 @@ function showStep(n){
 }
 
 function renderFramework(){
-  $('#frameworkSections').innerHTML=sections.map((s,i)=>`<article class="framework-card">
-    <div class="framework-head">
-      <input data-sec-name="${i}" value="${esc(s.name)}">
-      <input data-sec-min="${i}" type="number" min="0" value="${s.minutes}">
-      <button class="ghost" data-del-sec="${i}">Slet</button>
-    </div>
-    <div class="framework-settings">
-      <label>Format<select data-sec-format="${i}">${FORMATS.map(x=>`<option ${x===s.format?'selected':''}>${x}</option>`).join('')}</select></label>
-      <label>Træningsspor<select data-sec-style="${i}">${STYLES.map(x=>`<option ${x===s.style?'selected':''}>${x}</option>`).join('')}</select></label>
-      <label>Arbejde (sek.)<input data-sec-work="${i}" type="number" value="${s.work||0}"></label>
-      <label>Pause (sek.)<input data-sec-rest="${i}" type="number" value="${s.rest||0}"></label>
-      <label>Runder<input data-sec-rounds="${i}" type="number" min="1" value="${s.rounds||1}"></label>
-    </div>
-  </article>`).join('');
+  $('#frameworkSections').innerHTML=sections.map((s,i)=>{
+    const v=sectionVisual(s),collapsed=collapsedSections.has(i),count=(s.exercises||[]).length;
+    const progress=Math.round(((i+1)/sections.length)*100);
+    return `<article class="framework-card ${collapsed?'collapsed':''}" style="--section-color:${v.color}">
+      <div class="section-card-header">
+        <div class="section-title-group">
+          <div class="section-icon">${v.icon}</div>
+          <div class="section-title-text">
+            <h3>${esc(s.name)}</h3>
+            <small>Sektion ${i+1} af ${sections.length}</small>
+            <div class="section-badges">
+              <span class="section-stat">${s.minutes} min</span>
+              <span class="section-stat">${count} øvelser</span>
+              <span class="section-stat">${esc(s.format)}</span>
+              <span class="section-stat">${s.work||0}/${s.rest||0}</span>
+              <span class="section-stat">${s.rounds||1} runder</span>
+            </div>
+          </div>
+        </div>
+        <div class="section-card-actions">
+          <button class="collapse-btn" data-collapse-framework="${i}">${collapsed?'Fold ud':'Fold sammen'}</button>
+          <details class="section-card-menu">
+            <summary>⋮</summary>
+            <div class="section-menu-popover">
+              <button data-move-up="${i}">↑ Flyt op</button>
+              <button data-move-down="${i}">↓ Flyt ned</button>
+              <button data-duplicate="${i}">⧉ Duplikér</button>
+              <button data-del-sec="${i}">Slet sektion</button>
+            </div>
+          </details>
+        </div>
+      </div>
+      <div class="section-progress"><span>${v.label}</span><div class="section-progress-bar"><span style="width:${progress}%"></span></div><span>${progress}%</span></div>
+      <div class="framework-settings">
+        <label>Navn<input data-sec-name="${i}" value="${esc(s.name)}"></label>
+        <label>Minutter<input data-sec-min="${i}" type="number" min="0" value="${s.minutes}"></label>
+        <label>Format<select data-sec-format="${i}">${FORMATS.map(x=>`<option ${x===s.format?'selected':''}>${x}</option>`).join('')}</select></label>
+        <label>Træningsspor<select data-sec-style="${i}">${STYLES.map(x=>`<option ${x===s.style?'selected':''}>${x}</option>`).join('')}</select></label>
+        <label>Arbejde (sek.)<input data-sec-work="${i}" type="number" value="${s.work||0}"></label>
+        <label>Pause (sek.)<input data-sec-rest="${i}" type="number" value="${s.rest||0}"></label>
+        <label>Runder<input data-sec-rounds="${i}" type="number" min="1" value="${s.rounds||1}"></label>
+      </div>
+    </article>`;
+  }).join('');
+
+  $('#frameworkSections').querySelectorAll('[data-collapse-framework]').forEach(b=>b.onclick=()=>toggleSectionCollapse(+b.dataset.collapseFramework));
+  $('#frameworkSections').querySelectorAll('[data-move-up]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveUp,+b.dataset.moveUp-1));
+  $('#frameworkSections').querySelectorAll('[data-move-down]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveDown,+b.dataset.moveDown+1));
+  $('#frameworkSections').querySelectorAll('[data-duplicate]').forEach(b=>b.onclick=()=>duplicateSection(+b.dataset.duplicate));
   $('#frameworkSections').querySelectorAll('[data-sec-name]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secName].name=e.value;renderExerciseSections();updateReview()});
   $('#frameworkSections').querySelectorAll('[data-sec-min]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secMin].minutes=+e.value||0;renderExerciseSections();updateReview()});
-  $('#frameworkSections').querySelectorAll('[data-sec-format]').forEach(e=>e.onchange=()=>sections[+e.dataset.secFormat].format=e.value);
-  $('#frameworkSections').querySelectorAll('[data-sec-style]').forEach(e=>e.onchange=()=>sections[+e.dataset.secStyle].style=e.value);
-  $('#frameworkSections').querySelectorAll('[data-sec-work]').forEach(e=>e.oninput=()=>sections[+e.dataset.secWork].work=+e.value||0);
-  $('#frameworkSections').querySelectorAll('[data-sec-rest]').forEach(e=>e.oninput=()=>sections[+e.dataset.secRest].rest=+e.value||0);
-  $('#frameworkSections').querySelectorAll('[data-sec-rounds]').forEach(e=>e.oninput=()=>sections[+e.dataset.secRounds].rounds=+e.value||1);
+  $('#frameworkSections').querySelectorAll('[data-sec-format]').forEach(e=>e.onchange=()=>{sections[+e.dataset.secFormat].format=e.value;renderFramework();renderExerciseSections()});
+  $('#frameworkSections').querySelectorAll('[data-sec-style]').forEach(e=>e.onchange=()=>{sections[+e.dataset.secStyle].style=e.value;renderFramework();renderExerciseSections()});
+  $('#frameworkSections').querySelectorAll('[data-sec-work]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secWork].work=+e.value||0;renderExerciseSections()});
+  $('#frameworkSections').querySelectorAll('[data-sec-rest]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secRest].rest=+e.value||0;renderExerciseSections()});
+  $('#frameworkSections').querySelectorAll('[data-sec-rounds]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secRounds].rounds=+e.value||1;renderExerciseSections()});
   $('#frameworkSections').querySelectorAll('[data-del-sec]').forEach(b=>b.onclick=()=>{if(sections.length>1){sections.splice(+b.dataset.delSec,1);renderFramework();renderExerciseSections();updateReview()}});
 }
 
 function renderExerciseSections(){
   const fam=$('#familyMode').checked;
   $('#totalMinutes').textContent=sections.reduce((n,s)=>n+(+s.minutes||0),0);
-  $('#exerciseSections').innerHTML=sections.map((s,si)=>`<article class="exercise-section">
-    <header><div><strong>${esc(s.name)}</strong><small>${esc(s.format)} · ${esc(s.style)} · ${s.minutes} min</small></div><button data-add-ex="${si}">+ Tilføj øvelse</button></header>
-    <div class="exercise-list">${s.exercises?.length?s.exercises.map((it,ei)=>exerciseRow(it,si,ei,fam)).join(''):'<div class="empty">Ingen øvelser endnu.</div>'}</div>
-  </article>`).join('');
+  $('#exerciseSections').innerHTML=sections.map((s,si)=>{
+    const v=sectionVisual(s),collapsed=collapsedSections.has(si),count=(s.exercises||[]).length;
+    const progress=Math.round(((si+1)/sections.length)*100);
+    return `<article class="exercise-section ${collapsed?'collapsed':''}" style="--section-color:${v.color}">
+      <div class="section-card-header">
+        <div class="section-title-group">
+          <div class="section-icon">${v.icon}</div>
+          <div class="section-title-text">
+            <h3>${esc(s.name)}</h3>
+            <small>Sektion ${si+1} af ${sections.length}</small>
+            <div class="section-badges">
+              <span class="section-stat">${s.minutes} min</span>
+              <span class="section-stat">${count} øvelser</span>
+              <span class="section-stat">${esc(s.format)}</span>
+              <span class="section-stat">${s.work||0}/${s.rest||0}</span>
+              <span class="section-stat">${s.rounds||1} runder</span>
+            </div>
+          </div>
+        </div>
+        <div class="section-card-actions">
+          <button class="collapse-btn" data-collapse-exercise="${si}">${collapsed?'Fold ud':'Fold sammen'}</button>
+          <details class="section-card-menu">
+            <summary>⋮</summary>
+            <div class="section-menu-popover">
+              <button data-move-up="${si}">↑ Flyt op</button>
+              <button data-move-down="${si}">↓ Flyt ned</button>
+              <button data-duplicate="${si}">⧉ Duplikér</button>
+              <button data-del-section="${si}">Slet sektion</button>
+            </div>
+          </details>
+        </div>
+      </div>
+      <div class="section-progress"><span>${v.label}</span><div class="section-progress-bar"><span style="width:${progress}%"></span></div><span>${progress}%</span></div>
+      <div class="exercise-list">${s.exercises?.length?s.exercises.map((it,ei)=>exerciseRow(it,si,ei,fam)).join(''):'<div class="empty">Ingen øvelser endnu.</div>'}</div>
+      <div class="section-add-row"><button data-add-ex="${si}">+ Tilføj øvelse</button></div>
+    </article>`;
+  }).join('');
+
+  $('#exerciseSections').querySelectorAll('[data-collapse-exercise]').forEach(b=>b.onclick=()=>toggleSectionCollapse(+b.dataset.collapseExercise));
+  $('#exerciseSections').querySelectorAll('[data-move-up]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveUp,+b.dataset.moveUp-1));
+  $('#exerciseSections').querySelectorAll('[data-move-down]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveDown,+b.dataset.moveDown+1));
+  $('#exerciseSections').querySelectorAll('[data-duplicate]').forEach(b=>b.onclick=()=>duplicateSection(+b.dataset.duplicate));
+  $('#exerciseSections').querySelectorAll('[data-del-section]').forEach(b=>b.onclick=()=>{if(sections.length>1){sections.splice(+b.dataset.delSection,1);renderFramework();renderExerciseSections();updateReview()}});
   $('#exerciseSections').querySelectorAll('[data-add-ex]').forEach(b=>b.onclick=()=>openPicker(+b.dataset.addEx));
   $('#exerciseSections').querySelectorAll('[data-del-ex]').forEach(b=>b.onclick=()=>{const[a,c]=b.dataset.delEx.split('-').map(Number);sections[a].exercises.splice(c,1);renderExerciseSections()});
   bindExerciseInputs();
