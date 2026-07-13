@@ -1,27 +1,57 @@
 [
   {
     "id": "funkfit-60",
-    "name": "FunkFit 60 min",
+    "name": "FunkFit Junior 60 min",
     "sections": [
       {
         "name": "Opvarmning",
-        "minutes": 10
+        "minutes": 10,
+        "format": "Fælles flow",
+        "style": "Funktionel",
+        "work": 30,
+        "rest": 15,
+        "rounds": 2,
+        "exercises": []
       },
       {
         "name": "Teknik",
-        "minutes": 10
+        "minutes": 10,
+        "format": "Teknik",
+        "style": "Funktionel",
+        "work": 0,
+        "rest": 0,
+        "rounds": 1,
+        "exercises": []
       },
       {
-        "name": "Hovedtræning",
-        "minutes": 25
+        "name": "Hovedtræning 1",
+        "minutes": 20,
+        "format": "Stationstræning",
+        "style": "CrossFit-inspireret",
+        "work": 40,
+        "rest": 20,
+        "rounds": 4,
+        "exercises": []
+      },
+      {
+        "name": "Hovedtræning 2",
+        "minutes": 15,
+        "format": "HIIT-intervaller",
+        "style": "HIIT / Hyrox-inspireret",
+        "work": 40,
+        "rest": 20,
+        "rounds": 3,
+        "exercises": []
       },
       {
         "name": "Teamchallenge",
-        "minutes": 10
-      },
-      {
-        "name": "Afrunding",
-        "minutes": 5
+        "minutes": 5,
+        "format": "Team workout",
+        "style": "Funktionel",
+        "work": 0,
+        "rest": 0,
+        "rounds": 1,
+        "exercises": []
       }
     ]
   }

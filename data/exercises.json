@@ -33,6 +33,10 @@
       "Ben",
       "Balder",
       "Core"
+    ],
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
     ]
   },
   {
@@ -70,6 +74,10 @@
       "Ben",
       "Balder",
       "Core"
+    ],
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
     ]
   },
   {
@@ -108,6 +116,11 @@
       "Arme",
       "Skuldre",
       "Helkrop"
+    ],
+    "styles": [
+      "Funktionel",
+      "Hyrox-inspireret",
+      "CrossFit-inspireret"
     ]
   },
   {
@@ -144,6 +157,11 @@
       "Core",
       "Skuldre",
       "Helkrop"
+    ],
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
     ]
   },
   {
@@ -181,6 +199,10 @@
       "Bryst",
       "Arme",
       "Core"
+    ],
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
     ]
   },
   {
@@ -217,6 +239,10 @@
       "Ryg",
       "Arme",
       "Skuldre"
+    ],
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
     ]
   },
   {
@@ -253,6 +279,10 @@
       "Ben",
       "Balder",
       "Ryg"
+    ],
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
     ]
   },
   {
@@ -289,6 +319,9 @@
     "bodyAreas": [
       "Ben",
       "Balder"
+    ],
+    "styles": [
+      "Funktionel"
     ]
   },
   {
@@ -326,6 +359,11 @@
       "Core",
       "Skuldre",
       "Arme"
+    ],
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
     ]
   },
   {
@@ -363,6 +401,12 @@
       "Core",
       "Skuldre",
       "Helkrop"
+    ],
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "Hyrox-inspireret",
+      "CrossFit-inspireret"
     ]
   },
   {
@@ -398,6 +442,11 @@
       "Ben",
       "Kondition",
       "Helkrop"
+    ],
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "Hyrox-inspireret"
     ]
   },
   {
@@ -435,6 +484,12 @@
       "Ben",
       "Skuldre",
       "Helkrop"
+    ],
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "Hyrox-inspireret",
+      "CrossFit-inspireret"
     ]
   },
   {
@@ -471,7 +526,10 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "6-10 pr. ben.",
     "adult": "8-12 pr. ben.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel"
+    ]
   },
   {
     "id": "walking-lunge",
@@ -508,7 +566,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "8-12 skridt.",
     "adult": "12-20 skridt.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "Hyrox-inspireret"
+    ]
   },
   {
     "id": "split-squat",
@@ -543,7 +605,10 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "6-10 pr. ben.",
     "adult": "8-12 pr. ben.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel"
+    ]
   },
   {
     "id": "box-squat",
@@ -580,7 +645,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "8-12 reps.",
     "adult": "10-15 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "squat-jump",
@@ -616,7 +685,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "5-8 reps.",
     "adult": "8-12 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "glute-bridge",
@@ -653,7 +727,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "10-15 reps.",
     "adult": "12-20 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "single-leg-glute-bridge",
@@ -690,7 +769,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "6-10 pr. side.",
     "adult": "8-12 pr. side.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "romanian-deadlift",
@@ -727,7 +811,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "8-12 reps.",
     "adult": "8-15 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "single-leg-rdl",
@@ -764,7 +852,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "5-8 pr. side.",
     "adult": "6-10 pr. side.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "kb-swing",
@@ -802,7 +894,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "8-12 lette reps.",
     "adult": "12-20 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "sumo-deadlift",
@@ -839,7 +936,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "8-12 reps.",
     "adult": "10-15 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "calf-raise",
@@ -874,7 +975,10 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "12-20 reps.",
     "adult": "15-25 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel"
+    ]
   },
   {
     "id": "box-jump",
@@ -910,7 +1014,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "3-6 reps lav boks.",
     "adult": "5-10 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "lateral-step-up",
@@ -946,7 +1055,10 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "6-10 pr. side.",
     "adult": "8-12 pr. side.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel"
+    ]
   },
   {
     "id": "mountain-climber",
@@ -983,7 +1095,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "20-30 sek.",
     "adult": "30-45 sek.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "dead-bug",
@@ -1015,7 +1132,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "6-10 pr. side.",
     "adult": "8-12 pr. side.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "bird-dog",
@@ -1051,7 +1173,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "6-10 pr. side.",
     "adult": "8-12 pr. side.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "side-plank",
@@ -1085,7 +1212,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "15-25 sek.",
     "adult": "25-45 sek.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "hollow-hold",
@@ -1117,7 +1249,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "10-20 sek.",
     "adult": "20-40 sek.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "sit-up",
@@ -1149,7 +1286,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "8-12 reps.",
     "adult": "12-20 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "russian-twist",
@@ -1184,7 +1326,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "10-16 skift.",
     "adult": "16-24 skift.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "plank",
@@ -1218,7 +1365,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "20-30 sek.",
     "adult": "30-60 sek.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "bench-dip",
@@ -1255,7 +1407,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "5-8 reps.",
     "adult": "8-15 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "db-shoulder-press",
@@ -1291,7 +1447,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "6-10 reps.",
     "adult": "8-12 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "floor-press",
@@ -1326,7 +1486,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "8-12 reps.",
     "adult": "10-15 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "incline-push-up",
@@ -1363,7 +1527,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "6-12 reps.",
     "adult": "10-20 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "pike-push-up",
@@ -1399,7 +1567,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "4-8 reps.",
     "adult": "6-12 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "band-row",
@@ -1435,7 +1607,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "10-15 reps.",
     "adult": "12-20 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "band-pull-apart",
@@ -1469,7 +1645,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "10-15 reps.",
     "adult": "15-20 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "biceps-curl",
@@ -1502,7 +1682,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "8-12 reps.",
     "adult": "10-15 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "triceps-extension",
@@ -1535,7 +1719,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "8-12 reps.",
     "adult": "10-15 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "lateral-raise",
@@ -1567,7 +1755,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "8-12 reps.",
     "adult": "10-15 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "front-raise",
@@ -1601,7 +1793,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "8-12 reps.",
     "adult": "10-15 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "renegade-row",
@@ -1637,7 +1833,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "4-6 pr. side.",
     "adult": "6-10 pr. side.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "suitcase-carry",
@@ -1674,7 +1874,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "10-20 m pr. side.",
     "adult": "20-40 m pr. side.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "Hyrox-inspireret",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "front-rack-carry",
@@ -1711,7 +1916,12 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "10-20 m.",
     "adult": "20-40 m.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "Hyrox-inspireret",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "overhead-carry",
@@ -1748,7 +1958,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "8-15 m.",
     "adult": "15-30 m.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ]
   },
   {
     "id": "burpee",
@@ -1782,6 +1996,11 @@
     "harder": "Øg belastning, tempo eller teknisk krav.",
     "junior": "4-8 reps.",
     "adult": "8-15 reps.",
-    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling."
+    "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "Hyrox-inspireret"
+    ]
   }
 ]
