@@ -37,7 +37,8 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
-    ]
+    ],
+    "instructionVideo": "assets/videos/01-air-squat.mp4"
   },
   {
     "id": "goblet-squat",
@@ -78,7 +79,8 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
-    ]
+    ],
+    "instructionVideo": "assets/videos/02-goblet-squat.mp4"
   },
   {
     "id": "farmer-carry",
@@ -121,7 +123,8 @@
       "Funktionel",
       "Hyrox-inspireret",
       "CrossFit-inspireret"
-    ]
+    ],
+    "instructionVideo": "assets/videos/03-farmer-carry.mp4"
   },
   {
     "id": "bear-crawl",
@@ -162,7 +165,8 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
-    ]
+    ],
+    "instructionVideo": "assets/videos/04-bear-crawl.mp4"
   },
   {
     "id": "push-up",
@@ -203,7 +207,8 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
-    ]
+    ],
+    "instructionVideo": "assets/videos/05-push-up.mp4"
   },
   {
     "id": "db-row",
@@ -243,7 +248,8 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
-    ]
+    ],
+    "instructionVideo": "assets/videos/06-db-row.mp4"
   },
   {
     "id": "kb-deadlift",
@@ -283,7 +289,8 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
-    ]
+    ],
+    "instructionVideo": "assets/videos/07-kb-deadlift.mp4"
   },
   {
     "id": "step-up",
@@ -322,7 +329,8 @@
     ],
     "styles": [
       "Funktionel"
-    ]
+    ],
+    "instructionVideo": "assets/videos/08-step-up.mp4"
   },
   {
     "id": "plank-shoulder-tap",
@@ -364,7 +372,8 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
-    ]
+    ],
+    "instructionVideo": "assets/videos/09-plank-shoulder-tap.mp4"
   },
   {
     "id": "medball-slam",
@@ -407,7 +416,8 @@
       "HIIT",
       "Hyrox-inspireret",
       "CrossFit-inspireret"
-    ]
+    ],
+    "instructionVideo": "assets/videos/10-medball-slam.mp4"
   },
   {
     "id": "shuttle-run",

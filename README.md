@@ -1,12 +1,10 @@
-# FunkFit Builder v0.4.1
+# FunkFit Builder v0.4.3
 
-Hotfix og udvidelse:
-
-- Øvelsesvælger åbner direkte under den valgte sektion.
-- Søg og filtrér efter Funktionel/CrossFit eller HIIT/Hyrox.
-- Tre faktiske træningsskabeloner:
-  - FunkFit Junior 60 min
-  - HIIT 45 min
-  - Hyrox-inspireret 60 min
-- Opret en ny øvelse direkte fra sektionen.
-- Ny service worker-cache v0.4.1.
+Nyt:
+- 10 genererede instruktionsanimationer til de første 10 øvelser
+- Detaljevisning med film
+- Favoritmarkering med stjerne
+- Filter: Kun favoritter
+- Favoritfilter direkte i øvelsesvælgeren under en sektion
+- Farvekoder for kropsområder
+- Version og cache opdateret til 0.4.3

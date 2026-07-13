@@ -10,7 +10,7 @@ export class WorkoutBuilder{
     this.sections=[];
     this.openPickerIndex=null;
     this.pickerSearch='';
-    this.pickerStyle='';
+    this.pickerStyle='';this.favoritesOnly=false;
   }
   loadTemplate(t){this.sections=structuredClone(t.sections);this.openPickerIndex=null;this.render()}
   loadData(x){this.sections=structuredClone(x);this.openPickerIndex=null;this.render()}
@@ -30,7 +30,7 @@ export class WorkoutBuilder{
   }
   filteredExercises(){
     const q=this.pickerSearch.toLowerCase().trim();
-    const style=this.pickerStyle;
+    const style=this.pickerStyle;const favorites=new Set(JSON.parse(localStorage.getItem('funkfit-favorites-v043')||'[]'));
     return this.getExercises().filter(x=>{
       const hay=[x.name,x.category,x.description,...(x.bodyAreas||[]),...(x.styles||[]),...(x.equipment||[])].join(' ').toLowerCase();
       const styleMatch=!style || style==='Funktionel'
@@ -38,7 +38,7 @@ export class WorkoutBuilder{
         : style==='HIIT / Hyrox-inspireret'
           ? (x.styles||[]).some(s=>s==='HIIT'||s==='Hyrox-inspireret')
           : (x.styles||[]).includes(style);
-      return (!q||hay.includes(q)) && styleMatch;
+      return (!q||hay.includes(q)) && styleMatch && (!this.favoritesOnly||favorites.has(x.id));
     });
   }
   pickerHtml(si){
@@ -53,7 +53,7 @@ export class WorkoutBuilder{
           <option ${this.pickerStyle==='CrossFit-inspireret'?'selected':''}>CrossFit-inspireret</option>
           <option ${this.pickerStyle==='HIIT / Hyrox-inspireret'?'selected':''}>HIIT / Hyrox-inspireret</option>
         </select>
-        <button class="secondary" data-create-exercise="${si}">+ Opret øvelse</button>
+        <label class="favorite-filter"><input id="sectionPickerFavorites" type="checkbox" ${this.favoritesOnly?'checked':''}> Favoritter</label><button class="secondary" data-create-exercise="${si}">+ Opret øvelse</button>
       </div>
       <div class="inline-picker-list">
         ${list.length?list.map(x=>`<button class="picker-choice" data-pick-inline="${si}|${x.id}">
@@ -115,8 +115,7 @@ export class WorkoutBuilder{
     });
     const search=this.container.querySelector('#sectionPickerSearch');
     if(search) search.oninput=()=>{this.pickerSearch=search.value;this.render()};
-    const style=this.container.querySelector('#sectionPickerStyle');
-    if(style) style.onchange=()=>{this.pickerStyle=style.value;this.render()};
+    const style=this.container.querySelector('#sectionPickerStyle');if(style)style.onchange=()=>{this.pickerStyle=style.value;this.render()};const fav=this.container.querySelector('#sectionPickerFavorites');if(fav)fav.onchange=()=>{this.favoritesOnly=fav.checked;this.render()};
 
     this.container.querySelectorAll('[data-del-sec]').forEach(b=>b.onclick=()=>{if(this.sections.length>1){this.sections.splice(+b.dataset.delSec,1);this.render()}});
     for(const [sel,key,prop,ev] of [
