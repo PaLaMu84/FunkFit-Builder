@@ -17,3 +17,25 @@ dialog{width:min(860px,calc(100% - 1rem));max-height:90vh;overflow:auto;border:0
 @media(max-width:850px){.meta-grid,.framework-settings,.exercise-main,.adult-grid,.music-service-grid{grid-template-columns:1fr 1fr}.stepper{grid-template-columns:1fr}.section-heading{align-items:stretch;flex-direction:column}.template-row{grid-template-columns:1fr}.player-prescriptions{grid-template-columns:1fr}}
 @media(max-width:560px){.meta-grid,.framework-settings,.exercise-main,.adult-grid,.music-service-grid,.form-grid,.filters{grid-template-columns:1fr}.span-2{grid-column:auto}.framework-head{grid-template-columns:1fr}.saved-card-actions{grid-template-columns:1fr}.two-sided{gap:.6rem;flex-direction:column}.player-header{align-items:flex-start;flex-direction:column}}
 @media print{.topbar,.main-nav,.stepper,.app-view,dialog,footer{display:none!important}.print-view{display:block}.print-view .print-section{break-inside:avoid}}
+
+.import-workout-panel{margin:1rem 0;padding:1rem;border:1px solid var(--line);border-radius:16px;background:#f8fafc}
+.import-workout-panel h3{margin:.15rem 0}
+.import-options{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:.8rem 0}
+.upload-card{display:flex;flex-direction:column;justify-content:center;gap:.25rem;min-height:120px;padding:1rem;border:2px dashed var(--line);border-radius:14px;background:white;cursor:pointer;text-align:center}
+.upload-card small{color:var(--muted);font-weight:500}
+.upload-card input{margin-top:.6rem}
+.ocr-status{margin:.8rem 0;padding:.8rem;border-radius:12px;background:#eff6ff;color:#1d4ed8;font-weight:700}
+.import-preview{display:block;max-width:100%;max-height:360px;object-fit:contain;margin:.8rem auto;border:1px solid var(--line);border-radius:14px}
+.import-proposal{margin-top:1rem;padding:1rem;border:1px solid var(--line);border-radius:14px;background:white}
+.import-proposal h4{margin:.2rem 0}
+.import-proposal ul{margin:.4rem 0 1rem}
+.proposal-section{margin:.7rem 0;padding:.7rem;border:1px solid var(--line);border-radius:12px;background:#f8fafc}
+.proposal-match{color:#166534}.proposal-unmatched{color:#b45309}
+.participant-print{font-family:Inter,system-ui,sans-serif;color:#111827}
+.participant-print h1{font-size:28px;margin-bottom:8px}
+.participant-print .participant-section{margin:18px 0 24px;padding-bottom:16px;border-bottom:2px solid #e5e7eb;break-inside:avoid}
+.participant-print .participant-section h2{display:flex;justify-content:space-between;gap:16px;font-size:20px;margin:0 0 12px}
+.participant-print .participant-exercise{margin:10px 0;padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px}
+.participant-print .participant-exercise h3{font-size:17px;margin:0 0 5px}
+.participant-print .participant-exercise p{margin:0;line-height:1.45;color:#374151}
+@media(max-width:700px){.import-options{grid-template-columns:1fr}}

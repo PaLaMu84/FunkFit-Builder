@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.5.0",
+  "name": "FunkFit Builder v0.5.1",
   "short_name": "FunkFit",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "Træningsbygger med Spotify, TIDAL og Telmore Musik-playlister"
+  "description": "Træningsbygger med billed- og tekstimport"
 }

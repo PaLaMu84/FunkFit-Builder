@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.5.0</title>
+  <title>FunkFit Builder v0.5.1</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 <header class="topbar">
   <div>
-    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.5.0</p>
+    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.5.1</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </div>
@@ -34,6 +34,49 @@
     <div class="section-heading">
       <div><p class="eyebrow">TRIN 1</p><h2>Overordnede rammer</h2></div>
     </div>
+
+    <section class="import-workout-panel">
+      <div class="section-heading">
+        <div><p class="eyebrow">IMPORTÉR FORSLAG</p><h3>Lav træning ud fra billede eller tekstfil</h3></div>
+      </div>
+
+      <div class="import-options">
+        <label class="upload-card">
+          <strong>Tag eller vælg et billede</strong>
+          <small>Appen forsøger at aflæse teksten automatisk.</small>
+          <input id="workoutImageInput" type="file" accept="image/*" capture="environment">
+        </label>
+
+        <label class="upload-card">
+          <strong>Vælg en tekstfil</strong>
+          <small>Understøtter .txt og almindelig tekst.</small>
+          <input id="workoutTextFileInput" type="file" accept=".txt,text/plain">
+        </label>
+      </div>
+
+      <div id="ocrStatus" class="ocr-status hidden"></div>
+      <img id="importImagePreview" class="import-preview hidden" alt="Forhåndsvisning">
+
+      <label>Fortolket tekst
+        <textarea id="importWorkoutText" rows="10" placeholder="Fx:
+Opvarmning 10 min
+Jumping jacks
+Air squat
+
+Hovedtræning 20 min
+4 runder
+10 Goblet squats
+8 Push-ups"></textarea>
+      </label>
+
+      <div class="actions">
+        <button id="analyzeImportBtn" type="button">Lav træningsforslag</button>
+        <button id="clearImportBtn" class="ghost" type="button">Ryd import</button>
+      </div>
+
+      <div id="importProposal" class="import-proposal hidden"></div>
+    </section>
+
 
     <div class="meta-grid">
       <label>Træningens navn<input id="workoutName" value="FunkFit Junior – dagens træning"></label>
@@ -180,7 +223,7 @@
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.5.0 · © Paw Lalicata Munk</footer>
+<footer>FunkFit Builder v0.5.1 · © Paw Lalicata Munk</footer>
 <script type="module" src="js/app.js"></script>
 </body>
 </html>

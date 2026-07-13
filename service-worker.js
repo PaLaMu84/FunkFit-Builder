@@ -1,4 +1,4 @@
-const CACHE='funkfit-v0.5.0';
+const CACHE='funkfit-v0.5.1';
 const ASSETS=["./", "./index.html", "./manifest.json", "./css/app.css", "./js/app.js", "./data/exercises.json", "./data/workoutTemplates.json", "./data/bodyColors.json", "./assets/videos/01-air-squat.mp4", "./assets/videos/02-goblet-squat.mp4", "./assets/videos/03-farmer-carry.mp4", "./assets/videos/04-bear-crawl.mp4", "./assets/videos/05-push-up.mp4", "./assets/videos/06-db-row.mp4", "./assets/videos/07-kb-deadlift.mp4", "./assets/videos/08-step-up.mp4", "./assets/videos/09-plank-shoulder-tap.mp4", "./assets/videos/10-medball-slam.mp4"];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x))))));
