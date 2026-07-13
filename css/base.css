@@ -63,3 +63,16 @@ dialog::backdrop{background:rgba(15,23,42,.65)}
   main{max-width:none;padding:0}
   .panel{box-shadow:none;border:0}
 }
+
+.app-nav{position:sticky;top:0;z-index:20;display:flex;gap:.45rem;overflow-x:auto;padding:.65rem 1rem;background:#fff;border-bottom:1px solid var(--line)}
+.app-nav button{white-space:nowrap;background:#eef2ff;color:#1e3a8a;padding:.55rem .75rem}
+.inline-actions,.section-tools{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.music-grid,.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem}
+.music-timeline{display:grid;gap:.6rem;margin-top:1rem}
+.music-row{display:grid;grid-template-columns:1fr 100px 2fr;gap:.6rem;align-items:center;border:1px solid var(--line);padding:.75rem;border-radius:12px}
+.import-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.upload-box{display:flex;min-height:220px;align-items:center;justify-content:center;border:2px dashed var(--line);border-radius:16px;background:#f8fafc;cursor:pointer;text-align:center}
+.upload-box input{display:none}.image-preview{width:100%;max-height:420px;object-fit:contain;margin-top:1rem;border-radius:14px}
+textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:.75rem;font:inherit}
+.helper{color:var(--muted)} .span-2{grid-column:span 2}
+@media(max-width:760px){.music-grid,.form-grid,.music-row,.import-grid{grid-template-columns:1fr}.span-2{grid-column:auto}}
