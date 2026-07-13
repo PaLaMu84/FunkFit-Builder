@@ -28,7 +28,12 @@
     "harder": "Tempo squat eller squat jump.",
     "junior": "8-12 rolige gentagelser.",
     "adult": "12-20 gentagelser eller tempo 3-1-1.",
-    "mistakes": "Knæ falder ind, hælene løfter sig, ryggen kollapser."
+    "mistakes": "Knæ falder ind, hælene løfter sig, ryggen kollapser.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Core"
+    ]
   },
   {
     "id": "goblet-squat",
@@ -60,7 +65,12 @@
     "harder": "Tungere vægt eller pause i bunden.",
     "junior": "Let vægt og 6-10 gentagelser.",
     "adult": "8-15 gentagelser med passende belastning.",
-    "mistakes": "Vægten langt fra kroppen, hæle løftes, for dyb bevægelse uden kontrol."
+    "mistakes": "Vægten langt fra kroppen, hæle løftes, for dyb bevægelse uden kontrol.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Core"
+    ]
   },
   {
     "id": "farmer-carry",
@@ -92,7 +102,13 @@
     "harder": "Tungere vægte eller suitcase carry.",
     "junior": "10-20 meter med let vægt.",
     "adult": "20-40 meter med moderat til tung vægt.",
-    "mistakes": "Skuldrene løftes, kroppen læner, løb med vægtene."
+    "mistakes": "Skuldrene løftes, kroppen læner, løb med vægtene.",
+    "bodyAreas": [
+      "Core",
+      "Arme",
+      "Skuldre",
+      "Helkrop"
+    ]
   },
   {
     "id": "bear-crawl",
@@ -123,7 +139,12 @@
     "harder": "Baglæns crawl eller skuldertap undervejs.",
     "junior": "5-10 meter.",
     "adult": "10-20 meter.",
-    "mistakes": "Hofterne vipper, for lange skridt, knæene rammer gulvet."
+    "mistakes": "Hofterne vipper, for lange skridt, knæene rammer gulvet.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre",
+      "Helkrop"
+    ]
   },
   {
     "id": "push-up",
@@ -155,7 +176,12 @@
     "harder": "Tempo, smal håndstilling eller shoulder tap.",
     "junior": "5-10 gentagelser på passende højde.",
     "adult": "8-20 gentagelser.",
-    "mistakes": "Hænger i lænden, albuerne flyver ud, hovedet falder."
+    "mistakes": "Hænger i lænden, albuerne flyver ud, hovedet falder.",
+    "bodyAreas": [
+      "Bryst",
+      "Arme",
+      "Core"
+    ]
   },
   {
     "id": "db-row",
@@ -186,7 +212,12 @@
     "harder": "Tungere vægt eller langsom sænkefase.",
     "junior": "6-10 pr. side.",
     "adult": "8-15 pr. side.",
-    "mistakes": "Drejning i overkroppen, træk mod skulderen, for tung vægt."
+    "mistakes": "Drejning i overkroppen, træk mod skulderen, for tung vægt.",
+    "bodyAreas": [
+      "Ryg",
+      "Arme",
+      "Skuldre"
+    ]
   },
   {
     "id": "kb-deadlift",
@@ -217,7 +248,12 @@
     "harder": "Tungere vægt eller tempo.",
     "junior": "6-10 tekniske gentagelser.",
     "adult": "8-15 gentagelser.",
-    "mistakes": "Squatter bevægelsen, rund ryg, vægten for langt fra kroppen."
+    "mistakes": "Squatter bevægelsen, rund ryg, vægten for langt fra kroppen.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Ryg"
+    ]
   },
   {
     "id": "step-up",
@@ -249,7 +285,11 @@
     "harder": "Hold vægte eller brug højere boks.",
     "junior": "6-10 pr. ben.",
     "adult": "8-15 pr. ben.",
-    "mistakes": "Skubber for meget fra med det bagerste ben, knæ falder ind, for høj boks."
+    "mistakes": "Skubber for meget fra med det bagerste ben, knæ falder ind, for høj boks.",
+    "bodyAreas": [
+      "Ben",
+      "Balder"
+    ]
   },
   {
     "id": "plank-shoulder-tap",
@@ -281,7 +321,12 @@
     "harder": "Smal fodstilling eller langsomt tempo.",
     "junior": "6-12 skift.",
     "adult": "12-24 skift.",
-    "mistakes": "Hofterne roterer, hænger i lænden, hastværk."
+    "mistakes": "Hofterne roterer, hænger i lænden, hastværk.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre",
+      "Arme"
+    ]
   },
   {
     "id": "medball-slam",
@@ -313,7 +358,12 @@
     "harder": "Tungere bold eller højere gentagelsestal.",
     "junior": "5-8 gentagelser.",
     "adult": "8-15 gentagelser.",
-    "mistakes": "Overstræk i lænden, bolden kastes tæt på fødderne, dårlig afstand."
+    "mistakes": "Overstræk i lænden, bolden kastes tæt på fødderne, dårlig afstand.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre",
+      "Helkrop"
+    ]
   },
   {
     "id": "shuttle-run",
@@ -343,7 +393,12 @@
     "harder": "Længere distance eller flere vendinger.",
     "junior": "5-10 meter pr. tur.",
     "adult": "10-20 meter pr. tur.",
-    "mistakes": "Ukontrollerede vendinger, glider på gulvet, for tæt trafik."
+    "mistakes": "Ukontrollerede vendinger, glider på gulvet, for tæt trafik.",
+    "bodyAreas": [
+      "Ben",
+      "Kondition",
+      "Helkrop"
+    ]
   },
   {
     "id": "wall-ball",
@@ -375,6 +430,11 @@
     "harder": "Tungere bold eller højere mål.",
     "junior": "Let bold og lavt mål, 5-8 gentagelser.",
     "adult": "8-15 gentagelser.",
-    "mistakes": "Bolden rammer for tæt på ansigtet, dårlig squatdybde, for tung bold."
+    "mistakes": "Bolden rammer for tæt på ansigtet, dårlig squatdybde, for tung bold.",
+    "bodyAreas": [
+      "Ben",
+      "Skuldre",
+      "Helkrop"
+    ]
   }
 ]

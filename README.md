@@ -1,13 +1,10 @@
-# FunkFit Builder v0.2
+# FunkFit Builder v0.3 Family
 
 Nyt:
-- Egne øvelser
-- Egne sektioner
-- Flyt øvelser mellem sektioner
-- Reps/tid og instruktørnoter
-- Musikplanlægger med TIDAL-link og sektionstidslinje
-- Billedupload og manuel tekstimport
-- Bedre mobilnavigation
-
-Start lokalt med `python -m http.server 8000`.
-Automatisk billedaflæsning og direkte TIDAL-styring kræver senere backend/AI.
+- Familiedeltagelse til/fra
+- Antal juniorer og voksne
+- Junior kg., reps/tid og note
+- Voksen kg., reps/tid og note
+- Samme voksenøvelse som standard
+- Mulighed for anden voksenøvelse
+- Kropsområder og filter: core, arme, ben, bryst, ryg, skuldre, balder, kondition og helkrop
