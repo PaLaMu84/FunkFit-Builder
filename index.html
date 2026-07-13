@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder</title>
+  <title>FunkFit Builder v0.3.3</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/exercises.css">
@@ -13,8 +13,8 @@
 <body>
   <header class="topbar">
     <div>
-      <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.3.2</p>
-      <h1>FunkFit Builder v0.3.2</h1>
+      <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.3.3</p>
+      <h1>FunkFit Builder v0.3.3</h1>
       <p class="tagline">Stærkere, hurtigere, sammen.</p>
     </div>
     <button id="installBtn" class="secondary hidden">Installér app</button>
@@ -31,7 +31,7 @@
   <main>
     <section class="hero">
       <div>
-        <p class="eyebrow">VERSION 0.2</p>
+        <p class="eyebrow">VERSION 0.3.3</p>
         <h2>Planlæg hele træningen ét sted</h2>
         <p>Byg pas, lav egne øvelser, planlæg musik og gem alt på telefonen eller computeren.</p>
       </div>
@@ -89,7 +89,12 @@
       <div class="workout-meta">
         <label>Træningens navn<input id="workoutName" value="FunkFit Junior – dagens træning"></label>
         <label>Dato<input id="workoutDate" type="date"></label>
-        <label>Antal deltagere<input id="participantCount" type="number" min="1" value="20"></label>
+        <label>Antal juniorer<input id="participantCount" type="number" min="1" value="20"></label>
+        <label class="family-toggle-card">
+          <span><strong>Familiedeltagelse</strong><small>Voksne følger samme øvelse som standard.</small></span>
+          <input id="familyMode" type="checkbox" aria-label="Slå familiedeltagelse til">
+        </label>
+        <label id="adultCountLabel" class="hidden">Antal voksne<input id="adultCount" type="number" min="0" value="10"></label>
         <label>Format
           <select id="workoutFormat">
             <option>Stationstræning</option>
@@ -182,7 +187,7 @@
       <div id="savedWorkouts" class="saved-list"></div>
     </section>
   </main>
-  <footer class="version-footer">FunkFit Builder v0.3.2 · Build 2026-07-13</footer>
+  <footer class="version-footer">FunkFit Builder v0.3.3 · Build 2026-07-13</footer>
 
   <dialog id="exerciseDialog">
     <button id="closeDialog" class="dialog-close" aria-label="Luk">×</button>

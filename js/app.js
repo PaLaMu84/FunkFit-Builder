@@ -6,7 +6,7 @@ let exercises=[],templates=[],builder,currentId=null;const $=s=>document.querySe
 async function init(){
   exercises=[...loadCustomExercises(),...await loadExercises()];
   templates=await fetch('data/workoutTemplates.json').then(r=>r.json());
-  builder=new WorkoutBuilder({exercises,container:$('#workoutSections'),totalEl:$('#totalMinutes'),warningEl:$('#warningBox'),onChange:renderMusic,getFamilyMode:()=>$('#familyMode').checked});
+  builder=new WorkoutBuilder({exercises,container:$('#workoutSections'),totalEl:$('#totalMinutes'),warningEl:$('#warningBox'),onChange:renderMusic,getFamilyMode:()=>!!$('#familyMode')?.checked});
   setupFilters(exercises,f=>{renderExerciseCards(f,id=>{builder.addExercise(id);$('#builder').scrollIntoView({behavior:'smooth'})},showDetails);$('#exerciseCount').textContent=`${f.length} øvelser`});
   $('#templateSelect').innerHTML=templates.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   builder.loadTemplate(templates[0]);$('#workoutDate').value=new Date().toISOString().slice(0,10);bind();loadMusic();renderSaved();
@@ -14,7 +14,7 @@ async function init(){
 function bind(){
   document.querySelectorAll('[data-scroll]').forEach(b=>b.onclick=()=>$('#'+b.dataset.scroll).scrollIntoView({behavior:'smooth'}));
   $('#loadTemplateBtn').onclick=()=>builder.loadTemplate(templates.find(t=>t.id===$('#templateSelect').value));
-  $('#addSectionBtn').onclick=()=>builder.addSection();$('#saveWorkoutBtn').onclick=save;$('#printWorkoutBtn').onclick=()=>print();$('#clearWorkoutBtn').onclick=()=>builder.clearExercises();$('#closeDialog').onclick=()=>$('#exerciseDialog').close();
+  $('#addSectionBtn').onclick=()=>builder.addSection();$('#saveWorkoutBtn').onclick=save;$('#duplicateWorkoutBtn').onclick=()=>{currentId=null;save()};$('#printWorkoutBtn').onclick=()=>print();$('#clearWorkoutBtn').onclick=()=>builder.clearExercises();$('#closeDialog').onclick=()=>$('#exerciseDialog').close();
   $('#familyMode').onchange=()=>{
     const active=$('#familyMode').checked;
     $('#adultCountLabel').classList.toggle('hidden',!active);

@@ -1,14 +1,10 @@
-# FunkFit Builder v0.3.2
+# FunkFit Builder v0.3.3
 
-## Nyt i denne version
-
-- Synligt versionsnummer i appens overskrift
-- Versionsnummer i footer
-- Manifest opdateret til v0.3.2
-- Service Worker-cache opdateret til v0.3.2
-- Øvelsesbibliotek udvidet til 50 øvelser
-- Kropsområder og familiedeltagelse bevaret
-
-## Sådan opdaterer du
-
-Kopiér filerne ind i dit eksisterende GitHub-repository, erstat de gamle filer, commit og push til main.
+Hotfix:
+- Familiedeltagelses-kontakten er nu med i index.html.
+- Appen crasher ikke længere ved opstart.
+- Knapperne er aktive igen.
+- Synligt versionsnummer er opdateret alle steder til v0.3.3.
+- Hero-feltet viser ikke længere VERSION 0.2.
+- Gem kopi-knappen er tilkoblet.
+- 50 øvelser er bevaret.
