@@ -1,18 +1,16 @@
-# FunkFit Builder v0.7.0
+# FunkFit Builder v0.7.1
 
-AI-first træningsplanlægger. Målet er et komplet træningsudkast på få minutter, som instruktøren blot gennemgår og finpudser.
+Elementbaseret træningsbygger med AI-first workflow.
 
-## Nyt i v0.7.0
+Nyt i denne version:
 - TRX som træningsform
-- Overordnet tema til Junior og Familie
-- Fleksible elementer: leg, AMRAP, EMOM, YGIG, chipper, stationer og finisher
-- Komplet automatisk træningsforslag
-- Finisher placeres sidst og markeres som bonus
-- Beskrivelse, regler og trænertips pr. element
+- Leg som selvstændig elementtype
+- Beskrivelse, regler og trænertips på alle elementer
+- Regenerér ét element ad gangen
 - Gem og genbrug elementer i elementbiblioteket
-- Regenerér ét element uden at ændre resten
-- Samlet tidskontrol
-- TIDAL, Spotify og Telmore Musik bevaret
+- Samlet tidskontrol mod planlagt varighed
+- Finisher låses til sidst
+- Tema for hele Junior-/Familietræningen
+- TIDAL bevaret
 
-## Udgivelse
-Arbejd på `develop`, test, og merge derefter til `main`, som GitHub Pages viser.
+Arbejd på `develop`, test, og merge derefter til `main`.
