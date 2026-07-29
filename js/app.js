@@ -1,13 +1,14 @@
 
 const $=s=>document.querySelector(s);
+const ELEMENT_TYPES=['Opvarmning','Leg','AMRAP','EMOM','YGIG','Chipper','Stationer','Teknik','Styrke','Finisher'];
 const FORMATS=['Fælles flow','Teknik','Stationstræning','Cirkeltræning','AMRAP','EMOM','E2MOM','For time','Chipper','Tabata','HIIT-intervaller','You go, I go','Makkertræning','Team workout','Stafet','Hyrox station'];
 const STYLES=['Funktionel','CrossFit-inspireret','HIIT / Hyrox-inspireret','Teknik','Leg','Mobilitet','Kondition'];
-const WKEY='funkfit-workouts-v050',CKEY='funkfit-custom-v050',FKEY='funkfit-favorites-v050',EKEY='funkfit-elements-v070';
+const WKEY='funkfit-workouts-v050',CKEY='funkfit-custom-v050',FKEY='funkfit-favorites-v050',EKEY='funkfit-element-library-v071';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
 let plannerConcept='junior',plannerVenue='indoor';
 const EQUIPMENT_PROFILES={
   indoor:['Kropsvægt','Måtte','Kettlebell','Håndvægt','Boks','Bænk','Medicinbold','Væg','Kegler','Sjippetov','Elastik','Romaskine'],
-  trx:['TRX','Kropsvægt','Måtte','Elastik'],
+  trx:['Kropsvægt','TRX','Måtte'],
   outdoor:['Kropsvægt','Kettlebell','Håndvægt','Kegler','Sjippetov','Sandsæk','Battle rope','Traktordæk','Slæde','Pull-up stativ','Løbebane','Bakke']
 };
 let plannerEquipment=new Set(EQUIPMENT_PROFILES.indoor);
@@ -23,6 +24,87 @@ const saveElementLibrary=x=>localStorage.setItem(EKEY,JSON.stringify(x));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 
 const collapsedSections=new Set();
+
+
+function inferElementType(s){
+  const text=`${s?.name||''} ${s?.format||''} ${s?.style||''}`.toLowerCase();
+  if(text.includes('opvarm'))return 'Opvarmning';
+  if(text.includes('finisher')||text.includes('teamchallenge'))return 'Finisher';
+  if(text.includes('leg')||text.includes('stafet'))return 'Leg';
+  if(text.includes('amrap'))return 'AMRAP';
+  if(text.includes('emom'))return 'EMOM';
+  if(text.includes('you go')||text.includes('ygig')||text.includes('makker'))return 'YGIG';
+  if(text.includes('chipper'))return 'Chipper';
+  if(text.includes('station'))return 'Stationer';
+  if(text.includes('teknik'))return 'Teknik';
+  return 'Styrke';
+}
+function normalizeSection(s){
+  s.type=s.type||inferElementType(s);
+  s.description=s.description||'';s.rules=s.rules||'';s.coachTips=s.coachTips||'';
+  s.exercises=s.exercises||[];return s;
+}
+function normalizeSections(){sections.forEach(normalizeSection)}
+function enforceFinisherLast(){
+  const finishers=sections.filter(s=>normalizeSection(s).type==='Finisher');
+  const others=sections.filter(s=>normalizeSection(s).type!=='Finisher');
+  sections=[...others,...finishers];
+}
+function defaultSection(type='Stationer'){
+  const map={
+    'Opvarmning':{name:'Opvarmning',minutes:8,format:'Fælles flow',style:'Funktionel',work:35,rest:15,rounds:2},
+    'Leg':{name:'Ny leg',minutes:8,format:'Stafet',style:'Leg',work:0,rest:0,rounds:1,description:'Beskriv legens idé og formål.',rules:'Skriv de vigtigste regler.',coachTips:'Skriv opstilling, variationer og sikkerhed.'},
+    'AMRAP':{name:'AMRAP',minutes:12,format:'AMRAP',style:'Funktionel',work:0,rest:0,rounds:1},
+    'EMOM':{name:'EMOM',minutes:12,format:'EMOM',style:'Funktionel',work:45,rest:15,rounds:3},
+    'YGIG':{name:'YGIG',minutes:12,format:'You go, I go',style:'Funktionel',work:0,rest:0,rounds:3},
+    'Chipper':{name:'Chipper',minutes:15,format:'Chipper',style:'Funktionel',work:0,rest:0,rounds:1},
+    'Stationer':{name:'Stationstræning',minutes:18,format:'Stationstræning',style:'Funktionel',work:40,rest:20,rounds:3},
+    'Teknik':{name:'Teknik',minutes:10,format:'Teknik',style:'Teknik',work:0,rest:0,rounds:1},
+    'Styrke':{name:'Styrkeblok',minutes:15,format:'Fælles flow',style:'Funktionel',work:0,rest:0,rounds:3},
+    'Finisher':{name:'Finisher – bonus hvis tiden tillader det',minutes:5,format:'Team workout',style:'Kondition',work:40,rest:20,rounds:1}
+  };
+  return normalizeSection({...map[type],type,exercises:[]});
+}
+function saveSectionToLibrary(index){
+  const s=structuredClone(normalizeSection(sections[index]));
+  s.libraryId=crypto.randomUUID();s.savedAt=new Date().toISOString();
+  const all=elementLibrary();all.unshift(s);saveElementLibrary(all);renderElementLibrary();
+  alert(`“${s.name}” er gemt i elementbiblioteket.`);
+}
+function useLibraryElement(id){
+  const item=elementLibrary().find(x=>x.libraryId===id);if(!item)return;
+  const copy=structuredClone(item);delete copy.libraryId;delete copy.savedAt;
+  normalizeSection(copy);
+  if(copy.type==='Finisher')sections.push(copy);else{
+    const fi=sections.findIndex(s=>normalizeSection(s).type==='Finisher');
+    fi<0?sections.push(copy):sections.splice(fi,0,copy);
+  }
+  enforceFinisherLast();renderFramework();renderExerciseSections();updateReview();showView('designView');showStep(2);
+}
+function deleteLibraryElement(id){saveElementLibrary(elementLibrary().filter(x=>x.libraryId!==id));renderElementLibrary()}
+function renderElementLibrary(){
+  const host=$('#elementLibrary');if(!host)return;const all=elementLibrary();
+  host.innerHTML=all.length?all.map(x=>`<article class="saved-card"><p class="eyebrow">${esc(x.type||inferElementType(x))}</p><h3>${esc(x.name)}</h3><p>${x.minutes||0} min · ${(x.exercises||[]).length} øvelser</p><p>${esc(x.description||'Ingen beskrivelse')}</p><div class="actions"><button data-use-element="${x.libraryId}">Brug i træning</button><button class="ghost" data-delete-element="${x.libraryId}">Slet</button></div></article>`).join(''):'<div class="empty">Biblioteket er tomt. Gem en sektion fra editoren.</div>';
+  host.querySelectorAll('[data-use-element]').forEach(b=>b.onclick=()=>useLibraryElement(b.dataset.useElement));
+  host.querySelectorAll('[data-delete-element]').forEach(b=>b.onclick=()=>deleteLibraryElement(b.dataset.deleteElement));
+}
+function regenerateSection(index){
+  const old=normalizeSection(sections[index]), used=new Set(sections.flatMap((s,i)=>i===index?[]:(s.exercises||[]).map(x=>x.exerciseId)));
+  const goals=goalValues();let count=Math.max(3,(old.exercises||[]).length||4);
+  let type=old.type;
+  const picked=pickExercises(count,goals,type==='Leg'?'team':type==='Opvarmning'?'warmup':'main',used);
+  old.exercises=picked.map(makeItem);
+  if(type==='Leg'){
+    const names=picked.slice(0,2).map(x=>x.name).join(' og ');
+    old.description=`En aktiv holdleg med ${names||'bevægelse og samarbejde'}. Alle skal være i gang mest muligt.`;
+    old.rules='Del deltagerne i hold. Én opgave ad gangen. Holdet scorer et point ved korrekt gennemført runde. Justér banen, så der ikke opstår kø.';
+    old.coachTips='Vis banen kort, lav en prøverunde og stop mens energien stadig er høj. Hav en lettere variant klar.';
+  } else {
+    old.description=`Nyt AI-forslag til ${old.type.toLowerCase()} med fokus på ${goals.join(', ')||'helkrop'}.`;
+    old.coachTips='Tjek belastning og skaler gentagelser efter niveau. Hold instruktionen kort.';
+  }
+  renderFramework();renderExerciseSections();updateReview();
+}
 
 function sectionVisual(section){
   const n=(section.name||'').toLowerCase();
@@ -63,7 +145,7 @@ async function init(){
   $('#templateSelect').innerHTML=templates.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   $('#workoutDate').value=new Date().toISOString().slice(0,10);
   sections=structuredClone(templates[0].sections);
-  populatePickerFilters();bind();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();
+  populatePickerFilters();bind();normalizeSections();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();
 }
 
 function bind(){
@@ -74,7 +156,7 @@ function bind(){
 
   $('#familyMode').onchange=()=>{$('#adultCountLabel').classList.toggle('hidden',!$('#familyMode').checked);renderExerciseSections()};
   $('#loadTemplateBtn').onclick=()=>{sections=structuredClone(templates.find(t=>t.id===$('#templateSelect').value).sections);renderFramework();renderExerciseSections();updateReview()};
-  $('#addSectionBtn').onclick=()=>{sections.push({name:'Ny sektion',minutes:10,format:'Stationstræning',style:'Funktionel',work:40,rest:20,rounds:3,exercises:[]});renderFramework();renderExerciseSections();updateReview()};
+  $('#addSectionBtn').onclick=()=>{const type=prompt('Vælg elementtype: '+ELEMENT_TYPES.join(', '),'Stationer');const chosen=ELEMENT_TYPES.find(x=>x.toLowerCase()===String(type||'').toLowerCase())||'Stationer';const item=defaultSection(chosen);if(chosen==='Finisher')sections.push(item);else{const fi=sections.findIndex(s=>normalizeSection(s).type==='Finisher');fi<0?sections.push(item):sections.splice(fi,0,item)}enforceFinisherLast();renderFramework();renderExerciseSections();updateReview()};
   $('#saveWorkoutBtn').onclick=saveCurrent;
   $('#playCurrentBtn').onclick=()=>startPlayer(collect());
   $('#newWorkoutBtn').onclick=newWorkout;
@@ -93,7 +175,6 @@ function bind(){
   $('#analyzeImportBtn').onclick=analyzeImportedWorkout;
   $('#clearImportBtn').onclick=clearImportedWorkout;
   bindPlanner();
-  $('#clearElementLibraryBtn').onclick=()=>{if(confirm('Ryd hele elementbiblioteket?')){saveElementLibrary([]);renderElementLibrary()}};
 
 
   $('#playerPrevBtn').onclick=()=>movePlayer(-1);
@@ -119,67 +200,37 @@ function showStep(n){
 }
 
 function renderFramework(){
+  normalizeSections();enforceFinisherLast();
   $('#frameworkSections').innerHTML=sections.map((s,i)=>{
     const v=sectionVisual(s),collapsed=collapsedSections.has(i),count=(s.exercises||[]).length;
-    const progress=Math.round(((i+1)/sections.length)*100);
     return `<article class="framework-card ${collapsed?'collapsed':''}" style="--section-color:${v.color}">
-      <div class="section-card-header">
-        <div class="section-title-group">
-          <div class="section-icon">${v.icon}</div>
-          <div class="section-title-text">
-            <h3>${esc(s.name)}</h3>
-            <small>Sektion ${i+1} af ${sections.length}</small>
-            <div class="section-badges">
-              <span class="section-stat">${s.minutes} min</span>
-              <span class="section-stat">${count} øvelser</span>
-              <span class="section-stat">${esc(s.format)}</span>
-              <span class="section-stat">${s.work||0}/${s.rest||0}</span>
-              <span class="section-stat">${s.rounds||1} runder</span>
-            </div>
-          </div>
-        </div>
-        <div class="section-card-actions">
-          <button class="collapse-btn" data-collapse-framework="${i}">${collapsed?'Fold ud':'Fold sammen'}</button>
-          <details class="section-card-menu">
-            <summary>⋮</summary>
-            <div class="section-menu-popover">
-              <button data-move-up="${i}">↑ Flyt op</button>
-              <button data-move-down="${i}">↓ Flyt ned</button>
-              <button data-duplicate="${i}">⧉ Duplikér</button>
-              <button data-del-sec="${i}">Slet sektion</button>
-            </div>
-          </details>
-        </div>
-      </div>
-      <div class="section-progress"><span>${v.label}</span><div class="section-progress-bar"><span style="width:${progress}%"></span></div><span>${progress}%</span></div>
+      <div class="section-card-header"><div class="section-title-group"><div class="section-icon">${v.icon}</div><div class="section-title-text"><h3>${esc(s.name)}</h3><small>${esc(s.type)} · element ${i+1} af ${sections.length}</small><div class="section-badges"><span class="section-stat">${s.minutes} min</span><span class="section-stat">${count} øvelser</span><span class="section-stat">${esc(s.format)}</span></div></div></div>
+      <div class="section-card-actions"><button class="collapse-btn" data-collapse-framework="${i}">${collapsed?'Fold ud':'Fold sammen'}</button><details class="section-card-menu"><summary>⋮</summary><div class="section-menu-popover"><button data-regenerate="${i}">✨ Regenerér element</button><button data-save-element="${i}">Gem i bibliotek</button><button data-move-up="${i}">↑ Flyt op</button><button data-move-down="${i}">↓ Flyt ned</button><button data-duplicate="${i}">⧉ Duplikér</button><button data-del-sec="${i}">Slet element</button></div></details></div></div>
       <div class="framework-settings">
+        <label>Elementtype<select data-sec-type="${i}">${ELEMENT_TYPES.map(x=>`<option ${x===s.type?'selected':''}>${x}</option>`).join('')}</select></label>
         <label>Navn<input data-sec-name="${i}" value="${esc(s.name)}"></label>
         <label>Minutter<input data-sec-min="${i}" type="number" min="0" value="${s.minutes}"></label>
         <label>Format<select data-sec-format="${i}">${FORMATS.map(x=>`<option ${x===s.format?'selected':''}>${x}</option>`).join('')}</select></label>
         <label>Træningsspor<select data-sec-style="${i}">${STYLES.map(x=>`<option ${x===s.style?'selected':''}>${x}</option>`).join('')}</select></label>
-        <label>Arbejde (sek.)<input data-sec-work="${i}" type="number" value="${s.work||0}"></label>
-        <label>Pause (sek.)<input data-sec-rest="${i}" type="number" value="${s.rest||0}"></label>
-        <label>Runder<input data-sec-rounds="${i}" type="number" min="1" value="${s.rounds||1}"></label>
+        <label>Arbejde (sek.)<input data-sec-work="${i}" type="number" value="${s.work||0}"></label><label>Pause (sek.)<input data-sec-rest="${i}" type="number" value="${s.rest||0}"></label><label>Runder<input data-sec-rounds="${i}" type="number" min="1" value="${s.rounds||1}"></label>
+        <label class="span-2">Beskrivelse<textarea data-sec-description="${i}" rows="3" placeholder="Hvad går elementet eller legen ud på?">${esc(s.description)}</textarea></label>
+        <label class="span-2">Regler<textarea data-sec-rules="${i}" rows="3" placeholder="Regler, point, skift og sådan afsluttes elementet">${esc(s.rules)}</textarea></label>
+        <label class="span-2">Trænertips<textarea data-sec-tips="${i}" rows="3" placeholder="Opstilling, variationer, skalering og sikkerhed">${esc(s.coachTips)}</textarea></label>
       </div>
+      <div class="element-actions"><button data-regenerate="${i}">✨ Regenerér dette element</button><button class="secondary" data-save-element="${i}">Gem i elementbibliotek</button></div>
     </article>`;
   }).join('');
-
-  $('#frameworkSections').querySelectorAll('[data-collapse-framework]').forEach(b=>b.onclick=()=>toggleSectionCollapse(+b.dataset.collapseFramework));
-  $('#frameworkSections').querySelectorAll('[data-move-up]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveUp,+b.dataset.moveUp-1));
-  $('#frameworkSections').querySelectorAll('[data-move-down]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveDown,+b.dataset.moveDown+1));
-  $('#frameworkSections').querySelectorAll('[data-duplicate]').forEach(b=>b.onclick=()=>duplicateSection(+b.dataset.duplicate));
-  $('#frameworkSections').querySelectorAll('[data-sec-name]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secName].name=e.value;renderExerciseSections();updateReview()});
-  $('#frameworkSections').querySelectorAll('[data-sec-min]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secMin].minutes=+e.value||0;renderExerciseSections();updateReview()});
-  $('#frameworkSections').querySelectorAll('[data-sec-format]').forEach(e=>e.onchange=()=>{sections[+e.dataset.secFormat].format=e.value;renderFramework();renderExerciseSections()});
-  $('#frameworkSections').querySelectorAll('[data-sec-style]').forEach(e=>e.onchange=()=>{sections[+e.dataset.secStyle].style=e.value;renderFramework();renderExerciseSections()});
-  $('#frameworkSections').querySelectorAll('[data-sec-work]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secWork].work=+e.value||0;renderExerciseSections()});
-  $('#frameworkSections').querySelectorAll('[data-sec-rest]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secRest].rest=+e.value||0;renderExerciseSections()});
-  $('#frameworkSections').querySelectorAll('[data-sec-rounds]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secRounds].rounds=+e.value||1;renderExerciseSections()});
-  $('#frameworkSections').querySelectorAll('[data-sec-description]').forEach(e=>e.oninput=()=>sections[+e.dataset.secDescription].description=e.value);
-  $('#frameworkSections').querySelectorAll('[data-sec-notes]').forEach(e=>e.oninput=()=>sections[+e.dataset.secNotes].coachNotes=e.value);
-  $('#frameworkSections').querySelectorAll('[data-save-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveElement));
-  $('#frameworkSections').querySelectorAll('[data-regenerate-element]').forEach(b=>b.onclick=()=>regenerateElement(+b.dataset.regenerateElement));
-  $('#frameworkSections').querySelectorAll('[data-del-sec]').forEach(b=>b.onclick=()=>{if(sections.length>1){sections.splice(+b.dataset.delSec,1);renderFramework();renderExerciseSections();updateReview()}});
+  const host=$('#frameworkSections');
+  host.querySelectorAll('[data-collapse-framework]').forEach(b=>b.onclick=()=>toggleSectionCollapse(+b.dataset.collapseFramework));
+  host.querySelectorAll('[data-move-up]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveUp,+b.dataset.moveUp-1));
+  host.querySelectorAll('[data-move-down]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveDown,+b.dataset.moveDown+1));
+  host.querySelectorAll('[data-duplicate]').forEach(b=>b.onclick=()=>duplicateSection(+b.dataset.duplicate));
+  host.querySelectorAll('[data-regenerate]').forEach(b=>b.onclick=()=>regenerateSection(+b.dataset.regenerate));
+  host.querySelectorAll('[data-save-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveElement));
+  host.querySelectorAll('[data-sec-type]').forEach(e=>e.onchange=()=>{const i=+e.dataset.secType;sections[i].type=e.value;if(e.value==='Leg'){sections[i].style='Leg';sections[i].format='Stafet'}if(e.value==='Finisher')enforceFinisherLast();renderFramework();renderExerciseSections();updateReview()});
+  const bindings=[['[data-sec-name]','secName','name','input'],['[data-sec-min]','secMin','minutes','input'],['[data-sec-format]','secFormat','format','change'],['[data-sec-style]','secStyle','style','change'],['[data-sec-work]','secWork','work','input'],['[data-sec-rest]','secRest','rest','input'],['[data-sec-rounds]','secRounds','rounds','input'],['[data-sec-description]','secDescription','description','input'],['[data-sec-rules]','secRules','rules','input'],['[data-sec-tips]','secTips','coachTips','input']];
+  bindings.forEach(([sel,key,prop,ev])=>host.querySelectorAll(sel).forEach(e=>e['on'+ev]=()=>{const i=+e.dataset[key];sections[i][prop]=['minutes','work','rest','rounds'].includes(prop)?(+e.value||0):e.value;if(prop==='name'||prop==='minutes')renderExerciseSections();updateReview()}));
+  host.querySelectorAll('[data-del-sec]').forEach(b=>b.onclick=()=>{if(sections.length>1){sections.splice(+b.dataset.delSec,1);renderFramework();renderExerciseSections();updateReview()}});
 }
 
 function renderExerciseSections(){
@@ -217,7 +268,9 @@ function renderExerciseSections(){
           </details>
         </div>
       </div>
-      <div class="section-progress"><span>${v.label}</span><div class="section-progress-bar"><span style="width:${progress}%"></span></div><span>${progress}%</span></div>
+      <div class="section-progress"><span>${esc(s.type||v.label)}</span><div class="section-progress-bar"><span style="width:${progress}%"></span></div><span>${progress}%</span></div>
+      ${(s.description||s.rules||s.coachTips)?`<div class="element-summary">${s.description?`<p><strong>Beskrivelse:</strong> ${esc(s.description)}</p>`:''}${s.rules?`<p><strong>Regler:</strong> ${esc(s.rules)}</p>`:''}${s.coachTips?`<p><strong>Trænertips:</strong> ${esc(s.coachTips)}</p>`:''}</div>`:''}
+      <div class="element-actions"><button data-edit-element="${si}">Redigér beskrivelse og regler</button><button data-regenerate-exercise="${si}">✨ Regenerér element</button><button class="secondary" data-save-exercise-element="${si}">Gem i bibliotek</button></div>
       <div class="exercise-list">${s.exercises?.length?s.exercises.map((it,ei)=>exerciseRow(it,si,ei,fam)).join(''):'<div class="empty">Ingen øvelser endnu.</div>'}</div>
       <div class="section-add-row"><button data-add-ex="${si}">+ Tilføj øvelse</button></div>
     </article>`;
@@ -230,6 +283,10 @@ function renderExerciseSections(){
   $('#exerciseSections').querySelectorAll('[data-del-section]').forEach(b=>b.onclick=()=>{if(sections.length>1){sections.splice(+b.dataset.delSection,1);renderFramework();renderExerciseSections();updateReview()}});
   $('#exerciseSections').querySelectorAll('[data-add-ex]').forEach(b=>b.onclick=()=>openPicker(+b.dataset.addEx));
   $('#exerciseSections').querySelectorAll('[data-del-ex]').forEach(b=>b.onclick=()=>{const[a,c]=b.dataset.delEx.split('-').map(Number);sections[a].exercises.splice(c,1);renderExerciseSections()});
+  $('#exerciseSections').querySelectorAll('[data-edit-element]').forEach(b=>b.onclick=()=>{showStep(1);setTimeout(()=>document.querySelector(`[data-sec-description="${b.dataset.editElement}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),50)});
+  $('#exerciseSections').querySelectorAll('[data-regenerate-exercise]').forEach(b=>b.onclick=()=>regenerateSection(+b.dataset.regenerateExercise));
+  $('#exerciseSections').querySelectorAll('[data-save-exercise-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveExerciseElement));
+  updateTimeControl();
   bindExerciseInputs();
 }
 function exerciseRow(it,si,ei,fam){
@@ -276,13 +333,16 @@ function bindPlanner(){
   document.querySelectorAll('#conceptChoices .choice-card').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('#conceptChoices .choice-card').forEach(x=>x.classList.remove('selected'));
     b.classList.add('selected');plannerConcept=b.dataset.value;
+    if(plannerConcept==='trx'){plannerEquipment=new Set(EQUIPMENT_PROFILES.trx);renderEquipmentChoices()}
     const family=plannerConcept==='family';
     $('#plannerAdultsWrap').classList.toggle('hidden',!family);
     $('#familyMode').checked=family;
     $('#adultCountLabel').classList.toggle('hidden',!family);
-    if(plannerConcept==='adult'||plannerConcept==='trx'||plannerConcept==='hyrox'||plannerConcept==='hiit'){$('#participantCount').value=$('#plannerParticipants').value;}
-    $('#themePlannerBlock').classList.toggle('hidden',!(plannerConcept==='junior'||plannerConcept==='family'));
-    if(plannerConcept==='trx'){plannerEquipment=new Set(EQUIPMENT_PROFILES.trx);renderEquipmentChoices();}
+    $('#plannerThemeWrap').classList.toggle('hidden',!['junior','family'].includes(plannerConcept));
+    $('#includeGame').closest('label').classList.toggle('hidden',!['junior','family'].includes(plannerConcept));
+    if(plannerConcept==='adult'||plannerConcept==='trx'||plannerConcept==='hyrox'||plannerConcept==='hiit'){
+      $('#participantCount').value=$('#plannerParticipants').value;
+    }
   });
   document.querySelectorAll('#venueChoices .choice-card').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('#venueChoices .choice-card').forEach(x=>x.classList.remove('selected'));
@@ -300,12 +360,12 @@ function bindPlanner(){
     plannerEquipment.size===all.length?plannerEquipment.clear():all.forEach(x=>plannerEquipment.add(x));
     renderEquipmentChoices();
   };
-  $('#plannerTheme').onchange=()=>$('#customThemeWrap').classList.toggle('hidden',$('#plannerTheme').value!=='custom');
   $('#generateSmartWorkoutBtn').onclick=generateSmartWorkout;
+  $('#plannerDuration').oninput=updateTimeControl;
 }
 function renderEquipmentChoices(){
   if(!$('#equipmentChoices'))return;
-  const profile=plannerConcept==='trx'?EQUIPMENT_PROFILES.trx:EQUIPMENT_PROFILES[plannerVenue];
+  const profile=EQUIPMENT_PROFILES[plannerVenue];
   const fromExercises=[...new Set(exercises.flatMap(x=>x.equipment||[]))];
   const all=[...new Set([...profile,...fromExercises])].sort((a,b)=>{
     const ai=profile.includes(a)?0:1,bi=profile.includes(b)?0:1;
@@ -329,6 +389,7 @@ function scoreExercise(ex,goals,sectionType){
   if(sectionType==='warmup'&&(hay.includes('kondition')||hay.includes('koordination')||hay.includes('agility')||hay.includes('kropsvægt')))score+=5;
   if(sectionType==='main'&&(hay.includes('funktionel')||hay.includes('styrke')||hay.includes('helkrop')))score+=3;
   if(sectionType==='team'&&(hay.includes('makker')||hay.includes('stafet')||hay.includes('teamchallenge')))score+=7;
+  if(plannerConcept==='trx'&&(hay.includes('trx')||(ex.equipment||[]).includes('TRX')))score+=12;
   if(plannerConcept==='hyrox'&&hay.includes('hyrox'))score+=8;
   if(plannerConcept==='hiit'&&hay.includes('hiit'))score+=8;
   if(plannerConcept==='adult'&&(ex.audience||[]).includes('Voksen'))score+=2;
@@ -349,42 +410,40 @@ function prescriptionFor(ex,adult=false){
 function makeItem(ex){
   return {exerciseId:ex.id,juniorKg:'',juniorReps:prescriptionFor(ex,false),juniorNote:'',adultExerciseId:ex.id,adultKg:'',adultReps:prescriptionFor(ex,true),adultNote:''};
 }
-function formatPreset(kind,index=0){
-  const pools={junior:['AMRAP','You go, I go','EMOM','Chipper','Stationstræning'],family:['You go, I go','Team workout','AMRAP','Stationstræning'],adult:['AMRAP','EMOM','Chipper','You go, I go','Stationstræning'],trx:['Stationstræning','EMOM','AMRAP','You go, I go'],hyrox:['Hyrox station','You go, I go','Chipper'],hiit:['HIIT-intervaller','Tabata','EMOM','AMRAP']};
-  return (pools[kind]||pools.adult)[index%(pools[kind]||pools.adult).length];
-}
-function sectionFromAI({name,minutes,format,type,goals,used,count=4,description='',coachNotes='',optional=false}){
-  const chosen=pickExercises(count,goals,type,used);chosen.forEach(x=>used.add(x.id));
-  return {name,minutes,format,style:type==='play'?'Leg':plannerConcept==='hyrox'||plannerConcept==='hiit'?'HIIT / Hyrox-inspireret':plannerConcept==='trx'?'TRX':'Funktionel',work:format==='Tabata'?20:format.includes('HIIT')?40:45,rest:format==='Tabata'?10:format.includes('EMOM')?15:15,rounds:format==='Chipper'?1:Math.max(2,Math.round(minutes/5)),description,coachNotes,optional,exercises:chosen.map(makeItem)};
-}
-function currentTheme(){const v=$('#plannerTheme').value;return v==='custom'?$('#plannerCustomTheme').value.trim():v}
 function generateSmartWorkout(){
-  const duration=Math.max(20,+$('#plannerDuration').value||60),participants=Math.max(1,+$('#plannerParticipants').value||20),goals=goalValues(),used=new Set();
-  const isYouth=plannerConcept==='junior'||plannerConcept==='family',theme=isYouth?currentTheme():'';
-  const includePlay=isYouth&&$('#includePlay').checked&&(goals.includes('Sjov')||$('#plannerStructure').value==='play-two');
-  const includeFinisher=$('#includeFinisher').checked;
-  let warm=Math.max(7,Math.round(duration*.14)),play=includePlay?Math.max(7,Math.round(duration*.14)):0,finish=includeFinisher?Math.max(4,Math.round(duration*.09)):0;
-  let remaining=duration-warm-play-finish;
-  const structure=$('#plannerStructure').value;
-  let mainCount=structure==='three'?3:2;if(structure==='stations')mainCount=1;if(remaining<24)mainCount=1;
-  const mainTimes=Array(mainCount).fill(Math.floor(remaining/mainCount));mainTimes[mainTimes.length-1]+=remaining-mainTimes.reduce((a,b)=>a+b,0);
-  sections=[];
-  sections.push(sectionFromAI({name:'Opvarmning',minutes:warm,format:'Fælles flow',type:'warmup',goals:[...goals,'Koordination'],used,count:3,description:'Aktiv fælles opvarmning med gradvis stigende puls og bevægelighed.',coachNotes:'Hold instruktionerne korte. Alle skal være i gang samtidig.'}));
-  if(includePlay){const playName=theme?`${theme}: Missionen begynder`:'Leg og samarbejde';sections.push(sectionFromAI({name:playName,minutes:play,format:'Stafet',type:'play',goals:[...goals,'Samarbejde'],used,count:2,description:theme?`En holdleg i temaet ${theme}. Del deltagerne i hold. De løser en mission med bevægelse, samarbejde og korte fysiske opgaver.`:'Del deltagerne i hold. Brug kegler som baser. Holdene løser bevægelsesopgaver og samler point uden lang ventetid.',coachNotes:'Forklar banen på højst 60 sekunder. Kør en kort prøverunde. Tilpas afstande, så alle lykkes.'}));}
-  mainTimes.forEach((mins,i)=>{const format=structure==='stations'?'Stationstræning':formatPreset(plannerConcept,i);const count=format==='Stationstræning'?6:format==='EMOM'?4:format==='Chipper'?5:4;sections.push(sectionFromAI({name:`Hovedelement ${i+1} – ${format}`,minutes:mins,format,type:'main',goals,used,count,description:`${format} planlagt til ${participants} deltagere med fokus på ${goals.join(', ').toLowerCase()||'helkrop'}.`,coachNotes:format==='You go, I go'?'Arbejd i makkerpar. Den ene arbejder, mens den anden holder øje og gør klar til skift.':format==='Stationstræning'?'Fordel deltagerne jævnt. Start på forskellige stationer for at minimere kø.':'Gennemgå rækkefølge og standarder før start.'}));});
-  if(includeFinisher)sections.push(sectionFromAI({name:'Finisher – bonus hvis tiden tillader det',minutes:finish,format:plannerConcept==='hiit'?'AMRAP':'Team workout',type:'finisher',goals:[...goals,'Kondition'],used,count:3,description:'Kort, energifyldt afslutning. Elementet kan springes over uden at ødelægge resten af træningen.',coachNotes:'Stop mens energien er høj. Prioritér god teknik frem for ekstra runder.',optional:true}));
+  const duration=Math.max(20,+$('#plannerDuration').value||60),participants=Math.max(1,+$('#plannerParticipants').value||20),goals=goalValues();
+  const includeFinisher=$('#includeTeamChallenge').checked,includeGame=['junior','family'].includes(plannerConcept)&&$('#includeGame').checked;
+  const theme=['junior','family'].includes(plannerConcept)?$('#plannerTheme').value.trim():'';
+  const warmMinutes=Math.max(7,Math.round(duration*.14)),gameMinutes=includeGame?Math.max(7,Math.round(duration*.14)):0,finishMinutes=includeFinisher?5:0;
+  const mainTotal=Math.max(12,duration-warmMinutes-gameMinutes-finishMinutes);
+  const used=new Set();
+  const pick=(n,t,extra=[])=>{const p=pickExercises(n,[...goals,...extra],t,used);p.forEach(x=>used.add(x.id));return p};
+  const warm=pick(3,'warmup');
+  sections=[normalizeSection({type:'Opvarmning',name:'Opvarmning',minutes:warmMinutes,format:'Fælles flow',style:'Funktionel',work:35,rest:15,rounds:2,description:'Dynamisk opvarmning, der gør alle klar uden kø.',rules:'Arbejd i fælles flow. Skift på trænerens signal.',coachTips:'Vis kun én øvelse ad gangen og hold tempoet stigende.',exercises:warm.map(makeItem)})];
+  if(includeGame){const game=pick(3,'team',['Sjov','Samarbejde']);sections.push(normalizeSection({type:'Leg',name:theme?`${theme} – holdleg`:'Holdleg',minutes:gameMinutes,format:'Stafet',style:'Leg',work:0,rest:0,rounds:2,description:theme?`En leg koblet til temaet “${theme}”, hvor holdene løser en fysisk mission sammen.`:'En hurtig holdleg med bevægelse, samarbejde og konkurrence.',rules:'Del i 2–4 hold. Én deltager pr. hold er aktiv ad gangen, medmindre banen tillader flere. Ét point pr. gennemført opgave.','coachTips':'Lav en kort prøverunde. Justér straks banen, hvis der opstår ventetid. Stop legen på et højdepunkt.',exercises:game.map(makeItem)}))}
+  const twoMain=mainTotal>=24;
+  const main1Minutes=twoMain?Math.round(mainTotal*.55):mainTotal,main2Minutes=mainTotal-main1Minutes;
+  let type1=plannerConcept==='trx'?'YGIG':plannerConcept==='hiit'?'EMOM':plannerConcept==='hyrox'?'Stationer':'AMRAP';
+  let format1={YGIG:'You go, I go',EMOM:'EMOM',Stationer:'Hyrox station',AMRAP:'AMRAP'}[type1];
+  const main1=pick(type1==='Stationer'?6:4,'main');
+  sections.push(normalizeSection({type:type1,name:plannerConcept==='trx'?'TRX hovedblok':plannerConcept==='hyrox'?'Hyrox hovedblok':`${type1} hovedblok`,minutes:main1Minutes,format:format1,style:plannerConcept==='hiit'||plannerConcept==='hyrox'?'HIIT / Hyrox-inspireret':'Funktionel',work:type1==='EMOM'?45:40,rest:type1==='EMOM'?15:20,rounds:Math.max(2,Math.round(main1Minutes/5)),description:`Hovedblok med fokus på ${goals.join(', ')||'helkrop'}.`,rules:type1==='YGIG'?'Makker A arbejder, mens makker B hviler eller holder position. Byt efter hver serie.':'Følg rækkefølgen og skalér gentagelser, så kvaliteten bevares.',coachTips:'Prioritér flydende skift og kort instruktion. Tilpas belastningen før start.',exercises:main1.map(makeItem)}));
+  if(twoMain&&main2Minutes>5){const type2=plannerConcept==='trx'?'EMOM':goals.includes('Samarbejde')?'YGIG':'Chipper';const main2=pick(4,'main',['Samarbejde']);sections.push(normalizeSection({type:type2,name:`${type2} – anden hovedblok`,minutes:main2Minutes,format:type2==='YGIG'?'You go, I go':type2,style:'Funktionel',work:40,rest:20,rounds:2,description:'Et andet format giver variation og holder energien oppe.',rules:type2==='Chipper'?'Gennemfør øvelserne i rækkefølge. Hold kan dele gentagelserne frit.':'Arbejd kontrolleret og skift efter den aftalte struktur.',coachTips:'Sæt en tydelig tidsgrænse. Giv en lettere version før start.',exercises:main2.map(makeItem)}))}
+  if(includeFinisher){const fin=pick(3,'team',['Kondition']);sections.push(normalizeSection({type:'Finisher',name:'Finisher – bonus hvis tiden tillader det',minutes:finishMinutes,format:'Team workout',style:'Kondition',work:40,rest:20,rounds:1,description:'Kort, energisk afslutning, som kan springes over uden at ødelægge træningen.',rules:'Arbejd samlet eller i makkerpar til tiden udløber.',coachTips:'Start kun hvis der er tid. Stop med god energi og klar afslutning.',exercises:fin.map(makeItem)}))}
+  enforceFinisherLast();
   const conceptNames={junior:'FunkFit Junior',family:'Familietræning',adult:'Funktionel voksentræning',trx:'TRX-træning',hyrox:'Hyrox-træning',hiit:'HIIT-træning'};
-  $('#workoutName').value=`${conceptNames[plannerConcept]}${theme?' – '+theme:''} – ${plannerVenue==='indoor'?'inde':'ude'}`;$('#workoutTheme').value=theme;$('#participantCount').value=participants;$('#familyMode').checked=plannerConcept==='family';$('#adultCountLabel').classList.toggle('hidden',plannerConcept!=='family');if(plannerConcept==='family')$('#adultCount').value=+$('#plannerAdults').value||10;
+  $('#workoutName').value=`${conceptNames[plannerConcept]}${theme?' – '+theme:''} – ${plannerVenue==='indoor'?'inde':'ude'}`;$('#participantCount').value=participants;$('#familyMode').checked=plannerConcept==='family';$('#adultCountLabel').classList.toggle('hidden',plannerConcept!=='family');if(plannerConcept==='family')$('#adultCount').value=+$('#plannerAdults').value||10;
   renderFramework();renderExerciseSections();updateReview();
-  const equipmentUsed=[...new Set(sections.flatMap(s=>(s.exercises||[]).flatMap(it=>exercises.find(x=>x.id===it.exerciseId)?.equipment||[])))];
-  const total=sections.reduce((n,s)=>n+(+s.minutes||0),0),checks=[total===duration?'Tiden passer præcist.':'Tiden er justeret tæt på ønsket varighed.',sections.at(-1)?.optional?'Finisheren ligger sidst og er markeret som bonus.':'Ingen finisher valgt.',includePlay?'Sjov har udløst en konkret leg og samarbejde.':'Strukturen er lavet uden særskilt leg.'];
-  $('#plannerResult').classList.remove('hidden');$('#plannerResult').innerHTML=`<h3>Komplet træning klar til gennemgang ✓</h3><p><strong>${esc(conceptNames[plannerConcept])}</strong> · ${total} min · ${participants} deltagere${theme?` · Tema: ${esc(theme)}`:''}</p><div class="ai-checks">${checks.map(x=>`<span>✓ ${esc(x)}</span>`).join('')}</div><p><strong>${sections.length} elementer</strong> · Udstyr: ${esc(equipmentUsed.join(', ')||'Kropsvægt')}</p><div class="actions"><button id="openGeneratedEditorBtn" type="button">Gennemgå elementerne →</button><button id="regenerateAllBtn" class="ghost" type="button">✨ Lav et nyt komplet forslag</button></div>`;
-  $('#openGeneratedEditorBtn').onclick=()=>showStep(2);$('#regenerateAllBtn').onclick=generateSmartWorkout;$('#plannerResult').scrollIntoView({behavior:'smooth',block:'center'});
+  $('#plannerResult').classList.remove('hidden');$('#plannerResult').innerHTML=`<h3>Komplet forslag klar ✓</h3><p><strong>${esc(conceptNames[plannerConcept])}</strong> · ${duration} min · ${participants} deltagere${theme?` · tema: ${esc(theme)}`:''}</p><ul><li>${sections.length} elementer: ${sections.map(s=>esc(s.type)).join(' → ')}</li><li>Hvert element kan redigeres, regenereres eller gemmes i biblioteket.</li><li>Samlet tidskontrol vises i editoren.</li></ul><button id="openGeneratedEditorBtn" type="button">Gennemgå træningen →</button>`;$('#openGeneratedEditorBtn').onclick=()=>showStep(2);$('#plannerResult').scrollIntoView({behavior:'smooth',block:'center'});
 }
-function saveSectionToLibrary(index){const item=structuredClone(sections[index]);item.libraryId=crypto.randomUUID();item.savedAt=new Date().toISOString();const all=elementLibrary();all.unshift(item);saveElementLibrary(all);renderElementLibrary();alert(`“${item.name}” er gemt i elementbiblioteket.`)}
-function useLibraryElement(id){const item=elementLibrary().find(x=>x.libraryId===id);if(!item)return;const copy=structuredClone(item);delete copy.libraryId;delete copy.savedAt;const finisher=(copy.name||'').toLowerCase().includes('finisher')||copy.optional;if(finisher)sections.push(copy);else{const finisherIndex=sections.findIndex(s=>s.optional||(s.name||'').toLowerCase().includes('finisher'));finisherIndex<0?sections.push(copy):sections.splice(finisherIndex,0,copy)}renderFramework();renderExerciseSections();updateReview();showView('designView');showStep(2)}
-function renderElementLibrary(){const el=$('#elementLibraryGrid');if(!el)return;const list=elementLibrary();el.innerHTML=list.length?list.map(x=>`<article class="saved-card"><p class="eyebrow">${esc(x.format||'ELEMENT')}</p><h3>${esc(x.name)}</h3><p class="meta">${x.minutes||0} min · ${(x.exercises||[]).length} øvelser</p><p>${esc(x.description||'Ingen beskrivelse endnu.')}</p><div class="saved-card-actions"><button data-use-element="${x.libraryId}">Brug i træning</button><button class="ghost" data-delete-element="${x.libraryId}">Slet</button></div></article>`).join(''):'<div class="empty">Biblioteket er tomt. Gem et element fra editoren.</div>';el.querySelectorAll('[data-use-element]').forEach(b=>b.onclick=()=>useLibraryElement(b.dataset.useElement));el.querySelectorAll('[data-delete-element]').forEach(b=>b.onclick=()=>{saveElementLibrary(elementLibrary().filter(x=>x.libraryId!==b.dataset.deleteElement));renderElementLibrary()})}
-function regenerateElement(index){const old=sections[index],used=new Set(sections.flatMap((s,i)=>i===index?[]:(s.exercises||[]).map(x=>x.exerciseId))),goals=goalValues();const type=(old.name||'').toLowerCase().includes('opvarm')?'warmup':(old.name||'').toLowerCase().includes('leg')?'play':(old.name||'').toLowerCase().includes('finisher')?'finisher':'main';const count=Math.max(2,(old.exercises||[]).length||4);const fresh=pickExercises(count,goals,type,used);old.exercises=fresh.map(makeItem);old.coachNotes=(old.coachNotes||'')+' Nyt øvelsesvalg genereret.';renderFramework();renderExerciseSections();updateReview()}
+
+
+function updateTimeControl(){
+  const planned=Math.max(0,+$('#plannerDuration')?.value||0),total=sections.reduce((n,s)=>n+(+s.minutes||0),0),diff=total-planned;
+  if($('#plannedMinutes'))$('#plannedMinutes').textContent=planned;
+  const el=$('#timeStatus');if(!el)return;
+  el.className='time-status '+(diff===0?'ok':Math.abs(diff)<=5?'warn':'bad');
+  el.textContent=diff===0?'Tiden passer præcist':diff>0?`${diff} min for lang`:`${Math.abs(diff)} min ledig`;
+}
 
 async function loadTesseract(){
   if(window.Tesseract)return window.Tesseract;
@@ -595,7 +654,7 @@ function clearImportedWorkout(){
   $('#importProposal').innerHTML='';
 }
 
-function collect(){return{id:currentId||crypto.randomUUID(),name:$('#workoutName').value,date:$('#workoutDate').value,participants:+$('#participantCount').value,familyMode:$('#familyMode').checked,theme:$('#workoutTheme').value.trim(),adultCount:+($('#adultCount').value||0),sections:structuredClone(sections),music:{spotify:$('#spotifyPlaylistUrl').value.trim(),tidal:$('#tidalPlaylistUrl').value.trim(),telmore:$('#telmorePlaylistUrl').value.trim()}}}
+function collect(){return{id:currentId||crypto.randomUUID(),name:$('#workoutName').value,date:$('#workoutDate').value,participants:+$('#participantCount').value,familyMode:$('#familyMode').checked,adultCount:+($('#adultCount').value||0),sections:structuredClone(sections),music:{spotify:$('#spotifyPlaylistUrl').value.trim(),tidal:$('#tidalPlaylistUrl').value.trim(),telmore:$('#telmorePlaylistUrl').value.trim()}}}
 function saveCurrent(){const w=collect(),all=workouts().filter(x=>x.id!==w.id);all.unshift(w);saveWorkouts(all);currentId=w.id;renderSaved();alert('Træningen er gemt.')}
 function updateReview(){$('#reviewName').textContent=$('#workoutName').value;$('#reviewSections').textContent=sections.length;$('#reviewMinutes').textContent=sections.reduce((n,s)=>n+(+s.minutes||0),0)}
 
@@ -619,9 +678,9 @@ function renderSaved(){
   $('#savedWorkouts').querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{saveWorkouts(all.filter(x=>x.id!==b.dataset.delete));renderSaved()});
 }
 function editWorkout(w){
-  currentId=w.id;$('#workoutName').value=w.name;$('#workoutDate').value=w.date;$('#participantCount').value=w.participants;$('#familyMode').checked=!!w.familyMode;$('#adultCount').value=w.adultCount||0;$('#adultCountLabel').classList.toggle('hidden',!w.familyMode);$('#spotifyPlaylistUrl').value=w.music?.spotify||'';$('#tidalPlaylistUrl').value=w.music?.tidal||'';$('#telmorePlaylistUrl').value=w.music?.telmore||'';sections=structuredClone(w.sections);renderFramework();renderExerciseSections();updateReview();showView('designView');showStep(1);
+  currentId=w.id;$('#workoutName').value=w.name;$('#workoutDate').value=w.date;$('#participantCount').value=w.participants;$('#familyMode').checked=!!w.familyMode;$('#adultCount').value=w.adultCount||0;$('#adultCountLabel').classList.toggle('hidden',!w.familyMode);$('#spotifyPlaylistUrl').value=w.music?.spotify||'';$('#tidalPlaylistUrl').value=w.music?.tidal||'';$('#telmorePlaylistUrl').value=w.music?.telmore||'';sections=structuredClone(w.sections);normalizeSections();renderFramework();renderExerciseSections();updateReview();showView('designView');showStep(1);
 }
-function newWorkout(){currentId=null;$('#workoutName').value='FunkFit Junior – dagens træning';sections=structuredClone(templates[0].sections);renderFramework();renderExerciseSections();showView('designView');showStep(1)}
+function newWorkout(){currentId=null;$('#workoutName').value='FunkFit Junior – dagens træning';sections=structuredClone(templates[0].sections);normalizeSections();renderFramework();renderExerciseSections();showView('designView');showStep(1)}
 
 function printWorkout(w,mode){
   const map=new Map(exercises.map(x=>[x.id,x]));

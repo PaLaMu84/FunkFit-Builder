@@ -2032,17 +2032,17 @@
       "EMOM",
       "Makker"
     ],
-    "description": "Hold kroppen som en planke og træk brystet mod håndtagene.",
+    "description": "Hold kroppen spændt og træk brystet mod håndtagene.",
     "focus": [
       "Ryg",
       "Arme",
       "Core"
     ],
-    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
-    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
-    "junior": "8-12 gentagelser",
-    "adult": "10-15 gentagelser",
-    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "easier": "Gå mere oprejst.",
+    "harder": "Gå længere ind under ophænget.",
+    "junior": "8-12 gentagelser.",
+    "adult": "10-15 gentagelser.",
+    "mistakes": "Mistet kropsspænding, for stejl belastning eller ukontrolleret tempo.",
     "bodyAreas": [
       "Ryg",
       "Arme",
@@ -2072,17 +2072,17 @@
       "EMOM",
       "Makker"
     ],
-    "description": "Hold let i håndtagene, sæt hoften ned og pres op gennem hele foden.",
+    "description": "Brug stropperne som støtte og sæt hoften roligt ned og tilbage.",
     "focus": [
       "Ben",
       "Balder",
       "Core"
     ],
-    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
-    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
-    "junior": "10-15 gentagelser",
-    "adult": "12-20 gentagelser",
-    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "easier": "Kortere bevægebane.",
+    "harder": "TRX jump squat.",
+    "junior": "10-15 gentagelser.",
+    "adult": "12-20 gentagelser.",
+    "mistakes": "Mistet kropsspænding, for stejl belastning eller ukontrolleret tempo.",
     "bodyAreas": [
       "Ben",
       "Balder",
@@ -2112,20 +2112,20 @@
       "EMOM",
       "Makker"
     ],
-    "description": "Læn kroppen frem med spændt core, sænk brystet mellem håndtagene og pres tilbage.",
+    "description": "Læn kroppen frem med spændt core og pres dig væk fra håndtagene.",
     "focus": [
       "Bryst",
-      "Triceps",
+      "Skuldre",
       "Core"
     ],
-    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
-    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
-    "junior": "6-10 gentagelser",
-    "adult": "8-15 gentagelser",
-    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "easier": "Stå mere oprejst.",
+    "harder": "Stå mere vandret.",
+    "junior": "6-10 gentagelser.",
+    "adult": "8-15 gentagelser.",
+    "mistakes": "Mistet kropsspænding, for stejl belastning eller ukontrolleret tempo.",
     "bodyAreas": [
       "Bryst",
-      "Triceps",
+      "Skuldre",
       "Core"
     ],
     "styles": [
@@ -2152,17 +2152,17 @@
       "EMOM",
       "Makker"
     ],
-    "description": "Hold i håndtagene og træd kontrolleret bagud i en lunge.",
+    "description": "Hold let i stropperne og træd kontrolleret bagud i udfald.",
     "focus": [
       "Ben",
       "Balder",
       "Balance"
     ],
-    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
-    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
-    "junior": "6-10 pr. ben",
-    "adult": "8-12 pr. ben",
-    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "easier": "Mindre dybde.",
+    "harder": "Knæløft eller hop ved toppen.",
+    "junior": "6-10 pr. ben.",
+    "adult": "8-12 pr. ben.",
+    "mistakes": "Mistet kropsspænding, for stejl belastning eller ukontrolleret tempo.",
     "bodyAreas": [
       "Ben",
       "Balder",
@@ -2176,7 +2176,7 @@
   {
     "id": "trx-hamstring-curl",
     "name": "TRX hamstring curl",
-    "category": "Baglår",
+    "category": "Bagkæde",
     "equipment": [
       "TRX"
     ],
@@ -2198,11 +2198,11 @@
       "Balder",
       "Core"
     ],
-    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
-    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
-    "junior": "6-10 gentagelser",
-    "adult": "8-15 gentagelser",
-    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "easier": "Hoften i gulvet.",
+    "harder": "Hold hoften højt hele tiden.",
+    "junior": "6-10 gentagelser.",
+    "adult": "8-15 gentagelser.",
+    "mistakes": "Mistet kropsspænding, for stejl belastning eller ukontrolleret tempo.",
     "bodyAreas": [
       "Baglår",
       "Balder",
@@ -2214,8 +2214,8 @@
     ]
   },
   {
-    "id": "trx-knee-tuck",
-    "name": "TRX knee tuck",
+    "id": "trx-plank",
+    "name": "TRX plank",
     "category": "Core",
     "equipment": [
       "TRX"
@@ -2232,16 +2232,16 @@
       "EMOM",
       "Makker"
     ],
-    "description": "Stå i høj planke med fødderne i stropperne og træk knæene mod brystet.",
+    "description": "Placér fødderne i stropperne og hold en stabil plankeposition.",
     "focus": [
       "Core",
       "Skuldre"
     ],
-    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
-    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
-    "junior": "6-10 gentagelser",
-    "adult": "8-15 gentagelser",
-    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "easier": "Underarme på boks eller kortere tid.",
+    "harder": "TRX knee tuck.",
+    "junior": "15-25 sekunder.",
+    "adult": "25-45 sekunder.",
+    "mistakes": "Mistet kropsspænding, for stejl belastning eller ukontrolleret tempo.",
     "bodyAreas": [
       "Core",
       "Skuldre"
@@ -2270,17 +2270,17 @@
       "EMOM",
       "Makker"
     ],
-    "description": "Læn kroppen tilbage og før strakte arme op i et Y, mens kroppen holdes spændt.",
+    "description": "Hold spænding i kroppen og før strakte arme op i et Y.",
     "focus": [
       "Skuldre",
       "Øvre ryg",
       "Core"
     ],
-    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
-    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
-    "junior": "6-10 gentagelser",
-    "adult": "8-12 gentagelser",
-    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "easier": "Mere oprejst position.",
+    "harder": "Mere vandret position eller langsomt tempo.",
+    "junior": "6-10 gentagelser.",
+    "adult": "8-12 gentagelser.",
+    "mistakes": "Mistet kropsspænding, for stejl belastning eller ukontrolleret tempo.",
     "bodyAreas": [
       "Skuldre",
       "Øvre ryg",
@@ -2292,9 +2292,9 @@
     ]
   },
   {
-    "id": "trx-power-pull",
-    "name": "TRX power pull",
-    "category": "Rotation",
+    "id": "trx-mountain-climber",
+    "name": "TRX mountain climber",
+    "category": "Kondition",
     "equipment": [
       "TRX"
     ],
@@ -2310,21 +2310,21 @@
       "EMOM",
       "Makker"
     ],
-    "description": "Hold ét håndtag, roter væk og træk dig tilbage med rotation gennem overkroppen.",
+    "description": "Fødderne i stropperne, hænder i gulvet. Før knæene skiftevis frem.",
     "focus": [
-      "Ryg",
       "Core",
-      "Arme"
+      "Skuldre",
+      "Kondition"
     ],
-    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
-    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
-    "junior": "6-8 pr. side",
-    "adult": "8-12 pr. side",
-    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "easier": "Langsomme knee tucks.",
+    "harder": "Højere tempo.",
+    "junior": "20-30 sekunder.",
+    "adult": "30-45 sekunder.",
+    "mistakes": "Mistet kropsspænding, for stejl belastning eller ukontrolleret tempo.",
     "bodyAreas": [
-      "Ryg",
       "Core",
-      "Arme"
+      "Skuldre",
+      "Kondition"
     ],
     "styles": [
       "TRX",
