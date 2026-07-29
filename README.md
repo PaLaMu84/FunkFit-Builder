@@ -1,4 +1,4 @@
-# FunkFit Builder v0.6.0
+# FunkFit Builder v0.6.1
 
 ## Ny arbejdsgang
 Appen starter nu med en træningsassistent frem for en tom editor.
@@ -26,3 +26,7 @@ kan finpudses.
 - Deltager- og instruktør-PDF
 - Spotify, TIDAL og Telmore Musik
 - Gemte pas og workout-player
+
+
+## Rettelse i v0.6.1
+- Gendanner de manglende inde-/ude-udstyrsprofiler, som forhindrede appen i at starte.

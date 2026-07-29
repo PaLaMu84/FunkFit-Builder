@@ -4,6 +4,13 @@ const FORMATS=['Fælles flow','Teknik','Stationstræning','Cirkeltræning','AMRA
 const STYLES=['Funktionel','CrossFit-inspireret','HIIT / Hyrox-inspireret','Teknik','Leg','Mobilitet','Kondition'];
 const WKEY='funkfit-workouts-v050',CKEY='funkfit-custom-v050',FKEY='funkfit-favorites-v050';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
+let plannerConcept='junior',plannerVenue='indoor';
+const EQUIPMENT_PROFILES={
+  indoor:['Kropsvægt','Måtte','Kettlebell','Håndvægt','Boks','Bænk','Medicinbold','Væg','Kegler','Sjippetov','Elastik','Romaskine'],
+  outdoor:['Kropsvægt','Kettlebell','Håndvægt','Kegler','Sjippetov','Sandsæk','Battle rope','Traktordæk','Slæde','Pull-up stativ','Løbebane','Bakke']
+};
+let plannerEquipment=new Set(EQUIPMENT_PROFILES.indoor);
+
 
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(f))}catch{return f}};
 const saveWorkouts=x=>localStorage.setItem(WKEY,JSON.stringify(x));
