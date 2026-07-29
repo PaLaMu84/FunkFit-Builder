@@ -1,1 +1,18 @@
-<!DOCTYPE html><meta charset="utf-8"><title>Ryd cache</title><body style="font-family:system-ui;padding:2rem"><h1>Rydder FunkFit-cache…</h1><script>(async()=>{for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();for(const k of await caches.keys())await caches.delete(k);location.href='./?v=0.6.1'})()</script></body>
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Ryd FunkFit-cache</title>
+<body style="font-family:system-ui;padding:2rem">
+<h1>Rydder FunkFit-cache…</h1>
+<p>Siden genindlæses automatisk.</p>
+<script>
+(async()=>{
+  for(const registration of await navigator.serviceWorker.getRegistrations()){
+    await registration.unregister();
+  }
+  for(const key of await caches.keys()){
+    await caches.delete(key);
+  }
+  location.replace('./?v=0.6.2');
+})();
+</script>
+</body>
