@@ -1,41 +1,18 @@
-# FunkFit Builder v0.6.2
+# FunkFit Builder v0.7.0
 
-## Ny arbejdsgang
-Appen starter nu med en træningsassistent frem for en tom editor.
+AI-first træningsplanlægger. Målet er et komplet træningsudkast på få minutter, som instruktøren blot gennemgår og finpudser.
 
-Vælg:
-- FunkFit Junior
-- Familie
-- Funktionel voksen
-- Hyrox
-- HIIT
-- Inde i gymnastiksalen eller ude ved containeren
-- Varighed, deltagere og antal stationer
-- Træningsmål
-- Det udstyr der faktisk er til rådighed
-- Særlige ønsker
+## Nyt i v0.7.0
+- TRX som træningsform
+- Overordnet tema til Junior og Familie
+- Fleksible elementer: leg, AMRAP, EMOM, YGIG, chipper, stationer og finisher
+- Komplet automatisk træningsforslag
+- Finisher placeres sidst og markeres som bonus
+- Beskrivelse, regler og trænertips pr. element
+- Gem og genbrug elementer i elementbiblioteket
+- Regenerér ét element uden at ændre resten
+- Samlet tidskontrol
+- TIDAL, Spotify og Telmore Musik bevaret
 
-Appen laver derefter et komplet første udkast med sektioner, tider, øvelser,
-arbejde/pause og runder. Udkastet åbnes i den eksisterende editor, hvor det
-kan finpudses.
-
-## Beholdt
-- Billede- og tekstimport
-- Visuel sektionseditor
-- Familievariationer
-- Deltager- og instruktør-PDF
-- Spotify, TIDAL og Telmore Musik
-- Gemte pas og workout-player
-
-
-## Rettelse i v0.6.1
-- Gendanner de manglende inde-/ude-udstyrsprofiler, som forhindrede appen i at starte.
-
-
-## Rettelse i v0.6.2
-
-- Sikrer at `EQUIPMENT_PROFILES` er defineret før planlæggeren starter.
-- Tilføjer versionsparametre til JavaScript, CSS og manifest, så GitHub Pages ikke genbruger den gamle `app.js`.
-- Service worker bruger nu network-first til appens kode og data.
-- Ny service worker overtager straks og sletter tidligere FunkFit-caches.
-- `reset-cache.html` sender tilbage til v0.6.2.
+## Udgivelse
+Arbejd på `develop`, test, og merge derefter til `main`, som GitHub Pages viser.
