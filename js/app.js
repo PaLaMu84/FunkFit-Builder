@@ -2,11 +2,12 @@
 const $=s=>document.querySelector(s);
 const FORMATS=['Fælles flow','Teknik','Stationstræning','Cirkeltræning','AMRAP','EMOM','E2MOM','For time','Chipper','Tabata','HIIT-intervaller','You go, I go','Makkertræning','Team workout','Stafet','Hyrox station'];
 const STYLES=['Funktionel','CrossFit-inspireret','HIIT / Hyrox-inspireret','Teknik','Leg','Mobilitet','Kondition'];
-const WKEY='funkfit-workouts-v050',CKEY='funkfit-custom-v050',FKEY='funkfit-favorites-v050';
+const WKEY='funkfit-workouts-v050',CKEY='funkfit-custom-v050',FKEY='funkfit-favorites-v050',EKEY='funkfit-elements-v070';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
 let plannerConcept='junior',plannerVenue='indoor';
 const EQUIPMENT_PROFILES={
   indoor:['Kropsvægt','Måtte','Kettlebell','Håndvægt','Boks','Bænk','Medicinbold','Væg','Kegler','Sjippetov','Elastik','Romaskine'],
+  trx:['TRX','Kropsvægt','Måtte','Elastik'],
   outdoor:['Kropsvægt','Kettlebell','Håndvægt','Kegler','Sjippetov','Sandsæk','Battle rope','Traktordæk','Slæde','Pull-up stativ','Løbebane','Bakke']
 };
 let plannerEquipment=new Set(EQUIPMENT_PROFILES.indoor);
@@ -17,6 +18,8 @@ const saveWorkouts=x=>localStorage.setItem(WKEY,JSON.stringify(x));
 const workouts=()=>read(WKEY,[]);
 const customs=()=>read(CKEY,[]);
 const favorites=()=>new Set(read(FKEY,[]));
+const elementLibrary=()=>read(EKEY,[]);
+const saveElementLibrary=x=>localStorage.setItem(EKEY,JSON.stringify(x));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 
 const collapsedSections=new Set();
@@ -60,7 +63,7 @@ async function init(){
   $('#templateSelect').innerHTML=templates.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   $('#workoutDate').value=new Date().toISOString().slice(0,10);
   sections=structuredClone(templates[0].sections);
-  populatePickerFilters();bind();renderFramework();renderExerciseSections();renderSaved();updateReview();
+  populatePickerFilters();bind();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();
 }
 
 function bind(){
@@ -90,6 +93,7 @@ function bind(){
   $('#analyzeImportBtn').onclick=analyzeImportedWorkout;
   $('#clearImportBtn').onclick=clearImportedWorkout;
   bindPlanner();
+  $('#clearElementLibraryBtn').onclick=()=>{if(confirm('Ryd hele elementbiblioteket?')){saveElementLibrary([]);renderElementLibrary()}};
 
 
   $('#playerPrevBtn').onclick=()=>movePlayer(-1);
@@ -171,6 +175,10 @@ function renderFramework(){
   $('#frameworkSections').querySelectorAll('[data-sec-work]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secWork].work=+e.value||0;renderExerciseSections()});
   $('#frameworkSections').querySelectorAll('[data-sec-rest]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secRest].rest=+e.value||0;renderExerciseSections()});
   $('#frameworkSections').querySelectorAll('[data-sec-rounds]').forEach(e=>e.oninput=()=>{sections[+e.dataset.secRounds].rounds=+e.value||1;renderExerciseSections()});
+  $('#frameworkSections').querySelectorAll('[data-sec-description]').forEach(e=>e.oninput=()=>sections[+e.dataset.secDescription].description=e.value);
+  $('#frameworkSections').querySelectorAll('[data-sec-notes]').forEach(e=>e.oninput=()=>sections[+e.dataset.secNotes].coachNotes=e.value);
+  $('#frameworkSections').querySelectorAll('[data-save-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveElement));
+  $('#frameworkSections').querySelectorAll('[data-regenerate-element]').forEach(b=>b.onclick=()=>regenerateElement(+b.dataset.regenerateElement));
   $('#frameworkSections').querySelectorAll('[data-del-sec]').forEach(b=>b.onclick=()=>{if(sections.length>1){sections.splice(+b.dataset.delSec,1);renderFramework();renderExerciseSections();updateReview()}});
 }
 
@@ -272,9 +280,9 @@ function bindPlanner(){
     $('#plannerAdultsWrap').classList.toggle('hidden',!family);
     $('#familyMode').checked=family;
     $('#adultCountLabel').classList.toggle('hidden',!family);
-    if(plannerConcept==='adult'||plannerConcept==='hyrox'||plannerConcept==='hiit'){
-      $('#participantCount').value=$('#plannerParticipants').value;
-    }
+    if(plannerConcept==='adult'||plannerConcept==='trx'||plannerConcept==='hyrox'||plannerConcept==='hiit'){$('#participantCount').value=$('#plannerParticipants').value;}
+    $('#themePlannerBlock').classList.toggle('hidden',!(plannerConcept==='junior'||plannerConcept==='family'));
+    if(plannerConcept==='trx'){plannerEquipment=new Set(EQUIPMENT_PROFILES.trx);renderEquipmentChoices();}
   });
   document.querySelectorAll('#venueChoices .choice-card').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('#venueChoices .choice-card').forEach(x=>x.classList.remove('selected'));
@@ -292,11 +300,12 @@ function bindPlanner(){
     plannerEquipment.size===all.length?plannerEquipment.clear():all.forEach(x=>plannerEquipment.add(x));
     renderEquipmentChoices();
   };
+  $('#plannerTheme').onchange=()=>$('#customThemeWrap').classList.toggle('hidden',$('#plannerTheme').value!=='custom');
   $('#generateSmartWorkoutBtn').onclick=generateSmartWorkout;
 }
 function renderEquipmentChoices(){
   if(!$('#equipmentChoices'))return;
-  const profile=EQUIPMENT_PROFILES[plannerVenue];
+  const profile=plannerConcept==='trx'?EQUIPMENT_PROFILES.trx:EQUIPMENT_PROFILES[plannerVenue];
   const fromExercises=[...new Set(exercises.flatMap(x=>x.equipment||[]))];
   const all=[...new Set([...profile,...fromExercises])].sort((a,b)=>{
     const ai=profile.includes(a)?0:1,bi=profile.includes(b)?0:1;
@@ -340,42 +349,42 @@ function prescriptionFor(ex,adult=false){
 function makeItem(ex){
   return {exerciseId:ex.id,juniorKg:'',juniorReps:prescriptionFor(ex,false),juniorNote:'',adultExerciseId:ex.id,adultKg:'',adultReps:prescriptionFor(ex,true),adultNote:''};
 }
-function generateSmartWorkout(){
-  const duration=Math.max(20,+$('#plannerDuration').value||60);
-  const participants=Math.max(1,+$('#plannerParticipants').value||20);
-  const stationCount=Math.max(3,Math.min(12,+$('#plannerStations').value||6));
-  const goals=goalValues();
-  const includeTeam=$('#includeTeamChallenge').checked;
-  const warmMinutes=Math.max(8,Math.round(duration*.16));
-  const teamMinutes=includeTeam?Math.max(6,Math.round(duration*.12)):0;
-  const mainMinutes=duration-warmMinutes-teamMinutes;
-  const used=new Set();
-  const warm=pickExercises(3,goals,'warmup',used);warm.forEach(x=>used.add(x.id));
-  const main=pickExercises(stationCount,goals,'main',used);main.forEach(x=>used.add(x.id));
-  const team=includeTeam?pickExercises(3,[...goals,'Samarbejde'],'team',used):[];
-  const mainFormat=plannerConcept==='hiit'?'HIIT-intervaller':plannerConcept==='hyrox'?'Hyrox station':'Stationstræning';
-  const mainStyle=plannerConcept==='hiit'?'HIIT / Hyrox-inspireret':plannerConcept==='hyrox'?'HIIT / Hyrox-inspireret':'Funktionel';
-  sections=[
-    {name:'Opvarmning',minutes:warmMinutes,format:'Stationstræning',style:'Funktionel',work:35,rest:15,rounds:2,exercises:warm.map(makeItem)},
-    {name:plannerConcept==='hyrox'?'Hyrox hovedtræning':plannerConcept==='hiit'?'HIIT hovedtræning':'Hovedtræning',minutes:mainMinutes,format:mainFormat,style:mainStyle,work:plannerConcept==='hiit'?40:45,rest:plannerConcept==='hiit'?20:15,rounds:Math.max(2,Math.round(mainMinutes/(stationCount*1.2))),exercises:main.map(makeItem)}
-  ];
-  if(includeTeam)sections.push({name:'Teamchallenge',minutes:teamMinutes,format:'Teamchallenge',style:'Leg / samarbejde',work:45,rest:15,rounds:2,exercises:team.map(makeItem)});
-  const conceptNames={junior:'FunkFit Junior',family:'Familietræning',adult:'Funktionel voksentræning',hyrox:'Hyrox-træning',hiit:'HIIT-træning'};
-  $('#workoutName').value=`${conceptNames[plannerConcept]} – ${plannerVenue==='indoor'?'inde':'ude'}`;
-  $('#participantCount').value=participants;
-  $('#familyMode').checked=plannerConcept==='family';
-  $('#adultCountLabel').classList.toggle('hidden',plannerConcept!=='family');
-  if(plannerConcept==='family')$('#adultCount').value=+$('#plannerAdults').value||10;
-  renderFramework();renderExerciseSections();updateReview();
-  const equipmentUsed=[...new Set([...warm,...main,...team].flatMap(x=>x.equipment||[]))];
-  $('#plannerResult').classList.remove('hidden');
-  $('#plannerResult').innerHTML=`<h3>Forslaget er klar ✓</h3>
-    <p><strong>${esc(conceptNames[plannerConcept])}</strong> · ${duration} min · ${participants} deltagere · ${plannerVenue==='indoor'?'gymnastiksal':'udendørs/container'}</p>
-    <ul><li>${sections.length} sektioner og ${warm.length+main.length+team.length} øvelser</li><li>Udstyr i forslaget: ${esc(equipmentUsed.join(', ')||'Kropsvægt')}</li><li>${$('#avoidWaiting').checked?'Stationerne er fordelt med fokus på mindst mulig kø.':'Forslaget kan tilpasses frit i editoren.'}</li></ul>
-    <button id="openGeneratedEditorBtn" type="button">Åbn og finpuds træningen →</button>`;
-  $('#openGeneratedEditorBtn').onclick=()=>showStep(2);
-  $('#plannerResult').scrollIntoView({behavior:'smooth',block:'center'});
+function formatPreset(kind,index=0){
+  const pools={junior:['AMRAP','You go, I go','EMOM','Chipper','Stationstræning'],family:['You go, I go','Team workout','AMRAP','Stationstræning'],adult:['AMRAP','EMOM','Chipper','You go, I go','Stationstræning'],trx:['Stationstræning','EMOM','AMRAP','You go, I go'],hyrox:['Hyrox station','You go, I go','Chipper'],hiit:['HIIT-intervaller','Tabata','EMOM','AMRAP']};
+  return (pools[kind]||pools.adult)[index%(pools[kind]||pools.adult).length];
 }
+function sectionFromAI({name,minutes,format,type,goals,used,count=4,description='',coachNotes='',optional=false}){
+  const chosen=pickExercises(count,goals,type,used);chosen.forEach(x=>used.add(x.id));
+  return {name,minutes,format,style:type==='play'?'Leg':plannerConcept==='hyrox'||plannerConcept==='hiit'?'HIIT / Hyrox-inspireret':plannerConcept==='trx'?'TRX':'Funktionel',work:format==='Tabata'?20:format.includes('HIIT')?40:45,rest:format==='Tabata'?10:format.includes('EMOM')?15:15,rounds:format==='Chipper'?1:Math.max(2,Math.round(minutes/5)),description,coachNotes,optional,exercises:chosen.map(makeItem)};
+}
+function currentTheme(){const v=$('#plannerTheme').value;return v==='custom'?$('#plannerCustomTheme').value.trim():v}
+function generateSmartWorkout(){
+  const duration=Math.max(20,+$('#plannerDuration').value||60),participants=Math.max(1,+$('#plannerParticipants').value||20),goals=goalValues(),used=new Set();
+  const isYouth=plannerConcept==='junior'||plannerConcept==='family',theme=isYouth?currentTheme():'';
+  const includePlay=isYouth&&$('#includePlay').checked&&(goals.includes('Sjov')||$('#plannerStructure').value==='play-two');
+  const includeFinisher=$('#includeFinisher').checked;
+  let warm=Math.max(7,Math.round(duration*.14)),play=includePlay?Math.max(7,Math.round(duration*.14)):0,finish=includeFinisher?Math.max(4,Math.round(duration*.09)):0;
+  let remaining=duration-warm-play-finish;
+  const structure=$('#plannerStructure').value;
+  let mainCount=structure==='three'?3:2;if(structure==='stations')mainCount=1;if(remaining<24)mainCount=1;
+  const mainTimes=Array(mainCount).fill(Math.floor(remaining/mainCount));mainTimes[mainTimes.length-1]+=remaining-mainTimes.reduce((a,b)=>a+b,0);
+  sections=[];
+  sections.push(sectionFromAI({name:'Opvarmning',minutes:warm,format:'Fælles flow',type:'warmup',goals:[...goals,'Koordination'],used,count:3,description:'Aktiv fælles opvarmning med gradvis stigende puls og bevægelighed.',coachNotes:'Hold instruktionerne korte. Alle skal være i gang samtidig.'}));
+  if(includePlay){const playName=theme?`${theme}: Missionen begynder`:'Leg og samarbejde';sections.push(sectionFromAI({name:playName,minutes:play,format:'Stafet',type:'play',goals:[...goals,'Samarbejde'],used,count:2,description:theme?`En holdleg i temaet ${theme}. Del deltagerne i hold. De løser en mission med bevægelse, samarbejde og korte fysiske opgaver.`:'Del deltagerne i hold. Brug kegler som baser. Holdene løser bevægelsesopgaver og samler point uden lang ventetid.',coachNotes:'Forklar banen på højst 60 sekunder. Kør en kort prøverunde. Tilpas afstande, så alle lykkes.'}));}
+  mainTimes.forEach((mins,i)=>{const format=structure==='stations'?'Stationstræning':formatPreset(plannerConcept,i);const count=format==='Stationstræning'?6:format==='EMOM'?4:format==='Chipper'?5:4;sections.push(sectionFromAI({name:`Hovedelement ${i+1} – ${format}`,minutes:mins,format,type:'main',goals,used,count,description:`${format} planlagt til ${participants} deltagere med fokus på ${goals.join(', ').toLowerCase()||'helkrop'}.`,coachNotes:format==='You go, I go'?'Arbejd i makkerpar. Den ene arbejder, mens den anden holder øje og gør klar til skift.':format==='Stationstræning'?'Fordel deltagerne jævnt. Start på forskellige stationer for at minimere kø.':'Gennemgå rækkefølge og standarder før start.'}));});
+  if(includeFinisher)sections.push(sectionFromAI({name:'Finisher – bonus hvis tiden tillader det',minutes:finish,format:plannerConcept==='hiit'?'AMRAP':'Team workout',type:'finisher',goals:[...goals,'Kondition'],used,count:3,description:'Kort, energifyldt afslutning. Elementet kan springes over uden at ødelægge resten af træningen.',coachNotes:'Stop mens energien er høj. Prioritér god teknik frem for ekstra runder.',optional:true}));
+  const conceptNames={junior:'FunkFit Junior',family:'Familietræning',adult:'Funktionel voksentræning',trx:'TRX-træning',hyrox:'Hyrox-træning',hiit:'HIIT-træning'};
+  $('#workoutName').value=`${conceptNames[plannerConcept]}${theme?' – '+theme:''} – ${plannerVenue==='indoor'?'inde':'ude'}`;$('#workoutTheme').value=theme;$('#participantCount').value=participants;$('#familyMode').checked=plannerConcept==='family';$('#adultCountLabel').classList.toggle('hidden',plannerConcept!=='family');if(plannerConcept==='family')$('#adultCount').value=+$('#plannerAdults').value||10;
+  renderFramework();renderExerciseSections();updateReview();
+  const equipmentUsed=[...new Set(sections.flatMap(s=>(s.exercises||[]).flatMap(it=>exercises.find(x=>x.id===it.exerciseId)?.equipment||[])))];
+  const total=sections.reduce((n,s)=>n+(+s.minutes||0),0),checks=[total===duration?'Tiden passer præcist.':'Tiden er justeret tæt på ønsket varighed.',sections.at(-1)?.optional?'Finisheren ligger sidst og er markeret som bonus.':'Ingen finisher valgt.',includePlay?'Sjov har udløst en konkret leg og samarbejde.':'Strukturen er lavet uden særskilt leg.'];
+  $('#plannerResult').classList.remove('hidden');$('#plannerResult').innerHTML=`<h3>Komplet træning klar til gennemgang ✓</h3><p><strong>${esc(conceptNames[plannerConcept])}</strong> · ${total} min · ${participants} deltagere${theme?` · Tema: ${esc(theme)}`:''}</p><div class="ai-checks">${checks.map(x=>`<span>✓ ${esc(x)}</span>`).join('')}</div><p><strong>${sections.length} elementer</strong> · Udstyr: ${esc(equipmentUsed.join(', ')||'Kropsvægt')}</p><div class="actions"><button id="openGeneratedEditorBtn" type="button">Gennemgå elementerne →</button><button id="regenerateAllBtn" class="ghost" type="button">✨ Lav et nyt komplet forslag</button></div>`;
+  $('#openGeneratedEditorBtn').onclick=()=>showStep(2);$('#regenerateAllBtn').onclick=generateSmartWorkout;$('#plannerResult').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function saveSectionToLibrary(index){const item=structuredClone(sections[index]);item.libraryId=crypto.randomUUID();item.savedAt=new Date().toISOString();const all=elementLibrary();all.unshift(item);saveElementLibrary(all);renderElementLibrary();alert(`“${item.name}” er gemt i elementbiblioteket.`)}
+function useLibraryElement(id){const item=elementLibrary().find(x=>x.libraryId===id);if(!item)return;const copy=structuredClone(item);delete copy.libraryId;delete copy.savedAt;const finisher=(copy.name||'').toLowerCase().includes('finisher')||copy.optional;if(finisher)sections.push(copy);else{const finisherIndex=sections.findIndex(s=>s.optional||(s.name||'').toLowerCase().includes('finisher'));finisherIndex<0?sections.push(copy):sections.splice(finisherIndex,0,copy)}renderFramework();renderExerciseSections();updateReview();showView('designView');showStep(2)}
+function renderElementLibrary(){const el=$('#elementLibraryGrid');if(!el)return;const list=elementLibrary();el.innerHTML=list.length?list.map(x=>`<article class="saved-card"><p class="eyebrow">${esc(x.format||'ELEMENT')}</p><h3>${esc(x.name)}</h3><p class="meta">${x.minutes||0} min · ${(x.exercises||[]).length} øvelser</p><p>${esc(x.description||'Ingen beskrivelse endnu.')}</p><div class="saved-card-actions"><button data-use-element="${x.libraryId}">Brug i træning</button><button class="ghost" data-delete-element="${x.libraryId}">Slet</button></div></article>`).join(''):'<div class="empty">Biblioteket er tomt. Gem et element fra editoren.</div>';el.querySelectorAll('[data-use-element]').forEach(b=>b.onclick=()=>useLibraryElement(b.dataset.useElement));el.querySelectorAll('[data-delete-element]').forEach(b=>b.onclick=()=>{saveElementLibrary(elementLibrary().filter(x=>x.libraryId!==b.dataset.deleteElement));renderElementLibrary()})}
+function regenerateElement(index){const old=sections[index],used=new Set(sections.flatMap((s,i)=>i===index?[]:(s.exercises||[]).map(x=>x.exerciseId))),goals=goalValues();const type=(old.name||'').toLowerCase().includes('opvarm')?'warmup':(old.name||'').toLowerCase().includes('leg')?'play':(old.name||'').toLowerCase().includes('finisher')?'finisher':'main';const count=Math.max(2,(old.exercises||[]).length||4);const fresh=pickExercises(count,goals,type,used);old.exercises=fresh.map(makeItem);old.coachNotes=(old.coachNotes||'')+' Nyt øvelsesvalg genereret.';renderFramework();renderExerciseSections();updateReview()}
 
 async function loadTesseract(){
   if(window.Tesseract)return window.Tesseract;
@@ -586,7 +595,7 @@ function clearImportedWorkout(){
   $('#importProposal').innerHTML='';
 }
 
-function collect(){return{id:currentId||crypto.randomUUID(),name:$('#workoutName').value,date:$('#workoutDate').value,participants:+$('#participantCount').value,familyMode:$('#familyMode').checked,adultCount:+($('#adultCount').value||0),sections:structuredClone(sections),music:{spotify:$('#spotifyPlaylistUrl').value.trim(),tidal:$('#tidalPlaylistUrl').value.trim(),telmore:$('#telmorePlaylistUrl').value.trim()}}}
+function collect(){return{id:currentId||crypto.randomUUID(),name:$('#workoutName').value,date:$('#workoutDate').value,participants:+$('#participantCount').value,familyMode:$('#familyMode').checked,theme:$('#workoutTheme').value.trim(),adultCount:+($('#adultCount').value||0),sections:structuredClone(sections),music:{spotify:$('#spotifyPlaylistUrl').value.trim(),tidal:$('#tidalPlaylistUrl').value.trim(),telmore:$('#telmorePlaylistUrl').value.trim()}}}
 function saveCurrent(){const w=collect(),all=workouts().filter(x=>x.id!==w.id);all.unshift(w);saveWorkouts(all);currentId=w.id;renderSaved();alert('Træningen er gemt.')}
 function updateReview(){$('#reviewName').textContent=$('#workoutName').value;$('#reviewSections').textContent=sections.length;$('#reviewMinutes').textContent=sections.reduce((n,s)=>n+(+s.minutes||0),0)}
 

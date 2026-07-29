@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.6.2</title>
-  <link rel="manifest" href="manifest.json?v=0.6.2">
-  <link rel="stylesheet" href="css/app.css?v=0.6.2">
+  <title>FunkFit Builder v0.7.0</title>
+  <link rel="manifest" href="manifest.json?v=0.7.0">
+  <link rel="stylesheet" href="css/app.css?v=0.7.0">
 </head>
 <body>
 <header class="topbar">
   <div>
-    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.6.2</p>
+    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.7.0</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </div>
@@ -20,6 +20,7 @@
 <nav class="main-nav">
   <button class="nav-tab active" data-view="designView">Design træning</button>
   <button class="nav-tab" data-view="savedView">Gemte pas</button>
+  <button class="nav-tab" data-view="libraryView">Elementbibliotek</button>
 </nav>
 
 <main>
@@ -53,6 +54,7 @@
           <button type="button" class="choice-card selected" data-value="junior"><span>🟠</span><strong>FunkFit Junior</strong><small>Børn og unge</small></button>
           <button type="button" class="choice-card" data-value="family"><span>🔵</span><strong>Familie</strong><small>Junior + voksen</small></button>
           <button type="button" class="choice-card" data-value="adult"><span>🟢</span><strong>Funktionel voksen</strong><small>Kun voksne</small></button>
+          <button type="button" class="choice-card" data-value="trx"><span>🟡</span><strong>TRX</strong><small>Slyngetræning</small></button>
           <button type="button" class="choice-card" data-value="hyrox"><span>🔴</span><strong>Hyrox</strong><small>Løb og stationer</small></button>
           <button type="button" class="choice-card" data-value="hiit"><span>🟣</span><strong>HIIT</strong><small>Intervaller og puls</small></button>
         </div>
@@ -79,7 +81,7 @@
           <label>Varighed<input id="plannerDuration" type="number" min="20" max="120" value="60"><span>minutter</span></label>
           <label>Deltagere<input id="plannerParticipants" type="number" min="1" max="100" value="20"><span>personer</span></label>
           <label id="plannerAdultsWrap" class="hidden">Heraf voksne<input id="plannerAdults" type="number" min="0" max="50" value="10"><span>voksne</span></label>
-          <label>Ønsket antal stationer<input id="plannerStations" type="number" min="3" max="12" value="6"><span>stationer</span></label>
+          <label>AI-frihed<select id="plannerAiFreedom"><option value="full" selected>Lav næsten alt</option><option value="guided">Følg min struktur</option><option value="manual">Jeg bygger selv</option></select><span>standard: komplet forslag</span></label>
         </div>
       </div>
     </section>
@@ -112,14 +114,28 @@
       </div>
     </section>
 
-    <section class="planner-block">
+    <section id="themePlannerBlock" class="planner-block">
       <div class="planner-number">6</div>
+      <div class="planner-content">
+        <h3>Overordnet tema <small>(Junior og Familie)</small></h3>
+        <div class="planner-fields theme-fields">
+          <label>Tema<select id="plannerTheme"><option value="">Intet tema</option><option>Agentmission</option><option>Pirater</option><option>Superhelte</option><option>OL</option><option>Zombieflugt</option><option>Rummet</option><option>Junglen</option><option>Jul</option><option>Halloween</option><option value="custom">Eget tema…</option></select></label>
+          <label id="customThemeWrap" class="hidden">Eget tema<input id="plannerCustomTheme" placeholder="Fx Tidsrejsen"></label>
+          <label>Foretrukken struktur<select id="plannerStructure"><option value="auto" selected>AI vælger</option><option value="play-two">Leg + 2 hovedelementer</option><option value="two">2 hovedelementer</option><option value="three">3 korte hovedelementer</option><option value="stations">Stationer som hoveddel</option></select></label>
+        </div>
+        <p class="planner-hint">Temaet gælder hele træningen. Lege oprettes som selvstændige elementer.</p>
+      </div>
+    </section>
+
+    <section class="planner-block">
+      <div class="planner-number">7</div>
       <div class="planner-content">
         <h3>Din idé eller særlige ønsker</h3>
         <textarea id="plannerBrief" rows="4" placeholder="Fx: Hyrox-inspireret træning med meget teamwork. Ingen kø. Jeg vil gerne bruge wall balls og farmer carry."></textarea>
         <div class="planner-toggles">
           <label><input id="avoidWaiting" type="checkbox" checked> Undgå ventetid og kø</label>
-          <label><input id="includeTeamChallenge" type="checkbox" checked> Afslut med teamchallenge</label>
+          <label><input id="includePlay" type="checkbox" checked> Medtag leg, når det passer</label>
+          <label><input id="includeFinisher" type="checkbox" checked> Planlæg finisher til sidst</label>
           <label><input id="useFavoritesFirst" type="checkbox"> Prioritér mine favoritter</label>
         </div>
       </div>
@@ -130,7 +146,7 @@
         <strong>Klar til at bygge?</strong>
         <p>Forslaget bliver sat direkte ind i editoren og kan ændres bagefter.</p>
       </div>
-      <button id="generateSmartWorkoutBtn" type="button" class="generate-btn">✨ Lav træningsforslag</button>
+      <button id="generateSmartWorkoutBtn" type="button" class="generate-btn">✨ Generér komplet træning</button>
     </div>
     <div id="plannerResult" class="planner-result hidden"></div>
 
@@ -184,6 +200,7 @@ Hovedtræning 20 min
     <div class="meta-grid">
       <label>Træningens navn<input id="workoutName" value="FunkFit Junior – dagens træning"></label>
       <label>Dato<input id="workoutDate" type="date"></label>
+      <label>Tema<input id="workoutTheme" placeholder="Valgfrit"></label>
       <label>Juniorer<input id="participantCount" type="number" min="1" value="20"></label>
       <label class="toggle-card"><span><strong>Familiedeltagelse</strong><small>Voksne følger juniorøvelsen som standard.</small></span><input id="familyMode" type="checkbox"></label>
       <label id="adultCountLabel" class="hidden">Voksne<input id="adultCount" type="number" min="0" value="10"></label>
@@ -267,6 +284,14 @@ Hovedtræning 20 min
     <div id="savedWorkouts" class="saved-grid"></div>
   </section>
 </section>
+
+<section id="libraryView" class="app-view">
+  <section class="panel">
+    <div class="section-heading"><div><p class="eyebrow">ELEMENTBIBLIOTEK</p><h2>Genbrug dine bedste blokke</h2></div><button id="clearElementLibraryBtn" class="ghost">Ryd bibliotek</button></div>
+    <p class="library-intro">Gem lege, opvarmninger, AMRAP, EMOM, YGIG, chippers, stationer og finishers. Når et element bruges igen, indsættes en kopi.</p>
+    <div id="elementLibraryGrid" class="saved-grid"></div>
+  </section>
+</section>
 </main>
 
 <dialog id="exercisePickerDialog">
@@ -323,13 +348,14 @@ Hovedtræning 20 min
         <article id="playerAdultCard" class="hidden"><p class="player-label">VOKSEN</p><strong id="playerAdult">–</strong><small id="playerAdultNote"></small></article>
       </div>
       <p class="player-hint">Tap eller mellemrum = næste øvelse</p>
+    
     </main>
     <footer class="player-controls"><button id="playerPrevBtn" class="secondary">← Forrige</button><button id="playerNextBtn">Næste →</button></footer>
   </div>
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.6.2 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.6.2"></script>
+<footer>FunkFit Builder v0.7.0 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.0"></script>
 </body>
 </html>

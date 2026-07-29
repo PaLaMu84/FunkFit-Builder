@@ -2012,5 +2012,323 @@
       "HIIT",
       "Hyrox-inspireret"
     ]
+  },
+  {
+    "id": "trx-row",
+    "name": "TRX row",
+    "category": "Træk",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Hold kroppen som en planke og træk brystet mod håndtagene.",
+    "focus": [
+      "Ryg",
+      "Arme",
+      "Core"
+    ],
+    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
+    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
+    "junior": "8-12 gentagelser",
+    "adult": "10-15 gentagelser",
+    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "bodyAreas": [
+      "Ryg",
+      "Arme",
+      "Core"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "trx-squat",
+    "name": "TRX squat",
+    "category": "Squat",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Hold let i håndtagene, sæt hoften ned og pres op gennem hele foden.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
+    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
+    "junior": "10-15 gentagelser",
+    "adult": "12-20 gentagelser",
+    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "trx-chest-press",
+    "name": "TRX chest press",
+    "category": "Pres",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Læn kroppen frem med spændt core, sænk brystet mellem håndtagene og pres tilbage.",
+    "focus": [
+      "Bryst",
+      "Triceps",
+      "Core"
+    ],
+    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
+    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
+    "junior": "6-10 gentagelser",
+    "adult": "8-15 gentagelser",
+    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "bodyAreas": [
+      "Bryst",
+      "Triceps",
+      "Core"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "trx-lunge",
+    "name": "TRX reverse lunge",
+    "category": "Lunge",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Hold i håndtagene og træd kontrolleret bagud i en lunge.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Balance"
+    ],
+    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
+    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
+    "junior": "6-10 pr. ben",
+    "adult": "8-12 pr. ben",
+    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Balance"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "trx-hamstring-curl",
+    "name": "TRX hamstring curl",
+    "category": "Baglår",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Lig på ryggen med hælene i stropperne. Løft hoften og træk hælene ind.",
+    "focus": [
+      "Baglår",
+      "Balder",
+      "Core"
+    ],
+    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
+    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
+    "junior": "6-10 gentagelser",
+    "adult": "8-15 gentagelser",
+    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "bodyAreas": [
+      "Baglår",
+      "Balder",
+      "Core"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "trx-knee-tuck",
+    "name": "TRX knee tuck",
+    "category": "Core",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Stå i høj planke med fødderne i stropperne og træk knæene mod brystet.",
+    "focus": [
+      "Core",
+      "Skuldre"
+    ],
+    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
+    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
+    "junior": "6-10 gentagelser",
+    "adult": "8-15 gentagelser",
+    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "trx-y-fly",
+    "name": "TRX Y-fly",
+    "category": "Skulder",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Læn kroppen tilbage og før strakte arme op i et Y, mens kroppen holdes spændt.",
+    "focus": [
+      "Skuldre",
+      "Øvre ryg",
+      "Core"
+    ],
+    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
+    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
+    "junior": "6-10 gentagelser",
+    "adult": "8-12 gentagelser",
+    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "bodyAreas": [
+      "Skuldre",
+      "Øvre ryg",
+      "Core"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "trx-power-pull",
+    "name": "TRX power pull",
+    "category": "Rotation",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM",
+      "Makker"
+    ],
+    "description": "Hold ét håndtag, roter væk og træk dig tilbage med rotation gennem overkroppen.",
+    "focus": [
+      "Ryg",
+      "Core",
+      "Arme"
+    ],
+    "easier": "Stå mere oprejst og reducer bevægeudslaget.",
+    "harder": "Gå længere væk fra ankerpunktet eller arbejd langsommere.",
+    "junior": "6-8 pr. side",
+    "adult": "8-12 pr. side",
+    "mistakes": "Mistet kropsspænding, for hurtigt tempo eller uhensigtsmæssig vinkel.",
+    "bodyAreas": [
+      "Ryg",
+      "Core",
+      "Arme"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ]
   }
 ]
