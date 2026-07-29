@@ -1,5 +1,60 @@
-const CACHE='funkfit-v0.6.1';
-const ASSETS=["./", "./index.html", "./manifest.json", "./css/app.css", "./js/app.js", "./data/exercises.json", "./data/workoutTemplates.json", "./data/bodyColors.json", "./assets/videos/01-air-squat.mp4", "./assets/videos/02-goblet-squat.mp4", "./assets/videos/03-farmer-carry.mp4", "./assets/videos/04-bear-crawl.mp4", "./assets/videos/05-push-up.mp4", "./assets/videos/06-db-row.mp4", "./assets/videos/07-kb-deadlift.mp4", "./assets/videos/08-step-up.mp4", "./assets/videos/09-plank-shoulder-tap.mp4", "./assets/videos/10-medball-slam.mp4"];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x))))));
-self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
+const CACHE='funkfit-v0.6.2';
+const ASSETS=[
+  './',
+  './index.html',
+  './manifest.json?v=0.6.2',
+  './css/app.css?v=0.6.2',
+  './js/app.js?v=0.6.2',
+  './data/exercises.json',
+  './data/workoutTemplates.json',
+  './data/bodyColors.json'
+];
+
+self.addEventListener('install', event => {
+  self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE).then(cache => cache.addAll(ASSETS))
+  );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    Promise.all([
+      caches.keys().then(keys =>
+        Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))
+      ),
+      self.clients.claim()
+    ])
+  );
+});
+
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+
+  const url = new URL(event.request.url);
+  const isAppFile =
+    url.pathname.endsWith('/index.html') ||
+    url.pathname.endsWith('/js/app.js') ||
+    url.pathname.endsWith('/css/app.css') ||
+    url.pathname.endsWith('/manifest.json') ||
+    url.pathname.endsWith('/data/exercises.json') ||
+    url.pathname.endsWith('/data/workoutTemplates.json') ||
+    url.pathname.endsWith('/data/bodyColors.json');
+
+  if (isAppFile) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          const copy = response.clone();
+          caches.open(CACHE).then(cache => cache.put(event.request, copy));
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(event.request).then(cached => cached || fetch(event.request))
+  );
+});
