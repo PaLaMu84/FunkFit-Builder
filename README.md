@@ -1,13 +1,28 @@
-# FunkFit Builder v0.5.2
+# FunkFit Builder v0.6.0
 
-Visuelt redesign af sektioner:
+## Ny arbejdsgang
+Appen starter nu med en træningsassistent frem for en tom editor.
 
-- Tydelige sektionskort med farvet venstrekant
-- Automatisk farve og ikon efter sektionstype
-- Opvarmning, teknik, funktionel, HIIT, Hyrox, team, finisher og nedkøling
-- Statistik i overskriften: tid, øvelser, format, arbejde/pause og runder
-- Sammenklappelige sektioner
-- Progressionslinje og sektion X af Y
-- Hurtigmenu: flyt op, flyt ned, duplikér og slet
-- Bedre mobilvisning
-- Version og cache opdateret til 0.5.2
+Vælg:
+- FunkFit Junior
+- Familie
+- Funktionel voksen
+- Hyrox
+- HIIT
+- Inde i gymnastiksalen eller ude ved containeren
+- Varighed, deltagere og antal stationer
+- Træningsmål
+- Det udstyr der faktisk er til rådighed
+- Særlige ønsker
+
+Appen laver derefter et komplet første udkast med sektioner, tider, øvelser,
+arbejde/pause og runder. Udkastet åbnes i den eksisterende editor, hvor det
+kan finpudses.
+
+## Beholdt
+- Billede- og tekstimport
+- Visuel sektionseditor
+- Familievariationer
+- Deltager- og instruktør-PDF
+- Spotify, TIDAL og Telmore Musik
+- Gemte pas og workout-player

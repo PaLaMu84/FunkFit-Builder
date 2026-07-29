@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.5.2",
+  "name": "FunkFit Builder v0.6.0",
   "short_name": "FunkFit",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "Træningsbygger med billed- og tekstimport"
+  "description": "Træningsassistent til junior-, familie- og voksentræning inde og ude"
 }

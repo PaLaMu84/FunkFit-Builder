@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.5.2</title>
+  <title>FunkFit Builder v0.6.0</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 <header class="topbar">
   <div>
-    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.5.2</p>
+    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.6.0</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </div>
@@ -25,8 +25,8 @@
 <main>
 <section id="designView" class="app-view active">
   <div class="stepper">
-    <button class="step active" data-step="1"><span>1</span><strong>Rammer</strong><small>Navn, deltagere, sektioner</small></button>
-    <button class="step" data-step="2"><span>2</span><strong>Øvelser</strong><small>Byg indholdet</small></button>
+    <button class="step active" data-step="1"><span>1</span><strong>Planlæg</strong><small>Fortæl hvad du vil træne</small></button>
+    <button class="step" data-step="2"><span>2</span><strong>Finpuds</strong><small>Ret sektioner og øvelser</small></button>
     <button class="step" data-step="3"><span>3</span><strong>Musik</strong><small>Tilknyt playlister</small></button>
   </div>
 
@@ -34,6 +34,109 @@
     <div class="section-heading">
       <div><p class="eyebrow">TRIN 1</p><h2>Overordnede rammer</h2></div>
     </div>
+
+
+    <section class="planner-hero">
+      <div>
+        <p class="eyebrow">TRÆNINGSASSISTENT</p>
+        <h2>Fra idé til færdigt udkast</h2>
+        <p>Vælg rammerne. Appen sammensætter et forslag, der passer til sted, udstyr, deltagere og træningsmål.</p>
+      </div>
+      <div class="planner-time"><strong>Ca. 2 min</strong><span>til første udkast</span></div>
+    </section>
+
+    <section class="planner-block">
+      <div class="planner-number">1</div>
+      <div class="planner-content">
+        <h3>Hvem træner?</h3>
+        <div class="choice-grid concept-grid" id="conceptChoices">
+          <button type="button" class="choice-card selected" data-value="junior"><span>🟠</span><strong>FunkFit Junior</strong><small>Børn og unge</small></button>
+          <button type="button" class="choice-card" data-value="family"><span>🔵</span><strong>Familie</strong><small>Junior + voksen</small></button>
+          <button type="button" class="choice-card" data-value="adult"><span>🟢</span><strong>Funktionel voksen</strong><small>Kun voksne</small></button>
+          <button type="button" class="choice-card" data-value="hyrox"><span>🔴</span><strong>Hyrox</strong><small>Løb og stationer</small></button>
+          <button type="button" class="choice-card" data-value="hiit"><span>🟣</span><strong>HIIT</strong><small>Intervaller og puls</small></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="planner-block">
+      <div class="planner-number">2</div>
+      <div class="planner-content">
+        <h3>Hvor foregår træningen?</h3>
+        <div class="choice-grid venue-grid" id="venueChoices">
+          <button type="button" class="choice-card selected" data-value="indoor"><span>🏠</span><strong>Inde</strong><small>Gymnastiksalen</small></button>
+          <button type="button" class="choice-card" data-value="outdoor"><span>🌳</span><strong>Ude</strong><small>Container og udeområde</small></button>
+        </div>
+        <p id="venueHint" class="planner-hint">Indendørs profil: gulv, vægge, bokse, måtter og salens udstyr.</p>
+      </div>
+    </section>
+
+    <section class="planner-block">
+      <div class="planner-number">3</div>
+      <div class="planner-content">
+        <h3>Rammer</h3>
+        <div class="planner-fields">
+          <label>Varighed<input id="plannerDuration" type="number" min="20" max="120" value="60"><span>minutter</span></label>
+          <label>Deltagere<input id="plannerParticipants" type="number" min="1" max="100" value="20"><span>personer</span></label>
+          <label id="plannerAdultsWrap" class="hidden">Heraf voksne<input id="plannerAdults" type="number" min="0" max="50" value="10"><span>voksne</span></label>
+          <label>Ønsket antal stationer<input id="plannerStations" type="number" min="3" max="12" value="6"><span>stationer</span></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="planner-block">
+      <div class="planner-number">4</div>
+      <div class="planner-content">
+        <h3>Hvad skal fylde i træningen?</h3>
+        <div id="goalChoices" class="chip-grid">
+          <button type="button" class="goal-chip selected" data-value="Sjov">Sjov</button>
+          <button type="button" class="goal-chip selected" data-value="Kondition">Kondition</button>
+          <button type="button" class="goal-chip" data-value="Styrke">Styrke</button>
+          <button type="button" class="goal-chip selected" data-value="Samarbejde">Samarbejde</button>
+          <button type="button" class="goal-chip" data-value="Teknik">Teknik</button>
+          <button type="button" class="goal-chip" data-value="Eksplosivitet">Eksplosivitet</button>
+          <button type="button" class="goal-chip" data-value="Core">Core</button>
+          <button type="button" class="goal-chip" data-value="Balance">Balance</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="planner-block">
+      <div class="planner-number">5</div>
+      <div class="planner-content">
+        <div class="section-heading compact">
+          <div><h3>Tilgængeligt udstyr</h3><p id="equipmentProfileText">Standardprofil: Gymnastiksalen</p></div>
+          <button id="selectAllEquipmentBtn" type="button" class="ghost small-btn">Vælg alt</button>
+        </div>
+        <div id="equipmentChoices" class="equipment-grid"></div>
+      </div>
+    </section>
+
+    <section class="planner-block">
+      <div class="planner-number">6</div>
+      <div class="planner-content">
+        <h3>Din idé eller særlige ønsker</h3>
+        <textarea id="plannerBrief" rows="4" placeholder="Fx: Hyrox-inspireret træning med meget teamwork. Ingen kø. Jeg vil gerne bruge wall balls og farmer carry."></textarea>
+        <div class="planner-toggles">
+          <label><input id="avoidWaiting" type="checkbox" checked> Undgå ventetid og kø</label>
+          <label><input id="includeTeamChallenge" type="checkbox" checked> Afslut med teamchallenge</label>
+          <label><input id="useFavoritesFirst" type="checkbox"> Prioritér mine favoritter</label>
+        </div>
+      </div>
+    </section>
+
+    <div class="generate-panel">
+      <div>
+        <strong>Klar til at bygge?</strong>
+        <p>Forslaget bliver sat direkte ind i editoren og kan ændres bagefter.</p>
+      </div>
+      <button id="generateSmartWorkoutBtn" type="button" class="generate-btn">✨ Lav træningsforslag</button>
+    </div>
+    <div id="plannerResult" class="planner-result hidden"></div>
+
+    <details class="advanced-existing">
+      <summary>Avanceret: Byg eller importér manuelt</summary>
+      <div class="advanced-inner">
 
     <section class="import-workout-panel">
       <div class="section-heading">
@@ -94,8 +197,11 @@ Hovedtræning 20 min
 
     <div id="frameworkSections"></div>
 
+      </div>
+    </details>
+
     <div class="step-actions">
-      <button data-next-step="2">Næste: Tilføj øvelser →</button>
+      <button data-next-step="2">Gå til editor →</button>
     </div>
   </section>
 
@@ -223,7 +329,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.5.2 · © Paw Lalicata Munk</footer>
+<footer>FunkFit Builder v0.6.0 · © Paw Lalicata Munk</footer>
 <script type="module" src="js/app.js"></script>
 </body>
 </html>

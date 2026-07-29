@@ -82,6 +82,8 @@ function bind(){
   $('#workoutTextFileInput').onchange=handleWorkoutTextFile;
   $('#analyzeImportBtn').onclick=analyzeImportedWorkout;
   $('#clearImportBtn').onclick=clearImportedWorkout;
+  bindPlanner();
+
 
   $('#playerPrevBtn').onclick=()=>movePlayer(-1);
   $('#playerNextBtn').onclick=()=>movePlayer(1);
@@ -252,6 +254,121 @@ function createExercise(e){
   const all=customs();all.unshift(x);localStorage.setItem(CKEY,JSON.stringify(all));exercises=[x,...exercises];e.target.reset();$('#newExerciseDialog').close();renderPicker();
 }
 
+
+
+function bindPlanner(){
+  renderEquipmentChoices();
+  document.querySelectorAll('#conceptChoices .choice-card').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#conceptChoices .choice-card').forEach(x=>x.classList.remove('selected'));
+    b.classList.add('selected');plannerConcept=b.dataset.value;
+    const family=plannerConcept==='family';
+    $('#plannerAdultsWrap').classList.toggle('hidden',!family);
+    $('#familyMode').checked=family;
+    $('#adultCountLabel').classList.toggle('hidden',!family);
+    if(plannerConcept==='adult'||plannerConcept==='hyrox'||plannerConcept==='hiit'){
+      $('#participantCount').value=$('#plannerParticipants').value;
+    }
+  });
+  document.querySelectorAll('#venueChoices .choice-card').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#venueChoices .choice-card').forEach(x=>x.classList.remove('selected'));
+    b.classList.add('selected');plannerVenue=b.dataset.value;
+    plannerEquipment=new Set(EQUIPMENT_PROFILES[plannerVenue]);
+    $('#venueHint').textContent=plannerVenue==='indoor'
+      ?'Indendørs profil: gulv, vægge, bokse, måtter og salens udstyr.'
+      :'Udendørs profil: containerudstyr, løbeområde, slæder, sandsække og større redskaber.';
+    $('#equipmentProfileText').textContent=plannerVenue==='indoor'?'Standardprofil: Gymnastiksalen':'Standardprofil: Containeren';
+    renderEquipmentChoices();
+  });
+  document.querySelectorAll('#goalChoices .goal-chip').forEach(b=>b.onclick=()=>b.classList.toggle('selected'));
+  $('#selectAllEquipmentBtn').onclick=()=>{
+    const all=[...new Set(exercises.flatMap(x=>x.equipment||[]).concat(EQUIPMENT_PROFILES.indoor,EQUIPMENT_PROFILES.outdoor))];
+    plannerEquipment.size===all.length?plannerEquipment.clear():all.forEach(x=>plannerEquipment.add(x));
+    renderEquipmentChoices();
+  };
+  $('#generateSmartWorkoutBtn').onclick=generateSmartWorkout;
+}
+function renderEquipmentChoices(){
+  if(!$('#equipmentChoices'))return;
+  const profile=EQUIPMENT_PROFILES[plannerVenue];
+  const fromExercises=[...new Set(exercises.flatMap(x=>x.equipment||[]))];
+  const all=[...new Set([...profile,...fromExercises])].sort((a,b)=>{
+    const ai=profile.includes(a)?0:1,bi=profile.includes(b)?0:1;
+    return ai-bi||a.localeCompare(b,'da');
+  });
+  $('#equipmentChoices').innerHTML=all.map(eq=>`<label class="equipment-option ${plannerEquipment.has(eq)?'active':''}"><input type="checkbox" data-equipment="${esc(eq)}" ${plannerEquipment.has(eq)?'checked':''}>${esc(eq)}</label>`).join('');
+  $('#equipmentChoices').querySelectorAll('[data-equipment]').forEach(c=>c.onchange=()=>{
+    c.checked?plannerEquipment.add(c.dataset.equipment):plannerEquipment.delete(c.dataset.equipment);
+    c.closest('.equipment-option').classList.toggle('active',c.checked);
+  });
+}
+function goalValues(){return [...document.querySelectorAll('#goalChoices .goal-chip.selected')].map(x=>x.dataset.value)}
+function exerciseAvailable(ex){
+  const req=ex.equipment||['Kropsvægt'];
+  return req.some(eq=>eq==='Kropsvægt'||plannerEquipment.has(eq));
+}
+function scoreExercise(ex,goals,sectionType){
+  let score=0;
+  const hay=[ex.name,ex.category,ex.intensity,...(ex.focus||[]),...(ex.bodyAreas||[]),...(ex.styles||[]),...(ex.format||[])].join(' ').toLowerCase();
+  goals.forEach(g=>{if(hay.includes(g.toLowerCase()))score+=4});
+  if(sectionType==='warmup'&&(hay.includes('kondition')||hay.includes('koordination')||hay.includes('agility')||hay.includes('kropsvægt')))score+=5;
+  if(sectionType==='main'&&(hay.includes('funktionel')||hay.includes('styrke')||hay.includes('helkrop')))score+=3;
+  if(sectionType==='team'&&(hay.includes('makker')||hay.includes('stafet')||hay.includes('teamchallenge')))score+=7;
+  if(plannerConcept==='hyrox'&&hay.includes('hyrox'))score+=8;
+  if(plannerConcept==='hiit'&&hay.includes('hiit'))score+=8;
+  if(plannerConcept==='adult'&&(ex.audience||[]).includes('Voksen'))score+=2;
+  if(plannerVenue==='outdoor'&&(hay.includes('løb')||hay.includes('carry')||hay.includes('stafet')))score+=3;
+  if(plannerVenue==='indoor'&&(ex.equipment||[]).some(x=>['Måtte','Boks','Bænk','Væg'].includes(x)))score+=2;
+  if($('#useFavoritesFirst').checked&&favorites().has(ex.id))score+=10;
+  return score+Math.random()*1.5;
+}
+function pickExercises(count,goals,type,used=new Set()){
+  return exercises.filter(ex=>exerciseAvailable(ex)&&!used.has(ex.id))
+    .map(ex=>({ex,score:scoreExercise(ex,goals,type)}))
+    .sort((a,b)=>b.score-a.score).slice(0,count).map(x=>x.ex);
+}
+function prescriptionFor(ex,adult=false){
+  const text=adult?(ex.adult||'8-15 gentagelser'):(ex.junior||'8-12 gentagelser');
+  return text.replace(/\.$/,'');
+}
+function makeItem(ex){
+  return {exerciseId:ex.id,juniorKg:'',juniorReps:prescriptionFor(ex,false),juniorNote:'',adultExerciseId:ex.id,adultKg:'',adultReps:prescriptionFor(ex,true),adultNote:''};
+}
+function generateSmartWorkout(){
+  const duration=Math.max(20,+$('#plannerDuration').value||60);
+  const participants=Math.max(1,+$('#plannerParticipants').value||20);
+  const stationCount=Math.max(3,Math.min(12,+$('#plannerStations').value||6));
+  const goals=goalValues();
+  const includeTeam=$('#includeTeamChallenge').checked;
+  const warmMinutes=Math.max(8,Math.round(duration*.16));
+  const teamMinutes=includeTeam?Math.max(6,Math.round(duration*.12)):0;
+  const mainMinutes=duration-warmMinutes-teamMinutes;
+  const used=new Set();
+  const warm=pickExercises(3,goals,'warmup',used);warm.forEach(x=>used.add(x.id));
+  const main=pickExercises(stationCount,goals,'main',used);main.forEach(x=>used.add(x.id));
+  const team=includeTeam?pickExercises(3,[...goals,'Samarbejde'],'team',used):[];
+  const mainFormat=plannerConcept==='hiit'?'HIIT-intervaller':plannerConcept==='hyrox'?'Hyrox station':'Stationstræning';
+  const mainStyle=plannerConcept==='hiit'?'HIIT / Hyrox-inspireret':plannerConcept==='hyrox'?'HIIT / Hyrox-inspireret':'Funktionel';
+  sections=[
+    {name:'Opvarmning',minutes:warmMinutes,format:'Stationstræning',style:'Funktionel',work:35,rest:15,rounds:2,exercises:warm.map(makeItem)},
+    {name:plannerConcept==='hyrox'?'Hyrox hovedtræning':plannerConcept==='hiit'?'HIIT hovedtræning':'Hovedtræning',minutes:mainMinutes,format:mainFormat,style:mainStyle,work:plannerConcept==='hiit'?40:45,rest:plannerConcept==='hiit'?20:15,rounds:Math.max(2,Math.round(mainMinutes/(stationCount*1.2))),exercises:main.map(makeItem)}
+  ];
+  if(includeTeam)sections.push({name:'Teamchallenge',minutes:teamMinutes,format:'Teamchallenge',style:'Leg / samarbejde',work:45,rest:15,rounds:2,exercises:team.map(makeItem)});
+  const conceptNames={junior:'FunkFit Junior',family:'Familietræning',adult:'Funktionel voksentræning',hyrox:'Hyrox-træning',hiit:'HIIT-træning'};
+  $('#workoutName').value=`${conceptNames[plannerConcept]} – ${plannerVenue==='indoor'?'inde':'ude'}`;
+  $('#participantCount').value=participants;
+  $('#familyMode').checked=plannerConcept==='family';
+  $('#adultCountLabel').classList.toggle('hidden',plannerConcept!=='family');
+  if(plannerConcept==='family')$('#adultCount').value=+$('#plannerAdults').value||10;
+  renderFramework();renderExerciseSections();updateReview();
+  const equipmentUsed=[...new Set([...warm,...main,...team].flatMap(x=>x.equipment||[]))];
+  $('#plannerResult').classList.remove('hidden');
+  $('#plannerResult').innerHTML=`<h3>Forslaget er klar ✓</h3>
+    <p><strong>${esc(conceptNames[plannerConcept])}</strong> · ${duration} min · ${participants} deltagere · ${plannerVenue==='indoor'?'gymnastiksal':'udendørs/container'}</p>
+    <ul><li>${sections.length} sektioner og ${warm.length+main.length+team.length} øvelser</li><li>Udstyr i forslaget: ${esc(equipmentUsed.join(', ')||'Kropsvægt')}</li><li>${$('#avoidWaiting').checked?'Stationerne er fordelt med fokus på mindst mulig kø.':'Forslaget kan tilpasses frit i editoren.'}</li></ul>
+    <button id="openGeneratedEditorBtn" type="button">Åbn og finpuds træningen →</button>`;
+  $('#openGeneratedEditorBtn').onclick=()=>showStep(2);
+  $('#plannerResult').scrollIntoView({behavior:'smooth',block:'center'});
+}
 
 async function loadTesseract(){
   if(window.Tesseract)return window.Tesseract;
