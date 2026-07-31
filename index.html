@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.1</title>
+  <title>FunkFit Builder v0.7.2</title>
   <link rel="manifest" href="manifest.json?v=0.7.1">
   <link rel="stylesheet" href="css/app.css?v=0.7.1">
 </head>
 <body>
 <header class="topbar">
   <div>
-    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.7.1</p>
+    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.7.2</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </div>
@@ -20,7 +20,7 @@
 <nav class="main-nav">
   <button class="nav-tab active" data-view="designView">Design træning</button>
   <button class="nav-tab" data-view="savedView">Gemte pas</button>
-  <button class="nav-tab" data-view="libraryView">Elementbibliotek</button>
+  <button class="nav-tab" data-view="libraryView">Mit bibliotek</button>
 </nav>
 
 <main>
@@ -37,6 +37,20 @@
     </div>
 
 
+
+    <section class="creation-mode">
+      <div>
+        <p class="eyebrow">ARBEJDSGANG</p>
+        <h3>Hvordan vil du starte?</h3>
+      </div>
+      <div class="creation-mode-buttons">
+        <button id="manualModeBtn" type="button" class="mode-btn selected">🛠️ Builder</button>
+        <button id="aiModeBtn" type="button" class="mode-btn">🤖 AI-forslag</button>
+      </div>
+      <p id="creationModeHint">Builder er standard. Du bestemmer selv strukturen og kan bruge skabeloner eller import.</p>
+    </section>
+
+    <div id="aiPlannerTrack" class="hidden">
     <section class="planner-hero">
       <div>
         <p class="eyebrow">TRÆNINGSASSISTENT</p>
@@ -121,10 +135,26 @@
         <textarea id="plannerBrief" rows="4" placeholder="Fx: Hyrox-inspireret træning med meget teamwork. Ingen kø. Jeg vil gerne bruge wall balls og farmer carry."></textarea>
         <div class="planner-toggles">
           <label><input id="avoidWaiting" type="checkbox" checked> Undgå ventetid og kø</label>
+          <label><input id="includeJointWarmup" type="checkbox" checked> Fast ledopvarmning (5 min)</label>
           <label><input id="includeTeamChallenge" type="checkbox" checked> Planlæg en finisher til sidst</label>
           <label><input id="includeGame" type="checkbox" checked> Medtag en leg (Junior/Familie)</label>
           <label><input id="useFavoritesFirst" type="checkbox"> Prioritér mine favoritter</label>
         </div>
+      </div>
+    </section>
+
+
+    <section class="planner-block">
+      <div class="planner-number">7</div>
+      <div class="planner-content">
+        <h3>Træningens struktur</h3>
+        <div id="structureChoices" class="chip-grid">
+          <button type="button" class="structure-chip selected" data-value="auto">Lad AI vælge</button>
+          <button type="button" class="structure-chip" data-value="one">Ét hovedelement</button>
+          <button type="button" class="structure-chip" data-value="two">To hovedelementer</button>
+          <button type="button" class="structure-chip" data-value="three">Tre korte hovedelementer</button>
+        </div>
+        <p class="planner-hint">Antal stationer vælges inde i det enkelte hovedelement – ikke for hele træningen.</p>
       </div>
     </section>
 
@@ -136,9 +166,10 @@
       <button id="generateSmartWorkoutBtn" type="button" class="generate-btn">✨ Lav træningsforslag</button>
     </div>
     <div id="plannerResult" class="planner-result hidden"></div>
+    </div>
 
-    <details class="advanced-existing">
-      <summary>Avanceret: Byg eller importér manuelt</summary>
+    <details id="manualBuilderTrack" class="advanced-existing" open>
+      <summary>Builder: Byg, brug skabelon eller importér</summary>
       <div class="advanced-inner">
 
     <section class="import-workout-panel">
@@ -148,9 +179,16 @@
 
       <div class="import-options">
         <label class="upload-card">
-          <strong>Tag eller vælg et billede</strong>
-          <small>Appen forsøger at aflæse teksten automatisk.</small>
-          <input id="workoutImageInput" type="file" accept="image/*" capture="environment">
+          <strong>Vælg fra galleri</strong>
+          <small>Vælg et screenshot eller et eksisterende billede.</small>
+          <input id="workoutImageInput" type="file" accept="image/*">
+        </label>
+
+
+        <label class="upload-card">
+          <strong>Tag et nyt billede</strong>
+          <small>Åbn kameraet og fotografér træningsplanen.</small>
+          <input id="workoutCameraInput" type="file" accept="image/*" capture="environment">
         </label>
 
         <label class="upload-card">
@@ -274,7 +312,7 @@ Hovedtræning 20 min
 <section id="libraryView" class="app-view">
   <section class="panel">
     <div class="section-heading">
-      <div><p class="eyebrow">ELEMENTBIBLIOTEK</p><h2>Gemte lege og træningselementer</h2><p>Gem en sektion fra editoren og genbrug den i et nyt pas.</p></div>
+      <div><p class="eyebrow">MIT BIBLIOTEK</p><h2>Mine gemte lege og træningselementer</h2><p>Gem et element fra editoren og genbrug det i en ny træning.</p></div>
     </div>
     <div id="elementLibrary" class="saved-grid"></div>
   </section>
@@ -341,7 +379,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.1 · © Paw Lalicata Munk</footer>
+<footer>FunkFit Builder v0.7.2 · © Paw Lalicata Munk</footer>
 <script type="module" src="js/app.js?v=0.7.1"></script>
 </body>
 </html>
