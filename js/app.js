@@ -1,5 +1,12 @@
 
 const $=s=>document.querySelector(s);
+const byId=id=>document.getElementById(id);
+const on=(id,event,handler)=>{
+  const el=byId(id);
+  if(!el){console.warn(`Mangler element #${id}`);return false}
+  el.addEventListener(event,handler);
+  return true;
+};
 const ELEMENT_TYPES=['Ledopvarmning','Opvarmning','Leg','AMRAP','EMOM','YGIG','Chipper','Stationer','Teknik','Styrke','Finisher'];
 const FORMATS=['Fælles flow','Teknik','Stationstræning','Cirkeltræning','AMRAP','EMOM','E2MOM','For time','Chipper','Tabata','HIIT-intervaller','You go, I go','Makkertræning','Team workout','Stafet','Hyrox station'];
 const STYLES=['Funktionel','CrossFit-inspireret','HIIT / Hyrox-inspireret','Teknik','Leg','Mobilitet','Kondition'];
@@ -181,7 +188,7 @@ async function init(){
   $('#templateSelect').innerHTML=templates.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   $('#workoutDate').value=new Date().toISOString().slice(0,10);
   sections=[defaultSection('Ledopvarmning'),...structuredClone(templates[0].sections)];
-  populatePickerFilters();bind();setCreationMode(userProfile().preferredMode||'manual');normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();
+  populatePickerFilters();bind();setCreationMode(userProfile().preferredMode||'manual');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();
 }
 
 function bind(){
@@ -208,8 +215,8 @@ function bind(){
   $('#newExerciseForm').onsubmit=createExercise;
   $('#workoutImageInput').onchange=handleWorkoutImage;
 
-  $('#manualModeBtn').onclick=()=>setCreationMode('manual');
-  $('#aiModeBtn').onclick=()=>setCreationMode('ai');
+  on('manualModeBtn','click',()=>{console.info('Skifter til Builder');setCreationMode('manual')});
+  on('aiModeBtn','click',()=>{console.info('Skifter til AI-forslag');setCreationMode('ai')});
   $('#workoutCameraInput').onchange=handleWorkoutImage;
   document.querySelectorAll('#structureChoices .structure-chip').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('#structureChoices .structure-chip').forEach(x=>x.classList.remove('selected'));
@@ -235,18 +242,42 @@ function bind(){
 
 
 function setCreationMode(mode){
-  creationMode=mode;
-  $('#manualModeBtn').classList.toggle('selected',mode==='manual');
-  $('#aiModeBtn').classList.toggle('selected',mode==='ai');
-  $('#aiPlannerTrack').classList.toggle('hidden',mode!=='ai');
-  $('#manualBuilderTrack').open=mode==='manual';
-  $('#creationModeHint').textContent=mode==='manual'
-    ?'Builder er standard. Du bestemmer selv strukturen og kan bruge skabeloner eller import.'
-    :'AI laver et komplet forslag, som bagefter åbnes i den almindelige Builder.';
-  const profile=userProfile();profile.preferredMode=mode;saveUserProfile(profile);
+  creationMode=mode==='ai'?'ai':'manual';
+  const manualBtn=byId('manualModeBtn');
+  const aiBtn=byId('aiModeBtn');
+  const aiTrack=byId('aiPlannerTrack');
+  const manualTrack=byId('manualBuilderTrack');
+  const hint=byId('creationModeHint');
+
+  manualBtn?.classList.toggle('selected',creationMode==='manual');
+  aiBtn?.classList.toggle('selected',creationMode==='ai');
+
+  if(aiTrack){
+    aiTrack.classList.toggle('hidden',creationMode!=='ai');
+    aiTrack.setAttribute('aria-hidden',String(creationMode!=='ai'));
+  }
+  if(manualTrack){
+    manualTrack.open=creationMode==='manual';
+    manualTrack.classList.toggle('hidden',creationMode!=='manual');
+  }
+  if(hint){
+    hint.textContent=creationMode==='manual'
+      ?'Builder er standard. Du bestemmer selv strukturen og kan bruge skabeloner eller import.'
+      :'AI laver et komplet forslag, som bagefter åbnes i den almindelige Builder.';
+  }
+  const profile=userProfile();
+  profile.preferredMode=creationMode;
+  saveUserProfile(profile);
+  setTimeout(()=>{(creationMode==='ai'?aiTrack:manualTrack)?.scrollIntoView({behavior:'smooth',block:'start'})},50);
 }
 function selectedTrainingType(){return plannerConcept||'junior'}
 
+function verifyInteractiveControls(){
+  const required=['manualModeBtn','aiModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn'];
+  const missing=required.filter(id=>!byId(id));
+  if(missing.length)console.error('Manglende interaktive elementer:',missing);
+  else console.info('FunkFit interaktive kontroller: OK');
+}
 function showView(id){
   document.querySelectorAll('.app-view').forEach(v=>v.classList.toggle('active',v.id===id));
   document.querySelectorAll('.nav-tab').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
