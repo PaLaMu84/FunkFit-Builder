@@ -254,3 +254,8 @@ dialog{width:min(860px,calc(100% - 1rem));max-height:90vh;overflow:auto;border:0
 .programming-note{margin:.65rem 0;padding:.65rem .8rem;border-radius:10px;background:#eff6ff;color:#1e40af;font-size:.84rem}
 @media(max-width:720px){.creation-mode{align-items:stretch;flex-direction:column}.creation-mode-buttons{width:100%}.creation-mode-buttons button{flex:1}.finisher-song-card,.type-fields{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.finisher-song-card,.type-fields{grid-template-columns:1fr}.inline-section-controls{align-items:stretch}.inline-section-controls label{justify-content:space-between;width:100%}.inline-section-controls input,.inline-section-controls select{flex:1}}
+
+#aiPlannerTrack.hidden{display:none!important}
+#manualBuilderTrack.hidden{display:none!important}
+.creation-mode-buttons .mode-btn{background:#f1f5f9;color:#334155;border:1px solid #cbd5e1}
+.creation-mode-buttons .mode-btn.selected{background:var(--orange);color:#fff;border-color:var(--orange)}
