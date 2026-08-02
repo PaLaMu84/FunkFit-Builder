@@ -63,7 +63,7 @@ const PROGRAMMING_PROFILES={
   hyrox:{label:'Hyrox',supportsTheme:false,defaultStructure:['Ledopvarmning','Opvarmning','Teknik','Hyrox blok','Hyrox blok','Finisher']},
   hiit:{label:'HIIT',supportsTheme:false,defaultStructure:['Ledopvarmning','Opvarmning','HIIT blok','HIIT blok','Finisher']}
 };
-let creationMode='manual',structureChoice='auto',singleSectionTarget=null;
+let creationMode='choice',structureChoice='auto',singleSectionTarget=null;
 
 
 
@@ -353,7 +353,7 @@ async function init(){
   $('#templateSelect').innerHTML=templates.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   $('#workoutDate').value=new Date().toISOString().slice(0,10);
   sections=prepareTemplateSections(templates[0].sections);
-  populatePickerFilters();bind();setCreationMode(userProfile().preferredMode||'manual');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();
+  populatePickerFilters();bind();setCreationMode('choice');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();
 }
 
 function bind(){
@@ -416,18 +416,18 @@ function bind(){
 
 
 function setCreationMode(mode){
-  creationMode=['ai','section'].includes(mode)?mode:'manual';
+  creationMode=['ai','section','manual'].includes(mode)?mode:'choice';
 
   const manualBtn=byId('manualModeBtn');
   const aiBtn=byId('aiModeBtn');
   const singleBtn=byId('singleSectionModeBtn');
   const aiTrack=byId('aiPlannerTrack');
   const manualTrack=byId('manualBuilderTrack');
-  const hint=byId('creationModeHint');
   const isPlanner=creationMode==='ai'||creationMode==='section';
   const isSection=creationMode==='section';
+  const isManual=creationMode==='manual';
 
-  manualBtn?.classList.toggle('selected',creationMode==='manual');
+  manualBtn?.classList.toggle('selected',isManual);
   aiBtn?.classList.toggle('selected',creationMode==='ai');
   singleBtn?.classList.toggle('selected',isSection);
 
@@ -436,8 +436,9 @@ function setCreationMode(mode){
     aiTrack.setAttribute('aria-hidden',String(!isPlanner));
   }
   if(manualTrack){
-    manualTrack.open=creationMode==='manual';
-    manualTrack.classList.toggle('hidden',creationMode!=='manual');
+    manualTrack.classList.toggle('hidden',!isManual);
+    manualTrack.open=isManual;
+    manualTrack.setAttribute('aria-hidden',String(!isManual));
   }
 
   byId('plannerStructureBlock')?.classList.toggle('hidden',isSection);
@@ -473,19 +474,18 @@ function setCreationMode(mode){
     :'Forslaget bliver sat direkte ind i editoren og kan ændres bagefter.';
   if(byId('generateSmartWorkoutBtn'))byId('generateSmartWorkoutBtn').textContent=isSection?'✨ Lav sektionsforslag':'✨ Lav træningsforslag';
 
-  if(hint){
-    hint.textContent=creationMode==='manual'
-      ?'Du bygger træningen selv. AI kan stadig hjælpe inde i de enkelte sektioner.'
-      :isSection
-      ?'AI hjælper kun med én sektion. Punkt 1–6 bruges som kontekst; punkt 7, ledopvarmning og finisher er ikke med.'
-      :'AI laver et komplet træningsforslag, som bagefter åbnes i Finpuds.';
+  // Gem kun et aktivt valg. "choice" er startvisningen og må ikke
+  // få Builder-panelet til at åbne automatisk næste gang.
+  if(creationMode!=='choice'){
+    const profile=userProfile();
+    profile.preferredMode=creationMode;
+    saveUserProfile(profile);
   }
 
-  const profile=userProfile();
-  profile.preferredMode=creationMode;
-  saveUserProfile(profile);
   updateTimeControl();
-  setTimeout(()=>{(isPlanner?aiTrack:manualTrack)?.scrollIntoView({behavior:'smooth',block:'start'})},50);
+  if(isPlanner||isManual){
+    setTimeout(()=>{(isPlanner?aiTrack:manualTrack)?.scrollIntoView({behavior:'smooth',block:'start'})},50);
+  }
 }
 function selectedTrainingType(){return plannerConcept||'junior'}
 
@@ -1173,7 +1173,7 @@ function generateSingleSectionFromPlanner(){
     <button id="openGeneratedSectionBtn" type="button">Gennemgå sektionen i Finpuds →</button>`;
   $('#openGeneratedSectionBtn').onclick=()=>{
     singleSectionTarget=null;
-    setCreationMode('manual');
+    setCreationMode('choice');
     showStep(2);
   };
   $('#plannerResult').scrollIntoView({behavior:'smooth',block:'center'});
@@ -1666,7 +1666,7 @@ function newWorkout(){
   clearTimeout(clearUndoTimer);
   byId('clearUndoBar')?.classList.add('hidden');
   resetDraft({withStructure:true});
-  setCreationMode('manual');
+  setCreationMode('choice');
   showView('designView');
   showStep(1);
 }

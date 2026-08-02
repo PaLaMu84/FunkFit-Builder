@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.7.4-alpha.4",
-  "short_name": "FunkFit 0.7.4a4",
+  "name": "FunkFit Builder v0.7.4-alpha.5",
+  "short_name": "FunkFit 0.7.4a5",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "Bedre fortolkning af mave/core-ønsker og fjernet overflødig hjælpetekst"
+  "description": "Builder-panelet åbnes kun efter klik på Byg en hel træning selv"
 }
