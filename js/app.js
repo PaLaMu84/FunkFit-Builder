@@ -28,6 +28,58 @@ const RUN_LIBRARY=[
   {id:'run-relay',label:'Stafetløb',type:'Stafetløb',value:60,unit:'sekunder',intensity:'Hurtigt',route:'Holdbane med kegle'},
   {id:'run-reaction',label:'Reaktionsløb',type:'Reaktionsløb',value:30,unit:'sekunder',intensity:'Hurtigt',route:'Instruktøren kalder retning eller farve'}
 ];
+
+const FUNKFIT_FUNDAMENTALS={
+  squat:{
+    icon:'🟠',label:'Sætte sig',english:'Squat',exerciseIds:['air-squat','box-squat','goblet-squat'],
+    description:'Lær at sætte hoften bagud og ned med hele foden i gulvet, knæ over tæer og en stabil overkrop.',
+    rules:'Arbejd langsomt og stop serien, når positionen ikke længere kan holdes.',
+    coachTips:'Start med Air squat. Brug boks som tydeligt mål og tilføj først let goblet-belastning, når bevægelsen er sikker.'
+  },
+  hinge:{
+    icon:'🟢',label:'Samle op',english:'Hinge',exerciseIds:['hip-hinge-wall-touch','kb-deadlift','romanian-deadlift'],
+    description:'Lær at skubbe hoften bagud og samle noget op med en lang ryg og belastningen tæt på kroppen.',
+    rules:'Hoften bevæger sig mere end knæene. Genstanden holdes tæt på kroppen.',
+    coachTips:'Begynd uden vægt med Hinge til væg. Gå derefter til en let kettlebell deadlift fra en passende højde.'
+  },
+  push:{
+    icon:'🔵',label:'Skubbe',english:'Push',exerciseIds:['incline-push-up','push-up','db-shoulder-press'],
+    description:'Lær at skubbe med en stærk kropslinje, kontrollerede skuldre og albuer i en naturlig vinkel.',
+    rules:'Vælg en højde og belastning, hvor hele bevægelsen kan udføres uden at miste kropslinjen.',
+    coachTips:'Start med incline push-up. Sænk højden gradvist og brug først gulv-push-up, når kvaliteten er god.'
+  },
+  pull:{
+    icon:'🟣',label:'Trække',english:'Pull',exerciseIds:['band-row','trx-row','db-row'],
+    description:'Lær at trække albuerne bagud, holde skuldrene væk fra ørerne og samle skulderbladene kontrolleret.',
+    rules:'Kroppen holdes stabil, og trækket afsluttes uden at skuldrene løftes.',
+    coachTips:'Elastik row er nem at lære samlet. TRX row giver tydelig skalering via kropsvinklen.'
+  },
+  carry:{
+    icon:'🟡',label:'Bære',english:'Carry',exerciseIds:['farmer-carry','suitcase-carry','front-rack-carry'],
+    description:'Lær at bære med rank krop, stabile skuldre, rolig vejrtrækning og kontrollerede skridt.',
+    rules:'Gå – løb ikke. Vælg en belastning, der ikke trækker kroppen skæv.',
+    coachTips:'Start med farmer carry. Brug derefter suitcase carry til at lære at modstå sidebøjning.'
+  },
+  'jump-land':{
+    icon:'🔴',label:'Hoppe og lande',english:'Jump/Land',exerciseIds:['jump-and-stick','line-hops','box-jump'],
+    description:'Lær at skabe kraft i et hop og lande blødt, stabilt og klar til næste bevægelse.',
+    rules:'Hver landing skal kunne fryses i to sekunder. Kvalitet kommer før højde og fart.',
+    coachTips:'Start med Hop og frys. Brug lave linjehop og først senere en lav boks, hvis landingen er stabil.'
+  },
+  'run-cod':{
+    icon:'⚫',label:'Løbe og vende',english:'Run/Change of direction',exerciseIds:['shuttle-run','cone-touch-reaction','fast-feet'],
+    description:'Lær at accelerere, bremse og skifte retning med korte skridt, lavt tyngdepunkt og kontrol.',
+    rules:'Brems før vendepunktet. Sæt ydre fod i gulvet og skub kontrolleret tilbage.',
+    coachTips:'Brug korte shuttle-afstande. Markér vendepunkter tydeligt og øg først tempoet, når bremsningen fungerer.'
+  },
+  core:{
+    icon:'⭐',label:'Holde kroppen stærk',english:'Core',exerciseIds:['dead-bug','plank','side-plank'],
+    description:'Lær at holde bækken, ryg og ribben stabile, mens arme og ben bevæger sig eller kroppen belastes.',
+    rules:'Stop eller gør øvelsen lettere, hvis lænden svajer, eller vejrtrækningen holdes.',
+    coachTips:'Start med dead bug. Gå videre til korte plankehold og sideplanke med god spænding.'
+  }
+};
+
 const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
 let plannerConcept='junior',plannerVenue='indoor';
@@ -168,6 +220,7 @@ function normalizeSection(s){
   s.work=Number(s.work||0);
   s.rest=Number(s.rest||0);
   s.timeCap=Number(s.timeCap||s.minutes||0);
+  s.fundamentalKey=FUNKFIT_FUNDAMENTALS[s.fundamentalKey]?s.fundamentalKey:'';
   s.exercises=(s.exercises||[]).map(normalizeActivity);
   return applySectionRules(s);
 }
@@ -269,6 +322,9 @@ function buildGameSuggestion(minutes=8,focus='',theme=''){
 }
 function buildSectionSuggestion(type='AMRAP',minutes=12,focus='',theme=''){
   if(type==='Leg')return buildGameSuggestion(minutes,focus,theme);
+  if(type==='Teknik'&&isJuniorFamilyContext()){
+    return buildFundamentalSection(fundamentalFromFocus(focus),minutes);
+  }
   const s=defaultSection(type);
   s.minutes=minutes;
   if(type==='Chipper')s.timeCap=minutes;
@@ -362,7 +418,13 @@ function bind(){
   document.querySelectorAll('[data-next-step]').forEach(b=>b.onclick=()=>showStep(+b.dataset.nextStep));
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).close());
 
-  $('#familyMode').onchange=()=>{$('#adultCountLabel').classList.toggle('hidden',!$('#familyMode').checked);renderExerciseSections()};
+  $('#familyMode').onchange=()=>{
+    $('#adultCountLabel').classList.toggle('hidden',!$('#familyMode').checked);
+    if($('#familyMode').checked)plannerConcept='family';
+    else if(plannerConcept==='family')plannerConcept='junior';
+    updateSingleFundamentalVisibility();
+    renderFramework();renderExerciseSections();
+  };
   $('#loadTemplateBtn').onclick=()=>{sections=prepareTemplateSections(templates.find(t=>t.id===$('#templateSelect').value).sections);enforceWorkoutStructure();renderFramework();renderExerciseSections();updateReview()};
   $('#addSectionBtn').onclick=()=>{const type=prompt('Vælg elementtype: '+ELEMENT_TYPES.join(', '),'Stationer');const chosen=ELEMENT_TYPES.find(x=>x.toLowerCase()===String(type||'').toLowerCase())||'Stationer';const item=defaultSection(chosen);if(chosen==='Ledopvarmning')sections.unshift(item);else if(chosen==='Finisher')sections.push(item);else{const fi=sections.findIndex(s=>normalizeSection(s).type==='Finisher');fi<0?sections.push(item):sections.splice(fi,0,item)}enforceWorkoutStructure();renderFramework();renderExerciseSections();updateReview()};
   $('#saveWorkoutBtn').onclick=saveCurrent;
@@ -490,7 +552,7 @@ function setCreationMode(mode){
 function selectedTrainingType(){return plannerConcept||'junior'}
 
 function verifyInteractiveControls(){
-  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog'];
+  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','exerciseInfoDialog'];
   const missing=required.filter(id=>!byId(id));
   if(missing.length)console.error('Manglende interaktive elementer:',missing);
   else console.info('FunkFit interaktive kontroller: OK');
@@ -506,6 +568,85 @@ function showStep(n){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+
+
+function isJuniorFamilyContext(){
+  return ['junior','family'].includes(selectedTrainingType())||!!$('#familyMode')?.checked;
+}
+function fundamentalTitle(key){
+  const f=FUNKFIT_FUNDAMENTALS[key];
+  return f?`${f.icon} ${f.label} (${f.english})`:'';
+}
+function fundamentalFromFocus(focus=''){
+  const text=String(focus||'').toLowerCase();
+  const matchers=[
+    ['squat',/(squat|sætte sig|sæt dig|knæbøj)/],
+    ['hinge',/(hinge|samle op|dødløft|deadlift|hoftehængsel|bagkæde)/],
+    ['push',/(push|skub|push-up|armstræk|pres)/],
+    ['pull',/(pull|træk|trække|row|roning)/],
+    ['carry',/(carry|bære|farmer|suitcase)/],
+    ['jump-land',/(jump|hop|lande|landing|plyometri)/],
+    ['run-cod',/(run|løb|løbe|vende|retningsskift|change of direction|agility)/],
+    ['core',/(core|mave|abs|holde kroppen|stabil)/]
+  ];
+  return matchers.find(([,pattern])=>pattern.test(text))?.[0]||'squat';
+}
+function makeFundamentalActivity(exerciseId){
+  const ex=exercises.find(x=>x.id===exerciseId);
+  return normalizeActivity({
+    kind:'exercise',
+    exerciseId,
+    juniorKg:'',
+    juniorReps:ex?.junior||'5-8 rolige kvalitetsgentagelser',
+    juniorNote:'Fokus på teknik – ikke tempo.',
+    adultExerciseId:exerciseId,
+    adultKg:'',
+    adultReps:ex?.adult||'8-10 kontrollerede gentagelser',
+    adultNote:'Skalér, så bevægelseskvaliteten bevares.'
+  });
+}
+function buildFundamentalSection(key='squat',minutes=10){
+  const f=FUNKFIT_FUNDAMENTALS[key]||FUNKFIT_FUNDAMENTALS.squat;
+  const availableIds=f.exerciseIds.filter(id=>exercises.some(x=>x.id===id));
+  const s=defaultSection('Teknik');
+  s.fundamentalKey=key;
+  s.name=`Teknik – ${f.label} (${f.english})`;
+  s.minutes=Math.max(6,+minutes||10);
+  s.description=f.description;
+  s.rules=f.rules;
+  s.coachTips=f.coachTips;
+  s.exercises=availableIds.map(makeFundamentalActivity);
+  return normalizeSection(s);
+}
+function applyFundamentalToSection(index,key){
+  const current=normalizeSection(sections[index]);
+  if(current.type!=='Teknik')return;
+  if((current.exercises||[]).length){
+    if(!confirm('Vil du erstatte de nuværende aktiviteter med de klassiske FunkFit Fundamentals-øvelser?'))return;
+  }
+  sections[index]=buildFundamentalSection(key,current.minutes||10);
+  renderFramework();renderExerciseSections();updateReview();
+}
+function renderFundamentalsPicker(s,index,compact=false){
+  if(s.type!=='Teknik'||!isJuniorFamilyContext())return '';
+  const selected=s.fundamentalKey||'';
+  return `<section class="fundamentals-card ${compact?'compact':''}">
+    <div class="fundamentals-heading">
+      <div>
+        <p class="eyebrow">FUNKFIT FUNDAMENTALS</p>
+        <h4>Vælg den grundbevægelse, der skal trænes</h4>
+      </div>
+      ${selected?`<span class="fundamental-selected">${esc(fundamentalTitle(selected))}</span>`:''}
+    </div>
+    <p class="field-help">Valget indsætter en fast progression med helt klassiske teknikøvelser. Eksisterende aktiviteter erstattes efter bekræftelse.</p>
+    <div class="fundamentals-grid">
+      ${Object.entries(FUNKFIT_FUNDAMENTALS).map(([key,f])=>`
+        <button type="button" class="fundamental-btn ${selected===key?'selected':''}" data-fundamental-section="${index}" data-fundamental-key="${key}">
+          <span>${f.icon}</span><strong>${esc(f.label)}</strong><small>${esc(f.english)}</small>
+        </button>`).join('')}
+    </div>
+  </section>`;
+}
 
 function sectionActivityCount(s){return s.type==='Finisher'?0:(s.exercises||[]).length}
 function sectionTimingText(s){
@@ -545,7 +686,8 @@ function sectionDynamicFields(s,i){
     ?`<label class="span-2">Opgave pr. tur<input data-section-index="${i}" data-section-field="taskPerTurn" value="${esc(s.taskPerTurn||'Byt, når opgaven er løst')}" placeholder="Fx 10 squats eller 200 m løb – derefter byt"></label>
       <p class="span-2 field-help">You go, I go styres her af samlet tid og opgaven pr. tur. Arbejde/pause-intervaller vises derfor ikke.</p>`
     :'';
-  return timing+ygig;
+  const fundamentals=s.type==='Teknik'?renderFundamentalsPicker(s,i):'';
+  return fundamentals+timing+ygig;
 }
 
 
@@ -602,6 +744,7 @@ function renderFramework(){
   }).join('');
 
   const host=$('#frameworkSections');
+  host.querySelectorAll('[data-fundamental-section]').forEach(b=>b.onclick=()=>applyFundamentalToSection(+b.dataset.fundamentalSection,b.dataset.fundamentalKey));
   host.querySelectorAll('[data-collapse-framework]').forEach(b=>b.onclick=()=>toggleSectionCollapse(+b.dataset.collapseFramework));
   host.querySelectorAll('[data-move-up]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveUp,+b.dataset.moveUp-1));
   host.querySelectorAll('[data-move-down]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveDown,+b.dataset.moveDown+1));
@@ -711,6 +854,7 @@ function renderExerciseSections(){
           <button class="secondary" data-regenerate-exercise="${si}">🔄 Regenerér</button>
           <button class="secondary" data-save-exercise-element="${si}">Gem i Mit bibliotek</button>
         </div>
+        ${s.type==='Teknik'?renderFundamentalsPicker(s,si,true):''}
         <div class="exercise-list">${s.exercises?.length?s.exercises.map((it,ai)=>activityRow(it,si,ai,fam)).join(''):'<div class="empty">Ingen aktiviteter endnu.</div>'}</div>
         <div class="section-add-row">
           <button data-add-ex="${si}">+ Tilføj øvelse</button>
@@ -721,6 +865,7 @@ function renderExerciseSections(){
   }).join('');
 
   const host=$('#exerciseSections');
+  host.querySelectorAll('[data-fundamental-section]').forEach(b=>b.onclick=()=>applyFundamentalToSection(+b.dataset.fundamentalSection,b.dataset.fundamentalKey));
   host.querySelectorAll('[data-collapse-exercise]').forEach(b=>b.onclick=()=>toggleSectionCollapse(+b.dataset.collapseExercise));
   host.querySelectorAll('[data-move-up]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveUp,+b.dataset.moveUp-1));
   host.querySelectorAll('[data-move-down]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveDown,+b.dataset.moveDown+1));
@@ -770,6 +915,7 @@ function renderExerciseSections(){
     const card=b.closest('.exercise-section');card?.classList.remove('collapsed');
     card?.querySelector('.exercise-list')?.scrollIntoView({behavior:'smooth',block:'center'});
   });
+  bindExerciseInfoButtons(host);
   updateTimeControl();
   bindActivityInputs();
 }
@@ -805,17 +951,82 @@ function runActivityRow(it,si,ai){
     </div>
   </div>`;
 }
+
+function exerciseInfoButton(exerciseId,label='Vis beskrivelse'){
+  if(!exerciseId)return '';
+  return `<button type="button" class="exercise-info-btn" data-exercise-info="${esc(exerciseId)}" title="${esc(label)}" aria-label="${esc(label)}">?</button>`;
+}
+function exerciseInfoSection(title,text){
+  if(!text||String(text).trim()==='')return '';
+  return `<section class="exercise-info-section"><h3>${esc(title)}</h3><p>${esc(String(text))}</p></section>`;
+}
+function exerciseInfoList(title,items=[]){
+  const values=(items||[]).filter(Boolean);
+  if(!values.length)return '';
+  return `<section class="exercise-info-section"><h3>${esc(title)}</h3><p>${values.map(esc).join(' · ')}</p></section>`;
+}
+function openExerciseInfo(exerciseId){
+  const ex=exercises.find(x=>x.id===exerciseId);
+  if(!ex)return alert('Beskrivelsen af denne øvelse kunne ikke findes.');
+
+  const content=$('#exerciseInfoContent');
+  content.innerHTML=`
+    <div class="exercise-info-header">
+      <p class="eyebrow">ØVELSESBESKRIVELSE</p>
+      <h2>${esc(ex.name||'Ukendt øvelse')}</h2>
+      <div class="exercise-info-badges">
+        ${ex.category?`<span>${esc(ex.category)}</span>`:''}
+        ${ex.difficulty?`<span>${esc(ex.difficulty)}</span>`:''}
+        ${ex.intensity?`<span>${esc(ex.intensity)} intensitet</span>`:''}
+      </div>
+    </div>
+    ${exerciseInfoSection('Sådan udføres øvelsen',ex.description||'Der er endnu ikke skrevet en beskrivelse til denne øvelse.')}
+    ${exerciseInfoSection('Junior – forslag',ex.junior)}
+    ${exerciseInfoSection('Voksen – forslag',ex.adult)}
+    ${exerciseInfoSection('Gør den lettere',ex.easier)}
+    ${exerciseInfoSection('Gør den sværere',ex.harder)}
+    ${exerciseInfoSection('Typiske fejl',ex.mistakes)}
+    ${exerciseInfoList('Træner især',ex.bodyAreas)}
+    ${exerciseInfoList('Udstyr',ex.equipment)}
+    ${exerciseInfoList('Passer til',ex.trainingForms||ex.styles)}
+  `;
+  $('#exerciseInfoDialog').showModal();
+}
+function bindExerciseInfoButtons(host=document){
+  host.querySelectorAll('[data-exercise-info]').forEach(button=>{
+    button.onclick=()=>openExerciseInfo(button.dataset.exerciseInfo);
+  });
+  host.querySelectorAll('[data-adult-exercise-info]').forEach(button=>{
+    button.onclick=()=>{
+      const select=host.querySelector(`[data-aex="${button.dataset.adultExerciseInfo}"]`);
+      if(select)openExerciseInfo(select.value);
+    };
+  });
+}
+
 function exerciseActivityRow(it,si,ai,fam){
   const ex=exercises.find(x=>x.id===it.exerciseId),type=selectedTrainingType();
-  const juniorFields=['junior','family'].includes(type)?`<div class="exercise-main">
+  const identity=`<div class="exercise-identity">
     <div><strong>${esc(ex?.name||'Ukendt')}</strong><small>${esc((ex?.bodyAreas||[]).join(' · '))}</small></div>
+    ${exerciseInfoButton(ex?.id,`Vis beskrivelse af ${ex?.name||'øvelsen'}`)}
+  </div>`;
+
+  const juniorFields=['junior','family'].includes(type)?`<div class="exercise-main">
+    ${identity}
     <label>Junior kg<input data-jkg="${si}-${ai}" value="${esc(it.juniorKg||'')}"></label>
     <label>Junior reps/tid<input data-jreps="${si}-${ai}" value="${esc(it.juniorReps||'')}"></label>
     <label>Junior note<input data-jnote="${si}-${ai}" value="${esc(it.juniorNote||'')}"></label>
     <button class="ghost" data-del-activity="${si}-${ai}">Fjern</button>
-  </div>`:`<div class="exercise-main compact-exercise"><div><strong>${esc(ex?.name||'Ukendt')}</strong><small>${esc((ex?.bodyAreas||[]).join(' · '))}</small></div><button class="ghost" data-del-activity="${si}-${ai}">Fjern</button></div>`;
+  </div>`:`<div class="exercise-main compact-exercise">${identity}<button class="ghost" data-del-activity="${si}-${ai}">Fjern</button></div>`;
+
+  const adultExerciseId=it.adultExerciseId||it.exerciseId;
   return `<div class="exercise-row">${juniorFields}${type==='family'?`<div class="adult-settings"><div class="adult-grid">
-    <label>Voksenøvelse<select data-aex="${si}-${ai}">${exercises.map(x=>`<option value="${x.id}" ${(it.adultExerciseId||it.exerciseId)===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select></label>
+    <label>Voksenøvelse
+      <div class="adult-exercise-choice">
+        <select data-aex="${si}-${ai}">${exercises.map(x=>`<option value="${x.id}" ${adultExerciseId===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>
+        <button type="button" class="exercise-info-btn" data-adult-exercise-info="${si}-${ai}" title="Vis beskrivelse af voksenøvelsen" aria-label="Vis beskrivelse af voksenøvelsen">?</button>
+      </div>
+    </label>
     <label>Voksen kg<input data-akg="${si}-${ai}" value="${esc(it.adultKg||'')}"></label>
     <label>Voksen reps/tid<input data-areps="${si}-${ai}" value="${esc(it.adultReps||'')}"></label>
     <label>Voksen note<input data-anote="${si}-${ai}" value="${esc(it.adultNote||'')}"></label>
@@ -860,7 +1071,14 @@ function openPicker(si){pickerSection=si;$('#pickerSearch').value='';renderPicke
 function renderPicker(){
   const q=$('#pickerSearch').value.toLowerCase(),body=$('#pickerBody').value,style=$('#pickerStyle').value,favOnly=$('#pickerFavorites').checked,favs=favorites();
   const list=exercises.filter(x=>{const h=[x.name,x.category,x.description,...(x.bodyAreas||[]),...(x.styles||[])].join(' ').toLowerCase();return(!q||h.includes(q))&&(!body||(x.bodyAreas||[]).includes(body))&&(!style||(x.styles||[]).includes(style))&&(!favOnly||favs.has(x.id))});
-  $('#pickerGrid').innerHTML=list.map(x=>`<div class="picker-item"><div><strong>${esc(x.name)}</strong><small>${esc((x.bodyAreas||[]).join(' · '))}</small></div><button data-pick="${x.id}">Tilføj</button></div>`).join('');
+  $('#pickerGrid').innerHTML=list.map(x=>`<div class="picker-item">
+    <div><strong>${esc(x.name)}</strong><small>${esc((x.bodyAreas||[]).join(' · '))}</small></div>
+    <div class="picker-item-actions">
+      ${exerciseInfoButton(x.id,`Vis beskrivelse af ${x.name}`)}
+      <button data-pick="${x.id}">Tilføj</button>
+    </div>
+  </div>`).join('');
+  bindExerciseInfoButtons($('#pickerGrid'));
   $('#pickerGrid').querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{sections[pickerSection].exercises=sections[pickerSection].exercises||[];sections[pickerSection].exercises.push({kind:'exercise',exerciseId:b.dataset.pick,juniorKg:'',juniorReps:'',juniorNote:'',adultExerciseId:b.dataset.pick,adultKg:'',adultReps:'',adultNote:''});$('#exercisePickerDialog').close();renderExerciseSections()});
 }
 function createExercise(e){
@@ -941,6 +1159,9 @@ function bindPlanner(){
     if(plannerConcept==='adult'||plannerConcept==='trx'||plannerConcept==='hyrox'||plannerConcept==='hiit'){
       $('#participantCount').value=$('#plannerParticipants').value;
     }
+    updateSingleFundamentalVisibility();
+    renderFramework();
+    renderExerciseSections();
   });
   document.querySelectorAll('#venueChoices .choice-card').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('#venueChoices .choice-card').forEach(x=>x.classList.remove('selected'));
@@ -959,7 +1180,9 @@ function bindPlanner(){
     renderEquipmentChoices();
   };
   $('#generateSmartWorkoutBtn').onclick=()=>creationMode==='section'?generateSingleSectionFromPlanner():generateSmartWorkout();
+  $('#singleSectionType').onchange=updateSingleFundamentalVisibility;
   $('#plannerDuration').oninput=updateTimeControl;
+  updateSingleFundamentalVisibility();
 }
 function renderEquipmentChoices(){
   if(!$('#equipmentChoices'))return;
@@ -1089,6 +1312,12 @@ function makeItem(ex){
 }
 
 
+
+function updateSingleFundamentalVisibility(){
+  const show=$('#singleSectionType')?.value==='Teknik'&&isJuniorFamilyContext();
+  $('#singleFundamentalWrap')?.classList.toggle('hidden',!show);
+}
+
 function startSingleSectionPlanner(target=null,presetType=null){
   singleSectionTarget=Number.isInteger(target)?target:null;
 
@@ -1110,6 +1339,10 @@ function startSingleSectionPlanner(target=null,presetType=null){
   }
   if(!type)type='AMRAP';
   if($('#singleSectionType'))$('#singleSectionType').value=type;
+  if(singleSectionTarget!==null&&sections[singleSectionTarget]?.fundamentalKey&&$('#singleFundamentalType')){
+    $('#singleFundamentalType').value=sections[singleSectionTarget].fundamentalKey;
+  }
+  updateSingleFundamentalVisibility();
 
   showView('designView');
   showStep(1);
@@ -1126,6 +1359,8 @@ function generateSingleSectionFromPlanner(){
 
   let section=type==='Leg'
     ?buildGameSuggestion(duration,focus,theme)
+    :type==='Teknik'&&isJuniorFamilyContext()
+    ?buildFundamentalSection($('#singleFundamentalType')?.value||fundamentalFromFocus(focus),duration)
     :buildSectionSuggestion(type,duration,focus,theme);
 
   section.minutes=duration;
