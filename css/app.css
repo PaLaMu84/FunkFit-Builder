@@ -259,7 +259,6 @@ dialog{width:min(860px,calc(100% - 1rem));max-height:90vh;overflow:auto;border:0
 #manualBuilderTrack.hidden{display:none!important}
 .creation-mode-buttons .mode-btn{background:#f1f5f9;color:#334155;border:1px solid #cbd5e1}
 .creation-mode-buttons .mode-btn.selected{background:var(--orange);color:#fff;border-color:var(--orange)}
-<<<<<<< HEAD
 
 /* v0.7.4-alpha */
 .ai-helper-bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:0 0 1rem;padding:1rem;border:1px solid #bfdbfe;border-radius:16px;background:#eff6ff}
@@ -283,5 +282,3 @@ dialog{width:min(860px,calc(100% - 1rem));max-height:90vh;overflow:auto;border:0
   .inline-section-controls select,.inline-section-controls input{min-width:0;width:100%}
   .section-add-row{display:grid;grid-template-columns:1fr}
 }
-=======
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e

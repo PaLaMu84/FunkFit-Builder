@@ -8,7 +8,6 @@ const on=(id,event,handler)=>{
   return true;
 };
 const ELEMENT_TYPES=['Ledopvarmning','Opvarmning','Leg','AMRAP','EMOM','YGIG','Chipper','Stationer','Teknik','Styrke','Finisher'];
-<<<<<<< HEAD
 const FORMATS=['Fælles flow','Teknik','AMRAP','EMOM','E2MOM','For time','Chipper','Stationstræning','Cirkeltræning','Tabata','HIIT-intervaller','Team workout','Stafet','Hyrox station','Musik'];
 const ORGANIZATIONS=['Individuelt','Samtidigt','You go, I go','Makker sammen','Hold','Stafet','Fast rotation','Fri rotation','Fælles'];
 const CONTROL_TYPES=['Samlet tid','Intervaller','Runder','Reps','Distance','Til opgaven er løst','Sang'];
@@ -30,11 +29,6 @@ const RUN_LIBRARY=[
   {id:'run-reaction',label:'Reaktionsløb',type:'Reaktionsløb',value:30,unit:'sekunder',intensity:'Hurtigt',route:'Instruktøren kalder retning eller farve'}
 ];
 const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a';
-=======
-const FORMATS=['Fælles flow','Teknik','Stationstræning','Cirkeltræning','AMRAP','EMOM','E2MOM','For time','Chipper','Tabata','HIIT-intervaller','You go, I go','Makkertræning','Team workout','Stafet','Hyrox station'];
-const STYLES=['Funktionel','CrossFit-inspireret','HIIT / Hyrox-inspireret','Teknik','Leg','Mobilitet','Kondition'];
-const WKEY='funkfit-workouts-v072',CKEY='funkfit-custom-v072',FKEY='funkfit-favorites-v072',EKEY='funkfit-library-v072',HKEY='funkfit-ai-history-v072',PKEY='funkfit-profile-v072';
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
 let plannerConcept='junior',plannerVenue='indoor';
 const EQUIPMENT_PROFILES={
@@ -162,7 +156,6 @@ function applySectionRules(s){
 }
 function normalizeSection(s){
   s.type=s.type||inferElementType(s);
-<<<<<<< HEAD
   s.description=s.description||'';
   s.rules=s.rules||'';
   s.coachTips=s.coachTips||'';
@@ -177,10 +170,6 @@ function normalizeSection(s){
   s.timeCap=Number(s.timeCap||s.minutes||0);
   s.exercises=(s.exercises||[]).map(normalizeActivity);
   return applySectionRules(s);
-=======
-  s.description=s.description||'';s.rules=s.rules||'';s.coachTips=s.coachTips||'';s.songTitle=s.songTitle||'';s.songArtist=s.songArtist||'';s.songUrl=s.songUrl||'';s.songMinutes=Number(s.songMinutes||s.minutes||4);
-  s.exercises=s.exercises||[];return s;
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
 }
 
 function normalizeSections(){sections.forEach(normalizeSection)}
@@ -198,7 +187,6 @@ function enforceFinisherLast(){
 
 function defaultSection(type='Stationer'){
   const map={
-<<<<<<< HEAD
     'Ledopvarmning':{name:'Ledopvarmning',minutes:5,format:'Fælles flow',organization:'Fælles',control:'Samlet tid',style:'Mobilitet',work:0,rest:0,rounds:1,description:'Kort fælles mobilisering af de store led før pulsopvarmningen.',rules:'Arbejd roligt fra ankler og knæ til hofter, ryg, skuldre og håndled.',coachTips:'Ca. 5 minutter. Ingen høj puls endnu.'},
     'Opvarmning':{name:'Pulsopvarmning',minutes:8,format:'Fælles flow',organization:'Fælles',control:'Samlet tid',style:'Funktionel',work:0,rest:0,rounds:1},
     'Leg':{name:'Ny leg',minutes:8,format:'Stafet',organization:'Hold',control:'Samlet tid',style:'Leg',work:0,rest:0,rounds:1,description:'Beskriv legens idé og formål.',rules:'Skriv de vigtigste regler.',coachTips:'Skriv opstilling, variationer og sikkerhed.'},
@@ -210,19 +198,6 @@ function defaultSection(type='Stationer'){
     'Teknik':{name:'Teknik',minutes:10,format:'Teknik',organization:'Fælles',control:'Samlet tid',style:'Teknik',work:0,rest:0,rounds:1},
     'Styrke':{name:'Styrkeblok',minutes:15,format:'Fælles flow',organization:'Individuelt',control:'Runder',style:'Funktionel',work:0,rest:0,rounds:3},
     'Finisher':{name:'Finisher – én sang',minutes:4,songMinutes:4,songTitle:'',songArtist:'',songUrl:'',format:'Musik',organization:'Fælles',control:'Sang',style:'Kondition',work:0,rest:0,rounds:1,description:'Afslut træningen med én valgfri sang.',rules:'Finisheren varer fra sangen starter, til den slutter.',coachTips:'Vælg sangen selv. “One More Time” er kun et eksempel i feltet.'}
-=======
-    'Ledopvarmning':{name:'Ledopvarmning',minutes:5,format:'Fælles flow',style:'Mobilitet',work:0,rest:0,rounds:1,description:'Kort fælles mobilisering af de store led før pulsopvarmningen.',rules:'Arbejd roligt fra ankler og knæ til hofter, ryg, skuldre og håndled.',coachTips:'Ca. 5 minutter. Ingen høj puls endnu.'},
-    'Opvarmning':{name:'Opvarmning',minutes:8,format:'Fælles flow',style:'Funktionel',work:35,rest:15,rounds:2},
-    'Leg':{name:'Ny leg',minutes:8,format:'Stafet',style:'Leg',work:0,rest:0,rounds:1,description:'Beskriv legens idé og formål.',rules:'Skriv de vigtigste regler.',coachTips:'Skriv opstilling, variationer og sikkerhed.'},
-    'AMRAP':{name:'AMRAP',minutes:12,format:'AMRAP',style:'Funktionel',work:0,rest:0,rounds:1},
-    'EMOM':{name:'EMOM',minutes:12,format:'EMOM',style:'Funktionel',work:45,rest:15,rounds:3},
-    'YGIG':{name:'YGIG',minutes:12,format:'You go, I go',style:'Funktionel',work:0,rest:0,rounds:3},
-    'Chipper':{name:'Chipper',minutes:15,format:'Chipper',style:'Funktionel',work:0,rest:0,rounds:1},
-    'Stationer':{name:'Stationstræning',minutes:18,format:'Stationstræning',style:'Funktionel',work:40,rest:20,rounds:3},
-    'Teknik':{name:'Teknik',minutes:10,format:'Teknik',style:'Teknik',work:0,rest:0,rounds:1},
-    'Styrke':{name:'Styrkeblok',minutes:15,format:'Fælles flow',style:'Funktionel',work:0,rest:0,rounds:3},
-    'Finisher':{name:'Finisher – én sang',minutes:4,songMinutes:4,songTitle:'',songArtist:'',songUrl:'',format:'Team workout',style:'Kondition',work:40,rest:20,rounds:1}
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
   };
   return normalizeSection({...map[type],type,exercises:[]});
 }
@@ -246,11 +221,7 @@ function useLibraryElement(id){
 function deleteLibraryElement(id){saveElementLibrary(elementLibrary().filter(x=>x.libraryId!==id));renderElementLibrary()}
 function renderElementLibrary(){
   const host=$('#elementLibrary');if(!host)return;const all=elementLibrary();
-<<<<<<< HEAD
   host.innerHTML=all.length?all.map(x=>`<article class="saved-card"><p class="eyebrow">${esc(x.type||inferElementType(x))}</p><h3>${esc(x.name)}</h3><p>${x.type==='Finisher'?'Én sang':`${x.minutes||0} min · ${(x.exercises||[]).length} aktiviteter`}</p><p>${esc(x.description||'Ingen beskrivelse')}</p><div class="actions"><button data-use-element="${x.libraryId}">Brug i træning</button><button class="ghost" data-delete-element="${x.libraryId}">Slet</button></div></article>`).join(''):'<div class="empty">Mit bibliotek er tomt. Gem et element fra editoren.</div>';
-=======
-  host.innerHTML=all.length?all.map(x=>`<article class="saved-card"><p class="eyebrow">${esc(x.type||inferElementType(x))}</p><h3>${esc(x.name)}</h3><p>${x.minutes||0} min · ${(x.exercises||[]).length} øvelser</p><p>${esc(x.description||'Ingen beskrivelse')}</p><div class="actions"><button data-use-element="${x.libraryId}">Brug i træning</button><button class="ghost" data-delete-element="${x.libraryId}">Slet</button></div></article>`).join(''):'<div class="empty">Mit bibliotek er tomt. Gem et element fra editoren.</div>';
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
   host.querySelectorAll('[data-use-element]').forEach(b=>b.onclick=()=>useLibraryElement(b.dataset.useElement));
   host.querySelectorAll('[data-delete-element]').forEach(b=>b.onclick=()=>deleteLibraryElement(b.dataset.deleteElement));
 }
@@ -378,11 +349,7 @@ async function init(){
   exercises=[...customs(),...base];
   $('#templateSelect').innerHTML=templates.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   $('#workoutDate').value=new Date().toISOString().slice(0,10);
-<<<<<<< HEAD
   sections=prepareTemplateSections(templates[0].sections);
-=======
-  sections=[defaultSection('Ledopvarmning'),...structuredClone(templates[0].sections)];
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
   populatePickerFilters();bind();setCreationMode(userProfile().preferredMode||'manual');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();
 }
 
@@ -393,11 +360,7 @@ function bind(){
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).close());
 
   $('#familyMode').onchange=()=>{$('#adultCountLabel').classList.toggle('hidden',!$('#familyMode').checked);renderExerciseSections()};
-<<<<<<< HEAD
   $('#loadTemplateBtn').onclick=()=>{sections=prepareTemplateSections(templates.find(t=>t.id===$('#templateSelect').value).sections);enforceWorkoutStructure();renderFramework();renderExerciseSections();updateReview()};
-=======
-  $('#loadTemplateBtn').onclick=()=>{sections=structuredClone(templates.find(t=>t.id===$('#templateSelect').value).sections);renderFramework();renderExerciseSections();updateReview()};
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
   $('#addSectionBtn').onclick=()=>{const type=prompt('Vælg elementtype: '+ELEMENT_TYPES.join(', '),'Stationer');const chosen=ELEMENT_TYPES.find(x=>x.toLowerCase()===String(type||'').toLowerCase())||'Stationer';const item=defaultSection(chosen);if(chosen==='Ledopvarmning')sections.unshift(item);else if(chosen==='Finisher')sections.push(item);else{const fi=sections.findIndex(s=>normalizeSection(s).type==='Finisher');fi<0?sections.push(item):sections.splice(fi,0,item)}enforceWorkoutStructure();renderFramework();renderExerciseSections();updateReview()};
   $('#saveWorkoutBtn').onclick=saveCurrent;
   $('#playCurrentBtn').onclick=()=>startPlayer(collect());
@@ -478,11 +441,7 @@ function setCreationMode(mode){
 function selectedTrainingType(){return plannerConcept||'junior'}
 
 function verifyInteractiveControls(){
-<<<<<<< HEAD
   const required=['manualModeBtn','aiModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','runDialog','aiSectionDialog'];
-=======
-  const required=['manualModeBtn','aiModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn'];
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
   const missing=required.filter(id=>!byId(id));
   if(missing.length)console.error('Manglende interaktive elementer:',missing);
   else console.info('FunkFit interaktive kontroller: OK');
@@ -546,7 +505,6 @@ function renderFramework(){
   $('#frameworkSections').innerHTML=sections.map((s,i)=>{
     const v=sectionVisual(s),collapsed=collapsedSections.has(i),count=sectionActivityCount(s);
     return `<article class="framework-card ${collapsed?'collapsed':''}" style="--section-color:${v.color}">
-<<<<<<< HEAD
       <div class="section-card-header">
         <div class="section-title-group">
           <div class="section-icon">${v.icon}</div>
@@ -591,28 +549,6 @@ function renderFramework(){
         ${s.type!=='Finisher'?`<button data-ai-section="${i}">✨ AI-forslag til denne sektion</button><button class="secondary" data-regenerate="${i}">🔄 Regenerér</button>`:''}
         <button class="secondary" data-save-element="${i}">Gem i Mit bibliotek</button>
       </div>
-=======
-      <div class="section-card-header"><div class="section-title-group"><div class="section-icon">${v.icon}</div><div class="section-title-text"><h3>${esc(s.name)}</h3><small>${esc(s.type)} · element ${i+1} af ${sections.length}</small><div class="section-badges"><span class="section-stat">${s.minutes} min</span><span class="section-stat">${count} øvelser</span><span class="section-stat">${esc(s.format)}</span></div></div></div>
-      <div class="section-card-actions"><button class="collapse-btn" data-collapse-framework="${i}">${collapsed?'Fold ud':'Fold sammen'}</button><details class="section-card-menu"><summary>⋮</summary><div class="section-menu-popover"><button data-regenerate="${i}">✨ Regenerér element</button><button data-save-element="${i}">Gem i Mit bibliotek</button><button data-move-up="${i}">↑ Flyt op</button><button data-move-down="${i}">↓ Flyt ned</button><button data-duplicate="${i}">⧉ Duplikér</button><button data-del-sec="${i}">Slet element</button></div></details></div></div>
-      <div class="framework-settings">
-        <label>Elementtype<select data-sec-type="${i}">${ELEMENT_TYPES.map(x=>`<option ${x===s.type?'selected':''}>${x}</option>`).join('')}</select></label>
-        <label>Navn<input data-sec-name="${i}" value="${esc(s.name)}"></label>
-        <label>Minutter<input data-sec-min="${i}" type="number" min="0" value="${s.minutes}"></label>
-        <label>Format<select data-sec-format="${i}">${FORMATS.map(x=>`<option ${x===s.format?'selected':''}>${x}</option>`).join('')}</select></label>
-        <label>Træningsspor<select data-sec-style="${i}">${STYLES.map(x=>`<option ${x===s.style?'selected':''}>${x}</option>`).join('')}</select></label>
-        <label>Arbejde (sek.)<input data-sec-work="${i}" type="number" value="${s.work||0}"></label><label>Pause (sek.)<input data-sec-rest="${i}" type="number" value="${s.rest||0}"></label><label>Runder<input data-sec-rounds="${i}" type="number" min="1" value="${s.rounds||1}"></label>
-        <label class="span-2">Beskrivelse<textarea data-sec-description="${i}" rows="3" placeholder="Hvad går elementet eller legen ud på?">${esc(s.description)}</textarea></label>
-        <label class="span-2">Regler<textarea data-sec-rules="${i}" rows="3" placeholder="Regler, point, skift og sådan afsluttes elementet">${esc(s.rules)}</textarea></label>
-        <label class="span-2">Trænertips<textarea data-sec-tips="${i}" rows="3" placeholder="Opstilling, variationer, skalering og sikkerhed">${esc(s.coachTips)}</textarea></label>
-        ${s.type==='Finisher'?`<div class="finisher-song-card"><h4>🎵 Finisher = én sang</h4>
-          <label>Sangtitel *<input data-sec-song-title="${i}" value="${esc(s.songTitle)}" placeholder="Fx One More Time" required></label>
-          <label>Kunstner<input data-sec-song-artist="${i}" value="${esc(s.songArtist)}" placeholder="Fx Daft Punk"></label>
-          <label>Længde (min)<input data-sec-song-minutes="${i}" type="number" min="1" max="12" step=".1" value="${s.songMinutes||4}"></label>
-          <label class="span-2">Link til sang<input data-sec-song-url="${i}" type="url" value="${esc(s.songUrl)}" placeholder="TIDAL, Spotify eller Telmore-link"></label>
-        </div>`:''}
-      </div>
-      <div class="element-actions"><button data-regenerate="${i}">✨ Regenerér dette element</button><button class="secondary" data-save-element="${i}">Gem i Mit bibliotek</button></div>
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
     </article>`;
   }).join('');
 
@@ -625,7 +561,6 @@ function renderFramework(){
   host.querySelectorAll('[data-suggest-one]').forEach(b=>b.onclick=()=>suggestOneExercise(+b.dataset.suggestOne));
   host.querySelectorAll('[data-ai-section]').forEach(b=>b.onclick=()=>openAISectionDialog('section',+b.dataset.aiSection));
   host.querySelectorAll('[data-save-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveElement));
-<<<<<<< HEAD
   host.querySelectorAll('[data-del-sec]').forEach(b=>b.onclick=()=>{
     if(sections.length>1){sections.splice(+b.dataset.delSec,1);renderFramework();renderExerciseSections();updateReview()}
   });
@@ -646,12 +581,6 @@ function renderFramework(){
       updateReview();
     });
   });
-=======
-  host.querySelectorAll('[data-sec-type]').forEach(e=>e.onchange=()=>{const i=+e.dataset.secType;sections[i].type=e.value;if(e.value==='Leg'){sections[i].style='Leg';sections[i].format='Stafet'}if(e.value==='Finisher')enforceWorkoutStructure();renderFramework();renderExerciseSections();updateReview()});
-  const bindings=[['[data-sec-name]','secName','name','input'],['[data-sec-min]','secMin','minutes','input'],['[data-sec-format]','secFormat','format','change'],['[data-sec-style]','secStyle','style','change'],['[data-sec-work]','secWork','work','input'],['[data-sec-rest]','secRest','rest','input'],['[data-sec-rounds]','secRounds','rounds','input'],['[data-sec-description]','secDescription','description','input'],['[data-sec-rules]','secRules','rules','input'],['[data-sec-tips]','secTips','coachTips','input'],['[data-sec-song-title]','secSongTitle','songTitle','input'],['[data-sec-song-artist]','secSongArtist','songArtist','input'],['[data-sec-song-url]','secSongUrl','songUrl','input'],['[data-sec-song-minutes]','secSongMinutes','songMinutes','input']];
-  bindings.forEach(([sel,key,prop,ev])=>host.querySelectorAll(sel).forEach(e=>e['on'+ev]=()=>{const i=+e.dataset[key];sections[i][prop]=['minutes','work','rest','rounds','songMinutes'].includes(prop)?(+e.value||0):e.value;if(prop==='songMinutes'){sections[i].minutes=+e.value||4;}if(prop==='name'||prop==='minutes')renderExerciseSections();updateReview()}));
-  host.querySelectorAll('[data-del-sec]').forEach(b=>b.onclick=()=>{if(sections.length>1){sections.splice(+b.dataset.delSec,1);renderFramework();renderExerciseSections();updateReview()}});
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
 }
 
 
@@ -686,19 +615,10 @@ function renderExerciseSections(){
             <h3>${esc(s.name)}</h3>
             <small>Sektion ${si+1} af ${sections.length}</small>
             <div class="inline-section-controls">
-<<<<<<< HEAD
               ${!finisher?`<label>Format <select data-inline-field="format" data-inline-index="${si}">${FORMATS.filter(x=>x!=='Musik').map(x=>`<option ${x===s.format?'selected':''}>${x}</option>`).join('')}</select></label>
                 <label>Organisering <select data-inline-field="organization" data-inline-index="${si}">${ORGANIZATIONS.map(x=>`<option ${x===s.organization?'selected':''}>${x}</option>`).join('')}</select></label>`:''}
               ${inlineTimingControls(s,si)}
               ${!finisher?`<button class="ghost" data-open-activities="${si}">${count} aktiviteter</button>`:''}
-=======
-              <label>Tid <input data-inline-min="${si}" type="number" min="0" value="${s.minutes}"> min</label>
-              <label>Format <select data-inline-format="${si}">${FORMATS.map(x=>`<option ${x===s.format?'selected':''}>${x}</option>`).join('')}</select></label>
-              <label>Arbejde <input data-inline-work="${si}" type="number" min="0" value="${s.work||0}"></label>
-              <label>Pause <input data-inline-rest="${si}" type="number" min="0" value="${s.rest||0}"></label>
-              <label>Runder <input data-inline-rounds="${si}" type="number" min="1" value="${s.rounds||1}"></label>
-              <button class="ghost" data-open-exercises="${si}">${count} øvelser</button>
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
             </div>
           </div>
         </div>
@@ -714,7 +634,6 @@ function renderExerciseSections(){
         </div>
       </div>
       <div class="section-progress"><span>${esc(s.type||v.label)}</span><div class="section-progress-bar"><span style="width:${progress}%"></span></div><span>${progress}%</span></div>
-<<<<<<< HEAD
       ${finisher?`<div class="finisher-song-summary">
           <strong>🎵 ${esc(s.songTitle||'Vælg en sang')}</strong>${s.songArtist?` · ${esc(s.songArtist)}`:''}
           <p>${esc(s.description||'Finisheren er én sang og indeholder ingen øvelser.')}</p>
@@ -768,39 +687,10 @@ function renderExerciseSections(){
     const card=b.closest('.exercise-section');card?.classList.remove('collapsed');
     card?.querySelector('.exercise-list')?.scrollIntoView({behavior:'smooth',block:'center'});
   });
-=======
-      ${s.type==='Finisher'?`<div class="finisher-song-summary"><strong>🎵 ${esc(s.songTitle||'Vælg sang')}</strong>${s.songArtist?` · ${esc(s.songArtist)}`:''} · én sang</div>`:''}${(s.description||s.rules||s.coachTips)?`<div class="element-summary">${s.description?`<p><strong>Beskrivelse:</strong> ${esc(s.description)}</p>`:''}${s.rules?`<p><strong>Regler:</strong> ${esc(s.rules)}</p>`:''}${s.coachTips?`<p><strong>Trænertips:</strong> ${esc(s.coachTips)}</p>`:''}</div>`:''}
-      <div class="element-actions"><button data-edit-element="${si}">Redigér beskrivelse og regler</button><button data-regenerate-exercise="${si}">✨ Regenerér element</button><button class="secondary" data-save-exercise-element="${si}">Gem i Mit bibliotek</button></div>
-      <div class="exercise-list">${s.exercises?.length?s.exercises.map((it,ei)=>exerciseRow(it,si,ei,fam)).join(''):'<div class="empty">Ingen øvelser endnu.</div>'}</div>
-      <div class="section-add-row"><button data-add-ex="${si}">+ Tilføj øvelse</button></div>
-    </article>`;
-  }).join('');
-
-  $('#exerciseSections').querySelectorAll('[data-collapse-exercise]').forEach(b=>b.onclick=()=>toggleSectionCollapse(+b.dataset.collapseExercise));
-  $('#exerciseSections').querySelectorAll('[data-move-up]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveUp,+b.dataset.moveUp-1));
-  $('#exerciseSections').querySelectorAll('[data-move-down]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveDown,+b.dataset.moveDown+1));
-  $('#exerciseSections').querySelectorAll('[data-duplicate]').forEach(b=>b.onclick=()=>duplicateSection(+b.dataset.duplicate));
-  $('#exerciseSections').querySelectorAll('[data-del-section]').forEach(b=>b.onclick=()=>{if(sections.length>1){sections.splice(+b.dataset.delSection,1);renderFramework();renderExerciseSections();updateReview()}});
-  $('#exerciseSections').querySelectorAll('[data-add-ex]').forEach(b=>b.onclick=()=>openPicker(+b.dataset.addEx));
-  $('#exerciseSections').querySelectorAll('[data-del-ex]').forEach(b=>b.onclick=()=>{const[a,c]=b.dataset.delEx.split('-').map(Number);sections[a].exercises.splice(c,1);renderExerciseSections()});
-  $('#exerciseSections').querySelectorAll('[data-edit-element]').forEach(b=>b.onclick=()=>{showStep(1);setTimeout(()=>document.querySelector(`[data-sec-description="${b.dataset.editElement}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),50)});
-  $('#exerciseSections').querySelectorAll('[data-regenerate-exercise]').forEach(b=>b.onclick=()=>regenerateSection(+b.dataset.regenerateExercise));
-  $('#exerciseSections').querySelectorAll('[data-save-exercise-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveExerciseElement));
-
-  $('#exerciseSections').querySelectorAll('[data-inline-min]').forEach(e=>e.onchange=()=>{const i=+e.dataset.inlineMin;sections[i].minutes=+e.value||0;renderFramework();renderExerciseSections();updateReview()});
-  $('#exerciseSections').querySelectorAll('[data-inline-format]').forEach(e=>e.onchange=()=>{const i=+e.dataset.inlineFormat;sections[i].format=e.value;sections[i].type=inferElementType(sections[i]);renderFramework();renderExerciseSections();updateReview()});
-  $('#exerciseSections').querySelectorAll('[data-inline-work]').forEach(e=>e.onchange=()=>{sections[+e.dataset.inlineWork].work=+e.value||0;updateReview()});
-  $('#exerciseSections').querySelectorAll('[data-inline-rest]').forEach(e=>e.onchange=()=>{sections[+e.dataset.inlineRest].rest=+e.value||0;updateReview()});
-  $('#exerciseSections').querySelectorAll('[data-inline-rounds]').forEach(e=>e.onchange=()=>{sections[+e.dataset.inlineRounds].rounds=+e.value||1;updateReview()});
-  $('#exerciseSections').querySelectorAll('[data-open-exercises]').forEach(b=>b.onclick=()=>{const card=b.closest('.exercise-section');card?.classList.remove('collapsed');card?.querySelector('.exercise-list')?.scrollIntoView({behavior:'smooth',block:'center'})});
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
   updateTimeControl();
   bindActivityInputs();
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
 function metricInput(label,key,value,si,ei,type='text',options=[]){
   if(options.length)return `<label>${label}<select data-metric="${si}-${ei}-${key}">${options.map(x=>`<option ${x===value?'selected':''}>${x}</option>`).join('')}</select></label>`;
   return `<label>${label}<input data-metric="${si}-${ei}-${key}" type="${type}" value="${esc(value||'')}"></label>`;
@@ -814,7 +704,6 @@ function trainingFields(it,si,ei){
   if(type==='adult')return `<div class="type-fields"><h4>Funktionel voksen</h4>${metricInput('Kg','weight',m.weight,si,ei)}${metricInput('Reps','reps',m.reps,si,ei)}${metricInput('Sæt','sets',m.sets,si,ei,'number')}${metricInput('Tempo','tempo',m.tempo,si,ei)}${metricInput('Pause','pause',m.pause,si,ei)}</div>`;
   return '';
 }
-<<<<<<< HEAD
 
 function runActivityRow(it,si,ai){
   return `<div class="exercise-row run-activity">
@@ -878,28 +767,6 @@ function bindActivityInputs(){
   bind('[data-akg]','akg','adultKg');
   bind('[data-areps]','areps','adultReps');
   bind('[data-anote]','anote','adultNote');
-=======
-function exerciseRow(it,si,ei,fam){
-  const ex=exercises.find(x=>x.id===it.exerciseId),type=selectedTrainingType();
-  const juniorFields=['junior','family'].includes(type)?`<div class="exercise-main">
-    <div><strong>${esc(ex?.name||'Ukendt')}</strong><small>${esc((ex?.bodyAreas||[]).join(' · '))}</small></div>
-    <label>Junior kg<input data-jkg="${si}-${ei}" value="${esc(it.juniorKg||'')}"></label>
-    <label>Junior reps/tid<input data-jreps="${si}-${ei}" value="${esc(it.juniorReps||'')}"></label>
-    <label>Junior note<input data-jnote="${si}-${ei}" value="${esc(it.juniorNote||'')}"></label>
-    <button class="ghost" data-del-ex="${si}-${ei}">Fjern</button>
-  </div>`:`<div class="exercise-main compact-exercise"><div><strong>${esc(ex?.name||'Ukendt')}</strong><small>${esc((ex?.bodyAreas||[]).join(' · '))}</small></div><button class="ghost" data-del-ex="${si}-${ei}">Fjern</button></div>`;
-  return `<div class="exercise-row">${juniorFields}${type==='family'?`<div class="adult-settings"><div class="adult-grid">
-    <label>Voksenøvelse<select data-aex="${si}-${ei}">${exercises.map(x=>`<option value="${x.id}" ${(it.adultExerciseId||it.exerciseId)===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select></label>
-    <label>Voksen kg<input data-akg="${si}-${ei}" value="${esc(it.adultKg||'')}"></label>
-    <label>Voksen reps/tid<input data-areps="${si}-${ei}" value="${esc(it.adultReps||'')}"></label>
-    <label>Voksen note<input data-anote="${si}-${ei}" value="${esc(it.adultNote||'')}"></label>
-  </div></div>`:''}${trainingFields(it,si,ei)}</div>`;
-}
-function bindExerciseInputs(){
-  const bind=(sel,key,prop,ev='input')=>$('#exerciseSections').querySelectorAll(sel).forEach(e=>e['on'+ev]=()=>{const[a,b]=(e.dataset[key]).split('-').map(Number);sections[a].exercises[b][prop]=e.value});
-  $('#exerciseSections').querySelectorAll('[data-metric]').forEach(e=>e.onchange=()=>{const [a,b,key]=e.dataset.metric.split('-');sections[+a].exercises[+b].metrics=sections[+a].exercises[+b].metrics||{};sections[+a].exercises[+b].metrics[key]=e.value});
-  bind('[data-jkg]','jkg','juniorKg');bind('[data-jreps]','jreps','juniorReps');bind('[data-jnote]','jnote','juniorNote');bind('[data-aex]','aex','adultExerciseId','change');bind('[data-akg]','akg','adultKg');bind('[data-areps]','areps','adultReps');bind('[data-anote]','anote','adultNote');
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
 }
 
 function populatePickerFilters(){
@@ -1073,7 +940,6 @@ function makeItem(ex){
       bodyAngle:'Mellem',repsOrTime:prescriptionFor(ex,true),laterality:'Tosidig'
     }
   };
-<<<<<<< HEAD
 }
 
 function generateSmartWorkout(){
@@ -1157,153 +1023,6 @@ function generateSmartWorkout(){
   $('#plannerResult').scrollIntoView({behavior:'smooth',block:'center'});
 }
 
-=======
-}
-function generateSmartWorkout(){
-  const duration=Math.max(20,+$('#plannerDuration').value||60);
-  const participants=Math.max(1,+$('#plannerParticipants').value||20);
-  const goals=goalValues();
-  const includeFinisher=$('#includeTeamChallenge').checked;
-  const includeJoint=$('#includeJointWarmup')?.checked!==false;
-  const funSelected=goals.includes('Sjov');
-  const includeGame=['junior','family'].includes(plannerConcept)&&($('#includeGame').checked||funSelected);
-  const theme=['junior','family'].includes(plannerConcept)?$('#plannerTheme').value.trim():'';
-  const used=new Set();
-
-  const pick=(n,t,extra=[])=>{
-    const chosen=pickExercises(n,[...goals,...extra],t,used);
-    chosen.forEach(x=>used.add(x.id));
-    return chosen;
-  };
-  const add=s=>sections.push(normalizeSection(s));
-  const jointMinutes=includeJoint?5:0;
-  const warmMinutes=Math.max(7,Math.round(duration*.13));
-  const gameMinutes=includeGame?Math.max(7,Math.round(duration*.13)):0;
-  const finisherMinutes=includeFinisher?4:0;
-  const reserved=jointMinutes+warmMinutes+gameMinutes+finisherMinutes;
-  const available=Math.max(12,duration-reserved);
-  let mainCount=structureChoice==='one'?1:structureChoice==='two'?2:structureChoice==='three'?3:(available>=28?2:1);
-  if(plannerConcept==='hiit'||plannerConcept==='hyrox'||plannerConcept==='trx')mainCount=Math.max(2,mainCount);
-  const mainMinutes=Array.from({length:mainCount},(_,i)=>Math.floor(available/mainCount)+(i<available%mainCount?1:0));
-
-  sections=[];
-  if(includeJoint)add({
-    type:'Ledopvarmning',name:'Ledopvarmning',minutes:5,format:'Fælles flow',style:'Mobilitet',
-    work:0,rest:0,rounds:1,
-    description:'Rolig mobilisering af ankler, knæ, hofter, ryg, skuldre og håndled.',
-    rules:'Følg instruktøren i et roligt flow uden høj puls.',
-    coachTips:'Hold den omkring fem minutter og tilpas bevægelserne til dagens træning.',
-    exercises:[]
-  });
-
-  const warm=pick(3,'warmup',['Kondition']);
-  add({
-    type:'Opvarmning',name:'Pulsopvarmning',minutes:warmMinutes,format:'Fælles flow',style:'Funktionel',
-    work:35,rest:15,rounds:2,
-    description:'Dynamisk pulsopvarmning, der forbereder bevægelserne i hovedtræningen.',
-    rules:'Arbejd samlet og skift på instruktørens signal.',
-    coachTips:'Stig gradvist i tempo. Undgå kø og lange forklaringer.',
-    exercises:warm.map(makeItem)
-  });
-
-  if(includeGame){
-    const game=pick(3,'team',['Sjov','Samarbejde']);
-    add({
-      type:'Leg',name:theme?`${theme} – leg`:'Aktiv holdleg',minutes:gameMinutes,format:'Stafet',style:'Leg',
-      work:0,rest:0,rounds:2,
-      description:theme?`En fysisk mission i temaet “${theme}” med bevægelse, samarbejde og konkurrence.`:'En aktiv leg med samarbejde, reaktion og konkurrence.',
-      rules:'Del deltagerne i hold. Alle skal have en aktiv rolle. Giv point for gennemførte opgaver og undgå eliminering.',
-      coachTips:'Lav en prøverunde, justér straks hvis der opstår kø, og stop mens energien er høj.',
-      exercises:game.map(makeItem)
-    });
-  }
-
-  const profile=PROGRAMMING_PROFILES[plannerConcept]||PROGRAMMING_PROFILES.junior;
-  const formatsByConcept={
-    junior:['AMRAP','YGIG','Chipper'],
-    family:['YGIG','Stationer','AMRAP'],
-    adult:['Styrke','AMRAP','YGIG'],
-    trx:['Stationer','YGIG','EMOM'],
-    hyrox:['Stationer','YGIG','Chipper'],
-    hiit:['EMOM','Stationer','AMRAP']
-  };
-  const options=formatsByConcept[plannerConcept]||formatsByConcept.junior;
-
-  for(let i=0;i<mainCount;i++){
-    let type=options[i%options.length];
-    if(plannerConcept==='hiit'&&i===1)type='Stationer';
-    if(plannerConcept==='hyrox')type=i%2===0?'Stationer':'YGIG';
-    if(plannerConcept==='trx')type=i%2===0?'Stationer':'YGIG';
-
-    const formatMap={YGIG:'You go, I go',Stationer:plannerConcept==='hyrox'?'Hyrox station':'Stationstræning',Styrke:'Fælles flow'};
-    const format=formatMap[type]||type;
-    const exCount=type==='Stationer'?6:type==='Chipper'?5:4;
-    const extra=plannerConcept==='hiit'?['Kondition','HIIT']:plannerConcept==='hyrox'?['Hyrox','Kondition']:plannerConcept==='trx'?['TRX']:i===0?['Styrke']:['Samarbejde'];
-    const chosen=pick(exCount,'main',extra);
-    const highIntensity=plannerConcept==='hiit';
-    add({
-      type,
-      name:plannerConcept==='hiit'?`HIIT-blok ${i+1}`:plannerConcept==='hyrox'?`Hyrox-blok ${i+1}`:plannerConcept==='trx'?`TRX-blok ${i+1}`:`Hovedelement ${i+1} – ${type}`,
-      minutes:mainMinutes[i],
-      format,
-      style:plannerConcept==='hiit'?'HIIT / Hyrox-inspireret':plannerConcept==='hyrox'?'HIIT / Hyrox-inspireret':plannerConcept==='trx'?'Funktionel':'Funktionel',
-      work:highIntensity?(i===0?40:45):40,
-      rest:highIntensity?(i===0?20:15):20,
-      rounds:Math.max(2,Math.round(mainMinutes[i]/5)),
-      description:`${profile.label}-element programmeret som ${format}. Fokus: ${goals.join(', ')||'helkrop'}.`,
-      rules:type==='YGIG'?'Makker A arbejder, mens makker B restituerer eller holder en enkel position. Byt efter den aftalte serie.':type==='Chipper'?'Gennemfør øvelserne i rækkefølge. Stop ved tidsgrænsen.':'Følg den aftalte arbejds-/pausestruktur og bevar teknisk kvalitet.',
-      coachTips:plannerConcept==='hiit'?'Arbejdsperioderne skal være korte nok til reel høj intensitet. Skalér før start.':plannerConcept==='hyrox'?'Planlæg tydelige transitions og undgå kø ved udstyret.':'Giv skaleringer før start og hold skiftene korte.',
-      exercises:chosen.map(makeItem)
-    });
-  }
-
-  if(funSelected&&!['junior','family'].includes(plannerConcept)){
-    const team=pick(3,'team',['Samarbejde']);
-    add({
-      type:'YGIG',name:'Sjov makkerudfordring',minutes:Math.min(8,Math.max(5,Math.round(duration*.1))),
-      format:'You go, I go',style:'Funktionel',work:35,rest:20,rounds:2,
-      description:'Et kort konkurrence- eller samarbejdselement, så “Sjov” får en konkret konsekvens.',
-      rules:'Arbejd i par og saml point eller runder. Ingen deltagere elimineres.',
-      coachTips:'Hold reglerne enkle og energien høj.',exercises:team.map(makeItem)
-    });
-  }
-
-  if(includeFinisher){
-    const fin=pick(3,'team',['Kondition']);
-    add({
-      type:'Finisher',name:'Finisher – én sang',minutes:4,songMinutes:4,songTitle:'One More Time',
-      songArtist:'Daft Punk',songUrl:'',format:'Team workout',style:'Kondition',work:40,rest:20,rounds:1,
-      description:'Hele finisheren varer én sang og kan springes over, hvis tiden er gået.',
-      rules:'Arbejd fra sangen starter, til den slutter. Vælg et enkelt mønster, som alle forstår.',
-      coachTips:'Start kun hvis der er tid. Skriv den ønskede sang og tilpas øvelserne til dens energi.',
-      exercises:fin.map(makeItem)
-    });
-  }
-
-  enforceWorkoutStructure();
-  const conceptNames={junior:'FunkFit Junior',family:'Familietræning',adult:'Funktionel voksentræning',trx:'TRX-træning',hyrox:'Hyrox-træning',hiit:'HIIT-træning'};
-  $('#workoutName').value=`${conceptNames[plannerConcept]}${theme?' – '+theme:''} – ${plannerVenue==='indoor'?'inde':'ude'}`;
-  $('#participantCount').value=participants;
-  $('#familyMode').checked=plannerConcept==='family';
-  $('#adultCountLabel').classList.toggle('hidden',plannerConcept!=='family');
-  if(plannerConcept==='family')$('#adultCount').value=+$('#plannerAdults').value||10;
-
-  const history=aiHistory();
-  history.push({date:new Date().toISOString(),concept:plannerConcept,exerciseIds:sections.flatMap(s=>(s.exercises||[]).map(x=>x.exerciseId))});
-  saveAiHistory(history);
-
-  renderFramework();renderExerciseSections();updateReview();
-  $('#plannerResult').classList.remove('hidden');
-  $('#plannerResult').innerHTML=`<h3>Komplet forslag klar ✓</h3>
-    <p><strong>${esc(conceptNames[plannerConcept])}</strong> · ${duration} min · ${participants} deltagere${theme?` · tema: ${esc(theme)}`:''}</p>
-    <div class="programming-note">Programmeringsmotoren har valgt struktur, formater og arbejdsparametre efter træningssporet – ikke kun tilfældige formatnavne.</div>
-    <ul><li>${sections.length} elementer: ${sections.map(s=>esc(s.type)).join(' → ')}</li><li>Senest brugte øvelser nedprioriteres for at skabe intelligent variation.</li><li>Alle elementer kan redigeres i Builderen.</li></ul>
-    <button id="openGeneratedEditorBtn" type="button">Gennemgå træningen →</button>`;
-  $('#openGeneratedEditorBtn').onclick=()=>showStep(2);
-  $('#plannerResult').scrollIntoView({behavior:'smooth',block:'center'});
-}
-
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
 function updateTimeControl(){
   const planned=Math.max(0,+$('#plannerDuration')?.value||0);
   const required=sections.filter(s=>normalizeSection(s).type!=='Finisher').reduce((n,s)=>n+(+s.minutes||0),0);
@@ -1593,11 +1312,7 @@ function editWorkout(w){
 function newWorkout(){
   currentId=null;plannerConcept='junior';setCreationMode('manual');
   $('#workoutName').value='FunkFit Junior – dagens træning';
-<<<<<<< HEAD
   sections=prepareTemplateSections(templates[0].sections);
-=======
-  sections=[defaultSection('Ledopvarmning'),...structuredClone(templates[0].sections).map(normalizeSection)];
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
   enforceWorkoutStructure();renderFramework();renderExerciseSections();showView('designView');showStep(1);
 }
 

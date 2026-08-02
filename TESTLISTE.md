@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Testliste – v0.7.4-alpha
 
 1. Åbn Builder og gå til Finpuds.
@@ -21,11 +20,3 @@
    - Løb skal vises som løb.
    - Finisher skal vises som sang.
 9. Gem og genåbn træningen.
-=======
-# Testliste v0.7.3
-- Builder synlig ved start
-- AI-forslag viser AI-sporet
-- Builder viser builder-sporet
-- Kun aktiv knap er orange
-- Gem, Gemte pas, Mit bibliotek, import og musik åbner
->>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e
