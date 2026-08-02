@@ -1,8 +1,13 @@
-# Testliste – v0.7.4-alpha.1
+# Testliste – v0.7.4-alpha.2
 
-1. Gå til Finpuds og find finisheren.
-2. Skriv sangtitel og kunstner direkte i kortet.
-3. Kontrollér, at du bliver i Finpuds.
-4. Gå til Planlæg.
-5. Tryk “Byg én sektion” under Arbejdsgang.
-6. Lav fx en AMRAP og kontrollér, at den indsættes før finisheren.
+1. Under Arbejdsgang skal rækkefølgen være:
+   - Byg en hel træning med AI
+   - Få AI-hjælp til én sektion
+   - Byg en hel træning selv
+2. Den manuelle knap skal være mere afdæmpet.
+3. Åbn eller byg en træning, og tryk derefter “Ny træning”.
+4. Kontrollér at titel, sektioner, musik, tema og AI-resultat er nulstillet.
+5. Den nye træning må kun indeholde tom ledopvarmning, opvarmning og finisher.
+6. Gå til Finpuds og tryk “Ryd træningen”.
+7. Bekræft og kontrollér, at hele kladden bliver tom.
+8. Tryk “Fortryd” og kontrollér, at alt gendannes.
