@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.7.4-alpha",
-  "short_name": "FunkFit 0.7.4a",
+  "name": "FunkFit Builder v0.7.4-alpha.1",
+  "short_name": "FunkFit 0.7.4a1",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "Testversion med korrekt formatlogik, YGIG, løb, sang-finisher og AI-hjælp pr. sektion"
+  "description": "Patch med direkte sangvalg i Finpuds og Byg én sektion under Arbejdsgang"
 }

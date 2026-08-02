@@ -282,3 +282,15 @@ dialog{width:min(860px,calc(100% - 1rem));max-height:90vh;overflow:auto;border:0
   .inline-section-controls select,.inline-section-controls input{min-width:0;width:100%}
   .section-add-row{display:grid;grid-template-columns:1fr}
 }
+
+/* v0.7.4-alpha.1 */
+.creation-mode-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:min(100%,760px)}
+.finisher-inline-editor{padding:1rem}
+.finisher-inline-editor h4{margin:0 0 .35rem}
+.finisher-inline-grid{display:grid;grid-template-columns:2fr 1.4fr 1fr;gap:.65rem;margin-top:.8rem}
+.finisher-inline-grid label{display:flex;flex-direction:column;gap:.25rem;font-size:.8rem;font-weight:800}
+.finisher-inline-grid input,.finisher-inline-grid textarea{width:100%}
+@media(max-width:720px){
+  .creation-mode-buttons{grid-template-columns:1fr}
+  .finisher-inline-grid{grid-template-columns:1fr}
+}

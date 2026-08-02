@@ -379,6 +379,12 @@ function bind(){
 
   on('manualModeBtn','click',()=>{console.info('Skifter til Builder');setCreationMode('manual')});
   on('aiModeBtn','click',()=>{console.info('Skifter til AI-forslag');setCreationMode('ai')});
+  on('singleSectionModeBtn','click',()=>{
+    console.info('Åbner Byg én sektion');
+    setCreationMode('manual');
+    showStep(2);
+    openAISectionDialog('section',null);
+  });
   $('#workoutCameraInput').onchange=handleWorkoutImage;
   document.querySelectorAll('#structureChoices .structure-chip').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('#structureChoices .structure-chip').forEach(x=>x.classList.remove('selected'));
@@ -441,7 +447,7 @@ function setCreationMode(mode){
 function selectedTrainingType(){return plannerConcept||'junior'}
 
 function verifyInteractiveControls(){
-  const required=['manualModeBtn','aiModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','runDialog','aiSectionDialog'];
+  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','runDialog','aiSectionDialog'];
   const missing=required.filter(id=>!byId(id));
   if(missing.length)console.error('Manglende interaktive elementer:',missing);
   else console.info('FunkFit interaktive kontroller: OK');
@@ -634,10 +640,26 @@ function renderExerciseSections(){
         </div>
       </div>
       <div class="section-progress"><span>${esc(s.type||v.label)}</span><div class="section-progress-bar"><span style="width:${progress}%"></span></div><span>${progress}%</span></div>
-      ${finisher?`<div class="finisher-song-summary">
-          <strong>🎵 ${esc(s.songTitle||'Vælg en sang')}</strong>${s.songArtist?` · ${esc(s.songArtist)}`:''}
-          <p>${esc(s.description||'Finisheren er én sang og indeholder ingen øvelser.')}</p>
-          <button data-edit-element="${si}">Redigér sang</button>
+      ${finisher?`<div class="finisher-song-summary finisher-inline-editor">
+          <h4>🎵 Finisher = én sang</h4>
+          <p>Vælg sangen direkte her. “One More Time” og Daft Punk er kun eksempler.</p>
+          <div class="finisher-inline-grid">
+            <label>Sangtitel *
+              <input data-finisher-field="songTitle" data-finisher-index="${si}" value="${esc(s.songTitle||'')}" placeholder="Fx One More Time">
+            </label>
+            <label>Kunstner
+              <input data-finisher-field="songArtist" data-finisher-index="${si}" value="${esc(s.songArtist||'')}" placeholder="Fx Daft Punk">
+            </label>
+            <label>Længde (min)
+              <input data-finisher-field="songMinutes" data-finisher-index="${si}" type="number" min="1" max="12" step=".1" value="${s.songMinutes||4}">
+            </label>
+            <label class="span-2">Link til sang
+              <input data-finisher-field="songUrl" data-finisher-index="${si}" type="url" value="${esc(s.songUrl||'')}" placeholder="TIDAL, Spotify eller YouTube">
+            </label>
+            <label class="span-2">Beskrivelse
+              <textarea data-finisher-field="description" data-finisher-index="${si}" rows="2" placeholder="Fx fælles afslutning, dans eller high fives">${esc(s.description||'')}</textarea>
+            </label>
+          </div>
         </div>`:
         `${(s.description||s.rules||s.coachTips)?`<div class="element-summary">${s.description?`<p><strong>Beskrivelse:</strong> ${esc(s.description)}</p>`:''}${s.rules?`<p><strong>Regler:</strong> ${esc(s.rules)}</p>`:''}${s.coachTips?`<p><strong>Trænertips:</strong> ${esc(s.coachTips)}</p>`:''}</div>`:''}
         <div class="element-actions">
@@ -670,13 +692,31 @@ function renderExerciseSections(){
     sections[a].exercises.splice(c,1);renderExerciseSections();renderFramework();
   });
   host.querySelectorAll('[data-edit-element]').forEach(b=>b.onclick=()=>{
+    const index=+b.dataset.editElement;
+    if(sections[index]?.type==='Finisher'){
+      document.querySelector(`[data-finisher-index="${index}"][data-finisher-field="songTitle"]`)?.focus();
+      return;
+    }
     showStep(1);
-    setTimeout(()=>document.querySelector(`[data-section-index="${b.dataset.editElement}"][data-section-field="${sections[+b.dataset.editElement].type==='Finisher'?'songTitle':'description'}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),50);
+    setTimeout(()=>document.querySelector(`[data-section-index="${index}"][data-section-field="description"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),50);
   });
   host.querySelectorAll('[data-regenerate-exercise]').forEach(b=>b.onclick=()=>regenerateSection(+b.dataset.regenerateExercise));
   host.querySelectorAll('[data-save-exercise-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveExerciseElement));
   host.querySelectorAll('[data-ai-exercise-section]').forEach(b=>b.onclick=()=>openAISectionDialog('section',+b.dataset.aiExerciseSection));
   host.querySelectorAll('[data-suggest-one]').forEach(b=>b.onclick=()=>suggestOneExercise(+b.dataset.suggestOne));
+  host.querySelectorAll('[data-finisher-field]').forEach(el=>{
+    const event=el.tagName==='SELECT'?'change':'input';
+    el.addEventListener(event,()=>{
+      const i=+el.dataset.finisherIndex;
+      const field=el.dataset.finisherField;
+      const value=field==='songMinutes'?(+el.value||4):el.value;
+      sections[i][field]=value;
+      if(field==='songMinutes')sections[i].minutes=value;
+      applySectionRules(sections[i]);
+      updateTimeControl();
+      updateReview();
+    });
+  });
   host.querySelectorAll('[data-inline-field]').forEach(el=>el.onchange=()=>{
     const i=+el.dataset.inlineIndex,field=el.dataset.inlineField;
     sections[i][field]=['minutes','work','rest','rounds','timeCap'].includes(field)?(+el.value||0):el.value;
