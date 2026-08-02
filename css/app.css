@@ -294,3 +294,29 @@ dialog{width:min(860px,calc(100% - 1rem));max-height:90vh;overflow:auto;border:0
   .creation-mode-buttons{grid-template-columns:1fr}
   .finisher-inline-grid{grid-template-columns:1fr}
 }
+
+/* v0.7.4-alpha.2 */
+.creation-mode{align-items:flex-start}
+.creation-mode-intro{max-width:740px}
+.creation-mode-intro>p:last-child{margin:.35rem 0 0;color:#64748b}
+.creation-mode-buttons{grid-template-columns:1fr;gap:.7rem;width:100%;max-width:760px}
+.creation-mode-buttons .mode-btn{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:.25rem;padding:1rem 1.1rem;border-radius:14px}
+.creation-mode-buttons .mode-btn strong{font-size:1rem}
+.creation-mode-buttons .mode-btn small{font-weight:500;line-height:1.35;opacity:.9}
+.creation-mode-buttons .workflow-primary{background:var(--orange);color:#fff;border-color:var(--orange)}
+.creation-mode-buttons .workflow-primary.selected{box-shadow:0 0 0 4px rgba(249,115,22,.2)}
+.creation-mode-buttons .workflow-secondary{background:#1e3a8a;color:#fff;border-color:#1e3a8a}
+.creation-mode-buttons .workflow-secondary.selected{box-shadow:0 0 0 4px rgba(30,58,138,.18)}
+.creation-mode-buttons .workflow-manual,
+.creation-mode-buttons .workflow-manual.selected{background:#f8fafc;color:#334155;border-color:#cbd5e1;box-shadow:none}
+.creation-mode-buttons .workflow-manual.selected{border-width:2px;border-color:#94a3b8}
+.clear-workout-zone{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:1.25rem 0;padding:1rem;border:1px solid #fecaca;border-radius:15px;background:#fff7f7}
+.clear-workout-zone small{display:block;margin-top:.25rem;color:#7f1d1d}
+.danger-outline{background:#fff;color:#b91c1c;border:1px solid #ef4444}
+.danger-outline:hover{background:#fef2f2}
+.undo-bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:.75rem 0;padding:.8rem 1rem;border-radius:12px;background:#0f172a;color:#fff}
+.undo-bar button{background:#fff;color:#0f172a}
+@media(max-width:720px){
+  .clear-workout-zone{align-items:stretch;flex-direction:column}
+  .clear-workout-zone button{width:100%}
+}

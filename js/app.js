@@ -365,6 +365,8 @@ function bind(){
   $('#saveWorkoutBtn').onclick=saveCurrent;
   $('#playCurrentBtn').onclick=()=>startPlayer(collect());
   $('#newWorkoutBtn').onclick=newWorkout;
+  on('clearWorkoutBtn','click',clearCurrentWorkout);
+  on('undoClearWorkoutBtn','click',undoClearWorkout);
   $('#openSpotifyBtn').onclick=()=>openPlaylist($('#spotifyPlaylistUrl').value,'Spotify');
   $('#openTidalBtn').onclick=()=>openPlaylist($('#tidalPlaylistUrl').value,'TIDAL');
   $('#openTelmoreBtn').onclick=()=>openPlaylist($('#telmorePlaylistUrl').value,'Telmore Musik');
@@ -380,8 +382,15 @@ function bind(){
   on('manualModeBtn','click',()=>{console.info('Skifter til Builder');setCreationMode('manual')});
   on('aiModeBtn','click',()=>{console.info('Skifter til AI-forslag');setCreationMode('ai')});
   on('singleSectionModeBtn','click',()=>{
-    console.info('Åbner Byg én sektion');
-    setCreationMode('manual');
+    console.info('Åbner AI-hjælp til én sektion');
+    const manualBtn=byId('manualModeBtn');
+    const aiBtn=byId('aiModeBtn');
+    const singleBtn=byId('singleSectionModeBtn');
+    manualBtn?.classList.remove('selected');
+    aiBtn?.classList.remove('selected');
+    singleBtn?.classList.add('selected');
+    const hint=byId('creationModeHint');
+    if(hint)hint.textContent='AI hjælper kun med én sektion og ændrer ikke resten af træningen.';
     showStep(2);
     openAISectionDialog('section',null);
   });
@@ -425,6 +434,7 @@ function setCreationMode(mode){
 
   manualBtn?.classList.toggle('selected',creationMode==='manual');
   aiBtn?.classList.toggle('selected',creationMode==='ai');
+  byId('singleSectionModeBtn')?.classList.remove('selected');
 
   if(aiTrack){
     aiTrack.classList.toggle('hidden',creationMode!=='ai');
@@ -436,8 +446,8 @@ function setCreationMode(mode){
   }
   if(hint){
     hint.textContent=creationMode==='manual'
-      ?'Builder er standard. Du bestemmer selv strukturen og kan bruge skabeloner eller import.'
-      :'AI laver et komplet forslag, som bagefter åbnes i den almindelige Builder.';
+      ?'Du bygger træningen selv. AI kan stadig hjælpe inde i de enkelte sektioner.'
+      :'AI laver et komplet træningsforslag, som bagefter åbnes i Finpuds.';
   }
   const profile=userProfile();
   profile.preferredMode=creationMode;
@@ -447,7 +457,7 @@ function setCreationMode(mode){
 function selectedTrainingType(){return plannerConcept||'junior'}
 
 function verifyInteractiveControls(){
-  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','runDialog','aiSectionDialog'];
+  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog'];
   const missing=required.filter(id=>!byId(id));
   if(missing.length)console.error('Manglende interaktive elementer:',missing);
   else console.info('FunkFit interaktive kontroller: OK');
@@ -1349,11 +1359,127 @@ function editWorkout(w){
   document.querySelectorAll('#conceptChoices .choice-card').forEach(x=>x.classList.toggle('selected',x.dataset.value===plannerConcept));
   $('#workoutName').value=w.name;$('#workoutDate').value=w.date;$('#participantCount').value=w.participants;$('#familyMode').checked=!!w.familyMode;$('#adultCount').value=w.adultCount||0;$('#adultCountLabel').classList.toggle('hidden',!w.familyMode);$('#spotifyPlaylistUrl').value=w.music?.spotify||'';$('#tidalPlaylistUrl').value=w.music?.tidal||'';$('#telmorePlaylistUrl').value=w.music?.telmore||'';sections=structuredClone(w.sections);normalizeSections();renderFramework();renderExerciseSections();updateReview();showView('designView');showStep(1);
 }
+
+let clearedWorkoutSnapshot=null;
+let clearUndoTimer=null;
+
+function todayISO(){
+  return new Date().toISOString().slice(0,10);
+}
+function draftSnapshot(){
+  return {
+    currentId,
+    plannerConcept,
+    plannerVenue,
+    sections:structuredClone(sections),
+    fields:{
+      workoutName:$('#workoutName')?.value||'',
+      workoutDate:$('#workoutDate')?.value||'',
+      participantCount:$('#participantCount')?.value||'',
+      familyMode:!!$('#familyMode')?.checked,
+      adultCount:$('#adultCount')?.value||'',
+      spotify:$('#spotifyPlaylistUrl')?.value||'',
+      tidal:$('#tidalPlaylistUrl')?.value||'',
+      telmore:$('#telmorePlaylistUrl')?.value||'',
+      plannerTheme:$('#plannerTheme')?.value||'',
+      plannerDuration:$('#plannerDuration')?.value||'60',
+      plannerParticipants:$('#plannerParticipants')?.value||'20',
+      plannerAdults:$('#plannerAdults')?.value||'10',
+      importText:$('#importText')?.value||''
+    }
+  };
+}
+function applyDraftSnapshot(snapshot){
+  if(!snapshot)return;
+  currentId=snapshot.currentId;
+  plannerConcept=snapshot.plannerConcept||'junior';
+  plannerVenue=snapshot.plannerVenue||'indoor';
+  sections=structuredClone(snapshot.sections||[]).map(normalizeSection);
+  const f=snapshot.fields||{};
+  if($('#workoutName'))$('#workoutName').value=f.workoutName||'';
+  if($('#workoutDate'))$('#workoutDate').value=f.workoutDate||todayISO();
+  if($('#participantCount'))$('#participantCount').value=f.participantCount||20;
+  if($('#familyMode'))$('#familyMode').checked=!!f.familyMode;
+  if($('#adultCount'))$('#adultCount').value=f.adultCount||10;
+  if($('#spotifyPlaylistUrl'))$('#spotifyPlaylistUrl').value=f.spotify||'';
+  if($('#tidalPlaylistUrl'))$('#tidalPlaylistUrl').value=f.tidal||'';
+  if($('#telmorePlaylistUrl'))$('#telmorePlaylistUrl').value=f.telmore||'';
+  if($('#plannerTheme'))$('#plannerTheme').value=f.plannerTheme||'';
+  if($('#plannerDuration'))$('#plannerDuration').value=f.plannerDuration||60;
+  if($('#plannerParticipants'))$('#plannerParticipants').value=f.plannerParticipants||20;
+  if($('#plannerAdults'))$('#plannerAdults').value=f.plannerAdults||10;
+  if($('#importText'))$('#importText').value=f.importText||'';
+  $('#adultCountLabel')?.classList.toggle('hidden',!f.familyMode);
+  document.querySelectorAll('#conceptChoices .choice-card').forEach(x=>x.classList.toggle('selected',x.dataset.value===plannerConcept));
+  document.querySelectorAll('#venueChoices .choice-card').forEach(x=>x.classList.toggle('selected',x.dataset.value===plannerVenue));
+  enforceWorkoutStructure();
+  renderFramework();renderExerciseSections();updateReview();
+}
+function resetDraft({withStructure=true}={}){
+  currentId=null;
+  plannerConcept='junior';
+  plannerVenue='indoor';
+  sections=withStructure
+    ?[defaultSection('Ledopvarmning'),defaultSection('Opvarmning'),defaultSection('Finisher')]
+    :[];
+
+  if($('#workoutName'))$('#workoutName').value=withStructure?'Ny FunkFit Junior-træning':'Ny træning';
+  if($('#workoutDate'))$('#workoutDate').value=todayISO();
+  if($('#participantCount'))$('#participantCount').value=20;
+  if($('#familyMode'))$('#familyMode').checked=false;
+  if($('#adultCount'))$('#adultCount').value=10;
+  if($('#adultCountLabel'))$('#adultCountLabel').classList.add('hidden');
+  if($('#spotifyPlaylistUrl'))$('#spotifyPlaylistUrl').value='';
+  if($('#tidalPlaylistUrl'))$('#tidalPlaylistUrl').value='';
+  if($('#telmorePlaylistUrl'))$('#telmorePlaylistUrl').value='';
+  if($('#plannerTheme'))$('#plannerTheme').value='';
+  if($('#plannerDuration'))$('#plannerDuration').value=60;
+  if($('#plannerParticipants'))$('#plannerParticipants').value=20;
+  if($('#plannerAdults'))$('#plannerAdults').value=10;
+  if($('#importText'))$('#importText').value='';
+  if($('#plannerResult')){
+    $('#plannerResult').classList.add('hidden');
+    $('#plannerResult').innerHTML='';
+  }
+  document.querySelectorAll('#conceptChoices .choice-card').forEach(x=>x.classList.toggle('selected',x.dataset.value==='junior'));
+  document.querySelectorAll('#venueChoices .choice-card').forEach(x=>x.classList.toggle('selected',x.dataset.value==='indoor'));
+  enforceWorkoutStructure();
+  renderFramework();renderExerciseSections();updateReview();
+}
+function clearCurrentWorkout(){
+  const hasContent=sections.length||$('#workoutName')?.value||$('#spotifyPlaylistUrl')?.value||$('#tidalPlaylistUrl')?.value||$('#telmorePlaylistUrl')?.value;
+  if(!hasContent)return alert('Træningen er allerede tom.');
+  if(!confirm('Vil du rydde hele træningen? Handlingen fjerner alt indhold fra den aktuelle kladde.'))return;
+
+  clearedWorkoutSnapshot=draftSnapshot();
+  resetDraft({withStructure:false});
+  showStep(2);
+
+  const bar=byId('clearUndoBar');
+  bar?.classList.remove('hidden');
+  clearTimeout(clearUndoTimer);
+  clearUndoTimer=setTimeout(()=>{
+    bar?.classList.add('hidden');
+    clearedWorkoutSnapshot=null;
+  },15000);
+}
+function undoClearWorkout(){
+  if(!clearedWorkoutSnapshot)return;
+  applyDraftSnapshot(clearedWorkoutSnapshot);
+  clearedWorkoutSnapshot=null;
+  clearTimeout(clearUndoTimer);
+  byId('clearUndoBar')?.classList.add('hidden');
+  showStep(2);
+}
+
 function newWorkout(){
-  currentId=null;plannerConcept='junior';setCreationMode('manual');
-  $('#workoutName').value='FunkFit Junior – dagens træning';
-  sections=prepareTemplateSections(templates[0].sections);
-  enforceWorkoutStructure();renderFramework();renderExerciseSections();showView('designView');showStep(1);
+  clearedWorkoutSnapshot=null;
+  clearTimeout(clearUndoTimer);
+  byId('clearUndoBar')?.classList.add('hidden');
+  resetDraft({withStructure:true});
+  setCreationMode('manual');
+  showView('designView');
+  showStep(1);
 }
 
 function printWorkout(w,mode){

@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.1</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a1">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a1">
+  <title>FunkFit Builder v0.7.4-alpha.2</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a2">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a2">
 </head>
 <body>
 <header class="topbar">
   <div>
-    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.7.4-ALPHA.1</p>
+    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.7.4-ALPHA.2</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </div>
@@ -39,16 +39,26 @@
 
 
     <section class="creation-mode">
-      <div>
+      <div class="creation-mode-intro">
         <p class="eyebrow">ARBEJDSGANG</p>
-        <h3>Hvordan vil du starte?</h3>
+        <h3>Hvordan vil du bygge træningen?</h3>
+        <p>Vælg, om AI skal hjælpe med hele træningen, kun én sektion – eller om du vil bygge alt selv.</p>
       </div>
       <div class="creation-mode-buttons">
-        <button id="manualModeBtn" type="button" class="mode-btn selected">🛠️ Builder</button>
-        <button id="aiModeBtn" type="button" class="mode-btn">🤖 AI-forslag</button>
-        <button id="singleSectionModeBtn" type="button" class="mode-btn">🧩 Byg én sektion</button>
+        <button id="aiModeBtn" type="button" class="mode-btn workflow-primary">
+          <strong>✨ Byg en hel træning med AI</strong>
+          <small>Få et komplet forslag, som du bagefter kan finpudse.</small>
+        </button>
+        <button id="singleSectionModeBtn" type="button" class="mode-btn workflow-secondary">
+          <strong>🧩 Få AI-hjælp til én sektion</strong>
+          <small>Behold resten af træningen og få hjælp til den del, du mangler.</small>
+        </button>
+        <button id="manualModeBtn" type="button" class="mode-btn workflow-manual selected">
+          <strong>🛠️ Byg en hel træning selv</strong>
+          <small>Sammensæt og redigér alle sektioner manuelt.</small>
+        </button>
       </div>
-      <p id="creationModeHint">Builder er standard. Du bestemmer selv strukturen og kan bruge skabeloner eller import.</p>
+      <p id="creationModeHint">Du bygger træningen selv. AI kan stadig hjælpe inde i de enkelte sektioner.</p>
     </section>
 
     <div id="aiPlannerTrack" class="hidden">
@@ -265,6 +275,19 @@ Hovedtræning 20 min
 
     <div id="exerciseSections"></div>
 
+    <section class="clear-workout-zone">
+      <div>
+        <strong>Vil du starte forfra?</strong>
+        <small>Ryd fjerner titel, sektioner, øvelser, løb, finisher og musik fra den aktuelle kladde.</small>
+      </div>
+      <button id="clearWorkoutBtn" type="button" class="danger-outline">🗑️ Ryd træningen</button>
+    </section>
+
+    <div id="clearUndoBar" class="undo-bar hidden" role="status" aria-live="polite">
+      <span>Træningen er ryddet.</span>
+      <button id="undoClearWorkoutBtn" type="button">Fortryd</button>
+    </div>
+
     <div class="step-actions two-sided">
       <button class="ghost" data-next-step="1">← Tilbage</button>
       <button data-next-step="3">Næste: Musik →</button>
@@ -458,7 +481,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.1 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a1"></script>
+<footer>FunkFit Builder v0.7.4-alpha.2 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a2"></script>
 </body>
 </html>
