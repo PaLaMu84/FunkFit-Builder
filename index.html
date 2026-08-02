@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.2</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a2">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a2">
+  <title>FunkFit Builder v0.7.4-alpha.3</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a3">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a3">
 </head>
 <body>
 <header class="topbar">
   <div>
-    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.7.4-ALPHA.2</p>
+    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.7.4-ALPHA.3</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </div>
@@ -65,10 +65,10 @@
     <section class="planner-hero">
       <div>
         <p class="eyebrow">TRÆNINGSASSISTENT</p>
-        <h2>Fra idé til færdigt udkast</h2>
-        <p>Vælg rammerne. Appen sammensætter et forslag, der passer til sted, udstyr, deltagere og træningsmål.</p>
+        <h2 id="plannerHeroTitle">Fra idé til færdigt udkast</h2>
+        <p id="plannerHeroText">Vælg rammerne. Appen sammensætter et forslag, der passer til sted, udstyr, deltagere og træningsmål.</p>
       </div>
-      <div class="planner-time"><strong>Ca. 2 min</strong><span>til første udkast</span></div>
+      <div class="planner-time"><strong id="plannerTimeStrong">Ca. 2 min</strong><span id="plannerTimeText">til første udkast</span></div>
     </section>
 
     <section class="planner-block">
@@ -103,7 +103,7 @@
       <div class="planner-content">
         <h3>Rammer</h3>
         <div class="planner-fields">
-          <label>Varighed<input id="plannerDuration" type="number" min="20" max="120" value="60"><span>minutter</span></label>
+          <label id="plannerDurationWrap">Varighed<input id="plannerDuration" type="number" min="20" max="120" value="60"><span id="plannerDurationUnit">minutter</span></label>
           <label>Deltagere<input id="plannerParticipants" type="number" min="1" max="100" value="20"><span>personer</span></label>
           <label id="plannerAdultsWrap" class="hidden">Heraf voksne<input id="plannerAdults" type="number" min="0" max="50" value="10"><span>voksne</span></label>
           <label id="plannerThemeWrap">Tema for hele træningen<input id="plannerTheme" placeholder="Fx Agentmission, OL eller intet tema"><span>kun Junior/Familie</span></label>
@@ -146,16 +146,40 @@
         <textarea id="plannerBrief" rows="4" placeholder="Fx: Hyrox-inspireret træning med meget teamwork. Ingen kø. Jeg vil gerne bruge wall balls og farmer carry."></textarea>
         <div class="planner-toggles">
           <label><input id="avoidWaiting" type="checkbox" checked> Undgå ventetid og kø</label>
-          <label><input id="includeJointWarmup" type="checkbox" checked> Fast ledopvarmning (5 min)</label>
-          <label><input id="includeTeamChallenge" type="checkbox" checked> Planlæg en finisher til sidst</label>
-          <label><input id="includeGame" type="checkbox" checked> Medtag en leg (Junior/Familie)</label>
+          <label id="includeJointWarmupWrap"><input id="includeJointWarmup" type="checkbox" checked> Fast ledopvarmning (5 min)</label>
+          <label id="includeFinisherWrap"><input id="includeTeamChallenge" type="checkbox" checked> Planlæg en finisher til sidst</label>
+          <label id="includeGameWrap"><input id="includeGame" type="checkbox" checked> Medtag en leg (Junior/Familie)</label>
           <label><input id="useFavoritesFirst" type="checkbox"> Prioritér mine favoritter</label>
         </div>
       </div>
     </section>
 
 
-    <section class="planner-block">
+    <section id="singleSectionConfig" class="planner-block single-section-config hidden">
+      <div class="planner-number section-symbol">🧩</div>
+      <div class="planner-content">
+        <h3>Hvilken sektion skal AI bygge?</h3>
+        <div class="planner-fields">
+          <label>Sektionstype
+            <select id="singleSectionType">
+              <option>Opvarmning</option>
+              <option selected>AMRAP</option>
+              <option>EMOM</option>
+              <option>YGIG</option>
+              <option>Chipper</option>
+              <option>Stationer</option>
+              <option>Teknik</option>
+              <option>Styrke</option>
+              <option>Leg</option>
+            </select>
+            <span>Ledopvarmning og finisher er ikke valgmuligheder her</span>
+          </label>
+        </div>
+        <p class="planner-hint">AI bygger kun denne ene sektion. Resten af din træning bliver stående urørt.</p>
+      </div>
+    </section>
+
+    <section id="plannerStructureBlock" class="planner-block">
       <div class="planner-number">7</div>
       <div class="planner-content">
         <h3>Træningens struktur</h3>
@@ -171,8 +195,8 @@
 
     <div class="generate-panel">
       <div>
-        <strong>Klar til at bygge?</strong>
-        <p>Forslaget bliver sat direkte ind i editoren og kan ændres bagefter.</p>
+        <strong id="plannerGenerateTitle">Klar til at bygge?</strong>
+        <p id="plannerGenerateText">Forslaget bliver sat direkte ind i editoren og kan ændres bagefter.</p>
       </div>
       <button id="generateSmartWorkoutBtn" type="button" class="generate-btn">✨ Lav træningsforslag</button>
     </div>
@@ -481,7 +505,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.2 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a2"></script>
+<footer>FunkFit Builder v0.7.4-alpha.3 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a3"></script>
 </body>
 </html>
