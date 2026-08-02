@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.3</title>
-  <link rel="manifest" href="manifest.json?v=0.7.1">
-  <link rel="stylesheet" href="css/app.css?v=0.7.1">
+  <title>FunkFit Builder v0.7.4-alpha</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a">
 </head>
 <body>
 <header class="topbar">
   <div>
-    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.7.3</p>
+    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.7.4-ALPHA</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </div>
@@ -251,6 +251,16 @@ Hovedtræning 20 min
       <div><p class="eyebrow">TRIN 2</p><h2>Tilføj øvelser</h2></div>
       <div class="time-control"><strong>Planlagt: <span id="plannedMinutes">60</span> min</strong><strong>Samlet: <span id="totalMinutes">0</span> min</strong><span id="timeStatus" class="time-status"></span></div>
     </div>
+    <div class="ai-helper-bar">
+      <div>
+        <strong>✨ AI-hjælp, hvor du har brug for den</strong>
+        <small>Behold resten af programmet og få kun hjælp til den manglende del.</small>
+      </div>
+      <div class="actions">
+        <button id="aiBuildSectionBtn" type="button">Byg en sektion</button>
+        <button id="aiBuildGameBtn" type="button" class="secondary">🎲 Byg en leg</button>
+      </div>
+    </div>
 
     <div id="exerciseSections"></div>
 
@@ -351,6 +361,74 @@ Hovedtræning 20 min
   </form>
 </dialog>
 
+
+<dialog id="runDialog" class="builder-dialog">
+  <button class="close" data-close="runDialog">×</button>
+  <form id="runForm">
+    <p class="eyebrow">LØB</p>
+    <h2>Tilføj løb til sektionen</h2>
+    <p>Løb placeres på lige fod med en squat, burpee eller anden aktivitet og kan flyttes ind i fx en AMRAP.</p>
+    <div class="form-grid">
+      <label class="span-2">Forslag
+        <select id="runPreset"></select>
+      </label>
+      <label>Type
+        <select id="runType">
+          <option>Almindeligt løb</option>
+          <option>Jog</option>
+          <option>Sprint</option>
+          <option>Shuttle run</option>
+          <option>Zigzag mellem kegler</option>
+          <option>Slalom</option>
+          <option>Baglæns løb</option>
+          <option>Sidestep</option>
+          <option>Bakkeløb</option>
+          <option>Trappeløb</option>
+          <option>Stafetløb</option>
+          <option>Reaktionsløb</option>
+        </select>
+      </label>
+      <label>Mængde<input id="runValue" type="number" min="1" value="200"></label>
+      <label>Enhed
+        <select id="runUnit"><option>meter</option><option>sekunder</option><option>minutter</option><option>omgange</option></select>
+      </label>
+      <label>Intensitet
+        <select id="runIntensity"><option>Roligt</option><option selected>Moderat</option><option>Hurtigt</option><option>Sprint</option><option>Progressivt</option></select>
+      </label>
+      <label class="span-2">Rute eller opstilling<input id="runRoute" placeholder="Fx til keglen og tilbage eller rundt om hallen"></label>
+      <label class="span-2">Note<input id="runNote" placeholder="Fx løb makkervis eller start hvert nyt AMRAP-loop med løbet"></label>
+    </div>
+    <button type="submit">Tilføj løb</button>
+  </form>
+</dialog>
+
+<dialog id="aiSectionDialog" class="builder-dialog">
+  <button class="close" data-close="aiSectionDialog">×</button>
+  <form id="aiSectionForm">
+    <p class="eyebrow">AI-HJÆLP · ALPHA</p>
+    <h2 id="aiSectionDialogTitle">Byg en sektion</h2>
+    <p>Forslaget tager højde for træningstype, udstyr, de andre sektioner og nyligt brugte øvelser.</p>
+    <div class="form-grid">
+      <label>Element
+        <select id="aiSectionType">
+          <option>AMRAP</option>
+          <option>EMOM</option>
+          <option>YGIG</option>
+          <option>Chipper</option>
+          <option>Stationer</option>
+          <option>Teknik</option>
+          <option>Styrke</option>
+          <option>Leg</option>
+        </select>
+      </label>
+      <label>Varighed<input id="aiSectionMinutes" type="number" min="3" max="40" value="12"></label>
+      <label class="span-2">Fokus eller ønske<input id="aiSectionFocus" placeholder="Fx ben, høj puls, samarbejde eller brug en kettlebell"></label>
+      <label class="span-2">Tema til legen (valgfrit)<input id="aiGameTheme" placeholder="Fx agenter, pirater eller OL"></label>
+    </div>
+    <button type="submit">✨ Lav forslag</button>
+  </form>
+</dialog>
+
 <dialog id="workoutPlayer" class="workout-player">
   <div class="player-shell">
     <header class="player-header">
@@ -379,7 +457,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.3 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.1"></script>
+<footer>FunkFit Builder v0.7.4-alpha · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a"></script>
 </body>
 </html>
