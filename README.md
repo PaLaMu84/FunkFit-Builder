@@ -1,16 +1,17 @@
-# FunkFit Builder v0.7.1
+<<<<<<< HEAD
+# FunkFit Builder v0.7.4-alpha
 
-Elementbaseret træningsbygger med AI-first workflow.
+Denne version er en konkret testversion af Builder 2.0-fundamentet.
 
-Nyt i denne version:
-- TRX som træningsform
-- Leg som selvstændig elementtype
-- Beskrivelse, regler og trænertips på alle elementer
-- Regenerér ét element ad gangen
-- Gem og genbrug elementer i elementbiblioteket
-- Samlet tidskontrol mod planlagt varighed
-- Finisher låses til sidst
-- Tema for hele Junior-/Familietræningen
-- TIDAL bevaret
+Se:
+- `CHANGELOG.md`
+- `TESTLISTE.md`
+- `INSTALL.md`
+=======
+# FunkFit Builder v0.7.3
 
-Arbejd på `develop`, test, og merge derefter til `main`.
+- Builder/AI-knapperne skifter nu sikkert mellem sporene.
+- Kun aktiv knap vises orange.
+- Sikker event-binding og kontrol af interaktive elementer.
+- Cache og version opdateret.
+>>>>>>> cb11c30fab1ad586e36a754b48a5b33ebf2a540e

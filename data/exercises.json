@@ -38,7 +38,12 @@
       "Funktionel",
       "CrossFit-inspireret"
     ],
-    "instructionVideo": "assets/videos/01-air-squat.mp4"
+    "instructionVideo": "assets/videos/01-air-squat.mp4",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
   },
   {
     "id": "goblet-squat",
@@ -80,7 +85,12 @@
       "Funktionel",
       "CrossFit-inspireret"
     ],
-    "instructionVideo": "assets/videos/02-goblet-squat.mp4"
+    "instructionVideo": "assets/videos/02-goblet-squat.mp4",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
   },
   {
     "id": "farmer-carry",
@@ -124,7 +134,14 @@
       "Hyrox-inspireret",
       "CrossFit-inspireret"
     ],
-    "instructionVideo": "assets/videos/03-farmer-carry.mp4"
+    "instructionVideo": "assets/videos/03-farmer-carry.mp4",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ]
   },
   {
     "id": "bear-crawl",
@@ -166,7 +183,13 @@
       "HIIT",
       "CrossFit-inspireret"
     ],
-    "instructionVideo": "assets/videos/04-bear-crawl.mp4"
+    "instructionVideo": "assets/videos/04-bear-crawl.mp4",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
   },
   {
     "id": "push-up",
@@ -208,7 +231,12 @@
       "Funktionel",
       "CrossFit-inspireret"
     ],
-    "instructionVideo": "assets/videos/05-push-up.mp4"
+    "instructionVideo": "assets/videos/05-push-up.mp4",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
   },
   {
     "id": "db-row",
@@ -249,7 +277,12 @@
       "Funktionel",
       "CrossFit-inspireret"
     ],
-    "instructionVideo": "assets/videos/06-db-row.mp4"
+    "instructionVideo": "assets/videos/06-db-row.mp4",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
   },
   {
     "id": "kb-deadlift",
@@ -290,7 +323,12 @@
       "Funktionel",
       "CrossFit-inspireret"
     ],
-    "instructionVideo": "assets/videos/07-kb-deadlift.mp4"
+    "instructionVideo": "assets/videos/07-kb-deadlift.mp4",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
   },
   {
     "id": "step-up",
@@ -330,7 +368,12 @@
     "styles": [
       "Funktionel"
     ],
-    "instructionVideo": "assets/videos/08-step-up.mp4"
+    "instructionVideo": "assets/videos/08-step-up.mp4",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
   },
   {
     "id": "plank-shoulder-tap",
@@ -373,7 +416,13 @@
       "HIIT",
       "CrossFit-inspireret"
     ],
-    "instructionVideo": "assets/videos/09-plank-shoulder-tap.mp4"
+    "instructionVideo": "assets/videos/09-plank-shoulder-tap.mp4",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
   },
   {
     "id": "medball-slam",
@@ -417,7 +466,14 @@
       "Hyrox-inspireret",
       "CrossFit-inspireret"
     ],
-    "instructionVideo": "assets/videos/10-medball-slam.mp4"
+    "instructionVideo": "assets/videos/10-medball-slam.mp4",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ]
   },
   {
     "id": "shuttle-run",
@@ -457,6 +513,13 @@
       "Funktionel",
       "HIIT",
       "Hyrox-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
     ]
   },
   {
@@ -500,6 +563,13 @@
       "HIIT",
       "Hyrox-inspireret",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
     ]
   },
   {
@@ -538,6 +608,11 @@
     "adult": "8-12 pr. ben.",
     "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
     "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
       "Funktionel"
     ]
   },
@@ -580,6 +655,13 @@
     "styles": [
       "Funktionel",
       "Hyrox-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
     ]
   },
   {
@@ -617,6 +699,11 @@
     "adult": "8-12 pr. ben.",
     "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
     "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
       "Funktionel"
     ]
   },
@@ -659,6 +746,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -700,6 +792,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -742,6 +840,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -784,6 +888,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -825,6 +935,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -866,6 +981,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -909,6 +1029,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -950,6 +1076,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -987,6 +1118,11 @@
     "adult": "15-25 reps.",
     "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
     "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
       "Funktionel"
     ]
   },
@@ -1029,6 +1165,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -1067,6 +1209,11 @@
     "adult": "8-12 pr. side.",
     "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
     "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
       "Funktionel"
     ]
   },
@@ -1110,6 +1257,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -1147,6 +1300,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -1188,6 +1347,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -1227,6 +1392,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -1264,6 +1435,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -1301,6 +1478,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -1341,6 +1524,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -1380,6 +1569,12 @@
       "Funktionel",
       "HIIT",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
     ]
   },
   {
@@ -1421,6 +1616,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -1461,6 +1661,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -1500,6 +1705,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -1541,6 +1751,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -1581,6 +1796,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -1621,6 +1841,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -1659,6 +1884,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -1696,6 +1926,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -1733,6 +1968,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -1769,6 +2009,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -1807,6 +2052,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -1847,6 +2097,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -1889,6 +2144,13 @@
       "Funktionel",
       "Hyrox-inspireret",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
     ]
   },
   {
@@ -1931,6 +2193,13 @@
       "Funktionel",
       "Hyrox-inspireret",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
     ]
   },
   {
@@ -1972,6 +2241,11 @@
     "styles": [
       "Funktionel",
       "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
     ]
   },
   {
@@ -2011,6 +2285,13 @@
       "Funktionel",
       "HIIT",
       "Hyrox-inspireret"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
     ]
   },
   {
@@ -2051,6 +2332,12 @@
     "styles": [
       "TRX",
       "Funktionel"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
     ]
   },
   {
@@ -2091,6 +2378,12 @@
     "styles": [
       "TRX",
       "Funktionel"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
     ]
   },
   {
@@ -2131,6 +2424,12 @@
     "styles": [
       "TRX",
       "Funktionel"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
     ]
   },
   {
@@ -2171,6 +2470,12 @@
     "styles": [
       "TRX",
       "Funktionel"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
     ]
   },
   {
@@ -2211,6 +2516,12 @@
     "styles": [
       "TRX",
       "Funktionel"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
     ]
   },
   {
@@ -2249,6 +2560,12 @@
     "styles": [
       "TRX",
       "Funktionel"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
     ]
   },
   {
@@ -2289,6 +2606,12 @@
     "styles": [
       "TRX",
       "Funktionel"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
     ]
   },
   {
@@ -2329,6 +2652,2089 @@
     "styles": [
       "TRX",
       "Funktionel"
+    ],
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
     ]
+  },
+  {
+    "id": "trx-high-row",
+    "name": "TRX high row",
+    "category": "TRX træk",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "YGIG"
+    ],
+    "description": "Træk albuerne højt og saml skulderbladene uden at miste kropslinjen.",
+    "focus": [
+      "Ryg",
+      "Skuldre",
+      "Core"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "8-12 reps.",
+    "adult": "10-15 reps.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ryg",
+      "Skuldre",
+      "Core"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
+    ]
+  },
+  {
+    "id": "trx-t-fly",
+    "name": "TRX T-fly",
+    "category": "TRX skulder",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Teknik"
+    ],
+    "description": "Åbn armene til et T og hold ribbenene nede.",
+    "focus": [
+      "Skuldre",
+      "Ryg"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "6-10 reps.",
+    "adult": "8-12 reps.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Skuldre",
+      "Ryg"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
+    ]
+  },
+  {
+    "id": "trx-biceps-curl",
+    "name": "TRX biceps curl",
+    "category": "TRX arme",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "YGIG"
+    ],
+    "description": "Hold albuerne højt og bøj i albuen uden at knække i hoften.",
+    "focus": [
+      "Arme",
+      "Core"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "8-12 reps.",
+    "adult": "10-15 reps.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Arme",
+      "Core"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
+    ]
+  },
+  {
+    "id": "trx-triceps-press",
+    "name": "TRX triceps press",
+    "category": "TRX arme",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "YGIG"
+    ],
+    "description": "Bøj kun i albuerne og hold kroppen som en planke.",
+    "focus": [
+      "Triceps",
+      "Core"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "6-10 reps.",
+    "adult": "8-15 reps.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Triceps",
+      "Core"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
+    ]
+  },
+  {
+    "id": "trx-split-squat",
+    "name": "TRX split squat",
+    "category": "TRX ben",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP"
+    ],
+    "description": "Brug stropperne til balance og sænk bageste knæ kontrolleret.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Balance"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "6-10 pr. ben.",
+    "adult": "8-12 pr. ben.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Balance"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
+    ]
+  },
+  {
+    "id": "trx-lateral-lunge",
+    "name": "TRX lateral lunge",
+    "category": "TRX ben",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Teknik"
+    ],
+    "description": "Træd ud til siden og sæt hoften tilbage med støtte i stropperne.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Mobilitet"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "6-8 pr. side.",
+    "adult": "8-12 pr. side.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Mobilitet"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
+    ]
+  },
+  {
+    "id": "trx-hip-press",
+    "name": "TRX hip press",
+    "category": "TRX balder",
+    "equipment": [
+      "TRX",
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP"
+    ],
+    "description": "Pres hoften op med hælene i stropperne.",
+    "focus": [
+      "Balder",
+      "Baglår",
+      "Core"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "8-12 reps.",
+    "adult": "10-15 reps.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Balder",
+      "Baglår",
+      "Core"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
+    ]
+  },
+  {
+    "id": "trx-knee-tuck",
+    "name": "TRX knee tuck",
+    "category": "TRX core",
+    "equipment": [
+      "TRX",
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "AMRAP",
+      "EMOM"
+    ],
+    "description": "Stå i planke med fødderne i stropperne og træk knæene ind.",
+    "focus": [
+      "Core",
+      "Skuldre"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "5-8 reps.",
+    "adult": "8-15 reps.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre"
+    ],
+    "styles": [
+      "TRX",
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "TRX"
+    ]
+  },
+  {
+    "id": "trx-pike",
+    "name": "TRX pike",
+    "category": "TRX core",
+    "equipment": [
+      "TRX",
+      "Måtte"
+    ],
+    "audience": [
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "AMRAP"
+    ],
+    "description": "Løft hoften mod loftet fra en stabil planke.",
+    "focus": [
+      "Core",
+      "Skuldre"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "Brug knee tuck i stedet.",
+    "adult": "6-12 reps.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Funktionel",
+      "TRX"
+    ]
+  },
+  {
+    "id": "trx-body-saw",
+    "name": "TRX body saw",
+    "category": "TRX core",
+    "equipment": [
+      "TRX",
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "AMRAP"
+    ],
+    "description": "Flyt kroppen roligt frem og tilbage i underarmsplanke.",
+    "focus": [
+      "Core",
+      "Skuldre"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "15-25 sek.",
+    "adult": "20-40 sek.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "TRX"
+    ]
+  },
+  {
+    "id": "db-push-press",
+    "name": "Dumbbell push press",
+    "category": "Pres",
+    "equipment": [
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "AMRAP",
+      "EMOM",
+      "YGIG"
+    ],
+    "description": "Brug et lille dip i benene og pres håndvægtene over hovedet.",
+    "focus": [
+      "Skuldre",
+      "Ben",
+      "Core"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "6-10 reps med let vægt.",
+    "adult": "8-15 reps.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Skuldre",
+      "Ben",
+      "Core"
+    ],
+    "styles": [
+      "Funktionel",
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
+  },
+  {
+    "id": "kb-clean",
+    "name": "Kettlebell clean",
+    "category": "Hinge",
+    "equipment": [
+      "Kettlebell"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Høj",
+    "format": [
+      "AMRAP",
+      "EMOM",
+      "YGIG"
+    ],
+    "description": "Før kettlebellen tæt til kroppen og modtag den blødt i rack.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Skuldre"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "5-8 pr. side.",
+    "adult": "6-12 pr. side.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Skuldre"
+    ],
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "lateral-lunge",
+    "name": "Lateral lunge",
+    "category": "Lunge",
+    "equipment": [
+      "Kropsvægt",
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP"
+    ],
+    "description": "Træd ud til siden og sæt hoften bagud.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Mobilitet"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "6-8 pr. side.",
+    "adult": "8-12 pr. side.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Mobilitet"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "step-up-knee-drive",
+    "name": "Step-up med knæløft",
+    "category": "Ben",
+    "equipment": [
+      "Boks",
+      "Bænk"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "YGIG"
+    ],
+    "description": "Træd op på boksen og afslut med kontrolleret knæløft.",
+    "focus": [
+      "Ben",
+      "Balance",
+      "Core"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "6-10 pr. ben.",
+    "adult": "8-12 pr. ben.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ben",
+      "Balance",
+      "Core"
+    ],
+    "styles": [
+      "Funktionel",
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
+  },
+  {
+    "id": "glute-bridge-march",
+    "name": "Glute bridge march",
+    "category": "Balder",
+    "equipment": [
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP"
+    ],
+    "description": "Hold hoften oppe og løft skiftevis én fod.",
+    "focus": [
+      "Balder",
+      "Core",
+      "Baglår"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "8-12 skift.",
+    "adult": "12-20 skift.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Balder",
+      "Core",
+      "Baglår"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "skater-jump",
+    "name": "Skater jumps",
+    "category": "Plyometri",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "HIIT-intervaller",
+      "AMRAP",
+      "Station"
+    ],
+    "description": "Hop sideværts fra ben til ben med blød landing.",
+    "focus": [
+      "Ben",
+      "Balance",
+      "Kondition"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "20-30 sek.",
+    "adult": "30-45 sek.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ben",
+      "Balance",
+      "Kondition"
+    ],
+    "styles": [
+      "HIIT",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
+  },
+  {
+    "id": "line-hops",
+    "name": "Sidehop over linje",
+    "category": "Plyometri",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "HIIT-intervaller",
+      "Tabata",
+      "Station"
+    ],
+    "description": "Hop hurtigt fra side til side over en linje.",
+    "focus": [
+      "Ben",
+      "Kondition",
+      "Koordination"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "20 sek.",
+    "adult": "30-45 sek.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ben",
+      "Kondition",
+      "Koordination"
+    ],
+    "styles": [
+      "HIIT",
+      "Junior"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
+  },
+  {
+    "id": "plank-jack",
+    "name": "Plank jack",
+    "category": "Core puls",
+    "equipment": [
+      "Kropsvægt",
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "HIIT-intervaller",
+      "AMRAP",
+      "Station"
+    ],
+    "description": "Hop fødderne ud og ind fra en stabil planke.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Kondition"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "15-25 sek.",
+    "adult": "30-45 sek.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre",
+      "Kondition"
+    ],
+    "styles": [
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
+  },
+  {
+    "id": "squat-thrust",
+    "name": "Squat thrust",
+    "category": "Helkrop",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "HIIT-intervaller",
+      "AMRAP",
+      "EMOM"
+    ],
+    "description": "Sæt hænderne i gulvet, hop ud i planke og tilbage uden push-up.",
+    "focus": [
+      "Helkrop",
+      "Kondition"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "6-10 reps.",
+    "adult": "10-20 reps.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Helkrop",
+      "Kondition"
+    ],
+    "styles": [
+      "HIIT",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
+  },
+  {
+    "id": "fast-feet",
+    "name": "Fast feet",
+    "category": "Agility",
+    "equipment": [
+      "Kropsvægt",
+      "Kegler"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "HIIT-intervaller",
+      "Opvarmning",
+      "Station"
+    ],
+    "description": "Tag meget hurtige små skridt på stedet eller mellem markeringer.",
+    "focus": [
+      "Kondition",
+      "Koordination",
+      "Ben"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "15-25 sek.",
+    "adult": "30-45 sek.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Kondition",
+      "Koordination",
+      "Ben"
+    ],
+    "styles": [
+      "HIIT",
+      "Junior"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
+  },
+  {
+    "id": "tuck-jump",
+    "name": "Tuck jumps",
+    "category": "Plyometri",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Høj",
+    "format": [
+      "HIIT-intervaller",
+      "EMOM",
+      "Station"
+    ],
+    "description": "Hop højt og træk knæene op med blød landing.",
+    "focus": [
+      "Ben",
+      "Eksplosivitet",
+      "Kondition"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "4-8 reps.",
+    "adult": "6-12 reps.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ben",
+      "Eksplosivitet",
+      "Kondition"
+    ],
+    "styles": [
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
+  },
+  {
+    "id": "mountain-climber-sprint",
+    "name": "Mountain climber sprint",
+    "category": "Core puls",
+    "equipment": [
+      "Kropsvægt",
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "HIIT-intervaller",
+      "Tabata",
+      "AMRAP"
+    ],
+    "description": "Skift knæ hurtigt frem under kroppen fra planke.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Kondition"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "20 sek.",
+    "adult": "30-45 sek.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre",
+      "Kondition"
+    ],
+    "styles": [
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
+  },
+  {
+    "id": "burpee-broad-jump",
+    "name": "Burpee broad jump",
+    "category": "Helkrop",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Høj",
+    "format": [
+      "Chipper",
+      "Hyrox station",
+      "YGIG"
+    ],
+    "description": "Lav en burpee og afslut med et kontrolleret længdespring.",
+    "focus": [
+      "Helkrop",
+      "Kondition",
+      "Eksplosivitet"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "4-8 m.",
+    "adult": "10-20 m.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Helkrop",
+      "Kondition",
+      "Eksplosivitet"
+    ],
+    "styles": [
+      "Hyrox-inspireret",
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ]
+  },
+  {
+    "id": "ski-erg",
+    "name": "SkiErg",
+    "category": "Ergometer",
+    "equipment": [
+      "SkiErg"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Hyrox station",
+      "YGIG",
+      "Chipper"
+    ],
+    "description": "Træk håndtagene ned med hofte og core i en rytmisk bevægelse.",
+    "focus": [
+      "Kondition",
+      "Ryg",
+      "Arme"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "100-250 m.",
+    "adult": "250-1000 m.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Kondition",
+      "Ryg",
+      "Arme"
+    ],
+    "styles": [
+      "Hyrox-inspireret",
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ]
+  },
+  {
+    "id": "row-erg",
+    "name": "Romaskine",
+    "category": "Ergometer",
+    "equipment": [
+      "Romaskine"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Hyrox station",
+      "YGIG",
+      "Chipper"
+    ],
+    "description": "Pres først med benene, åbn hoften og afslut med armene.",
+    "focus": [
+      "Kondition",
+      "Ben",
+      "Ryg"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "100-250 m.",
+    "adult": "250-1000 m.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Kondition",
+      "Ben",
+      "Ryg"
+    ],
+    "styles": [
+      "Hyrox-inspireret",
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ]
+  },
+  {
+    "id": "sandbag-lunge",
+    "name": "Sandbag walking lunge",
+    "category": "Lunge",
+    "equipment": [
+      "Sandsæk"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Hyrox station",
+      "Chipper",
+      "YGIG"
+    ],
+    "description": "Gå frem i lunges med sandsækken stabilt placeret.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "10-20 m let.",
+    "adult": "20-100 m.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "styles": [
+      "Hyrox-inspireret",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ]
+  },
+  {
+    "id": "sled-push",
+    "name": "Slæde push",
+    "category": "Push",
+    "equipment": [
+      "Slæde"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Hyrox station",
+      "YGIG",
+      "Chipper"
+    ],
+    "description": "Skub slæden med korte kraftfulde skridt og fast overkrop.",
+    "focus": [
+      "Ben",
+      "Core",
+      "Kondition"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "10-20 m let.",
+    "adult": "20-50 m.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ben",
+      "Core",
+      "Kondition"
+    ],
+    "styles": [
+      "Hyrox-inspireret"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ]
+  },
+  {
+    "id": "sled-pull",
+    "name": "Slæde pull",
+    "category": "Pull",
+    "equipment": [
+      "Slæde",
+      "Reb"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Hyrox station",
+      "YGIG",
+      "Chipper"
+    ],
+    "description": "Træk slæden ind med kontrollerede hånd-over-hånd træk.",
+    "focus": [
+      "Ryg",
+      "Arme",
+      "Ben"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "10-20 m let.",
+    "adult": "20-50 m.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ryg",
+      "Arme",
+      "Ben"
+    ],
+    "styles": [
+      "Hyrox-inspireret"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ]
+  },
+  {
+    "id": "bear-hug-carry",
+    "name": "Bear hug carry",
+    "category": "Carry",
+    "equipment": [
+      "Sandsæk",
+      "Medicinbold"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Hyrox station",
+      "Chipper",
+      "YGIG"
+    ],
+    "description": "Bær redskabet tæt ind til brystet med rank krop.",
+    "focus": [
+      "Core",
+      "Ben",
+      "Arme"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "10-20 m.",
+    "adult": "20-50 m.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Core",
+      "Ben",
+      "Arme"
+    ],
+    "styles": [
+      "Hyrox-inspireret",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ]
+  },
+  {
+    "id": "plate-ground-overhead",
+    "name": "Plate ground to overhead",
+    "category": "Helkrop",
+    "equipment": [
+      "Vægtskive"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "AMRAP",
+      "EMOM",
+      "Hyrox station"
+    ],
+    "description": "Før skiven fra gulvet til strakte arme med ben og hofte.",
+    "focus": [
+      "Ben",
+      "Skuldre",
+      "Core"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "6-10 lette reps.",
+    "adult": "10-20 reps.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ben",
+      "Skuldre",
+      "Core"
+    ],
+    "styles": [
+      "Hyrox-inspireret",
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ]
+  },
+  {
+    "id": "frog-jump",
+    "name": "Frøhop",
+    "category": "Motorik",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Stafet",
+      "Station",
+      "AMRAP"
+    ],
+    "description": "Start lavt og hop frem med blød landing.",
+    "focus": [
+      "Ben",
+      "Eksplosivitet",
+      "Koordination"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "5-10 m.",
+    "adult": "10-20 m.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Ben",
+      "Eksplosivitet",
+      "Koordination"
+    ],
+    "styles": [
+      "Junior",
+      "Familie",
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
+  },
+  {
+    "id": "crab-walk",
+    "name": "Krabbegang",
+    "category": "Motorik",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Stafet",
+      "Station",
+      "Teamchallenge"
+    ],
+    "description": "Gå på hænder og fødder med maven opad.",
+    "focus": [
+      "Arme",
+      "Core",
+      "Koordination"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "5-10 m.",
+    "adult": "10-20 m.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Arme",
+      "Core",
+      "Koordination"
+    ],
+    "styles": [
+      "Junior",
+      "Familie"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "partner-high-five-plank",
+    "name": "Makker plank high-five",
+    "category": "Makker",
+    "equipment": [
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "YGIG",
+      "Station",
+      "Teamchallenge"
+    ],
+    "description": "Stå over for makkeren i planke og giv skiftevis high-five.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Samarbejde"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "8-16 high-fives.",
+    "adult": "12-24 high-fives.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre",
+      "Samarbejde"
+    ],
+    "styles": [
+      "Junior",
+      "Familie",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "mirror-drill",
+    "name": "Spejløvelse",
+    "category": "Reaktion",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Opvarmning",
+      "Station",
+      "Stafet"
+    ],
+    "description": "Den ene fører bevægelserne, mens makkeren spejler.",
+    "focus": [
+      "Koordination",
+      "Reaktion",
+      "Kondition"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "20-30 sek. hver.",
+    "adult": "30-45 sek. hver.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Koordination",
+      "Reaktion",
+      "Kondition"
+    ],
+    "styles": [
+      "Junior",
+      "Familie",
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
+  },
+  {
+    "id": "cone-touch-reaction",
+    "name": "Kegle-touch på signal",
+    "category": "Reaktion",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Opvarmning",
+      "HIIT-intervaller",
+      "Stafet"
+    ],
+    "description": "Reagér på farve eller nummer og rør den rigtige kegle.",
+    "focus": [
+      "Reaktion",
+      "Kondition",
+      "Koordination"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "20-30 sek.",
+    "adult": "30-45 sek.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Reaktion",
+      "Kondition",
+      "Koordination"
+    ],
+    "styles": [
+      "Junior",
+      "Familie",
+      "HIIT"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel",
+      "HIIT"
+    ]
+  },
+  {
+    "id": "medball-partner-pass",
+    "name": "Medicinbold makkerkast",
+    "category": "Makker",
+    "equipment": [
+      "Medicinbold"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "YGIG",
+      "Teamchallenge"
+    ],
+    "description": "Kast bolden kontrolleret mellem makkere med stabil core.",
+    "focus": [
+      "Core",
+      "Arme",
+      "Samarbejde"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "8-12 kast.",
+    "adult": "12-20 kast.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Core",
+      "Arme",
+      "Samarbejde"
+    ],
+    "styles": [
+      "Junior",
+      "Familie",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "balance-reach",
+    "name": "Balance reach",
+    "category": "Balance",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Lav",
+    "format": [
+      "Teknik",
+      "Opvarmning",
+      "Station"
+    ],
+    "description": "Stå på ét ben og nå kontrolleret i forskellige retninger.",
+    "focus": [
+      "Balance",
+      "Ben",
+      "Core"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "4-6 pr. side.",
+    "adult": "6-10 pr. side.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Balance",
+      "Ben",
+      "Core"
+    ],
+    "styles": [
+      "Junior",
+      "Familie",
+      "Mobilitet"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "hopscotch-course",
+    "name": "Hinkerude-bane",
+    "category": "Motorik",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Stafet",
+      "Opvarmning",
+      "Station"
+    ],
+    "description": "Hink gennem en enkel bane med skift mellem ét og to ben.",
+    "focus": [
+      "Koordination",
+      "Balance",
+      "Ben"
+    ],
+    "easier": "Reducer bevægeudslag, tempo, belastning eller varighed.",
+    "harder": "Øg bevægeudslag, tempo, belastning eller varighed.",
+    "junior": "2-4 ture.",
+    "adult": "Brug step eller små hop.",
+    "mistakes": "For højt tempo før teknikken er på plads.",
+    "bodyAreas": [
+      "Koordination",
+      "Balance",
+      "Ben"
+    ],
+    "styles": [
+      "Junior",
+      "Familie"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior"
+    ]
+  },
+  {
+    "id": "trx-power-pull",
+    "name": "TRX power pull",
+    "category": "TRX rotation",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "YGIG"
+    ],
+    "description": "Rotér kontrolleret væk fra ankeret og træk kroppen tilbage med én arm.",
+    "focus": [
+      "Ryg",
+      "Core",
+      "Rotation"
+    ],
+    "easier": "Stå mere oprejst.",
+    "harder": "Stå længere ind under ankeret.",
+    "junior": "5-8 pr. side.",
+    "adult": "6-12 pr. side.",
+    "mistakes": "Rotation uden kontrol eller hængende skulder.",
+    "bodyAreas": [
+      "Ryg",
+      "Core"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "TRX",
+      "Funktionel"
+    ],
+    "instructionVideo": ""
+  },
+  {
+    "id": "trx-assisted-pistol",
+    "name": "TRX assisted pistol squat",
+    "category": "TRX ben",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Teknik"
+    ],
+    "description": "Brug stropperne som støtte til en kontrolleret étbens squat.",
+    "focus": [
+      "Ben",
+      "Balance",
+      "Core"
+    ],
+    "easier": "Squat til boks.",
+    "harder": "Mindre hjælp fra armene.",
+    "junior": "4-6 pr. ben.",
+    "adult": "5-10 pr. ben.",
+    "mistakes": "Knæ falder ind eller vægten flyttes til armene.",
+    "bodyAreas": [
+      "Ben",
+      "Core"
+    ],
+    "styles": [
+      "TRX",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "TRX",
+      "Funktionel"
+    ],
+    "instructionVideo": ""
+  },
+  {
+    "id": "db-thruster",
+    "name": "Dumbbell thruster",
+    "category": "Helkrop",
+    "equipment": [
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Høj",
+    "format": [
+      "AMRAP",
+      "EMOM",
+      "HIIT-intervaller"
+    ],
+    "description": "Kombinér front squat og pres over hovedet i én flydende bevægelse.",
+    "focus": [
+      "Ben",
+      "Skuldre",
+      "Core",
+      "Kondition"
+    ],
+    "easier": "Lettere vægt eller squat til boks.",
+    "harder": "Tungere vægt.",
+    "junior": "5-8 lette reps.",
+    "adult": "8-15 reps.",
+    "mistakes": "Presser før hoften er strakt eller mister kropsspænding.",
+    "bodyAreas": [
+      "Helkrop"
+    ],
+    "styles": [
+      "Funktionel",
+      "HIIT"
+    ],
+    "trainingForms": [
+      "Funktionel",
+      "HIIT"
+    ],
+    "instructionVideo": ""
+  },
+  {
+    "id": "kb-sumo-deadlift-high-pull",
+    "name": "KB sumo deadlift high pull",
+    "category": "Helkrop",
+    "equipment": [
+      "Kettlebell"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Høj",
+    "format": [
+      "AMRAP",
+      "EMOM",
+      "Station"
+    ],
+    "description": "Træk kettlebellen fra gulvet til brysthøjde med hofteekstension og høje albuer.",
+    "focus": [
+      "Ben",
+      "Ryg",
+      "Skuldre"
+    ],
+    "easier": "Almindelig sumo deadlift.",
+    "harder": "Øg vægten eller tempoet.",
+    "junior": "6-10 reps med let vægt.",
+    "adult": "8-15 reps.",
+    "mistakes": "Trækker kun med armene eller runder ryggen.",
+    "bodyAreas": [
+      "Helkrop"
+    ],
+    "styles": [
+      "Funktionel",
+      "CrossFit-inspireret"
+    ],
+    "trainingForms": [
+      "Funktionel",
+      "HIIT"
+    ],
+    "instructionVideo": ""
+  },
+  {
+    "id": "wall-sit",
+    "name": "Wall sit",
+    "category": "Isometrisk ben",
+    "equipment": [
+      "Væg"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "YGIG",
+      "Station",
+      "Teamchallenge"
+    ],
+    "description": "Hold en siddende position mod væggen med knæ og hofter stabilt placeret.",
+    "focus": [
+      "Ben",
+      "Core"
+    ],
+    "easier": "Stå højere.",
+    "harder": "Hold vægt eller løft én hæl.",
+    "junior": "20-30 sek.",
+    "adult": "30-60 sek.",
+    "mistakes": "Knæ kollapser ind eller ryggen slipper væggen.",
+    "bodyAreas": [
+      "Ben",
+      "Core"
+    ],
+    "styles": [
+      "Funktionel",
+      "Junior"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie",
+      "Funktionel"
+    ],
+    "instructionVideo": ""
+  },
+  {
+    "id": "partner-resisted-run",
+    "name": "Makker-modstandsløb",
+    "category": "Makker",
+    "equipment": [
+      "Elastik"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Stafet",
+      "YGIG"
+    ],
+    "description": "Den ene løber frem, mens makkeren giver jævn modstand med elastik.",
+    "focus": [
+      "Ben",
+      "Kondition",
+      "Samarbejde"
+    ],
+    "easier": "Mindre modstand og kortere distance.",
+    "harder": "Mere modstand.",
+    "junior": "5-10 m hver.",
+    "adult": "10-20 m hver.",
+    "mistakes": "Rykvis modstand eller usikker elastikplacering.",
+    "bodyAreas": [
+      "Ben",
+      "Helkrop"
+    ],
+    "styles": [
+      "Junior",
+      "Familie",
+      "HIIT"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie",
+      "HIIT"
+    ],
+    "instructionVideo": ""
+  },
+  {
+    "id": "medball-over-shoulder",
+    "name": "Medicinbold over skulder",
+    "category": "Helkrop",
+    "equipment": [
+      "Medicinbold"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Middel",
+    "intensity": "Høj",
+    "format": [
+      "AMRAP",
+      "Chipper",
+      "YGIG"
+    ],
+    "description": "Løft bolden fra gulvet og før den kontrolleret over skulderen.",
+    "focus": [
+      "Ben",
+      "Ryg",
+      "Core",
+      "Kondition"
+    ],
+    "easier": "Lettere bold.",
+    "harder": "Tungere bold eller flere reps.",
+    "junior": "5-8 reps let.",
+    "adult": "8-15 reps.",
+    "mistakes": "Runder ryggen eller kaster ukontrolleret.",
+    "bodyAreas": [
+      "Helkrop"
+    ],
+    "styles": [
+      "Funktionel",
+      "Hyrox-inspireret"
+    ],
+    "trainingForms": [
+      "Funktionel",
+      "Hyrox",
+      "HIIT"
+    ],
+    "instructionVideo": ""
+  },
+  {
+    "id": "lateral-box-step-over",
+    "name": "Lateral box step-over",
+    "category": "Ben",
+    "equipment": [
+      "Boks"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Middel",
+    "intensity": "Middel",
+    "format": [
+      "AMRAP",
+      "Station",
+      "Chipper"
+    ],
+    "description": "Træd sidelæns over boksen med kontrolleret fodplacering.",
+    "focus": [
+      "Ben",
+      "Balance",
+      "Kondition"
+    ],
+    "easier": "Lavere boks.",
+    "harder": "Hold håndvægte.",
+    "junior": "6-10 overgange.",
+    "adult": "10-20 overgange.",
+    "mistakes": "Hopper ned ukontrolleret eller bruger for høj boks.",
+    "bodyAreas": [
+      "Ben"
+    ],
+    "styles": [
+      "Funktionel",
+      "Hyrox-inspireret"
+    ],
+    "trainingForms": [
+      "Funktionel",
+      "Hyrox",
+      "HIIT"
+    ],
+    "instructionVideo": ""
   }
 ]
