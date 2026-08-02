@@ -236,8 +236,11 @@ function makeRunItem(presetId='run-200'){
 }
 function shouldSuggestRun(section,focus=''){
   const text=`${section?.type||''} ${section?.format||''} ${section?.style||''} ${focus}`.toLowerCase();
-  if(plannerConcept==='hyrox')return true;
-  if(text.includes('løb')||text.includes('run'))return true;
+  const explicitRun=/\b(løb|løbe|løbetur|run|running|sprint|shuttle)\b/.test(text);
+  if(plannerConcept==='hyrox'||explicitRun)return true;
+  // Et stærkt specifikt ønske som “masser af mave” skal ikke udvandes
+  // af automatisk løb, bare fordi træningen foregår udendørs.
+  if(strongCoreRequest([focus]))return false;
   return plannerVenue==='outdoor'&&['AMRAP','Chipper'].includes(section?.format);
 }
 function suggestOneExercise(index){
@@ -977,10 +980,62 @@ function exerciseAvailable(ex){
   const req=ex.equipment||['Kropsvægt'];
   return req.some(eq=>eq==='Kropsvægt'||plannerEquipment.has(eq));
 }
+function normalizedIntentTerms(values=[]){
+  const raw=(values||[]).filter(Boolean).join(' ').toLowerCase();
+  const cleaned=raw
+    .replace(/[.,;:!?()\/+-]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+  const terms=new Set(cleaned.split(' ').filter(x=>x.length>2));
+
+  const synonymGroups={
+    core:['core','mave','maven','mavemuskler','abs','abdominal','bugstabilitet'],
+    kondition:['kondition','kondi','cardio','puls'],
+    styrke:['styrke','stærk','styrketræning'],
+    samarbejde:['samarbejde','makker','team','hold'],
+    eksplosivitet:['eksplosivitet','eksplosiv','power'],
+    balance:['balance','stabilitet'],
+    teknik:['teknik','teknisk']
+  };
+  Object.entries(synonymGroups).forEach(([canonical,words])=>{
+    if(words.some(word=>cleaned.includes(word)))terms.add(canonical);
+  });
+  return [...terms];
+}
+function exerciseHaystack(ex){
+  return [ex.name,ex.category,ex.intensity,...(ex.focus||[]),...(ex.bodyAreas||[]),...(ex.styles||[]),...(ex.format||[]),...(ex.trainingForms||[])]
+    .join(' ').toLowerCase();
+}
+function isPrimaryCoreExercise(ex){
+  const name=(ex.name||'').toLowerCase();
+  const category=(ex.category||'').toLowerCase();
+  const primaryNames=['plank','sit-up','situp','dead bug','hollow','russian twist','v-up','crunch','bird dog','mountain climber','knee tuck','bear crawl'];
+  return category.includes('core')||primaryNames.some(word=>name.includes(word));
+}
+function strongCoreRequest(values=[]){
+  const text=(values||[]).filter(Boolean).join(' ').toLowerCase();
+  const coreWord='(?:mave(?:muskler)?|core|abs|abdominal)';
+  return new RegExp(`(?:masser\\s+af|meget|mange|ekstra|primært|primært fokus på|hovedfokus på|fokus på)\\s+(?:\\w+\\s+){0,2}${coreWord}`).test(text)
+    ||new RegExp(`${coreWord}\\s+(?:skal fylde|i fokus|som hovedfokus)`).test(text);
+}
 function scoreExercise(ex,goals,sectionType){
   let score=0;
-  const hay=[ex.name,ex.category,ex.intensity,...(ex.focus||[]),...(ex.bodyAreas||[]),...(ex.styles||[]),...(ex.format||[]),...(ex.trainingForms||[])].join(' ').toLowerCase();
-  goals.forEach(g=>{if(hay.includes(g.toLowerCase()))score+=4});
+  const hay=exerciseHaystack(ex);
+  const terms=normalizedIntentTerms(goals);
+
+  terms.forEach(term=>{
+    if(term==='core'){
+      if(isPrimaryCoreExercise(ex))score+=12;
+      else if(hay.includes('core'))score+=4;
+    }else if(hay.includes(term)){
+      score+=4;
+    }
+  });
+
+  if(strongCoreRequest(goals)){
+    if(isPrimaryCoreExercise(ex))score+=28;
+    else if(hay.includes('core'))score+=5;
+  }
   if(sectionType==='warmup'&&(hay.includes('kondition')||hay.includes('koordination')||hay.includes('agility')||hay.includes('kropsvægt')))score+=5;
   if(sectionType==='main'&&(hay.includes('funktionel')||hay.includes('styrke')||hay.includes('helkrop')))score+=3;
   if(sectionType==='team'&&(hay.includes('makker')||hay.includes('stafet')||hay.includes('teamchallenge')))score+=7;
@@ -991,18 +1046,29 @@ function scoreExercise(ex,goals,sectionType){
   if(plannerVenue==='outdoor'&&(hay.includes('løb')||hay.includes('carry')||hay.includes('stafet')))score+=3;
   if(plannerVenue==='indoor'&&(ex.equipment||[]).some(x=>['Måtte','Boks','Bænk','Væg'].includes(x)))score+=2;
   if($('#useFavoritesFirst').checked&&favorites().has(ex.id))score+=10;
-  
+
   const recent=aiHistory().flatMap(x=>x.exerciseIds||[]);
   const uses=recent.filter(id=>id===ex.id).length;
   score-=uses*3.5;
   const jitter=(Math.sin((Date.now()/86400000)+(ex.id||'').length*17)+1)*0.9;
   return score+jitter;
-
 }
 function pickExercises(count,goals,type,used=new Set()){
-  return exercises.filter(ex=>exerciseAvailable(ex)&&!used.has(ex.id))
+  const ranked=exercises.filter(ex=>exerciseAvailable(ex)&&!used.has(ex.id))
     .map(ex=>({ex,score:scoreExercise(ex,goals,type)}))
-    .sort((a,b)=>b.score-a.score).slice(0,count).map(x=>x.ex);
+    .sort((a,b)=>b.score-a.score);
+
+  if(!strongCoreRequest(goals)){
+    return ranked.slice(0,count).map(x=>x.ex);
+  }
+
+  // “Masser af mave” betyder, at hovedparten skal være direkte
+  // mave/core-øvelser – ikke kun øvelser, hvor core hjælper lidt.
+  const requiredCore=Math.min(count,Math.max(2,Math.ceil(count*.65)));
+  const chosen=ranked.filter(x=>isPrimaryCoreExercise(x.ex)).slice(0,requiredCore);
+  const chosenIds=new Set(chosen.map(x=>x.ex.id));
+  ranked.filter(x=>!chosenIds.has(x.ex.id)).slice(0,count-chosen.length).forEach(x=>chosen.push(x));
+  return chosen.slice(0,count).map(x=>x.ex);
 }
 function prescriptionFor(ex,adult=false){
   const text=adult?(ex.adult||'8-15 gentagelser'):(ex.junior||'8-12 gentagelser');

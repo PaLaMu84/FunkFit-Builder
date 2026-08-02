@@ -1,16 +1,9 @@
-# FunkFit Builder v0.7.4-alpha.3
+# FunkFit Builder v0.7.4-alpha.4
 
-## AI-hjælp til én sektion
-- Bruger nu de samme punkt 1–6 som “Byg en hel træning med AI”:
-  1. Hvem træner?
-  2. Inde eller ude
-  3. Varighed og deltagere
-  4. Træningsmål
-  5. Udstyr
-  6. Idé og særlige ønsker
-- Punkt 7 om hele træningens struktur skjules.
-- Ledopvarmning, finisher og “medtag en leg”-toggle skjules i sektionstilstanden.
-- Sektionstype vælges særskilt: Opvarmning, AMRAP, EMOM, YGIG, Chipper, Stationer, Teknik, Styrke eller Leg.
-- Ledopvarmning og finisher kan ikke vælges som sektionstype.
-- AI indsætter eller erstatter kun én sektion og ændrer ikke resten af træningen.
-- “Byg en sektion” fra Finpuds bruger også den nye punkt 1–6-guide.
+## Rettelser
+- Teksten “AI laver et komplet træningsforslag, som bagefter åbnes i Finpuds” er fjernet.
+- AI fortolker nu mave, mavemuskler, abs og core som samme træningsmål.
+- Et stærkt ønske som “masser af mave” prioriteres over mere generelle mål.
+- Ved “masser af mave” bliver mindst cirka to tredjedele af øvelserne direkte mave/core-øvelser.
+- Plank, sit-up, dead bug, hollow hold, russian twist og lignende prioriteres foran øvelser, hvor core kun arbejder indirekte.
+- Automatisk udendørs løb udelades ved stærkt mave/core-fokus, medmindre løb er nævnt direkte eller træningstypen er Hyrox.
