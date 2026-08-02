@@ -1,13 +1,13 @@
-# Testliste – v0.7.4-alpha.2
+# Testliste – v0.7.4-alpha.3
 
-1. Under Arbejdsgang skal rækkefølgen være:
-   - Byg en hel træning med AI
-   - Få AI-hjælp til én sektion
-   - Byg en hel træning selv
-2. Den manuelle knap skal være mere afdæmpet.
-3. Åbn eller byg en træning, og tryk derefter “Ny træning”.
-4. Kontrollér at titel, sektioner, musik, tema og AI-resultat er nulstillet.
-5. Den nye træning må kun indeholde tom ledopvarmning, opvarmning og finisher.
-6. Gå til Finpuds og tryk “Ryd træningen”.
-7. Bekræft og kontrollér, at hele kladden bliver tom.
-8. Tryk “Fortryd” og kontrollér, at alt gendannes.
+1. Tryk “Få AI-hjælp til én sektion” under Arbejdsgang.
+2. Kontrollér at punkt 1–6 vises.
+3. Kontrollér at punkt 7 ikke vises.
+4. Kontrollér at valg for ledopvarmning og finisher ikke vises.
+5. Vælg sektionstype, fx YGIG.
+6. Udfyld varighed, deltagere, mål, udstyr og særlige ønsker.
+7. Tryk “Lav sektionsforslag”.
+8. Kontrollér at kun én sektion indsættes.
+9. Kontrollér at der ikke oprettes ledopvarmning eller finisher.
+10. Kontrollér ved YGIG, at styringen er samlet tid og ikke intervaller.
+11. Prøv “AI-forslag til denne sektion” i Finpuds og kontrollér, at punkt 1–6-guiden åbnes.

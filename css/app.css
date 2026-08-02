@@ -320,3 +320,9 @@ dialog{width:min(860px,calc(100% - 1rem));max-height:90vh;overflow:auto;border:0
   .clear-workout-zone{align-items:stretch;flex-direction:column}
   .clear-workout-zone button{width:100%}
 }
+
+/* v0.7.4-alpha.3 */
+.single-section-config{border-color:#bfdbfe;background:#eff6ff}
+.single-section-config .section-symbol{font-size:1.15rem}
+.single-section-config select{min-width:220px}
+.creation-mode-buttons .workflow-secondary.selected{background:#1e3a8a;color:#fff;border-color:#1e3a8a;box-shadow:0 0 0 4px rgba(30,58,138,.18)}

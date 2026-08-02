@@ -63,7 +63,7 @@ const PROGRAMMING_PROFILES={
   hyrox:{label:'Hyrox',supportsTheme:false,defaultStructure:['Ledopvarmning','Opvarmning','Teknik','Hyrox blok','Hyrox blok','Finisher']},
   hiit:{label:'HIIT',supportsTheme:false,defaultStructure:['Ledopvarmning','Opvarmning','HIIT blok','HIIT blok','Finisher']}
 };
-let creationMode='manual',structureChoice='auto';
+let creationMode='manual',structureChoice='auto',singleSectionTarget=null;
 
 
 
@@ -381,19 +381,7 @@ function bind(){
 
   on('manualModeBtn','click',()=>{console.info('Skifter til Builder');setCreationMode('manual')});
   on('aiModeBtn','click',()=>{console.info('Skifter til AI-forslag');setCreationMode('ai')});
-  on('singleSectionModeBtn','click',()=>{
-    console.info('Åbner AI-hjælp til én sektion');
-    const manualBtn=byId('manualModeBtn');
-    const aiBtn=byId('aiModeBtn');
-    const singleBtn=byId('singleSectionModeBtn');
-    manualBtn?.classList.remove('selected');
-    aiBtn?.classList.remove('selected');
-    singleBtn?.classList.add('selected');
-    const hint=byId('creationModeHint');
-    if(hint)hint.textContent='AI hjælper kun med én sektion og ændrer ikke resten af træningen.';
-    showStep(2);
-    openAISectionDialog('section',null);
-  });
+  on('singleSectionModeBtn','click',()=>startSingleSectionPlanner(null));
   $('#workoutCameraInput').onchange=handleWorkoutImage;
   document.querySelectorAll('#structureChoices .structure-chip').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('#structureChoices .structure-chip').forEach(x=>x.classList.remove('selected'));
@@ -405,8 +393,8 @@ function bind(){
   $('#clearImportBtn').onclick=clearImportedWorkout;
   bindPlanner();
 
-  on('aiBuildSectionBtn','click',()=>openAISectionDialog('section',null));
-  on('aiBuildGameBtn','click',()=>openAISectionDialog('game',null));
+  on('aiBuildSectionBtn','click',()=>startSingleSectionPlanner(null));
+  on('aiBuildGameBtn','click',()=>startSingleSectionPlanner(null,'Leg'));
   on('runPreset','change',e=>fillRunPreset(e.target.value));
   if($('#runForm'))$('#runForm').onsubmit=submitRun;
   if($('#aiSectionForm'))$('#aiSectionForm').onsubmit=submitAISection;
@@ -425,34 +413,76 @@ function bind(){
 
 
 function setCreationMode(mode){
-  creationMode=mode==='ai'?'ai':'manual';
+  creationMode=['ai','section'].includes(mode)?mode:'manual';
+
   const manualBtn=byId('manualModeBtn');
   const aiBtn=byId('aiModeBtn');
+  const singleBtn=byId('singleSectionModeBtn');
   const aiTrack=byId('aiPlannerTrack');
   const manualTrack=byId('manualBuilderTrack');
   const hint=byId('creationModeHint');
+  const isPlanner=creationMode==='ai'||creationMode==='section';
+  const isSection=creationMode==='section';
 
   manualBtn?.classList.toggle('selected',creationMode==='manual');
   aiBtn?.classList.toggle('selected',creationMode==='ai');
-  byId('singleSectionModeBtn')?.classList.remove('selected');
+  singleBtn?.classList.toggle('selected',isSection);
 
   if(aiTrack){
-    aiTrack.classList.toggle('hidden',creationMode!=='ai');
-    aiTrack.setAttribute('aria-hidden',String(creationMode!=='ai'));
+    aiTrack.classList.toggle('hidden',!isPlanner);
+    aiTrack.setAttribute('aria-hidden',String(!isPlanner));
   }
   if(manualTrack){
     manualTrack.open=creationMode==='manual';
     manualTrack.classList.toggle('hidden',creationMode!=='manual');
   }
+
+  byId('plannerStructureBlock')?.classList.toggle('hidden',isSection);
+  byId('singleSectionConfig')?.classList.toggle('hidden',!isSection);
+  byId('includeJointWarmupWrap')?.classList.toggle('hidden',isSection);
+  byId('includeFinisherWrap')?.classList.toggle('hidden',isSection);
+  byId('includeGameWrap')?.classList.toggle('hidden',isSection);
+
+  const duration=byId('plannerDuration');
+  if(duration){
+    if(isSection){
+      duration.min='3';duration.max='45';
+      if(+duration.value>45||+duration.value<3)duration.value='12';
+    }else{
+      duration.min='20';duration.max='120';
+      if(+duration.value<20)duration.value='60';
+    }
+  }
+  if(byId('plannerDurationUnit')){
+    byId('plannerDurationUnit').textContent=isSection?'minutter i sektionen':'minutter';
+  }
+
+  if(byId('plannerHeroTitle'))byId('plannerHeroTitle').textContent=isSection?'Byg én sektion med AI':'Fra idé til færdigt udkast';
+  if(byId('plannerHeroText'))byId('plannerHeroText').textContent=isSection
+    ?'Besvar punkt 1–6. AI bruger målgruppe, sted, deltagere, mål, udstyr og dine ønsker til at bygge én sektion.'
+    :'Vælg rammerne. Appen sammensætter et forslag, der passer til sted, udstyr, deltagere og træningsmål.';
+  if(byId('plannerTimeStrong'))byId('plannerTimeStrong').textContent=isSection?'Én sektion':'Ca. 2 min';
+  if(byId('plannerTimeText'))byId('plannerTimeText').textContent=isSection?'uden ledopvarmning eller finisher':'til første udkast';
+
+  if(byId('plannerGenerateTitle'))byId('plannerGenerateTitle').textContent=isSection?'Klar til at bygge sektionen?':'Klar til at bygge?';
+  if(byId('plannerGenerateText'))byId('plannerGenerateText').textContent=isSection
+    ?'AI indsætter kun én sektion og ændrer ikke resten af træningen.'
+    :'Forslaget bliver sat direkte ind i editoren og kan ændres bagefter.';
+  if(byId('generateSmartWorkoutBtn'))byId('generateSmartWorkoutBtn').textContent=isSection?'✨ Lav sektionsforslag':'✨ Lav træningsforslag';
+
   if(hint){
     hint.textContent=creationMode==='manual'
       ?'Du bygger træningen selv. AI kan stadig hjælpe inde i de enkelte sektioner.'
+      :isSection
+      ?'AI hjælper kun med én sektion. Punkt 1–6 bruges som kontekst; punkt 7, ledopvarmning og finisher er ikke med.'
       :'AI laver et komplet træningsforslag, som bagefter åbnes i Finpuds.';
   }
+
   const profile=userProfile();
   profile.preferredMode=creationMode;
   saveUserProfile(profile);
-  setTimeout(()=>{(creationMode==='ai'?aiTrack:manualTrack)?.scrollIntoView({behavior:'smooth',block:'start'})},50);
+  updateTimeControl();
+  setTimeout(()=>{(isPlanner?aiTrack:manualTrack)?.scrollIntoView({behavior:'smooth',block:'start'})},50);
 }
 function selectedTrainingType(){return plannerConcept||'junior'}
 
@@ -575,7 +605,7 @@ function renderFramework(){
   host.querySelectorAll('[data-duplicate]').forEach(b=>b.onclick=()=>duplicateSection(+b.dataset.duplicate));
   host.querySelectorAll('[data-regenerate]').forEach(b=>b.onclick=()=>regenerateSection(+b.dataset.regenerate));
   host.querySelectorAll('[data-suggest-one]').forEach(b=>b.onclick=()=>suggestOneExercise(+b.dataset.suggestOne));
-  host.querySelectorAll('[data-ai-section]').forEach(b=>b.onclick=()=>openAISectionDialog('section',+b.dataset.aiSection));
+  host.querySelectorAll('[data-ai-section]').forEach(b=>b.onclick=()=>startSingleSectionPlanner(+b.dataset.aiSection));
   host.querySelectorAll('[data-save-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveElement));
   host.querySelectorAll('[data-del-sec]').forEach(b=>b.onclick=()=>{
     if(sections.length>1){sections.splice(+b.dataset.delSec,1);renderFramework();renderExerciseSections();updateReview()}
@@ -712,7 +742,7 @@ function renderExerciseSections(){
   });
   host.querySelectorAll('[data-regenerate-exercise]').forEach(b=>b.onclick=()=>regenerateSection(+b.dataset.regenerateExercise));
   host.querySelectorAll('[data-save-exercise-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveExerciseElement));
-  host.querySelectorAll('[data-ai-exercise-section]').forEach(b=>b.onclick=()=>openAISectionDialog('section',+b.dataset.aiExerciseSection));
+  host.querySelectorAll('[data-ai-exercise-section]').forEach(b=>b.onclick=()=>startSingleSectionPlanner(+b.dataset.aiExerciseSection));
   host.querySelectorAll('[data-suggest-one]').forEach(b=>b.onclick=()=>suggestOneExercise(+b.dataset.suggestOne));
   host.querySelectorAll('[data-finisher-field]').forEach(el=>{
     const event=el.tagName==='SELECT'?'change':'input';
@@ -925,7 +955,7 @@ function bindPlanner(){
     plannerEquipment.size===all.length?plannerEquipment.clear():all.forEach(x=>plannerEquipment.add(x));
     renderEquipmentChoices();
   };
-  $('#generateSmartWorkoutBtn').onclick=generateSmartWorkout;
+  $('#generateSmartWorkoutBtn').onclick=()=>creationMode==='section'?generateSingleSectionFromPlanner():generateSmartWorkout();
   $('#plannerDuration').oninput=updateTimeControl;
 }
 function renderEquipmentChoices(){
@@ -992,10 +1022,102 @@ function makeItem(ex){
   };
 }
 
+
+function startSingleSectionPlanner(target=null,presetType=null){
+  singleSectionTarget=Number.isInteger(target)?target:null;
+
+  if($('#participantCount')&&$('#plannerParticipants')){
+    $('#plannerParticipants').value=Math.max(1,+$('#participantCount').value||20);
+  }
+  if($('#adultCount')&&$('#plannerAdults')){
+    $('#plannerAdults').value=Math.max(0,+$('#adultCount').value||0);
+  }
+
+  let type=presetType;
+  if(!type&&singleSectionTarget!==null){
+    const current=normalizeSection(sections[singleSectionTarget]);
+    type=['Ledopvarmning','Finisher'].includes(current.type)?'AMRAP':current.type;
+    $('#plannerDuration').value=Math.max(3,Math.min(45,current.minutes||12));
+    if($('#plannerBrief')&&!$('#plannerBrief').value.trim()){
+      $('#plannerBrief').value=current.description||'';
+    }
+  }
+  if(!type)type='AMRAP';
+  if($('#singleSectionType'))$('#singleSectionType').value=type;
+
+  showView('designView');
+  showStep(1);
+  setCreationMode('section');
+}
+function generateSingleSectionFromPlanner(){
+  const duration=Math.max(3,Math.min(45,+$('#plannerDuration').value||12));
+  const participants=Math.max(1,+$('#plannerParticipants').value||20);
+  const goals=goalValues();
+  const brief=$('#plannerBrief').value.trim();
+  const type=$('#singleSectionType').value;
+  const theme=['junior','family'].includes(plannerConcept)?$('#plannerTheme').value.trim():'';
+  const focus=[...goals,brief].filter(Boolean).join(', ');
+
+  let section=type==='Leg'
+    ?buildGameSuggestion(duration,focus,theme)
+    :buildSectionSuggestion(type,duration,focus,theme);
+
+  section.minutes=duration;
+  section.description=section.description||`AI-forslag til én ${type.toLowerCase()}-sektion.`;
+  section.coachTips=[
+    section.coachTips,
+    `Planlagt til ${participants} deltagere ${plannerVenue==='indoor'?'indendørs':'udendørs'}.`,
+    $('#avoidWaiting').checked?'Organisér sektionen, så ventetid og kø undgås.':''
+  ].filter(Boolean).join(' ');
+
+  // Section mode must never generate these whole-workout elements.
+  if(['Ledopvarmning','Finisher'].includes(section.type)){
+    section=buildSectionSuggestion('AMRAP',duration,focus,theme);
+  }
+  section.exercises=section.type==='Finisher'?[]:(section.exercises||[]);
+
+  if(singleSectionTarget!==null&&sections[singleSectionTarget]){
+    sections[singleSectionTarget]=normalizeSection(section);
+  }else{
+    const finisherIndex=sections.findIndex(s=>normalizeSection(s).type==='Finisher');
+    if(finisherIndex<0)sections.push(normalizeSection(section));
+    else sections.splice(finisherIndex,0,normalizeSection(section));
+  }
+
+  enforceWorkoutStructure();
+  $('#participantCount').value=participants;
+  $('#familyMode').checked=plannerConcept==='family';
+  $('#adultCountLabel').classList.toggle('hidden',plannerConcept!=='family');
+  if(plannerConcept==='family')$('#adultCount').value=+$('#plannerAdults').value||0;
+
+  renderFramework();
+  renderExerciseSections();
+  updateReview();
+
+  $('#plannerResult').classList.remove('hidden');
+  $('#plannerResult').innerHTML=`<h3>Sektionsforslag klar ✓</h3>
+    <p><strong>${esc(section.name)}</strong> · ${duration} min · ${participants} deltagere</p>
+    <div class="programming-note">Kun denne sektion er bygget. Der er ikke tilføjet ledopvarmning, finisher eller en samlet træningsstruktur.</div>
+    <ul>
+      <li>Type: ${esc(section.type)}</li>
+      <li>Format: ${esc(section.format)}</li>
+      <li>Organisering: ${esc(section.organization)}</li>
+      <li>Styring: ${esc(section.control)}</li>
+    </ul>
+    <button id="openGeneratedSectionBtn" type="button">Gennemgå sektionen i Finpuds →</button>`;
+  $('#openGeneratedSectionBtn').onclick=()=>{
+    singleSectionTarget=null;
+    setCreationMode('manual');
+    showStep(2);
+  };
+  $('#plannerResult').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
 function generateSmartWorkout(){
   const duration=Math.max(20,+$('#plannerDuration').value||60);
   const participants=Math.max(1,+$('#plannerParticipants').value||20);
   const goals=goalValues();
+  const plannerBrief=$('#plannerBrief').value.trim();
   const includeFinisher=$('#includeTeamChallenge').checked;
   const includeJoint=$('#includeJointWarmup')?.checked!==false;
   const includeGame=['junior','family'].includes(plannerConcept)&&($('#includeGame').checked||goals.includes('Sjov'));
@@ -1030,7 +1152,7 @@ function generateSmartWorkout(){
   const choices=patterns[plannerConcept]||patterns.junior;
   for(let i=0;i<mainCount;i++){
     const type=choices[i%choices.length];
-    const focus=[...goals,plannerConcept==='hyrox'?'løb og Hyrox':plannerConcept==='trx'?'TRX':plannerConcept==='hiit'?'høj intensitet':''].filter(Boolean).join(', ');
+    const focus=[...goals,plannerBrief,plannerConcept==='hyrox'?'løb og Hyrox':plannerConcept==='trx'?'TRX':plannerConcept==='hiit'?'høj intensitet':''].filter(Boolean).join(', ');
     const s=buildSectionSuggestion(type,mainMinutes[i],focus,'');
     s.name=plannerConcept==='hiit'?`HIIT-blok ${i+1}`:plannerConcept==='hyrox'?`Hyrox-blok ${i+1}`:plannerConcept==='trx'?`TRX-blok ${i+1}`:`Hovedelement ${i+1} – ${type}`;
     if(type==='YGIG'){
@@ -1473,6 +1595,7 @@ function undoClearWorkout(){
 }
 
 function newWorkout(){
+  singleSectionTarget=null;
   clearedWorkoutSnapshot=null;
   clearTimeout(clearUndoTimer);
   byId('clearUndoBar')?.classList.add('hidden');
