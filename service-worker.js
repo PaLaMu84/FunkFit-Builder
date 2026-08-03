@@ -1,10 +1,10 @@
-const CACHE='funkfit-v0.7.4-alpha.7';
+const CACHE='funkfit-v0.7.4-alpha.8';
 const ASSETS=[
   './',
   './index.html',
-  './manifest.json?v=0.7.4a7',
-  './css/app.css?v=0.7.4a7',
-  './js/app.js?v=0.7.4a7',
+  './manifest.json?v=0.7.4a8',
+  './css/app.css?v=0.7.4a8',
+  './js/app.js?v=0.7.4a8',
   './data/exercises.json',
   './data/workoutTemplates.json',
   './data/bodyColors.json'

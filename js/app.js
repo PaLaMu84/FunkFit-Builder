@@ -115,7 +115,7 @@ const PROGRAMMING_PROFILES={
   hyrox:{label:'Hyrox',supportsTheme:false,defaultStructure:['Ledopvarmning','Opvarmning','Teknik','Hyrox blok','Hyrox blok','Finisher']},
   hiit:{label:'HIIT',supportsTheme:false,defaultStructure:['Ledopvarmning','Opvarmning','HIIT blok','HIIT blok','Finisher']}
 };
-let creationMode='choice',structureChoice='auto',singleSectionTarget=null;
+let creationMode='choice',structureChoice='auto',singleSectionTarget=null,activeRunPlan=null,clearUndoInterval=null,addSectionType='Stationer';
 
 
 
@@ -250,7 +250,7 @@ function defaultSection(type='Stationer'){
     'Stationer':{name:'Stationstræning',minutes:18,format:'Stationstræning',organization:'Fast rotation',control:'Intervaller',style:'Funktionel',work:40,rest:20,rounds:3},
     'Teknik':{name:'Teknik',minutes:10,format:'Teknik',organization:'Fælles',control:'Samlet tid',style:'Teknik',work:0,rest:0,rounds:1},
     'Styrke':{name:'Styrkeblok',minutes:15,format:'Fælles flow',organization:'Individuelt',control:'Runder',style:'Funktionel',work:0,rest:0,rounds:3},
-    'Finisher':{name:'Finisher – én sang',minutes:4,songMinutes:4,songTitle:'',songArtist:'',songUrl:'',format:'Musik',organization:'Fælles',control:'Sang',style:'Kondition',work:0,rest:0,rounds:1,description:'Afslut træningen med én valgfri sang.',rules:'Finisheren varer fra sangen starter, til den slutter.',coachTips:'Vælg sangen selv. “One More Time” er kun et eksempel i feltet.'}
+    'Finisher':{name:'Finisher – én sang',minutes:4,songMinutes:4,songTitle:'',songArtist:'',songUrl:'',format:'Musik',organization:'Fælles',control:'Sang',style:'Kondition',work:0,rest:0,rounds:1,description:'Afslut træningen med én valgfri sang.',rules:'Finisheren varer fra sangen starter, til den slutter.',coachTips:'Vælg en sang, der passer til den ønskede afslutning.'}
   };
   return normalizeSection({...map[type],type,exercises:[]});
 }
@@ -287,12 +287,46 @@ function makeRunItem(presetId='run-200'){
   const p=RUN_LIBRARY.find(x=>x.id===presetId)||RUN_LIBRARY[2];
   return normalizeActivity({kind:'run',runType:p.type,value:p.value,unit:p.unit,intensity:p.intensity,route:p.route,note:''});
 }
+function parseRunPlan(text=''){
+  const value=String(text||'').toLowerCase();
+  const deny=/\b(ingen|uden)\s+(løb|løbe|løbetur|run|running)\b/.test(value)
+    ||/\b(ikke|må ikke|skal ikke)\b.{0,18}\b(løbe|løb|run|running)\b/.test(value);
+  const repeat=/\b(pr\.?\s*(runde|sektion|blok)|hver\s+(runde|sektion|blok))\b/.test(value);
+  const amountMatch=value.match(/(\d+(?:[.,]\d+)?)\s*(km|kilometer|m|meter)\b.{0,25}\b(løb|løbe|run|running)\b/)
+    ||value.match(/\b(løb|løbe|run|running)\b.{0,25}(\d+(?:[.,]\d+)?)\s*(km|kilometer|m|meter)\b/);
+  let amount=null,unit='meter';
+  if(amountMatch){
+    if(/^\d/.test(amountMatch[1])){
+      amount=parseFloat(amountMatch[1].replace(',','.'));
+      unit=amountMatch[2];
+    }else{
+      amount=parseFloat(amountMatch[2].replace(',','.'));
+      unit=amountMatch[3];
+    }
+    if(unit==='km'||unit==='kilometer')amount=Math.round(amount*1000);
+  }
+  const explicitRun=/\b(løb|løbe|løbetur|run|running|sprint|shuttle)\b/.test(value);
+  return {deny,repeat,explicit:explicitRun&&!deny,amount:amount?Math.round(amount):null,inserted:false};
+}
+function requestedRunItem(plan){
+  const item=makeRunItem(plan?.amount&&plan.amount>=350?'run-400':plan?.amount&&plan.amount<=120?'run-100':'run-200');
+  if(plan?.amount){
+    item.value=plan.amount;
+    item.unit='meter';
+    item.note=plan.repeat?'Gentages som angivet i ønsket.':'Samlet ønsket løbemængde – indsættes én gang i træningen.';
+  }
+  return item;
+}
 function shouldSuggestRun(section,focus=''){
+  const localPlan=parseRunPlan(focus);
+  const plan=activeRunPlan||localPlan;
   const text=`${section?.type||''} ${section?.format||''} ${section?.style||''} ${focus}`.toLowerCase();
-  const explicitRun=/\b(løb|løbe|løbetur|run|running|sprint|shuttle)\b/.test(text);
-  if(plannerConcept==='hyrox'||explicitRun)return true;
-  // Et stærkt specifikt ønske som “masser af mave” skal ikke udvandes
-  // af automatisk løb, bare fordi træningen foregår udendørs.
+
+  if(plan.deny)return false;
+  if(plan.explicit){
+    return plan.repeat||!plan.inserted;
+  }
+  if(plannerConcept==='hyrox')return true;
   if(strongCoreRequest([focus]))return false;
   return plannerVenue==='outdoor'&&['AMRAP','Chipper'].includes(section?.format);
 }
@@ -308,15 +342,26 @@ function suggestOneExercise(index){
 function buildGameSuggestion(minutes=8,focus='',theme=''){
   const used=new Set(sections.flatMap(s=>(s.exercises||[]).filter(a=>a.kind!=='run').map(a=>a.exerciseId)));
   const picked=pickExercises(3,[...goalValues(),'Sjov','Samarbejde',focus],'team',used);
-  const title=theme?`${theme} – missionen`:'Saml keglerne';
+  const mission=theme?.trim()||'Alarmmissionen';
+  const activityNames=picked.map(x=>x.name).filter(Boolean);
+  const taskText=activityNames.length?activityNames.join(', '):'tre korte bevægelsesopgaver';
+
   return normalizeSection({
-    type:'Leg',name:title,minutes,format:'Stafet',organization:'Hold',control:'Samlet tid',style:'Leg',
-    description:theme
-      ?`En aktiv holdleg i temaet “${theme}”, hvor deltagerne løser bevægelsesopgaver og samler point sammen.`
-      :'En aktiv holdleg med korte bevægelsesopgaver, samarbejde og mulighed for at samle point.',
-    rules:'Del deltagerne i 2-4 hold. Én deltager fra hvert hold løser en opgave og henter en kegle eller markør. Derefter sendes den næste afsted. Ingen elimineres. Flest markører ved tidens udløb vinder.',
-    coachTips:'Vis én prøverunde. Hold banen kort, så alle ofte kommer i aktion. Flyt startlinjen eller ændr bevægelsen, hvis der opstår kø.',
-    variations:'Gør lettere: kortere afstand og én enkel opgave. Gør sværere: to opgaver, makkertransport eller en kode, der skal huskes.',
+    type:'Leg',
+    name:`${mission} – red holdet`,
+    minutes,
+    format:'Team workout',
+    organization:'Hold',
+    control:'Samlet tid',
+    style:'Leg',
+    description:`Historie: Holdene er på en mission i “${mission}”. De skal løse ${taskText}, hente markører og få hele holdet sikkert tilbage, før tiden løber ud.`,
+    rules:`1. Del deltagerne i 2-4 hold og giv hvert hold en base.
+2. Én deltager eller ét makkerpar løser næste bevægelsesopgave og henter én markør.
+3. Når instruktøren råber “INCOMING!”, skal alle straks fryse i en stærk position. Bevægelse efter signalet koster markøren.
+4. Deltageren vender tilbage og sender næste afsted.
+5. Ingen elimineres. Flest markører ved tidens udløb vinder – eller alle hold vinder, hvis en fælles målsætning nås.`,
+    coachTips:'Vis en prøverunde og øv INCOMING-signalet først. Brug flere parallelle baner, så der ikke opstår kø. Hold afstandene korte og udskift en øvelse med et kropsvægtsalternativ, hvis udstyret bliver en flaskehals.',
+    variations:'Lettere: gå i stedet for at løbe, én enkel opgave og ingen straf. Sværere: makkertransport, hemmelig kode eller to markører pr. perfekt runde.',
     exercises:picked.map(makeItem)
   });
 }
@@ -333,8 +378,11 @@ function buildSectionSuggestion(type='AMRAP',minutes=12,focus='',theme=''){
   const picked=pickExercises(count,[...goalValues(),focus],type==='Opvarmning'?'warmup':'main',used);
   s.exercises=picked.map(makeItem);
   if(shouldSuggestRun(s,focus)){
+    const plan=activeRunPlan||parseRunPlan(focus);
     const preset=plannerConcept==='hyrox'?'run-400':plannerVenue==='outdoor'?'run-200':'run-shuttle';
-    s.exercises.splice(type==='Chipper'?0:Math.min(1,s.exercises.length),0,makeRunItem(preset));
+    const runItem=plan.explicit?requestedRunItem(plan):makeRunItem(preset);
+    s.exercises.splice(type==='Chipper'?0:Math.min(1,s.exercises.length),0,runItem);
+    if(plan.explicit&&!plan.repeat)plan.inserted=true;
   }
   if(type==='YGIG'){
     s.format='AMRAP';s.organization='You go, I go';s.control='Samlet tid';s.work=0;s.rest=0;
@@ -388,6 +436,10 @@ function duplicateSection(index){
   sections.splice(index+1,0,copy);
   renderFramework();renderExerciseSections();updateReview();
 }
+function collapseAllSections(){
+  collapsedSections.clear();
+  sections.forEach((_,index)=>collapsedSections.add(index));
+}
 function toggleSectionCollapse(index){
   collapsedSections.has(index)?collapsedSections.delete(index):collapsedSections.add(index);
   renderFramework();renderExerciseSections();
@@ -412,11 +464,80 @@ async function init(){
   populatePickerFilters();bind();setCreationMode('choice');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();
 }
 
+
+function renderAddSectionTypes(){
+  const labels={
+    Ledopvarmning:'Rolig mobilisering',
+    Opvarmning:'Puls og bevægelse',
+    Leg:'Historie, regler og mission',
+    AMRAP:'Flest mulige runder',
+    EMOM:'Ny opgave hvert minut',
+    YGIG:'Makkere skiftes efter opgaven',
+    Chipper:'Arbejd gennem en fast liste',
+    Stationer:'Rotation mellem stationer',
+    Teknik:'Lær bevægelsen ordentligt',
+    Styrke:'Sæt, reps og belastning',
+    Finisher:'Én afsluttende sang'
+  };
+  $('#addSectionTypeGrid').innerHTML=ELEMENT_TYPES.map(type=>`
+    <button type="button" class="section-type-choice ${type===addSectionType?'selected':''}" data-add-section-type="${type}">
+      <strong>${esc(type)}</strong><small>${esc(labels[type]||'')}</small>
+    </button>`).join('');
+  $('#addSectionTypeGrid').querySelectorAll('[data-add-section-type]').forEach(button=>button.onclick=()=>{
+    addSectionType=button.dataset.addSectionType;
+    $('#addSectionName').value=defaultSection(addSectionType).name;
+    renderAddSectionTypes();
+  });
+}
+function openAddSectionDialog(){
+  addSectionType='Stationer';
+  $('#addSectionName').value=defaultSection(addSectionType).name;
+  renderAddSectionTypes();
+  $('#addSectionDialog').showModal();
+}
+function submitAddSection(event){
+  event.preventDefault();
+  const item=defaultSection(addSectionType);
+  item.name=$('#addSectionName').value.trim()||item.name;
+  if(addSectionType==='Ledopvarmning'){
+    sections.unshift(item);
+  }else if(addSectionType==='Finisher'){
+    const existing=sections.findIndex(s=>normalizeSection(s).type==='Finisher');
+    if(existing>=0){
+      $('#addSectionDialog').close();
+      return alert('Træningen har allerede en finisher. Redigér den eksisterende eller slet den først.');
+    }
+    sections.push(item);
+  }else{
+    const finisherIndex=sections.findIndex(s=>normalizeSection(s).type==='Finisher');
+    finisherIndex<0?sections.push(item):sections.splice(finisherIndex,0,item);
+  }
+  enforceWorkoutStructure();
+  $('#addSectionDialog').close();
+  renderFramework();renderExerciseSections();updateReview();
+}
+function syncManualSetup(){
+  if($('#manualTrainingType'))plannerConcept=$('#manualTrainingType').value;
+  if($('#manualVenue'))plannerVenue=$('#manualVenue').value;
+  const family=plannerConcept==='family';
+  $('#familyMode').checked=family;
+  $('#manualFamilyCard')?.classList.toggle('hidden',!['junior','family'].includes(plannerConcept));
+  $('#adultCountLabel').classList.toggle('hidden',!family);
+  document.querySelectorAll('#conceptChoices .choice-card').forEach(x=>x.classList.toggle('selected',x.dataset.value===plannerConcept));
+  document.querySelectorAll('#venueChoices .choice-card').forEach(x=>x.classList.toggle('selected',x.dataset.value===plannerVenue));
+  updateSingleFundamentalVisibility();
+  renderFramework();renderExerciseSections();
+}
+
 function bind(){
   document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>showView(b.dataset.view));
   document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>showStep(+b.dataset.step));
   document.querySelectorAll('[data-next-step]').forEach(b=>b.onclick=()=>showStep(+b.dataset.nextStep));
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).close());
+  on('homeBrandBtn','click',()=>{showView('designView');setCreationMode('choice');showStep(1)});
+  if($('#addSectionForm'))$('#addSectionForm').onsubmit=submitAddSection;
+  if($('#manualTrainingType'))$('#manualTrainingType').onchange=syncManualSetup;
+  if($('#manualVenue'))$('#manualVenue').onchange=syncManualSetup;
 
   $('#familyMode').onchange=()=>{
     $('#adultCountLabel').classList.toggle('hidden',!$('#familyMode').checked);
@@ -426,7 +547,7 @@ function bind(){
     renderFramework();renderExerciseSections();
   };
   $('#loadTemplateBtn').onclick=()=>{sections=prepareTemplateSections(templates.find(t=>t.id===$('#templateSelect').value).sections);enforceWorkoutStructure();renderFramework();renderExerciseSections();updateReview()};
-  $('#addSectionBtn').onclick=()=>{const type=prompt('Vælg elementtype: '+ELEMENT_TYPES.join(', '),'Stationer');const chosen=ELEMENT_TYPES.find(x=>x.toLowerCase()===String(type||'').toLowerCase())||'Stationer';const item=defaultSection(chosen);if(chosen==='Ledopvarmning')sections.unshift(item);else if(chosen==='Finisher')sections.push(item);else{const fi=sections.findIndex(s=>normalizeSection(s).type==='Finisher');fi<0?sections.push(item):sections.splice(fi,0,item)}enforceWorkoutStructure();renderFramework();renderExerciseSections();updateReview()};
+  $('#addSectionBtn').onclick=openAddSectionDialog;
   $('#saveWorkoutBtn').onclick=saveCurrent;
   $('#playCurrentBtn').onclick=()=>startPlayer(collect());
   $('#newWorkoutBtn').onclick=newWorkout;
@@ -498,6 +619,10 @@ function setCreationMode(mode){
     aiTrack.setAttribute('aria-hidden',String(!isPlanner));
   }
   if(manualTrack){
+    if(isManual){
+      if($('#manualTrainingType'))$('#manualTrainingType').value=plannerConcept;
+      if($('#manualVenue'))$('#manualVenue').value=plannerVenue;
+    }
     manualTrack.classList.toggle('hidden',!isManual);
     manualTrack.open=isManual;
     manualTrack.setAttribute('aria-hidden',String(!isManual));
@@ -552,7 +677,7 @@ function setCreationMode(mode){
 function selectedTrainingType(){return plannerConcept||'junior'}
 
 function verifyInteractiveControls(){
-  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','exerciseInfoDialog'];
+  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue'];
   const missing=required.filter(id=>!byId(id));
   if(missing.length)console.error('Manglende interaktive elementer:',missing);
   else console.info('FunkFit interaktive kontroller: OK');
@@ -564,6 +689,10 @@ function showView(id){
 function showStep(n){
   document.querySelectorAll('.step-panel').forEach((p,i)=>p.classList.toggle('active',i===n-1));
   document.querySelectorAll('.step').forEach(b=>b.classList.toggle('active',+b.dataset.step===n));
+  if(n===2){
+    collapseAllSections();
+    renderExerciseSections();
+  }
   if(n===3)updateReview();
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -666,9 +795,9 @@ function sectionDynamicFields(s,i){
   if(s.type==='Finisher'){
     return `<div class="finisher-song-card">
       <h4>🎵 Finisher = én sang</h4>
-      <p class="field-help">Der tilføjes ingen øvelser til finisheren. “One More Time” er kun et eksempel.</p>
-      <label>Sangtitel *<input data-section-index="${i}" data-section-field="songTitle" value="${esc(s.songTitle)}" placeholder="Fx One More Time" required></label>
-      <label>Kunstner<input data-section-index="${i}" data-section-field="songArtist" value="${esc(s.songArtist)}" placeholder="Fx Daft Punk"></label>
+      <p class="field-help">Finisheren består kun af én sang. Der tilføjes ingen øvelser.</p>
+      <label>Sangtitel *<input data-section-index="${i}" data-section-field="songTitle" value="${esc(s.songTitle)}" placeholder="Fx Uptown Funk" required></label>
+      <label>Kunstner<input data-section-index="${i}" data-section-field="songArtist" value="${esc(s.songArtist)}" placeholder="Fx Mark Ronson feat. Bruno Mars"></label>
       <label>Længde (min)<input data-section-index="${i}" data-section-field="songMinutes" type="number" min="1" max="12" step=".1" value="${s.songMinutes||4}"></label>
       <label class="span-2">Link til sang<input data-section-index="${i}" data-section-field="songUrl" type="url" value="${esc(s.songUrl)}" placeholder="TIDAL, Spotify eller YouTube"></label>
     </div>`;
@@ -732,8 +861,8 @@ function renderFramework(){
           <label>Træningsspor<select data-section-index="${i}" data-section-field="style">${STYLES.map(x=>`<option ${x===s.style?'selected':''}>${x}</option>`).join('')}</select></label>
         `:''}
         ${sectionDynamicFields(s,i)}
-        <label class="span-2">Beskrivelse<textarea data-section-index="${i}" data-section-field="description" rows="3" placeholder="Hvad går elementet eller legen ud på?">${esc(s.description)}</textarea></label>
-        ${s.type!=='Finisher'?`<label class="span-2">Regler<textarea data-section-index="${i}" data-section-field="rules" rows="3" placeholder="Regler, skift og sådan afsluttes elementet">${esc(s.rules)}</textarea></label>
+        ${s.type!=='Finisher'?`<label class="span-2">Beskrivelse<textarea data-section-index="${i}" data-section-field="description" rows="3" placeholder="Hvad går elementet eller legen ud på?">${esc(s.description)}</textarea></label>
+        <label class="span-2">Regler<textarea data-section-index="${i}" data-section-field="rules" rows="3" placeholder="Regler, skift og sådan afsluttes elementet">${esc(s.rules)}</textarea></label>
         <label class="span-2">Trænertips<textarea data-section-index="${i}" data-section-field="coachTips" rows="3" placeholder="Opstilling, variationer, skalering og sikkerhed">${esc(s.coachTips)}</textarea></label>`:''}
       </div>
       <div class="element-actions">
@@ -828,22 +957,19 @@ function renderExerciseSections(){
       <div class="section-progress"><span>${esc(s.type||v.label)}</span><div class="section-progress-bar"><span style="width:${progress}%"></span></div><span>${progress}%</span></div>
       ${finisher?`<div class="finisher-song-summary finisher-inline-editor">
           <h4>🎵 Finisher = én sang</h4>
-          <p>Vælg sangen direkte her. “One More Time” og Daft Punk er kun eksempler.</p>
+          <p>Vælg sangen direkte her.</p>
           <div class="finisher-inline-grid">
             <label>Sangtitel *
-              <input data-finisher-field="songTitle" data-finisher-index="${si}" value="${esc(s.songTitle||'')}" placeholder="Fx One More Time">
+              <input data-finisher-field="songTitle" data-finisher-index="${si}" value="${esc(s.songTitle||'')}" placeholder="Fx Uptown Funk">
             </label>
             <label>Kunstner
-              <input data-finisher-field="songArtist" data-finisher-index="${si}" value="${esc(s.songArtist||'')}" placeholder="Fx Daft Punk">
+              <input data-finisher-field="songArtist" data-finisher-index="${si}" value="${esc(s.songArtist||'')}" placeholder="Fx Mark Ronson feat. Bruno Mars">
             </label>
             <label>Længde (min)
               <input data-finisher-field="songMinutes" data-finisher-index="${si}" type="number" min="1" max="12" step=".1" value="${s.songMinutes||4}">
             </label>
             <label class="span-2">Link til sang
               <input data-finisher-field="songUrl" data-finisher-index="${si}" type="url" value="${esc(s.songUrl||'')}" placeholder="TIDAL, Spotify eller YouTube">
-            </label>
-            <label class="span-2">Beskrivelse
-              <textarea data-finisher-field="description" data-finisher-index="${si}" rows="2" placeholder="Fx fælles afslutning, dans eller high fives">${esc(s.description||'')}</textarea>
             </label>
           </div>
         </div>`:
@@ -1419,6 +1545,7 @@ function generateSmartWorkout(){
   const participants=Math.max(1,+$('#plannerParticipants').value||20);
   const goals=goalValues();
   const plannerBrief=$('#plannerBrief').value.trim();
+  activeRunPlan=parseRunPlan(plannerBrief);
   const includeFinisher=$('#includeTeamChallenge').checked;
   const includeJoint=$('#includeJointWarmup')?.checked!==false;
   const includeGame=['junior','family'].includes(plannerConcept)&&($('#includeGame').checked||goals.includes('Sjov'));
@@ -1466,7 +1593,7 @@ function generateSmartWorkout(){
     sections.push(normalizeSection({
       type:'Finisher',name:'Finisher – én sang',minutes:4,songMinutes:4,
       songTitle:'',songArtist:'',songUrl:'',format:'Musik',organization:'Fælles',control:'Sang',style:'Kondition',
-      description:'Vælg én sang som afslutning. “One More Time” er kun vist som eksempel i sangfeltet.',
+      description:'Vælg én sang som afslutning.',
       rules:'Finisheren varer fra sangen starter, til den slutter.',
       coachTips:'Ingen øvelser tilføjes automatisk til finisheren.',
       exercises:[]
@@ -1485,11 +1612,13 @@ function generateSmartWorkout(){
   history.push({date:new Date().toISOString(),concept:plannerConcept,exerciseIds:sections.flatMap(s=>(s.exercises||[]).filter(a=>a.kind!=='run').map(x=>x.exerciseId))});
   saveAiHistory(history);
 
+  activeRunPlan=null;
+  collapseAllSections();
   renderFramework();renderExerciseSections();updateReview();
   $('#plannerResult').classList.remove('hidden');
   $('#plannerResult').innerHTML=`<h3>Komplet forslag klar ✓</h3>
     <p><strong>${esc(conceptNames[plannerConcept])}</strong> · ${duration} min · ${participants} deltagere${theme?` · tema: ${esc(theme)}`:''}</p>
-    <div class="programming-note">Format, organisering og styring er nu adskilt. YGIG bruger samlet tid og skift efter opgaven – ikke 40/20.</div>
+    <div class="programming-note">Forslaget er klar til gennemgang. Kontrollér især belastning, plads, udstyr og flow.</div>
     <ul><li>${sections.length} sektioner: ${sections.map(s=>esc(s.type)).join(' → ')}</li><li>Løb kan optræde som en aktivitet inde i AMRAP, Chipper og Hyrox.</li><li>Finisheren er kun én sang og har ingen øvelser.</li></ul>
     <button id="openGeneratedEditorBtn" type="button">Gennemgå træningen →</button>`;
   $('#openGeneratedEditorBtn').onclick=()=>showStep(2);
@@ -1751,7 +1880,7 @@ function clearImportedWorkout(){
   $('#importProposal').innerHTML='';
 }
 
-function collect(){return{id:currentId||crypto.randomUUID(),trainingType:selectedTrainingType(),profileId:userProfile().id,theme:$('#plannerTheme')?.value||'',name:$('#workoutName').value,date:$('#workoutDate').value,participants:+$('#participantCount').value,familyMode:$('#familyMode').checked,adultCount:+($('#adultCount').value||0),sections:structuredClone(sections),music:{spotify:$('#spotifyPlaylistUrl').value.trim(),tidal:$('#tidalPlaylistUrl').value.trim(),telmore:$('#telmorePlaylistUrl').value.trim()}}}
+function collect(){return{id:currentId||crypto.randomUUID(),trainingType:selectedTrainingType(),profileId:userProfile().id,theme:$('#plannerTheme')?.value||'',name:$('#workoutName').value,date:$('#workoutDate').value,participants:+$('#participantCount').value,familyMode:$('#familyMode').checked,adultCount:+($('#adultCount').value||0),savedAt:new Date().toISOString(),sections:structuredClone(sections),music:{spotify:$('#spotifyPlaylistUrl').value.trim(),tidal:$('#tidalPlaylistUrl').value.trim(),telmore:$('#telmorePlaylistUrl').value.trim()}}}
 function saveCurrent(){
   const missingSong=sections.find(s=>normalizeSection(s).type==='Finisher'&&!s.songTitle.trim());
   if(missingSong)return alert('Vælg en sangtitel til finisheren, før træningen gemmes.');
@@ -1763,8 +1892,9 @@ function renderSaved(){
   $('#savedWorkouts').innerHTML=all.length?all.map(w=>`<article class="saved-card">
     <h3>${esc(w.name)}</h3>
     <p class="meta">${w.date||'Ingen dato'} · ${w.sections.length} sektioner · ${w.sections.reduce((n,s)=>n+(+s.minutes||0),0)} min</p>
+    <p class="saved-at">Senest gemt: ${w.savedAt?new Date(w.savedAt).toLocaleString('da-DK'):'Tidspunkt ikke registreret'}</p>
     <div class="saved-card-actions">
-      <button data-edit="${w.id}">Redigér</button>
+      <button data-edit="${w.id}">Åbn i Finpuds</button>
       <button class="secondary" data-play="${w.id}">Afspil</button>
       <button class="secondary" data-participant="${w.id}">Deltager-PDF</button>
       <button class="secondary" data-instructor="${w.id}">Instruktør-PDF</button>
@@ -1780,11 +1910,12 @@ function renderSaved(){
 function editWorkout(w){
   currentId=w.id;plannerConcept=w.trainingType|| (w.familyMode?'family':'junior');
   document.querySelectorAll('#conceptChoices .choice-card').forEach(x=>x.classList.toggle('selected',x.dataset.value===plannerConcept));
-  $('#workoutName').value=w.name;$('#workoutDate').value=w.date;$('#participantCount').value=w.participants;$('#familyMode').checked=!!w.familyMode;$('#adultCount').value=w.adultCount||0;$('#adultCountLabel').classList.toggle('hidden',!w.familyMode);$('#spotifyPlaylistUrl').value=w.music?.spotify||'';$('#tidalPlaylistUrl').value=w.music?.tidal||'';$('#telmorePlaylistUrl').value=w.music?.telmore||'';sections=structuredClone(w.sections);normalizeSections();renderFramework();renderExerciseSections();updateReview();showView('designView');showStep(1);
+  $('#workoutName').value=w.name;$('#workoutDate').value=w.date;$('#participantCount').value=w.participants;$('#familyMode').checked=!!w.familyMode;$('#adultCount').value=w.adultCount||0;$('#adultCountLabel').classList.toggle('hidden',!w.familyMode);$('#spotifyPlaylistUrl').value=w.music?.spotify||'';$('#tidalPlaylistUrl').value=w.music?.tidal||'';$('#telmorePlaylistUrl').value=w.music?.telmore||'';sections=structuredClone(w.sections);normalizeSections();collapseAllSections();renderFramework();renderExerciseSections();updateReview();setCreationMode('choice');showView('designView');showStep(2);
 }
 
 let clearedWorkoutSnapshot=null;
 let clearUndoTimer=null;
+let savedWorkoutsGuard=null;
 
 function todayISO(){
   return new Date().toISOString().slice(0,10);
@@ -1875,15 +2006,34 @@ function clearCurrentWorkout(){
   if(!confirm('Vil du rydde hele træningen? Handlingen fjerner alt indhold fra den aktuelle kladde.'))return;
 
   clearedWorkoutSnapshot=draftSnapshot();
+  savedWorkoutsGuard=localStorage.getItem(WKEY);
   resetDraft({withStructure:false});
+
+  // Ryd må kun påvirke den aktuelle kladde – aldrig Gemte træninger.
+  if(localStorage.getItem(WKEY)!==savedWorkoutsGuard){
+    if(savedWorkoutsGuard===null)localStorage.removeItem(WKEY);
+    else localStorage.setItem(WKEY,savedWorkoutsGuard);
+    renderSaved();
+  }
   showStep(2);
 
   const bar=byId('clearUndoBar');
+  const countdown=byId('clearUndoCountdown');
+  let seconds=15;
+  if(countdown)countdown.textContent=seconds;
   bar?.classList.remove('hidden');
   clearTimeout(clearUndoTimer);
+  clearInterval(clearUndoInterval);
+  clearUndoInterval=setInterval(()=>{
+    seconds-=1;
+    if(countdown)countdown.textContent=Math.max(0,seconds);
+    if(seconds<=0)clearInterval(clearUndoInterval);
+  },1000);
   clearUndoTimer=setTimeout(()=>{
     bar?.classList.add('hidden');
     clearedWorkoutSnapshot=null;
+    savedWorkoutsGuard=null;
+    clearInterval(clearUndoInterval);
   },15000);
 }
 function undoClearWorkout(){
@@ -1891,6 +2041,8 @@ function undoClearWorkout(){
   applyDraftSnapshot(clearedWorkoutSnapshot);
   clearedWorkoutSnapshot=null;
   clearTimeout(clearUndoTimer);
+  clearInterval(clearUndoInterval);
+  savedWorkoutsGuard=null;
   byId('clearUndoBar')?.classList.add('hidden');
   showStep(2);
 }
@@ -1899,6 +2051,8 @@ function newWorkout(){
   singleSectionTarget=null;
   clearedWorkoutSnapshot=null;
   clearTimeout(clearUndoTimer);
+  clearInterval(clearUndoInterval);
+  savedWorkoutsGuard=null;
   byId('clearUndoBar')?.classList.add('hidden');
   resetDraft({withStructure:true});
   setCreationMode('choice');
@@ -1908,38 +2062,98 @@ function newWorkout(){
 
 function printWorkout(w,mode){
   const map=new Map(exercises.map(x=>[x.id,x]));
-  const activityHtml=(it,w)=>{
+  const line=(label,value)=>value?`<p><strong>${esc(label)}:</strong> ${esc(value)}</p>`:'';
+  const participantActivity=(it,w)=>{
     if(it.kind==='run'){
-      return `<article class="participant-exercise"><h3>🏃 ${esc(it.runType)}</h3><p>${esc(`${it.value} ${it.unit} · ${it.intensity}`)}${it.route?` · ${esc(it.route)}`:''}</p></article>`;
+      return `<article class="participant-exercise">
+        <h3>🏃 ${esc(it.runType)}</h3>
+        ${line('Opgave',`${it.value} ${it.unit} · ${it.intensity}`)}
+        ${line('Rute',it.route)}
+        ${line('Vigtigt',it.note)}
+      </article>`;
     }
     const ex=map.get(it.exerciseId),adultEx=map.get(it.adultExerciseId||it.exerciseId);
-    const adultDiff=w.familyMode&&adultEx&&adultEx.id!==ex?.id;
-    return `<article class="participant-exercise"><h3>${esc(ex?.name||'Ukendt øvelse')}${adultDiff?` <small>· Voksen: ${esc(adultEx.name)}</small>`:''}</h3><p>${esc(ex?.description||'Følg instruktørens anvisning.')}</p></article>`;
+    const prescription=[it.juniorReps||ex?.junior,it.juniorKg?`${it.juniorKg} kg`:null].filter(Boolean).join(' · ');
+    return `<article class="participant-exercise">
+      <h3>${esc(ex?.name||'Ukendt øvelse')}</h3>
+      ${line('Sådan gør du',ex?.description||'Følg instruktørens anvisning.')}
+      ${line('Din opgave',prescription)}
+      ${line('Fokus',it.juniorNote)}
+      ${line('Gør den lettere',ex?.easier)}
+      ${line('Typiske fejl',ex?.mistakes)}
+      ${w.familyMode&&adultEx?line('Voksenalternativ',`${adultEx.name}${it.adultReps?` · ${it.adultReps}`:''}${it.adultKg?` · ${it.adultKg} kg`:''}`):''}
+    </article>`;
   };
-  const sectionHtml=(raw,w,participant)=>{
+  const instructorActivity=(it,w)=>{
+    if(it.kind==='run'){
+      return `<article class="print-activity">
+        <h3>🏃 ${esc(it.runType)}</h3>
+        ${line('Mængde',`${it.value} ${it.unit}`)}
+        ${line('Intensitet',it.intensity)}
+        ${line('Rute/opstilling',it.route)}
+        ${line('Note',it.note)}
+      </article>`;
+    }
+    const ex=map.get(it.exerciseId),aex=map.get(it.adultExerciseId||it.exerciseId);
+    const metrics=Object.entries(it.metrics||{}).filter(([,value])=>value!==''&&value!=null).map(([key,value])=>`${key}: ${value}`).join(' · ');
+    return `<article class="print-activity">
+      <h3>${esc(ex?.name||'Ukendt')}</h3>
+      ${line('Udførelse',ex?.description)}
+      ${line('Junior',[
+        it.juniorReps||ex?.junior,
+        it.juniorKg?`${it.juniorKg} kg`:null,
+        it.juniorNote
+      ].filter(Boolean).join(' · '))}
+      ${w.familyMode?line('Voksen',[
+        aex?.name||ex?.name,
+        it.adultReps||aex?.adult,
+        it.adultKg?`${it.adultKg} kg`:null,
+        it.adultNote
+      ].filter(Boolean).join(' · ')):''}
+      ${line('Træningsfelter',metrics)}
+      ${line('Lettere',ex?.easier)}
+      ${line('Sværere',ex?.harder)}
+      ${line('Typiske fejl',ex?.mistakes)}
+      ${line('Udstyr',(ex?.equipment||[]).join(' · '))}
+    </article>`;
+  };
+  const sectionHtml=(raw,participant)=>{
     const s=normalizeSection(structuredClone(raw));
     if(s.type==='Finisher'){
-      return `<section class="${participant?'participant-section':'print-section'}"><h2><span>${esc(s.name)}</span><span>Én sang</span></h2><article class="participant-exercise"><h3>🎵 ${esc(s.songTitle||'Vælg sang')}</h3><p>${esc(s.songArtist||'')}${s.description?` · ${esc(s.description)}`:''}</p></article></section>`;
+      return `<section class="${participant?'participant-section':'print-section'}">
+        <h2><span>${esc(s.name)}</span><span>Én sang · ${esc(String(s.songMinutes||s.minutes||4))} min</span></h2>
+        <article class="${participant?'participant-exercise':'print-activity'}">
+          <h3>🎵 ${esc(s.songTitle||'Sang ikke valgt')}</h3>
+          ${line('Kunstner',s.songArtist)}
+        </article>
+      </section>`;
     }
-    if(participant){
-      return `<section class="participant-section"><h2><span>${esc(s.name)}</span><span>${esc(sectionTimingText(s))}</span></h2>${(s.exercises||[]).map(it=>activityHtml(it,w)).join('')}</section>`;
-    }
-    return `<section class="print-section"><h2>${esc(s.name)} — ${esc(sectionTimingText(s))}</h2><p>${esc(s.format)} · ${esc(s.organization)} · ${esc(s.style)}</p>${(s.exercises||[]).map(it=>{
-      if(it.kind==='run')return `<div><strong>🏃 ${esc(it.runType)}</strong><p>${esc(`${it.value} ${it.unit} · ${it.intensity}`)}${it.route?` · ${esc(it.route)}`:''}${it.note?` · ${esc(it.note)}`:''}</p></div>`;
-      const ex=map.get(it.exerciseId),aex=map.get(it.adultExerciseId||it.exerciseId);
-      return `<div><strong>${esc(ex?.name||'Ukendt')}</strong><p>Junior: ${esc(it.juniorReps||'-')} ${it.juniorKg?`· ${esc(it.juniorKg)} kg`:''}${it.juniorNote?` · ${esc(it.juniorNote)}`:''}</p>${w.familyMode?`<p>Voksen: ${esc(aex?.name||ex?.name||'Ukendt')} · ${esc(it.adultReps||'-')} ${it.adultKg?`· ${esc(it.adultKg)} kg`:''}${it.adultNote?` · ${esc(it.adultNote)}`:''}</p>`:''}</div>`;
-    }).join('')}</section>`;
+    return `<section class="${participant?'participant-section':'print-section'}">
+      <h2><span>${esc(s.name)}</span><span>${esc(sectionTimingText(s))}</span></h2>
+      ${participant?'':`
+        <div class="print-section-brief">
+          ${line('Format',s.format)}
+          ${line('Organisering',s.organization)}
+          ${line('Styring',s.control)}
+          ${line('Beskrivelse',s.description)}
+          ${line('Regler',s.rules)}
+          ${line('Trænertips',s.coachTips)}
+        </div>`}
+      ${(s.exercises||[]).map(it=>participant?participantActivity(it,w):instructorActivity(it,w)).join('')}
+    </section>`;
   };
-  if(mode==='participant'){
-    $('#printView').className='print-view participant-print';
-    $('#printView').innerHTML=`<h1>${esc(w.name)}</h1>${w.sections.map(s=>sectionHtml(s,w,true)).join('')}`;
-  }else{
-    $('#printView').className='print-view';
-    $('#printView').innerHTML=`<h1>${esc(w.name)}</h1><p>${w.date||''} · ${w.sections.reduce((n,s)=>n+(+s.minutes||0),0)} min</p>${w.sections.map(s=>sectionHtml(s,w,false)).join('')}`;
-  }
+
+  const total=w.sections.reduce((sum,section)=>sum+(+section.minutes||0),0);
+  const heading=`<header class="print-heading">
+    <p class="eyebrow">${mode==='participant'?'DELTAGERPROGRAM':'INSTRUKTØRPROGRAM'}</p>
+    <h1>${esc(w.name)}</h1>
+    <p>${esc(w.date||'Ingen dato')} · ${total} min · ${w.participants||0} deltagere</p>
+  </header>`;
+
+  $('#printView').className=mode==='participant'?'print-view participant-print':'print-view instructor-print';
+  $('#printView').innerHTML=heading+w.sections.map(section=>sectionHtml(section,mode==='participant')).join('');
   window.print();
 }
-
 function startPlayer(w){
   const map=new Map(exercises.map(x=>[x.id,x]));
   playerItems=[];
