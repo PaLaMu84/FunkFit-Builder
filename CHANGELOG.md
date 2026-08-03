@@ -1,33 +1,37 @@
-# FunkFit Builder v0.7.4-alpha.8
+# FunkFit Builder v0.7.4-alpha.9
 
-## Kritisk stabilitet
-- “Ryd træningen” beskytter nu Gemte træninger eksplicit.
-- Fortryd viser en synlig nedtælling fra 15 sekunder.
-- Gemte træninger får tidspunkt for seneste gemning.
-- En gemt træning åbnes direkte i Finpuds.
-- “Gemte pas” er omdøbt til “Gemte træninger”.
+## FunkFit Fundamentals
+- En Teknik-sektion kan nu indeholde flere Fundamentals samtidig.
+- Klik på Squat, Hinge, Push, Pull, Carry, Jump/Land, Run/Change of direction og Core for at slå dem til eller fra.
+- Ved ét valg indsættes tre klassiske progressionsøvelser.
+- Ved flere valg indsættes to klassiske øvelser pr. grundbevægelse.
+- AI-hjælp til én Teknik-sektion bruger også flervalg.
+- Fritekst som “squat, hinge og core” kan oprette alle tre fokusområder.
 
-## Manuel Builder
-- Ny opsætning med navn, dato, træningsspor, sted og deltagere.
-- “Tilføj sektion” bruger en rigtig visuel dialog i stedet for browserens prompt.
-- Finisher kan tilføjes fra samme dialog.
-- Billed- og tekstimport er samlet i et sammenklappeligt område.
-- “Indlæs skabelon” er omdøbt til “Anvend træningsskabelon”.
+## Familie
+- Voksenøvelsen er nu søgbar.
+- Skriv navnet eller vælg det fra søgelisten.
+- ?-knappen viser fortsat beskrivelsen af den aktuelt valgte voksenøvelse.
 
-## AI-logik
-- “Ingen løb” overstyrer nu ordet løb og fjerner automatisk løb.
-- “200 meter løb” indsættes som samlet mængde én gang i en hel træning.
-- “200 meter pr. sektion” kan stadig gentages.
-- Lege får nu historie, mission, roller, regelsæt, INCOMING-mekanisme og vinder/fælles mål.
+## Udstyrsprofiler
+- Gymnastiksal, container/udeområde og TRX har faste standardprofiler.
+- Ændringer gemmes automatisk separat for hvert sted.
+- “Nulstil profil” gendanner standardlisten.
+- Antallet af valgte udstyrstyper vises.
 
-## Finpuds og navigation
-- Sektioner er foldet sammen, når Finpuds åbnes.
-- Logo/overskrift fører tilbage til Planlæg.
-- Headeren gentager ikke længere “FunkFit Junior”.
-- Mobilknapper er gjort mere kompakte.
-- Eksempeltekster med “One More Time” er fjernet.
-- Finisherens overflødige beskrivelsesfelt er fjernet.
+## Undgå ventetid og kø
+- Stationstræning får flere stationer i forhold til deltagerantallet.
+- Store grupper opdeles i makkerpar eller mindre stationsgrupper.
+- Øvelser med knapt udstyr nedprioriteres ved mange deltagere.
+- Trænertips beskriver gruppestørrelse, parallelle startsteder og behov for duplikerede stationer.
 
-## PDF
-- Deltagerprogram viser udførelse, opgave, fokus, lettere variant og typiske fejl.
-- Instruktørprogram viser sektionens organisering, regler, trænertips, belastning, reps, alternativer, skalering, typiske fejl og udstyr.
+## Tekstimport
+- Forstår flere overskrifter: AMRAP, EMOM, YGIG, Chipper, Stationer, Leg, Teknik, Finisher og “Hvis der er mere tid”.
+- Genkender løbedistancer som aktiviteter.
+- Bevarer historie, mission, regler, udstyr, opstilling, præmier og instruktørnoter.
+- Skelner bedre mellem forklaringstid og aktiv tid.
+- Ikke-genkendt tekst bevares som noter i stedet for at blive kasseret.
+- Billedimport er tydeligt markeret som eksperimentel.
+
+## Musik
+- En eksisterende Finisher skal have en sangtitel, før brugeren kan gå videre til Musik.
