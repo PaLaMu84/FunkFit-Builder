@@ -4736,5 +4736,98 @@
       "HIIT"
     ],
     "instructionVideo": ""
+  },
+  {
+    "id": "hip-hinge-wall-touch",
+    "name": "Hinge til væg",
+    "category": "Hinge",
+    "equipment": [
+      "Kropsvægt",
+      "Væg"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Lav",
+    "format": [
+      "Teknik",
+      "Station",
+      "Makker"
+    ],
+    "description": "Stå et lille skridt foran en væg med ryggen til. Skub hoften bagud, til bagdelen rører væggen, mens ryggen holdes lang og knæene kun bøjes let.",
+    "focus": [
+      "Hinge",
+      "Bagkæde",
+      "Kropskontrol"
+    ],
+    "easier": "Stå tættere på væggen og arbejd langsomt.",
+    "harder": "Stå længere fra væggen eller hold en let pind langs ryggen.",
+    "junior": "5-8 langsomme gentagelser med tydelig hoftebevægelse.",
+    "adult": "8-10 kontrollerede gentagelser.",
+    "mistakes": "Bevægelsen bliver til en squat, ryggen rundes, eller vægten flyttes ud på tæerne.",
+    "bodyAreas": [
+      "Baglår",
+      "Balder",
+      "Ryg",
+      "Core"
+    ],
+    "styles": [
+      "Teknik",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
+  },
+  {
+    "id": "jump-and-stick",
+    "name": "Hop og frys",
+    "category": "Jump/Land",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Lav",
+    "format": [
+      "Teknik",
+      "Station",
+      "Makker"
+    ],
+    "description": "Hop let op eller frem. Land blødt på hele foden med hofte, knæ og tæer i samme retning, og frys landingen i to sekunder.",
+    "focus": [
+      "Landing",
+      "Knækontrol",
+      "Balance",
+      "Eksplosivitet"
+    ],
+    "easier": "Lav et meget lille hop eller gå op på tæer og land.",
+    "harder": "Hop længere, drej en kvart omgang eller land på ét ben.",
+    "junior": "4-6 kvalitetslandinger med pause mellem hvert hop.",
+    "adult": "6-8 kontrollerede landinger.",
+    "mistakes": "Knæene falder ind, landingen larmer, eller næste hop startes uden kontrol.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "styles": [
+      "Teknik",
+      "Funktionel"
+    ],
+    "instructionVideo": "",
+    "trainingForms": [
+      "Familie",
+      "FunkFit Junior",
+      "Funktionel"
+    ]
   }
 ]

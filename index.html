@@ -4,22 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.5</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a5">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a5">
+  <title>FunkFit Builder v0.7.4-alpha.8</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a8">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a8">
 </head>
 <body>
 <header class="topbar">
-  <div>
-    <p class="eyebrow">FUNKFIT JUNIOR · VERSION 0.7.4-ALPHA.5</p>
+  <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.8</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
-  </div>
+  </button>
 </header>
 
 <nav class="main-nav">
   <button class="nav-tab active" data-view="designView">Design træning</button>
-  <button class="nav-tab" data-view="savedView">Gemte pas</button>
+  <button class="nav-tab" data-view="savedView">Gemte træninger</button>
   <button class="nav-tab" data-view="libraryView">Mit bibliotek</button>
 </nav>
 
@@ -173,6 +173,19 @@
             </select>
             <span>Ledopvarmning og finisher er ikke valgmuligheder her</span>
           </label>
+          <label id="singleFundamentalWrap" class="hidden">FunkFit Fundamental
+            <select id="singleFundamentalType">
+              <option value="squat">🟠 Sætte sig (Squat)</option>
+              <option value="hinge">🟢 Samle op (Hinge)</option>
+              <option value="push">🔵 Skubbe (Push)</option>
+              <option value="pull">🟣 Trække (Pull)</option>
+              <option value="carry">🟡 Bære (Carry)</option>
+              <option value="jump-land">🔴 Hoppe og lande (Jump/Land)</option>
+              <option value="run-cod">⚫ Løbe og vende (Run/Change of direction)</option>
+              <option value="core">⭐ Holde kroppen stærk (Core)</option>
+            </select>
+            <span>Vises ved Teknik for FunkFit Junior og Familie</span>
+          </label>
         </div>
         <p class="planner-hint">AI bygger kun denne ene sektion. Resten af din træning bliver stående urørt.</p>
       </div>
@@ -206,6 +219,38 @@
       <summary>Builder: Byg, brug skabelon eller importér</summary>
       <div class="advanced-inner">
 
+    <section class="manual-setup-card">
+      <div class="section-heading compact">
+        <div><p class="eyebrow">RAMMER</p><h3>Start med træningens grundoplysninger</h3></div>
+      </div>
+      <div class="meta-grid manual-meta-grid">
+        <label>Træningens navn<input id="workoutName" value="FunkFit Junior – dagens træning"></label>
+        <label>Dato<input id="workoutDate" type="date"></label>
+        <label>Træningsspor
+          <select id="manualTrainingType">
+            <option value="junior">FunkFit Junior</option>
+            <option value="family">Familietræning</option>
+            <option value="adult">Funktionel voksen</option>
+            <option value="trx">TRX</option>
+            <option value="hyrox">Hyrox</option>
+            <option value="hiit">HIIT</option>
+          </select>
+        </label>
+        <label>Sted
+          <select id="manualVenue">
+            <option value="indoor">Inde – gymnastiksal</option>
+            <option value="outdoor">Ude – container/udeområde</option>
+          </select>
+        </label>
+        <label>Deltagere<input id="participantCount" type="number" min="1" value="20"></label>
+        <label class="toggle-card" id="manualFamilyCard"><span><strong>Familiedeltagelse</strong><small>Junior og voksne træner sammen.</small></span><input id="familyMode" type="checkbox"></label>
+        <label id="adultCountLabel" class="hidden">Heraf voksne<input id="adultCount" type="number" min="0" value="10"></label>
+      </div>
+    </section>
+
+    <details class="manual-import-details">
+      <summary>Importér træning fra billede eller tekst</summary>
+      <div class="manual-import-inner">
     <section class="import-workout-panel">
       <div class="section-heading">
         <div><p class="eyebrow">IMPORTÉR FORSLAG</p><h3>Lav træning ud fra billede eller tekstfil</h3></div>
@@ -254,19 +299,11 @@ Hovedtræning 20 min
 
       <div id="importProposal" class="import-proposal hidden"></div>
     </section>
-
-
-    <div class="meta-grid">
-      <label>Træningens navn<input id="workoutName" value="FunkFit Junior – dagens træning"></label>
-      <label>Dato<input id="workoutDate" type="date"></label>
-      <label>Juniorer<input id="participantCount" type="number" min="1" value="20"></label>
-      <label class="toggle-card"><span><strong>Familiedeltagelse</strong><small>Voksne følger juniorøvelsen som standard.</small></span><input id="familyMode" type="checkbox"></label>
-      <label id="adultCountLabel" class="hidden">Voksne<input id="adultCount" type="number" min="0" value="10"></label>
-    </div>
-
+      </div>
+    </details>
     <div class="template-row">
-      <label>Skabelon<select id="templateSelect"></select></label>
-      <button id="loadTemplateBtn" class="secondary">Indlæs skabelon</button>
+      <label>Træningsskabelon<select id="templateSelect"></select></label>
+      <button id="loadTemplateBtn" class="secondary">Anvend træningsskabelon</button>
       <button id="addSectionBtn">+ Ny sektion</button>
     </div>
 
@@ -307,7 +344,7 @@ Hovedtræning 20 min
     </section>
 
     <div id="clearUndoBar" class="undo-bar hidden" role="status" aria-live="polite">
-      <span>Træningen er ryddet.</span>
+      <span>Træningen er ryddet. Fortryd inden <strong id="clearUndoCountdown">15</strong> sek.</span>
       <button id="undoClearWorkoutBtn" type="button">Fortryd</button>
     </div>
 
@@ -359,7 +396,7 @@ Hovedtræning 20 min
 <section id="savedView" class="app-view">
   <section class="panel">
     <div class="section-heading">
-      <div><p class="eyebrow">GEMTE PAS</p><h2>Mine træninger</h2></div>
+      <div><p class="eyebrow">GEMTE TRÆNINGER</p><h2>Mine træninger</h2></div>
       <button id="newWorkoutBtn">+ Ny træning</button>
     </div>
     <div id="savedWorkouts" class="saved-grid"></div>
@@ -375,6 +412,25 @@ Hovedtræning 20 min
   </section>
 </section>
 </main>
+
+<dialog id="addSectionDialog" class="builder-dialog add-section-dialog">
+  <button class="close" type="button" data-close="addSectionDialog" aria-label="Luk">×</button>
+  <form id="addSectionForm">
+    <p class="eyebrow">NY SEKTION</p>
+    <h2>Hvad vil du tilføje?</h2>
+    <p>Vælg sektionstype. Du kan ændre navn, format og organisering bagefter.</p>
+    <div id="addSectionTypeGrid" class="section-type-grid"></div>
+    <label>Sektionens navn
+      <input id="addSectionName" placeholder="Navnet udfyldes automatisk">
+    </label>
+    <button type="submit">Tilføj sektion</button>
+  </form>
+</dialog>
+
+<dialog id="exerciseInfoDialog" class="exercise-info-dialog">
+  <button class="close" type="button" data-close="exerciseInfoDialog" aria-label="Luk øvelsesbeskrivelsen">×</button>
+  <div id="exerciseInfoContent"></div>
+</dialog>
 
 <dialog id="exercisePickerDialog">
   <button class="close" data-close="exercisePickerDialog">×</button>
@@ -504,7 +560,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.5 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a5"></script>
+<footer>FunkFit Builder v0.7.4-alpha.8 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a8"></script>
 </body>
 </html>
