@@ -1,15 +1,16 @@
-# Målrettet gentest – v0.7.4-alpha.8
+# Målrettet gentest – v0.7.4-alpha.9
 
-1. Gem en træning. Ryd derefter den aktuelle kladde. Kontrollér at den gemte træning stadig findes.
-2. Kontrollér den synlige 15-sekunders nedtælling og Fortryd.
-3. Åbn en gemt træning. Den skal åbne direkte i Finpuds.
-4. Klik FunkFit Builder i toppen. Appen skal gå til Planlæg uden at slette kladden.
-5. Vælg Manuel Builder og kontrollér navn, dato, træningsspor, sted og deltagere.
-6. Klik Tilføj sektion. Kontrollér den visuelle dialog og opret AMRAP, Løb via aktivitet og Finisher.
-7. Generér en hel træning med “Masser af mave. Ingen løb.” Der må ikke være løb.
-8. Generér med “Masser af mave og 200 meter løb.” Der skal være 200 meter én gang i træningen.
-9. Generér med “200 meter løb pr. sektion.” Løbet må gentages.
-10. Byg en leg og kontrollér historie, mission, regler, INCOMING-signal og vinder/fælles mål.
-11. Åbn Finpuds. Sektionerne skal være foldet sammen.
-12. Kontrollér Deltager-PDF og Instruktør-PDF med almindelige øvelser, løb og familiedeltagelse.
-13. Kontrollér at “One More Time” ikke findes nogen steder.
+1. Opret en Junior/Familie Teknik-sektion og vælg Squat + Hinge + Core.
+2. Kontrollér at alle tre er markeret, og at sektionen får klassiske øvelser fra hvert område.
+3. Fjern Hinge igen og kontrollér, at sektionen opdateres.
+4. Vælg AI-hjælp til én sektion → Teknik og markér flere Fundamentals.
+5. Aktivér Familie. Søg efter en voksenøvelse ved navn og kontrollér ?-knappen.
+6. Vælg Inde, redigér udstyrslisten, genindlæs appen og kontrollér at profilen huskes.
+7. Skift til Ude og kontrollér, at den har sin egen profil. Brug Nulstil profil.
+8. Generér Stationer til 20 deltagere med “Undgå ventetid og kø”.
+9. Kontrollér flere stationer, små grupper og konkrete trænertips om flow.
+10. Slå “Undgå ventetid og kø” fra og sammenlign forslaget.
+11. Importér en tekst med overskrifter, historie, regler, udstyr, aktiv tid, løb og “Hvis der er mere tid”.
+12. Kontrollér at informationen bevares i de relevante sektioner.
+13. Opret en Finisher uden sangtitel og tryk Næste: Musik.
+14. Appen skal blive i Finpuds og fokusere sangtitlen.

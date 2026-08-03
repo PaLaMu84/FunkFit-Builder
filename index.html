@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.8</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a8">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a8">
+  <title>FunkFit Builder v0.7.4-alpha.9</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a9">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a9">
 </head>
 <body>
 <header class="topbar">
   <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
-    <p class="eyebrow">VERSION 0.7.4-ALPHA.8</p>
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.9</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </button>
@@ -131,8 +131,15 @@
       <div class="planner-number">5</div>
       <div class="planner-content">
         <div class="section-heading compact">
-          <div><h3>Tilgængeligt udstyr</h3><p id="equipmentProfileText">Standardprofil: Gymnastiksalen</p></div>
-          <button id="selectAllEquipmentBtn" type="button" class="ghost small-btn">Vælg alt</button>
+          <div>
+            <h3>Tilgængeligt udstyr</h3>
+            <p id="equipmentProfileText">Standardprofil: Gymnastiksalen</p>
+            <small id="equipmentProfileStatus">Ændringer gemmes automatisk for dette sted.</small>
+          </div>
+          <div class="equipment-profile-actions">
+            <button id="selectAllEquipmentBtn" type="button" class="ghost small-btn">Vælg alt</button>
+            <button id="resetEquipmentProfileBtn" type="button" class="ghost small-btn">Nulstil profil</button>
+          </div>
         </div>
         <div id="equipmentChoices" class="equipment-grid"></div>
       </div>
@@ -144,7 +151,7 @@
         <h3>Din idé eller særlige ønsker</h3>
         <textarea id="plannerBrief" rows="4" placeholder="Fx: Hyrox-inspireret træning med meget teamwork. Ingen kø. Jeg vil gerne bruge wall balls og farmer carry."></textarea>
         <div class="planner-toggles">
-          <label><input id="avoidWaiting" type="checkbox" checked> Undgå ventetid og kø</label>
+          <label class="planner-toggle-explained"><input id="avoidWaiting" type="checkbox" checked><span><strong>Undgå ventetid og kø</strong><small>AI bruger flere stationer, mindre grupper og færre øvelser med knapt udstyr.</small></span></label>
           <label id="includeJointWarmupWrap"><input id="includeJointWarmup" type="checkbox" checked> Fast ledopvarmning (5 min)</label>
           <label id="includeFinisherWrap"><input id="includeTeamChallenge" type="checkbox" checked> Planlæg en finisher til sidst</label>
           <label id="includeGameWrap"><input id="includeGame" type="checkbox" checked> Medtag en leg (Junior/Familie)</label>
@@ -173,19 +180,11 @@
             </select>
             <span>Ledopvarmning og finisher er ikke valgmuligheder her</span>
           </label>
-          <label id="singleFundamentalWrap" class="hidden">FunkFit Fundamental
-            <select id="singleFundamentalType">
-              <option value="squat">🟠 Sætte sig (Squat)</option>
-              <option value="hinge">🟢 Samle op (Hinge)</option>
-              <option value="push">🔵 Skubbe (Push)</option>
-              <option value="pull">🟣 Trække (Pull)</option>
-              <option value="carry">🟡 Bære (Carry)</option>
-              <option value="jump-land">🔴 Hoppe og lande (Jump/Land)</option>
-              <option value="run-cod">⚫ Løbe og vende (Run/Change of direction)</option>
-              <option value="core">⭐ Holde kroppen stærk (Core)</option>
-            </select>
-            <span>Vises ved Teknik for FunkFit Junior og Familie</span>
-          </label>
+          <div id="singleFundamentalWrap" class="single-fundamental-wrap hidden">
+            <strong>FunkFit Fundamentals</strong>
+            <small>Vælg én eller flere grundbevægelser til Teknik-sektionen.</small>
+            <div id="singleFundamentalChoices" class="single-fundamental-choices"></div>
+          </div>
         </div>
         <p class="planner-hint">AI bygger kun denne ene sektion. Resten af din træning bliver stående urørt.</p>
       </div>
@@ -253,19 +252,19 @@
       <div class="manual-import-inner">
     <section class="import-workout-panel">
       <div class="section-heading">
-        <div><p class="eyebrow">IMPORTÉR FORSLAG</p><h3>Lav træning ud fra billede eller tekstfil</h3></div>
+        <div><p class="eyebrow">IMPORTÉR FORSLAG</p><h3>Lav træning ud fra tekst eller billede</h3><p>Tekstimport er bedst understøttet. Billedaflæsning er fortsat eksperimentel.</p></div>
       </div>
 
       <div class="import-options">
         <label class="upload-card">
-          <strong>Vælg fra galleri</strong>
+          <strong>Vælg billede fra galleri · eksperimentel</strong>
           <small>Vælg et screenshot eller et eksisterende billede.</small>
           <input id="workoutImageInput" type="file" accept="image/*">
         </label>
 
 
         <label class="upload-card">
-          <strong>Tag et nyt billede</strong>
+          <strong>Tag billede · eksperimentel</strong>
           <small>Åbn kameraet og fotografér træningsplanen.</small>
           <input id="workoutCameraInput" type="file" accept="image/*" capture="environment">
         </label>
@@ -445,6 +444,8 @@ Hovedtræning 20 min
   <div id="pickerGrid" class="picker-list"></div>
 </dialog>
 
+<datalist id="adultExerciseOptions"></datalist>
+
 <dialog id="newExerciseDialog">
   <button class="close" data-close="newExerciseDialog">×</button>
   <form id="newExerciseForm">
@@ -560,7 +561,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.8 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a8"></script>
+<footer>FunkFit Builder v0.7.4-alpha.9 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a9"></script>
 </body>
 </html>

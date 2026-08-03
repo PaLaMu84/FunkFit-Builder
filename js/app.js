@@ -80,7 +80,7 @@ const FUNKFIT_FUNDAMENTALS={
   }
 };
 
-const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a';
+const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a',EQKEY='funkfit-equipment-profiles-v074a';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
 let plannerConcept='junior',plannerVenue='indoor';
 const EQUIPMENT_PROFILES={
@@ -88,7 +88,25 @@ const EQUIPMENT_PROFILES={
   trx:['Kropsvægt','TRX','Måtte'],
   outdoor:['Kropsvægt','Kettlebell','Håndvægt','Kegler','Sjippetov','Sandsæk','Battle rope','Traktordæk','Slæde','Pull-up stativ','Løbebane','Bakke']
 };
-let plannerEquipment=new Set(EQUIPMENT_PROFILES.indoor);
+function equipmentProfiles(){return read(EQKEY,{})}
+function defaultEquipmentProfile(venue){return [...(EQUIPMENT_PROFILES[venue]||EQUIPMENT_PROFILES.indoor)]}
+function loadEquipmentProfile(venue){
+  const saved=equipmentProfiles()[venue];
+  return Array.isArray(saved)&&saved.length?saved:defaultEquipmentProfile(venue);
+}
+function persistEquipmentProfile(venue,items){
+  const all=equipmentProfiles();
+  all[venue]=[...new Set(items)].sort((a,b)=>a.localeCompare(b,'da'));
+  localStorage.setItem(EQKEY,JSON.stringify(all));
+}
+function resetEquipmentProfile(venue){
+  const all=equipmentProfiles();
+  delete all[venue];
+  localStorage.setItem(EQKEY,JSON.stringify(all));
+  plannerEquipment=new Set(defaultEquipmentProfile(venue));
+  renderEquipmentChoices();
+}
+let plannerEquipment=new Set(loadEquipmentProfile('indoor'));
 
 const DEFAULT_PROFILE={
   id:'local-paw',
@@ -220,7 +238,9 @@ function normalizeSection(s){
   s.work=Number(s.work||0);
   s.rest=Number(s.rest||0);
   s.timeCap=Number(s.timeCap||s.minutes||0);
-  s.fundamentalKey=FUNKFIT_FUNDAMENTALS[s.fundamentalKey]?s.fundamentalKey:'';
+  const rawFundamentals=Array.isArray(s.fundamentalKeys)?s.fundamentalKeys:(s.fundamentalKey?[s.fundamentalKey]:[]);
+  s.fundamentalKeys=[...new Set(rawFundamentals.filter(key=>FUNKFIT_FUNDAMENTALS[key]))];
+  s.fundamentalKey=s.fundamentalKeys[0]||'';
   s.exercises=(s.exercises||[]).map(normalizeActivity);
   return applySectionRules(s);
 }
@@ -365,16 +385,53 @@ function buildGameSuggestion(minutes=8,focus='',theme=''){
     exercises:picked.map(makeItem)
   });
 }
+function avoidWaitingEnabled(){
+  return $('#avoidWaiting')?.checked!==false;
+}
+function waitingFriendlyExerciseCount(type,participants){
+  if(type==='Stationer')return avoidWaitingEnabled()?Math.min(8,Math.max(5,Math.ceil(participants/3))):6;
+  if(type==='Chipper')return 5;
+  if(type==='Teknik')return 3;
+  return 4;
+}
+function applyWaitingRules(section,participants){
+  if(!avoidWaitingEnabled()||section.type==='Finisher')return section;
+  const count=Math.max(1,(section.exercises||[]).length);
+
+  if(section.type==='Stationer'){
+    const groupSize=Math.max(2,Math.ceil(participants/count));
+    section.organization='Fast rotation';
+    section.stationCount=count;
+    section.coachTips=[
+      section.coachTips,
+      `Fordel deltagerne på ${count} stationer med ca. ${groupSize} pr. station.`,
+      groupSize>4?'Duplikér stationer med simpelt udstyr eller brug et kropsvægtsalternativ, så ingen station får mere end fire deltagere.':'Stationerne kan startes samtidig uden en central kø.'
+    ].filter(Boolean).join(' ');
+  }else if(section.organization==='Individuelt'&&participants>=12){
+    section.organization='Makker sammen';
+    section.coachTips=[
+      section.coachTips,
+      'Arbejd i makkerpar med hver sit tempo eller skiftevis, så alle er aktive og udstyret deles.'
+    ].filter(Boolean).join(' ');
+  }else{
+    section.coachTips=[
+      section.coachTips,
+      'Brug parallelle startsteder og et kropsvægtsalternativ ved knapt udstyr.'
+    ].filter(Boolean).join(' ');
+  }
+  return section;
+}
 function buildSectionSuggestion(type='AMRAP',minutes=12,focus='',theme=''){
   if(type==='Leg')return buildGameSuggestion(minutes,focus,theme);
   if(type==='Teknik'&&isJuniorFamilyContext()){
-    return buildFundamentalSection(fundamentalFromFocus(focus),minutes);
+    return buildFundamentalSection(fundamentalsFromFocus(focus),minutes);
   }
   const s=defaultSection(type);
   s.minutes=minutes;
   if(type==='Chipper')s.timeCap=minutes;
   const used=new Set(sections.flatMap(x=>(x.exercises||[]).filter(a=>a.kind!=='run').map(a=>a.exerciseId)));
-  const count=type==='Stationer'?6:type==='Chipper'?5:type==='Teknik'?3:4;
+  const participants=Math.max(1,+$('#plannerParticipants')?.value||+$('#participantCount')?.value||20);
+  const count=waitingFriendlyExerciseCount(type,participants);
   const picked=pickExercises(count,[...goalValues(),focus],type==='Opvarmning'?'warmup':'main',used);
   s.exercises=picked.map(makeItem);
   if(shouldSuggestRun(s,focus)){
@@ -392,6 +449,7 @@ function buildSectionSuggestion(type='AMRAP',minutes=12,focus='',theme=''){
     s.description=`AI-forslag til ${type.toLowerCase()}${focus?` med fokus på ${focus}`:''}.`;
   }
   s.coachTips=s.coachTips||'Kontrollér belastning, plads og flow. Skalér før start og hold forklaringen kort.';
+  applyWaitingRules(s,participants);
   return normalizeSection(s);
 }
 function regenerateSection(index){
@@ -458,6 +516,7 @@ async function init(){
   const base=await fetch('data/exercises.json').then(r=>r.json());
   templates=await fetch('data/workoutTemplates.json').then(r=>r.json());
   exercises=[...customs(),...base];
+  renderAdultExerciseOptions();
   $('#templateSelect').innerHTML=templates.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   $('#workoutDate').value=new Date().toISOString().slice(0,10);
   sections=prepareTemplateSections(templates[0].sections);
@@ -518,7 +577,10 @@ function submitAddSection(event){
 }
 function syncManualSetup(){
   if($('#manualTrainingType'))plannerConcept=$('#manualTrainingType').value;
-  if($('#manualVenue'))plannerVenue=$('#manualVenue').value;
+  if($('#manualVenue')){
+    const nextVenue=$('#manualVenue').value;
+    if(nextVenue!==plannerVenue){plannerVenue=nextVenue;plannerEquipment=new Set(loadEquipmentProfile(plannerVenue));renderEquipmentChoices()}
+  }
   const family=plannerConcept==='family';
   $('#familyMode').checked=family;
   $('#manualFamilyCard')?.classList.toggle('hidden',!['junior','family'].includes(plannerConcept));
@@ -529,10 +591,25 @@ function syncManualSetup(){
   renderFramework();renderExerciseSections();
 }
 
+function goToStep(step){
+  if(step===3){
+    const finisherIndex=sections.findIndex(section=>normalizeSection(section).type==='Finisher');
+    if(finisherIndex>=0&&!String(sections[finisherIndex].songTitle||'').trim()){
+      collapsedSections.delete(finisherIndex);
+      renderExerciseSections();
+      showStep(2);
+      setTimeout(()=>{
+        document.querySelector(`[data-finisher-index="${finisherIndex}"][data-finisher-field="songTitle"]`)?.focus();
+      },100);
+      return alert('Vælg sangtitel til finisheren, før du går videre til Musik.');
+    }
+  }
+  showStep(step);
+}
 function bind(){
   document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>showView(b.dataset.view));
   document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>showStep(+b.dataset.step));
-  document.querySelectorAll('[data-next-step]').forEach(b=>b.onclick=()=>showStep(+b.dataset.nextStep));
+  document.querySelectorAll('[data-next-step]').forEach(b=>b.onclick=()=>goToStep(+b.dataset.nextStep));
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).close());
   on('homeBrandBtn','click',()=>{showView('designView');setCreationMode('choice');showStep(1)});
   if($('#addSectionForm'))$('#addSectionForm').onsubmit=submitAddSection;
@@ -677,7 +754,7 @@ function setCreationMode(mode){
 function selectedTrainingType(){return plannerConcept||'junior'}
 
 function verifyInteractiveControls(){
-  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue'];
+  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue','resetEquipmentProfileBtn','singleFundamentalChoices','adultExerciseOptions'];
   const missing=required.filter(id=>!byId(id));
   if(missing.length)console.error('Manglende interaktive elementer:',missing);
   else console.info('FunkFit interaktive kontroller: OK');
@@ -706,7 +783,7 @@ function fundamentalTitle(key){
   const f=FUNKFIT_FUNDAMENTALS[key];
   return f?`${f.icon} ${f.label} (${f.english})`:'';
 }
-function fundamentalFromFocus(focus=''){
+function fundamentalsFromFocus(focus=''){
   const text=String(focus||'').toLowerCase();
   const matchers=[
     ['squat',/(squat|sætte sig|sæt dig|knæbøj)/],
@@ -718,7 +795,11 @@ function fundamentalFromFocus(focus=''){
     ['run-cod',/(run|løb|løbe|vende|retningsskift|change of direction|agility)/],
     ['core',/(core|mave|abs|holde kroppen|stabil)/]
   ];
-  return matchers.find(([,pattern])=>pattern.test(text))?.[0]||'squat';
+  const found=matchers.filter(([,pattern])=>pattern.test(text)).map(([key])=>key);
+  return found.length?found:['squat'];
+}
+function fundamentalFromFocus(focus=''){
+  return fundamentalsFromFocus(focus)[0];
 }
 function makeFundamentalActivity(exerciseId){
   const ex=exercises.find(x=>x.id===exerciseId);
@@ -734,43 +815,68 @@ function makeFundamentalActivity(exerciseId){
     adultNote:'Skalér, så bevægelseskvaliteten bevares.'
   });
 }
-function buildFundamentalSection(key='squat',minutes=10){
-  const f=FUNKFIT_FUNDAMENTALS[key]||FUNKFIT_FUNDAMENTALS.squat;
-  const availableIds=f.exerciseIds.filter(id=>exercises.some(x=>x.id===id));
+function buildFundamentalSection(keys='squat',minutes=10){
+  const selected=[...new Set((Array.isArray(keys)?keys:[keys]).filter(key=>FUNKFIT_FUNDAMENTALS[key]))];
+  if(!selected.length)selected.push('squat');
+
+  const perMovement=selected.length===1?3:2;
+  const chosenIds=[];
+  selected.forEach(key=>{
+    FUNKFIT_FUNDAMENTALS[key].exerciseIds
+      .filter(id=>exercises.some(x=>x.id===id))
+      .slice(0,perMovement)
+      .forEach(id=>{if(!chosenIds.includes(id))chosenIds.push(id)});
+  });
+
+  const labels=selected.map(key=>FUNKFIT_FUNDAMENTALS[key]);
   const s=defaultSection('Teknik');
-  s.fundamentalKey=key;
-  s.name=`Teknik – ${f.label} (${f.english})`;
+  s.fundamentalKeys=selected;
+  s.fundamentalKey=selected[0];
+  s.name=`Teknik – ${labels.map(f=>f.label).join(' + ')}`;
   s.minutes=Math.max(6,+minutes||10);
-  s.description=f.description;
-  s.rules=f.rules;
-  s.coachTips=f.coachTips;
-  s.exercises=availableIds.map(makeFundamentalActivity);
+  s.description=labels.map(f=>`${f.icon} ${f.label}: ${f.description}`).join('\n');
+  s.rules='Arbejd med få, rolige kvalitetsgentagelser. Stop og skalér, når positionen ikke længere kan holdes.';
+  s.coachTips=labels.map(f=>`${f.icon} ${f.coachTips}`).join(' ');
+  s.exercises=chosenIds.map(makeFundamentalActivity);
+  applyWaitingRules(s,Math.max(1,+$('#plannerParticipants')?.value||+$('#participantCount')?.value||20));
   return normalizeSection(s);
 }
 function applyFundamentalToSection(index,key){
   const current=normalizeSection(sections[index]);
   if(current.type!=='Teknik')return;
-  if((current.exercises||[]).length){
-    if(!confirm('Vil du erstatte de nuværende aktiviteter med de klassiske FunkFit Fundamentals-øvelser?'))return;
+
+  const selected=new Set(current.fundamentalKeys||[]);
+  const hasFundamentalSelection=selected.size>0;
+  if(!hasFundamentalSelection&&(current.exercises||[]).length){
+    if(!confirm('Vil du erstatte de nuværende aktiviteter med FunkFit Fundamentals-øvelser?'))return;
   }
-  sections[index]=buildFundamentalSection(key,current.minutes||10);
+
+  selected.has(key)?selected.delete(key):selected.add(key);
+  if(!selected.size){
+    const blank=defaultSection('Teknik');
+    blank.name='Teknik';
+    blank.minutes=current.minutes||10;
+    sections[index]=blank;
+  }else{
+    sections[index]=buildFundamentalSection([...selected],current.minutes||10);
+  }
   renderFramework();renderExerciseSections();updateReview();
 }
 function renderFundamentalsPicker(s,index,compact=false){
   if(s.type!=='Teknik'||!isJuniorFamilyContext())return '';
-  const selected=s.fundamentalKey||'';
+  const selected=new Set(s.fundamentalKeys||[]);
   return `<section class="fundamentals-card ${compact?'compact':''}">
     <div class="fundamentals-heading">
       <div>
         <p class="eyebrow">FUNKFIT FUNDAMENTALS</p>
-        <h4>Vælg den grundbevægelse, der skal trænes</h4>
+        <h4>Vælg én eller flere grundbevægelser</h4>
       </div>
-      ${selected?`<span class="fundamental-selected">${esc(fundamentalTitle(selected))}</span>`:''}
+      ${selected.size?`<div class="fundamental-selected-list">${[...selected].map(key=>`<span class="fundamental-selected">${esc(fundamentalTitle(key))}</span>`).join('')}</div>`:''}
     </div>
-    <p class="field-help">Valget indsætter en fast progression med helt klassiske teknikøvelser. Eksisterende aktiviteter erstattes efter bekræftelse.</p>
+    <p class="field-help">Ved flere valg indsættes to klassiske øvelser pr. grundbevægelse. Klik igen for at fjerne et valg.</p>
     <div class="fundamentals-grid">
       ${Object.entries(FUNKFIT_FUNDAMENTALS).map(([key,f])=>`
-        <button type="button" class="fundamental-btn ${selected===key?'selected':''}" data-fundamental-section="${index}" data-fundamental-key="${key}">
+        <button type="button" class="fundamental-btn ${selected.has(key)?'selected':''}" data-fundamental-section="${index}" data-fundamental-key="${key}" aria-pressed="${selected.has(key)}">
           <span>${f.icon}</span><strong>${esc(f.label)}</strong><small>${esc(f.english)}</small>
         </button>`).join('')}
     </div>
@@ -1149,7 +1255,8 @@ function exerciseActivityRow(it,si,ai,fam){
   return `<div class="exercise-row">${juniorFields}${type==='family'?`<div class="adult-settings"><div class="adult-grid">
     <label>Voksenøvelse
       <div class="adult-exercise-choice">
-        <select data-aex="${si}-${ai}">${exercises.map(x=>`<option value="${x.id}" ${adultExerciseId===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>
+        <input data-aex-search="${si}-${ai}" list="adultExerciseOptions" value="${esc(exercises.find(x=>x.id===adultExerciseId)?.name||ex?.name||'')}" placeholder="Søg efter voksenøvelse">
+        <input type="hidden" data-aex="${si}-${ai}" value="${esc(adultExerciseId)}">
         <button type="button" class="exercise-info-btn" data-adult-exercise-info="${si}-${ai}" title="Vis beskrivelse af voksenøvelsen" aria-label="Vis beskrivelse af voksenøvelsen">?</button>
       </div>
     </label>
@@ -1183,12 +1290,34 @@ function bindActivityInputs(){
   bind('[data-jkg]','jkg','juniorKg');
   bind('[data-jreps]','jreps','juniorReps');
   bind('[data-jnote]','jnote','juniorNote');
-  bind('[data-aex]','aex','adultExerciseId','change');
+  host.querySelectorAll('[data-aex-search]').forEach(input=>input.onchange=()=>{
+    const [a,b]=input.dataset.aexSearch.split('-').map(Number);
+    const query=normalizeText(input.value);
+    const exact=exercises.find(ex=>normalizeText(ex.name)===query);
+    const partial=exercises.find(ex=>normalizeText(ex.name).includes(query));
+    const match=exact||partial;
+    if(!match){
+      const current=exercises.find(ex=>ex.id===(sections[a].exercises[b].adultExerciseId||sections[a].exercises[b].exerciseId));
+      input.value=current?.name||'';
+      return alert('Vælg en øvelse fra søgelisten.');
+    }
+    sections[a].exercises[b].adultExerciseId=match.id;
+    const hidden=host.querySelector(`[data-aex="${a}-${b}"]`);
+    if(hidden)hidden.value=match.id;
+    input.value=match.name;
+  });
   bind('[data-akg]','akg','adultKg');
   bind('[data-areps]','areps','adultReps');
   bind('[data-anote]','anote','adultNote');
 }
 
+function renderAdultExerciseOptions(){
+  const host=$('#adultExerciseOptions');
+  if(!host)return;
+  host.innerHTML=[...exercises]
+    .sort((a,b)=>a.name.localeCompare(b.name,'da'))
+    .map(ex=>`<option value="${esc(ex.name)}"></option>`).join('');
+}
 function populatePickerFilters(){
   [...new Set(exercises.flatMap(x=>x.bodyAreas||[]))].sort().forEach(x=>$('#pickerBody').add(new Option(x,x)));
   [...new Set(exercises.flatMap(x=>x.styles||[]))].sort().forEach(x=>$('#pickerStyle').add(new Option(x,x)));
@@ -1275,7 +1404,7 @@ function bindPlanner(){
   document.querySelectorAll('#conceptChoices .choice-card').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('#conceptChoices .choice-card').forEach(x=>x.classList.remove('selected'));
     b.classList.add('selected');plannerConcept=b.dataset.value;
-    if(plannerConcept==='trx'){plannerEquipment=new Set(EQUIPMENT_PROFILES.trx);renderEquipmentChoices()}
+    if(plannerConcept==='trx'){plannerEquipment=new Set(loadEquipmentProfile('trx'));renderEquipmentChoices()}
     const family=plannerConcept==='family';
     $('#plannerAdultsWrap').classList.toggle('hidden',!family);
     $('#familyMode').checked=family;
@@ -1292,7 +1421,7 @@ function bindPlanner(){
   document.querySelectorAll('#venueChoices .choice-card').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('#venueChoices .choice-card').forEach(x=>x.classList.remove('selected'));
     b.classList.add('selected');plannerVenue=b.dataset.value;
-    plannerEquipment=new Set(EQUIPMENT_PROFILES[plannerVenue]);
+    plannerEquipment=new Set(loadEquipmentProfile(plannerVenue));
     $('#venueHint').textContent=plannerVenue==='indoor'
       ?'Indendørs profil: gulv, vægge, bokse, måtter og salens udstyr.'
       :'Udendørs profil: containerudstyr, løbeområde, slæder, sandsække og større redskaber.';
@@ -1301,9 +1430,13 @@ function bindPlanner(){
   });
   document.querySelectorAll('#goalChoices .goal-chip').forEach(b=>b.onclick=()=>b.classList.toggle('selected'));
   $('#selectAllEquipmentBtn').onclick=()=>{
-    const all=[...new Set(exercises.flatMap(x=>x.equipment||[]).concat(EQUIPMENT_PROFILES.indoor,EQUIPMENT_PROFILES.outdoor))];
+    const all=[...new Set(exercises.flatMap(x=>x.equipment||[]).concat(EQUIPMENT_PROFILES.indoor,EQUIPMENT_PROFILES.outdoor,EQUIPMENT_PROFILES.trx))];
     plannerEquipment.size===all.length?plannerEquipment.clear():all.forEach(x=>plannerEquipment.add(x));
+    persistEquipmentProfile(plannerVenue,[...plannerEquipment]);
     renderEquipmentChoices();
+  };
+  $('#resetEquipmentProfileBtn').onclick=()=>{
+    if(confirm('Vil du nulstille udstyrsprofilen til standardlisten for dette sted?'))resetEquipmentProfile(plannerVenue);
   };
   $('#generateSmartWorkoutBtn').onclick=()=>creationMode==='section'?generateSingleSectionFromPlanner():generateSmartWorkout();
   $('#singleSectionType').onchange=updateSingleFundamentalVisibility;
@@ -1312,18 +1445,27 @@ function bindPlanner(){
 }
 function renderEquipmentChoices(){
   if(!$('#equipmentChoices'))return;
-  const profile=EQUIPMENT_PROFILES[plannerVenue];
+  const standard=defaultEquipmentProfile(plannerVenue);
   const fromExercises=[...new Set(exercises.flatMap(x=>x.equipment||[]))];
-  const all=[...new Set([...profile,...fromExercises])].sort((a,b)=>{
-    const ai=profile.includes(a)?0:1,bi=profile.includes(b)?0:1;
+  const all=[...new Set([...standard,...plannerEquipment,...fromExercises])].sort((a,b)=>{
+    const ai=standard.includes(a)?0:1,bi=standard.includes(b)?0:1;
     return ai-bi||a.localeCompare(b,'da');
   });
-  $('#equipmentChoices').innerHTML=all.map(eq=>`<label class="equipment-option ${plannerEquipment.has(eq)?'active':''}"><input type="checkbox" data-equipment="${esc(eq)}" ${plannerEquipment.has(eq)?'checked':''}>${esc(eq)}</label>`).join('');
+  const profileNames={indoor:'Gymnastiksalen',outdoor:'Containeren/udeområdet',trx:'TRX-profilen'};
+  const custom=Array.isArray(equipmentProfiles()[plannerVenue]);
+  $('#equipmentProfileText').textContent=`${custom?'Din gemte profil':'Standardprofil'}: ${profileNames[plannerVenue]||'Udstyr'}`;
+  $('#equipmentProfileStatus').textContent=`${plannerEquipment.size} valgte typer · ændringer gemmes automatisk.`;
+  $('#equipmentChoices').innerHTML=all.map(eq=>`<label class="equipment-option ${plannerEquipment.has(eq)?'active':''}">
+    <input type="checkbox" data-equipment="${esc(eq)}" ${plannerEquipment.has(eq)?'checked':''}>${esc(eq)}
+  </label>`).join('');
   $('#equipmentChoices').querySelectorAll('[data-equipment]').forEach(c=>c.onchange=()=>{
     c.checked?plannerEquipment.add(c.dataset.equipment):plannerEquipment.delete(c.dataset.equipment);
     c.closest('.equipment-option').classList.toggle('active',c.checked);
+    persistEquipmentProfile(plannerVenue,[...plannerEquipment]);
+    $('#equipmentProfileStatus').textContent=`${plannerEquipment.size} valgte typer · gemt automatisk.`;
   });
 }
+
 function goalValues(){return [...document.querySelectorAll('#goalChoices .goal-chip.selected')].map(x=>x.dataset.value)}
 function exerciseAvailable(ex){
   const req=ex.equipment||['Kropsvægt'];
@@ -1394,6 +1536,12 @@ function scoreExercise(ex,goals,sectionType){
   if(plannerConcept==='adult'&&(ex.audience||[]).includes('Voksen'))score+=2;
   if(plannerVenue==='outdoor'&&(hay.includes('løb')||hay.includes('carry')||hay.includes('stafet')))score+=3;
   if(plannerVenue==='indoor'&&(ex.equipment||[]).some(x=>['Måtte','Boks','Bænk','Væg'].includes(x)))score+=2;
+  if(avoidWaitingEnabled()&&(+$('#plannerParticipants')?.value||20)>=16){
+    const equipment=ex.equipment||['Kropsvægt'];
+    const queueFriendly=['Kropsvægt','Måtte','Kegler','Elastik','Væg','Løbebane'];
+    if(equipment.some(item=>!queueFriendly.includes(item)))score-=5;
+    if(equipment.every(item=>queueFriendly.includes(item)))score+=3;
+  }
   if($('#useFavoritesFirst').checked&&favorites().has(ex.id))score+=10;
 
   const recent=aiHistory().flatMap(x=>x.exerciseIds||[]);
@@ -1439,11 +1587,32 @@ function makeItem(ex){
 
 
 
+function selectedSingleFundamentals(){
+  const selected=[...document.querySelectorAll('#singleFundamentalChoices input:checked')].map(x=>x.value);
+  return selected.length?selected:['squat'];
+}
+function renderSingleFundamentalChoices(selectedKeys=['squat']){
+  const selected=new Set(selectedKeys);
+  const host=$('#singleFundamentalChoices');
+  if(!host)return;
+  host.innerHTML=Object.entries(FUNKFIT_FUNDAMENTALS).map(([key,f])=>`
+    <label class="single-fundamental-option ${selected.has(key)?'selected':''}">
+      <input type="checkbox" value="${key}" ${selected.has(key)?'checked':''}>
+      <span>${f.icon}</span><strong>${esc(f.label)}</strong><small>${esc(f.english)}</small>
+    </label>`).join('');
+  host.querySelectorAll('input').forEach(input=>input.onchange=()=>{
+    input.closest('.single-fundamental-option').classList.toggle('selected',input.checked);
+    if(!host.querySelector('input:checked')){
+      input.checked=true;
+      input.closest('.single-fundamental-option').classList.add('selected');
+    }
+  });
+}
 function updateSingleFundamentalVisibility(){
   const show=$('#singleSectionType')?.value==='Teknik'&&isJuniorFamilyContext();
   $('#singleFundamentalWrap')?.classList.toggle('hidden',!show);
+  if(show&&!$('#singleFundamentalChoices')?.children.length)renderSingleFundamentalChoices(['squat']);
 }
-
 function startSingleSectionPlanner(target=null,presetType=null){
   singleSectionTarget=Number.isInteger(target)?target:null;
 
@@ -1465,8 +1634,10 @@ function startSingleSectionPlanner(target=null,presetType=null){
   }
   if(!type)type='AMRAP';
   if($('#singleSectionType'))$('#singleSectionType').value=type;
-  if(singleSectionTarget!==null&&sections[singleSectionTarget]?.fundamentalKey&&$('#singleFundamentalType')){
-    $('#singleFundamentalType').value=sections[singleSectionTarget].fundamentalKey;
+  if(singleSectionTarget!==null&&sections[singleSectionTarget]?.fundamentalKeys?.length){
+    renderSingleFundamentalChoices(sections[singleSectionTarget].fundamentalKeys);
+  }else{
+    renderSingleFundamentalChoices(['squat']);
   }
   updateSingleFundamentalVisibility();
 
@@ -1486,7 +1657,7 @@ function generateSingleSectionFromPlanner(){
   let section=type==='Leg'
     ?buildGameSuggestion(duration,focus,theme)
     :type==='Teknik'&&isJuniorFamilyContext()
-    ?buildFundamentalSection($('#singleFundamentalType')?.value||fundamentalFromFocus(focus),duration)
+    ?buildFundamentalSection(selectedSingleFundamentals(),duration)
     :buildSectionSuggestion(type,duration,focus,theme);
 
   section.minutes=duration;
@@ -1784,46 +1955,146 @@ function inferSectionName(line){
   return found?.[1]||null;
 }
 
+function importedSectionType(line){
+  const text=normalizeText(line);
+  if(text.includes('ledopvarm'))return 'Ledopvarmning';
+  if(text.includes('opvarm'))return 'Opvarmning';
+  if(text.includes('finisher')||text.includes('afslutning'))return 'Finisher';
+  if(text.includes('leg')||text.includes('mission')||text.includes('stafet'))return 'Leg';
+  if(text.includes('ygig')||text.includes('you go'))return 'YGIG';
+  if(text.includes('amrap'))return 'AMRAP';
+  if(text.includes('emom'))return 'EMOM';
+  if(text.includes('chipper'))return 'Chipper';
+  if(text.includes('station'))return 'Stationer';
+  if(text.includes('teknik')||text.includes('fundamental'))return 'Teknik';
+  if(text.includes('styrke'))return 'Styrke';
+  if(text.includes('hiit'))return 'Stationer';
+  if(text.includes('hyrox'))return 'Chipper';
+  if(text.includes('hovedtræning')||text.includes('hoveddel')||text==='workout'||text==='wod')return 'AMRAP';
+  return null;
+}
+function appendImportedField(section,field,text){
+  section[field]=[section[field],text].filter(Boolean).join('\n');
+}
+function importedRunActivity(line){
+  const text=normalizeText(line);
+  const match=text.match(/(\d+(?:[.,]\d+)?)\s*(km|kilometer|m|meter)\s+(løb|løbe|run)/)
+    ||text.match(/(løb|løbe|run)\s+(\d+(?:[.,]\d+)?)\s*(km|kilometer|m|meter)/);
+  if(!match)return null;
+  const amountIndex=/^\d/.test(match[1])?1:2;
+  const unitIndex=amountIndex===1?2:3;
+  let value=parseFloat(match[amountIndex].replace(',','.'));
+  const unit=match[unitIndex];
+  if(unit==='km'||unit==='kilometer')value=Math.round(value*1000);
+  return normalizeActivity({kind:'run',runType:'Almindeligt løb',value:Math.round(value),unit:'meter',intensity:'Moderat',route:'',note:''});
+}
 function parseImportedWorkoutText(text){
   const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
   const proposal=[];
   let current=null;
+  let optionalMode=false;
 
-  const ensureSection=(name='Hovedtræning',minutes=10)=>{
-    if(!current){
-      current={name,minutes,format:'Stationstræning',style:'Funktionel',work:40,rest:20,rounds:1,exercises:[],unmatched:[]};
-      proposal.push(current);
-    }
-    return current;
+  const createSection=(type='AMRAP',name='',minutes=10)=>{
+    const section=defaultSection(type);
+    section.name=name||section.name;
+    section.minutes=minutes||section.minutes||10;
+    section.exercises=[];
+    section.unmatched=[];
+    section.importNotes=[];
+    section.optional=optionalMode;
+    proposal.push(section);
+    current=section;
+    return section;
   };
+  const ensureSection=()=>current||createSection('AMRAP','Hovedtræning',10);
 
-  for(const line of lines){
-    const sectionName=inferSectionName(line);
-    const duration=parseDuration(line);
+  for(const rawLine of lines){
+    const line=rawLine.replace(/^[•●▪◦\-–—]\s*/,'').replace(/^\d+[.)]\s*/,'').trim();
+    const normalized=normalizeText(line);
+    if(!normalized)continue;
 
-    if(sectionName){
-      current={name:sectionName,minutes:duration||10,format:sectionName==='HIIT'?'HIIT-intervaller':sectionName==='Hyrox'?'Hyrox station':sectionName==='Teknik'?'Teknik':'Stationstræning',style:sectionName==='HIIT'||sectionName==='Hyrox'?'HIIT / Hyrox-inspireret':'Funktionel',work:40,rest:20,rounds:1,exercises:[],unmatched:[]};
-      proposal.push(current);
+    if(/^(hvis|ved)\s+(der\s+er\s+)?mere\s+tid|^ekstra|^bonus/.test(normalized)){
+      optionalMode=true;
+      const section=createSection('AMRAP','Hvis der er mere tid',5);
+      section.coachTips='Valgfri ekstrasektion. Bruges kun, hvis tidsplanen holder.';
       continue;
     }
 
-    if(duration && line.split(/\s+/).length<=5){
-      ensureSection().minutes=duration;
+    const sectionType=importedSectionType(line);
+    const duration=parseDuration(line);
+    const headingLike=sectionType&&(
+      line.length<80||
+      /[:\-–—]\s*$/.test(line)||
+      /^(del|blok|sektion|punkt)\s*\d+/i.test(line)
+    );
+
+    if(headingLike){
+      let name=line.replace(/\b\d+\s*(min|minutter)\b/ig,'').replace(/[:\-–—]\s*$/,'').trim();
+      if(!name||name.length>70)name=defaultSection(sectionType).name;
+      current=createSection(sectionType,name,duration||defaultSection(sectionType).minutes);
+      optionalMode=false;
+      continue;
+    }
+
+    const section=ensureSection();
+
+    if(/\baktiv\s+tid\b|\barbejdstid\b/.test(normalized)){
+      if(duration)section.minutes=duration;
+      appendImportedField(section,'importNotes',line);
+      continue;
+    }
+    if(/\bforklaring\b|\bintro\b|\bgennemgang\b/.test(normalized)){
+      appendImportedField(section,'coachTips',line);
+      continue;
+    }
+    if(/^(udstyr|opstilling|materialer)\s*:/.test(normalized)){
+      appendImportedField(section,'coachTips',line);
+      continue;
+    }
+    if(/^(historie|mission|formål|beskrivelse)\s*:/.test(normalized)){
+      appendImportedField(section,'description',line.replace(/^[^:]+:\s*/, ''));
+      continue;
+    }
+    if(/^(regler|sådan foregår|organisering|holdinddeling)\s*:/.test(normalized)){
+      appendImportedField(section,'rules',line.replace(/^[^:]+:\s*/, ''));
+      continue;
+    }
+    if(/^(trænertips|instruktør|note|sikkerhed|præmie|præmier)\s*:/.test(normalized)){
+      appendImportedField(section,'coachTips',line);
+      continue;
+    }
+    if(section.type==='Finisher'&&/^(sang|musik)\s*:/.test(normalized)){
+      const song=line.replace(/^[^:]+:\s*/,'').trim();
+      const parts=song.split(/\s+[–-]\s+/);
+      section.songTitle=parts[0]||song;
+      section.songArtist=parts[1]||'';
+      section.songMinutes=section.minutes||4;
+      section.exercises=[];
+      continue;
+    }
+    if(duration&&line.split(/\s+/).length<=7){
+      section.minutes=duration;
       continue;
     }
 
     const rounds=parseRounds(line);
     if(rounds){
-      ensureSection().rounds=rounds;
+      section.rounds=rounds;
+      section.control='Runder';
+      continue;
+    }
+
+    const run=importedRunActivity(line);
+    if(run){
+      section.exercises.push(run);
       continue;
     }
 
     const prescription=parsePrescription(line);
     const match=matchExercise(prescription.text);
-    const section=ensureSection();
-
     if(match){
-      section.exercises.push({
+      section.exercises.push(normalizeActivity({
+        kind:'exercise',
         exerciseId:match.id,
         juniorKg:'',
         juniorReps:prescription.reps,
@@ -1832,15 +2103,20 @@ function parseImportedWorkoutText(text){
         adultKg:'',
         adultReps:prescription.reps,
         adultNote:''
-      });
-    }else{
-      section.unmatched.push(line);
+      }));
+      continue;
     }
+
+    // Bevar vigtig fritekst i sektionen i stedet for at kassere den.
+    section.unmatched.push(line);
+    if(section.type==='Leg')appendImportedField(section,'rules',line);
+    else appendImportedField(section,'importNotes',line);
   }
 
-  return proposal.filter(s=>s.exercises.length||s.unmatched.length);
+  return proposal
+    .filter(section=>section.exercises.length||section.unmatched.length||section.description||section.rules||section.type==='Finisher')
+    .map(normalizeSection);
 }
-
 function analyzeImportedWorkout(){
   const text=$('#importWorkoutText').value.trim();
   if(!text)return alert('Indsæt, upload eller aflæs først en træningsplan.');
@@ -1854,17 +2130,29 @@ function analyzeImportedWorkout(){
       <strong>${esc(s.name)} · ${s.minutes} min</strong>
       <ul>
         ${s.exercises.map(it=>{const ex=exercises.find(x=>x.id===it.exerciseId);return `<li class="proposal-match">✓ ${esc(ex?.name||'Ukendt')}${it.juniorReps?` · ${esc(it.juniorReps)}`:''}</li>`}).join('')}
-        ${s.unmatched.map(x=>`<li class="proposal-unmatched">⚠ Ikke matchet: ${esc(x)}</li>`).join('')}
+        ${(s.importNotes||[]).map(x=>`<li class="proposal-note">📝 Bevarer som note: ${esc(x)}</li>`).join('')}
+        ${s.unmatched.map(x=>`<li class="proposal-unmatched">⚠ Ikke genkendt som øvelse: ${esc(x)}</li>`).join('')}
       </ul>
+      ${s.description?`<p><strong>Beskrivelse:</strong> ${esc(s.description)}</p>`:''}
+      ${s.rules?`<p><strong>Regler:</strong> ${esc(s.rules)}</p>`:''}
     </div>`).join('')}
     <button id="useImportProposalBtn" type="button">Brug dette forslag</button>`;
 
   $('#useImportProposalBtn').onclick=()=>{
-    sections=proposal.map(({unmatched,...s})=>s);
+    sections=proposal.map(section=>{
+      const copy=structuredClone(section);
+      if(copy.importNotes?.length){
+        copy.coachTips=[copy.coachTips,...copy.importNotes].filter(Boolean).join('\\n');
+      }
+      delete copy.unmatched;
+      delete copy.importNotes;
+      return normalizeSection(copy);
+    });
+    enforceWorkoutStructure();
     renderFramework();
     renderExerciseSections();
     updateReview();
-    $('#importProposal').innerHTML='<strong>Forslaget er indsat i træningen. Du kan nu redigere rammerne og øvelserne.</strong>';
+    $('#importProposal').innerHTML='<strong>Forslaget er indsat. Gennemgå især ikke-genkendte linjer, tider og organisering.</strong>';
     showStep(1);
   };
 }
@@ -1872,6 +2160,7 @@ function analyzeImportedWorkout(){
 function clearImportedWorkout(){
   $('#workoutImageInput').value='';
   $('#workoutTextFileInput').value='';
+  $('#workoutCameraInput').value='';
   $('#importWorkoutText').value='';
   $('#importImagePreview').src='';
   $('#importImagePreview').classList.add('hidden');
