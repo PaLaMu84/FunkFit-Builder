@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.10</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a10">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a10">
+  <title>FunkFit Builder v0.7.4-alpha.11</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a11">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a11">
 </head>
 <body>
 <header class="topbar">
   <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
-    <p class="eyebrow">VERSION 0.7.4-ALPHA.10</p>
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.11</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </button>
@@ -36,7 +36,17 @@
       <div><p class="eyebrow">TRIN 1</p><h2>Overordnede rammer</h2></div>
     </div>
 
-
+    <section class="workout-identity-card">
+      <div>
+        <p class="eyebrow">TRÆNINGEN</p>
+        <h3>Navn og dato</h3>
+        <p>Gælder både AI-forslag og træninger, du bygger selv.</p>
+      </div>
+      <div class="workout-identity-fields">
+        <label>Træningens navn<input id="workoutName" value="Ny FunkFit Junior-træning" placeholder="Fx FunkFit Junior – agentmission"></label>
+        <label>Dato<input id="workoutDate" type="date"></label>
+      </div>
+    </section>
 
     <section class="creation-mode">
       <div class="creation-mode-intro">
@@ -84,6 +94,46 @@
         </div>
       </div>
     </section>
+
+    <section id="singleSectionConfig" class="planner-block single-section-config hidden">
+      <div class="planner-number section-symbol">🧩</div>
+      <div class="planner-content">
+        <h3>Hvilken sektion skal AI bygge?</h3>
+        <div class="planner-fields">
+          <label>Sektionstype
+            <select id="singleSectionType">
+              <option>Opvarmning</option>
+              <option selected>AMRAP</option>
+              <option>EMOM</option>
+              <option>YGIG</option>
+              <option>Chipper</option>
+              <option>Stationer</option>
+              <option>Teknik</option>
+              <option>Styrke</option>
+              <option>Leg</option>
+              <option>Finisher</option>
+            </select>
+            <span>Ledopvarmning bygges som del af en hel træning. Finisher kan tilføjes separat.</span>
+          </label>
+          <div id="singleFinisherWrap" class="single-finisher-wrap hidden">
+            <strong>Finisher – én sang</strong>
+            <div class="planner-fields">
+              <label>Sangtitel<input id="singleFinisherTitle" placeholder="Fx sangens titel"></label>
+              <label>Kunstner<input id="singleFinisherArtist" placeholder="Fx kunstner"></label>
+              <label>Længde (min)<input id="singleFinisherMinutes" type="number" min="1" max="12" step=".1" value="4"></label>
+              <label>Link<input id="singleFinisherUrl" type="url" placeholder="TIDAL, Spotify eller YouTube"></label>
+            </div>
+          </div>
+          <div id="singleFundamentalWrap" class="single-fundamental-wrap hidden">
+            <strong>FunkFit Fundamentals</strong>
+            <small>Vælg én eller flere grundbevægelser til Teknik-sektionen.</small>
+            <div id="singleFundamentalChoices" class="single-fundamental-choices"></div>
+          </div>
+        </div>
+        <p class="planner-hint">AI bygger kun denne ene sektion. Resten af din træning bliver stående urørt.</p>
+      </div>
+    </section>
+
 
     <section class="planner-block">
       <div class="planner-number">2</div>
@@ -161,34 +211,6 @@
     </section>
 
 
-    <section id="singleSectionConfig" class="planner-block single-section-config hidden">
-      <div class="planner-number section-symbol">🧩</div>
-      <div class="planner-content">
-        <h3>Hvilken sektion skal AI bygge?</h3>
-        <div class="planner-fields">
-          <label>Sektionstype
-            <select id="singleSectionType">
-              <option>Opvarmning</option>
-              <option selected>AMRAP</option>
-              <option>EMOM</option>
-              <option>YGIG</option>
-              <option>Chipper</option>
-              <option>Stationer</option>
-              <option>Teknik</option>
-              <option>Styrke</option>
-              <option>Leg</option>
-            </select>
-            <span>Ledopvarmning og finisher er ikke valgmuligheder her</span>
-          </label>
-          <div id="singleFundamentalWrap" class="single-fundamental-wrap hidden">
-            <strong>FunkFit Fundamentals</strong>
-            <small>Vælg én eller flere grundbevægelser til Teknik-sektionen.</small>
-            <div id="singleFundamentalChoices" class="single-fundamental-choices"></div>
-          </div>
-        </div>
-        <p class="planner-hint">AI bygger kun denne ene sektion. Resten af din træning bliver stående urørt.</p>
-      </div>
-    </section>
 
     <section id="plannerStructureBlock" class="planner-block">
       <div class="planner-number">7</div>
@@ -220,30 +242,42 @@
 
     <section class="manual-setup-card">
       <div class="section-heading compact">
-        <div><p class="eyebrow">RAMMER</p><h3>Start med træningens grundoplysninger</h3></div>
+        <div><p class="eyebrow">RAMMER</p><h3>Byg selv – samme tre første valg som i AI</h3><p>Vælg træningsspor først, derefter sted og deltagere.</p></div>
       </div>
-      <div class="meta-grid manual-meta-grid">
-        <label>Træningens navn<input id="workoutName" value="FunkFit Junior – dagens træning"></label>
-        <label>Dato<input id="workoutDate" type="date"></label>
-        <label>Træningsspor
-          <select id="manualTrainingType">
-            <option value="junior">FunkFit Junior</option>
-            <option value="family">Familietræning</option>
-            <option value="adult">Funktionel voksen</option>
-            <option value="trx">TRX</option>
-            <option value="hyrox">Hyrox</option>
-            <option value="hiit">HIIT</option>
+      <div class="manual-steps-grid">
+        <section class="manual-step-card">
+          <span class="manual-step-number">1</span>
+          <div><h4>Træningsspor</h4><p>Hvem træner?</p></div>
+          <div id="manualConceptChoices" class="manual-choice-grid">
+            <button type="button" class="manual-choice selected" data-manual-concept="junior">🟠 Junior</button>
+            <button type="button" class="manual-choice" data-manual-concept="family">🔵 Familie</button>
+            <button type="button" class="manual-choice" data-manual-concept="adult">🟢 Voksen</button>
+            <button type="button" class="manual-choice" data-manual-concept="trx">🟡 TRX</button>
+            <button type="button" class="manual-choice" data-manual-concept="hyrox">🔴 Hyrox</button>
+            <button type="button" class="manual-choice" data-manual-concept="hiit">🟣 HIIT</button>
+          </div>
+          <select id="manualTrainingType" class="visually-hidden" aria-label="Træningsspor">
+            <option value="junior">FunkFit Junior</option><option value="family">Familietræning</option><option value="adult">Funktionel voksen</option><option value="trx">TRX</option><option value="hyrox">Hyrox</option><option value="hiit">HIIT</option>
           </select>
-        </label>
-        <label>Sted
-          <select id="manualVenue">
-            <option value="indoor">Inde – gymnastiksal</option>
-            <option value="outdoor">Ude – container/udeområde</option>
-          </select>
-        </label>
-        <label>Deltagere<input id="participantCount" type="number" min="1" value="20"></label>
-        <label class="toggle-card" id="manualFamilyCard"><span><strong>Familiedeltagelse</strong><small>Junior og voksne træner sammen.</small></span><input id="familyMode" type="checkbox"></label>
-        <label id="adultCountLabel" class="hidden">Heraf voksne<input id="adultCount" type="number" min="0" value="10"></label>
+        </section>
+        <section class="manual-step-card">
+          <span class="manual-step-number">2</span>
+          <div><h4>Sted</h4><p>Hvor træner I?</p></div>
+          <div id="manualVenueChoices" class="manual-choice-grid two">
+            <button type="button" class="manual-choice selected" data-manual-venue="indoor">🏠 Gymnastiksal</button>
+            <button type="button" class="manual-choice" data-manual-venue="outdoor">🌳 Container/ude</button>
+          </div>
+          <select id="manualVenue" class="visually-hidden" aria-label="Sted"><option value="indoor">Inde</option><option value="outdoor">Ude</option></select>
+        </section>
+        <section class="manual-step-card">
+          <span class="manual-step-number">3</span>
+          <div><h4>Deltagere</h4><p>Hvor mange skal planen fungere for?</p></div>
+          <div class="manual-participant-fields">
+            <label>Deltagere<input id="participantCount" type="number" min="1" value="20"></label>
+            <label class="toggle-card" id="manualFamilyCard"><span><strong>Familiedeltagelse</strong><small>Junior og voksne træner sammen.</small></span><input id="familyMode" type="checkbox"></label>
+            <label id="adultCountLabel" class="hidden">Heraf voksne<input id="adultCount" type="number" min="0" value="10"></label>
+          </div>
+        </section>
       </div>
     </section>
 
@@ -329,6 +363,7 @@ Hovedtræning 20 min
       <div class="actions">
         <button id="aiBuildSectionBtn" type="button">Byg en sektion</button>
         <button id="aiBuildGameBtn" type="button" class="secondary">🎲 Byg en leg</button>
+        <button id="addFinisherBtn" type="button" class="ghost">🎵 Tilføj finisher</button>
       </div>
     </div>
 
@@ -511,7 +546,8 @@ Hovedtræning 20 min
   <form id="aiSectionForm">
     <p class="eyebrow">AI-HJÆLP · ALPHA</p>
     <h2 id="aiSectionDialogTitle">Byg en sektion</h2>
-    <p>Forslaget tager højde for træningstype, udstyr, de andre sektioner og nyligt brugte øvelser.</p>
+    <p>Forslaget laves her i Finpuds og bruger træningens eksisterende rammer.</p>
+    <div id="aiSectionContext" class="ai-section-context"></div>
     <div class="form-grid">
       <label>Element
         <select id="aiSectionType">
@@ -523,11 +559,23 @@ Hovedtræning 20 min
           <option>Teknik</option>
           <option>Styrke</option>
           <option>Leg</option>
+          <option>Finisher</option>
         </select>
       </label>
       <label>Varighed<input id="aiSectionMinutes" type="number" min="3" max="40" value="12"></label>
       <label class="span-2">Fokus eller ønske<input id="aiSectionFocus" placeholder="Fx ben, høj puls, samarbejde eller brug en kettlebell"></label>
       <label class="span-2">Tema til legen (valgfrit)<input id="aiGameTheme" placeholder="Fx agenter, pirater eller OL"></label>
+      <div id="inlineFundamentalWrap" class="span-2 single-fundamental-wrap hidden">
+        <strong>FunkFit Fundamentals</strong><small>Vælg én eller flere.</small><div id="inlineFundamentalChoices" class="single-fundamental-choices"></div>
+      </div>
+      <div id="inlineFinisherWrap" class="span-2 single-finisher-wrap hidden">
+        <strong>Finisher – én sang</strong>
+        <div class="form-grid">
+          <label>Sangtitel<input id="inlineFinisherTitle"></label><label>Kunstner<input id="inlineFinisherArtist"></label>
+          <label>Længde (min)<input id="inlineFinisherMinutes" type="number" min="1" max="12" step=".1" value="4"></label>
+          <label>Link<input id="inlineFinisherUrl" type="url"></label>
+        </div>
+      </div>
     </div>
     <button type="submit">✨ Lav forslag</button>
   </form>
@@ -561,7 +609,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.10 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a10"></script>
+<footer>FunkFit Builder v0.7.4-alpha.11 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a11"></script>
 </body>
 </html>
