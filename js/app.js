@@ -80,6 +80,15 @@ const FUNKFIT_FUNDAMENTALS={
   }
 };
 
+const read=(key,fallback)=>{
+  try{
+    const raw=localStorage.getItem(key);
+    return raw===null?fallback:JSON.parse(raw);
+  }catch(error){
+    console.warn(`Kunne ikke læse lokal data for ${key}`,error);
+    return fallback;
+  }
+};
 const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a',EQKEY='funkfit-equipment-profiles-v074a';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
 let plannerConcept='junior',plannerVenue='indoor';
@@ -137,7 +146,6 @@ let creationMode='choice',structureChoice='auto',singleSectionTarget=null,active
 
 
 
-const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(f))}catch{return f}};
 const saveWorkouts=x=>localStorage.setItem(WKEY,JSON.stringify(x));
 const workouts=()=>read(WKEY,[]);
 const customs=()=>read(CKEY,[]);
