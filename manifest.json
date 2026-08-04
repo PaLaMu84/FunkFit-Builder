@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.7.4-alpha.11",
-  "short_name": "FunkFit 0.7.4a11",
+  "name": "FunkFit Builder v0.7.4-alpha.12",
+  "short_name": "FunkFit 0.7.4a12",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "Afsluttende planrettelser: inline AI, Finisher, import, vægte og forenklet Builder"
+  "description": "Ny korrekt organisering af formål, format, struktur, reps, organisering og styring"
 }

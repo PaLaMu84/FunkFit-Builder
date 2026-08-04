@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.11</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a11">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a11">
+  <title>FunkFit Builder v0.7.4-alpha.12</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a12">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a12">
 </head>
 <body>
 <header class="topbar">
   <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
-    <p class="eyebrow">VERSION 0.7.4-ALPHA.11</p>
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.12</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </button>
@@ -21,6 +21,7 @@
   <button class="nav-tab active" data-view="designView">Design træning</button>
   <button class="nav-tab" data-view="savedView">Gemte træninger</button>
   <button class="nav-tab" data-view="libraryView">Mit bibliotek</button>
+  <button class="nav-tab" data-view="docsView">Manual og ordbog</button>
 </nav>
 
 <main>
@@ -345,9 +346,6 @@ Hovedtræning 20 min
       </div>
     </details>
 
-    <div class="step-actions">
-      <button data-next-step="2">Gå til editor →</button>
-    </div>
   </section>
 
   <section id="step2" class="step-panel panel">
@@ -445,6 +443,31 @@ Hovedtræning 20 min
     <div id="elementLibrary" class="saved-grid"></div>
   </section>
 </section>
+
+<section id="docsView" class="app-view">
+  <section class="panel docs-panel">
+    <div class="section-heading">
+      <div><p class="eyebrow">MANUAL OG ORDBOG</p><h2>Sådan beskriver FunkFit Builder en sektion</h2><p>Den tekniske model er opdelt korrekt bagved, mens sektionen vises som en enkel opsummering i Finpuds.</p></div>
+    </div>
+    <div class="docs-model-grid">
+      <article><span>1</span><h3>Formål</h3><p>Hvorfor sektionen findes: fx opvarmning, teknik, hovedelement, leg eller finisher.</p></article>
+      <article><span>2</span><h3>Arbejdsformat</h3><p>Hvordan arbejdet forløber: fx AMRAP, EMOM, intervaller, fast antal runder eller For time.</p></article>
+      <article><span>3</span><h3>Opgavestruktur</h3><p>Hvordan opgaverne er bygget: fx rundebaseret, Chipper, stationer eller opgave pr. tidsblok.</p></article>
+      <article><span>4</span><h3>Repetitionsmodel</h3><p>Hvordan mængden udvikler sig: faste reps, stigende/faldende ladder, pyramide, tid eller distance.</p></article>
+      <article><span>5</span><h3>Organisering</h3><p>Hvordan deltagerne arbejder: individuelt, makker, YGIG, hold, stafet eller rotation.</p></article>
+      <article><span>6</span><h3>Styring</h3><p>Hvad der bestemmer afslutningen: samlet tid, tidsblokke, intervaller, runder, time cap, sæt eller kvalitet.</p></article>
+    </div>
+    <div class="docs-rules">
+      <h3>Vigtige regler</h3>
+      <p><strong>AMRAP:</strong> Fast samlet tid og en gentagelig runde. Øvelser har reps, tid eller distance – ikke “3 sæt”.</p>
+      <p><strong>EMOM:</strong> En opgave pr. minut/tidsblok. Sæt pr. øvelse bruges ikke.</p>
+      <p><strong>Chipper:</strong> En opgaveliste gennemføres én gang. Chipper er opgavestrukturen; formatet er normalt For time.</p>
+      <p><strong>Ladder:</strong> Repetitionsmodellen stiger eller falder. Ladder er ikke i sig selv et arbejdsformat.</p>
+      <p><strong>YGIG:</strong> En organisering, hvor makkere skifter efter den aftalte opgave. Det er ikke automatisk et 40/20-interval.</p>
+      <p><strong>Stationer:</strong> Opgavestrukturen er stationer, organiseringen er rotation, og arbejdsformatet er ofte intervaller.</p>
+    </div>
+  </section>
+</section>
 </main>
 
 <dialog id="addSectionDialog" class="builder-dialog add-section-dialog">
@@ -452,7 +475,7 @@ Hovedtræning 20 min
   <form id="addSectionForm">
     <p class="eyebrow">NY SEKTION</p>
     <h2>Hvad vil du tilføje?</h2>
-    <p>Vælg sektionstype. Du kan ændre navn, format og organisering bagefter.</p>
+    <p>Vælg sektionens formål. Arbejdsformat, opgavestruktur og organisering kan redigeres bagefter.</p>
     <div id="addSectionTypeGrid" class="section-type-grid"></div>
     <label>Sektionens navn
       <input id="addSectionName" placeholder="Navnet udfyldes automatisk">
@@ -609,7 +632,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.11 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a11"></script>
+<footer>FunkFit Builder v0.7.4-alpha.12 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a12"></script>
 </body>
 </html>
