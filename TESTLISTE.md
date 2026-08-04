@@ -1,12 +1,16 @@
-# Gentest – v0.7.4-alpha.12
+# Gentest – v0.7.4-alpha.13
 
-1. Kontrollér at “Gå til editor” ikke findes på Planlæg-siden.
-2. Åbn Finpuds på mobil og tryk ⋮. Menuen skal ligge som læsbar bundmenu inden for skærmen.
-3. Åbn Gemte træninger og kontrollér label for Junior/Familie/Voksen/TRX/HIIT/Hyrox.
-4. Opret AMRAP: styring skal være Samlet tid, opgavestruktur Rundebaseret, og voksenfelter må ikke vise Sæt.
-5. Opret EMOM: opgavestruktur skal være Opgave pr. tidsblok, styring Tidsblokke, ingen Sæt.
-6. Vælg Chipper: format skal automatisk blive For time, styring Time cap og én gennemgang.
-7. Vælg Stigende ladder: felter for start-reps, ændring pr. trin og slut/top skal vises.
-8. Vælg YGIG: organisering skal være You go, I go, samlet tid og skift efter opgaven.
-9. Vælg Stationer: format skal være Intervaller, organisering rotation og arbejde/pause/runder vises.
-10. Åbn Manual og ordbog fra navigationen.
+1. Åbn Finpuds og kontrollér, at alle sektioners øvelser er foldet ud.
+2. Kontrollér, at fremdriftslinjen ligger over sektionsoverskriften.
+3. Kontrollér, at øvelseslisten ligger direkte under overskriften.
+4. Kontrollér, at sektionens beskrivelse ikke vises.
+5. Kontrollér Regler- og Trænertips-boksene.
+6. Åbn ⋮-menuen på computer og mobil og gennemgå alle menupunkter.
+7. Kontrollér, at der ikke står AI-, regenerér- eller foreslå-knapper andre steder i sektionen.
+8. Vælg “Redigér struktur”, skift format/organisering og gem.
+9. Vælg “Redigér regler og trænertips”, ret begge felter og gem.
+10. Vælg “Lav et helt nyt forslag” og kontrollér bekræftelsen.
+11. Vælg “Slet sektion” og kontrollér bekræftelsen.
+12. Duplikér en sektion og kontrollér navn og placering.
+13. Kontrollér “Gem sektion i Mit bibliotek” nederst til højre.
+14. Gennemgå AI-valgkortene på bred skærm og mobil.

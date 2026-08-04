@@ -145,7 +145,7 @@ const PROGRAMMING_PROFILES={
   hyrox:{label:'Hyrox',supportsTheme:false,defaultStructure:['Ledopvarmning','Opvarmning','Teknik','Hyrox blok','Hyrox blok','Finisher']},
   hiit:{label:'HIIT',supportsTheme:false,defaultStructure:['Ledopvarmning','Opvarmning','HIIT blok','HIIT blok','Finisher']}
 };
-let creationMode='choice',structureChoice='auto',singleSectionTarget=null,activeRunPlan=null,clearUndoInterval=null,addSectionType='Hovedelement';
+let creationMode='choice',structureChoice='auto',singleSectionTarget=null,activeRunPlan=null,clearUndoInterval=null,addSectionType='Hovedelement',sectionEditIndex=null,sectionEditMode='structure',sectionEditDraft=null;
 
 
 
@@ -607,6 +607,9 @@ function collapseAllSections(){
   collapsedSections.clear();
   sections.forEach((_,index)=>collapsedSections.add(index));
 }
+function expandAllSections(){
+  collapsedSections.clear();
+}
 function toggleSectionCollapse(index){
   collapsedSections.has(index)?collapsedSections.delete(index):collapsedSections.add(index);
   renderFramework();renderExerciseSections();
@@ -790,6 +793,86 @@ function structureEditorFields(s,index,prefix='section'){
     <label>Styring<select ${dataIndex} ${dataField('control')}>${optionTags(validControlsForFormat(s.format),s.control)}</select></label>`;
 }
 
+function closeSectionMenuFrom(element){
+  element?.closest('.section-card-menu')?.removeAttribute('open');
+}
+function renderSectionEditStructure(){
+  if(!sectionEditDraft)return;
+  const s=applySectionRules(sectionEditDraft);
+  const host=$('#sectionEditStructureFields');
+  host.innerHTML=`
+    <label>Formål<select data-section-dialog-field="sectionPurpose">${optionTags(SECTION_PURPOSES,s.sectionPurpose)}</select></label>
+    <label>Arbejdsformat<select data-section-dialog-field="format">${optionTags(validFormatsForPurpose(s.sectionPurpose),s.format)}</select></label>
+    <label>Opgavestruktur<select data-section-dialog-field="taskStructure">${optionTags(validTaskStructuresForFormat(s.format,s.sectionPurpose),s.taskStructure)}</select></label>
+    <label>Repetitionsmodel<select data-section-dialog-field="repetitionModel">${optionTags(validRepetitionModelsForFormat(s.format),s.repetitionModel)}</select></label>
+    <label>Organisering<select data-section-dialog-field="organization">${optionTags(validOrganizationsForTask(s.taskStructure,s.sectionPurpose),s.organization)}</select></label>
+    <label>Styring<select data-section-dialog-field="control">${optionTags(validControlsForFormat(s.format),s.control)}</select></label>`;
+  host.querySelectorAll('[data-section-dialog-field]').forEach(select=>select.onchange=()=>{
+    const field=select.dataset.sectionDialogField;
+    sectionEditDraft[field]=select.value;
+    if(field==='sectionPurpose'){
+      const fresh=defaultSection(select.value);
+      sectionEditDraft={...sectionEditDraft,type:fresh.type,sectionPurpose:fresh.sectionPurpose,format:fresh.format,taskStructure:fresh.taskStructure,repetitionModel:fresh.repetitionModel,organization:fresh.organization,control:fresh.control,style:fresh.style};
+    }
+    applySectionRules(sectionEditDraft);
+    renderSectionEditStructure();
+  });
+}
+function openSectionEditDialog(index,mode='structure'){
+  sectionEditIndex=index;
+  sectionEditMode=mode;
+  sectionEditDraft=structuredClone(normalizeSection(sections[index]));
+  const structure=mode==='structure';
+  $('#sectionEditTitle').textContent=structure?'Redigér struktur':'Redigér regler og trænertips';
+  $('#sectionEditHelp').textContent=structure
+    ?'Tilpas formål, arbejdsformat, opgavestruktur, repetitionsmodel, organisering og styring.'
+    :'Ret de instruktioner, som vises i sektionen og bruges i instruktørmaterialet.';
+  $('#sectionEditStructureFields').classList.toggle('hidden',!structure);
+  $('#sectionEditGuidanceFields').classList.toggle('hidden',structure);
+  if(structure)renderSectionEditStructure();
+  else{
+    $('#sectionEditRules').value=sectionEditDraft.rules||'';
+    $('#sectionEditCoachTips').value=sectionEditDraft.coachTips||'';
+  }
+  $('#sectionEditDialog').showModal();
+}
+function submitSectionEdit(event){
+  event.preventDefault();
+  if(sectionEditIndex===null||!sections[sectionEditIndex])return;
+  if(sectionEditMode==='structure'){
+    const original=normalizeSection(sections[sectionEditIndex]);
+    sections[sectionEditIndex]=normalizeSection({...original,
+      type:sectionEditDraft.type,
+      sectionPurpose:sectionEditDraft.sectionPurpose,
+      format:sectionEditDraft.format,
+      taskStructure:sectionEditDraft.taskStructure,
+      repetitionModel:sectionEditDraft.repetitionModel,
+      organization:sectionEditDraft.organization,
+      control:sectionEditDraft.control,
+      style:sectionEditDraft.style
+    });
+    enforceWorkoutStructure();
+  }else{
+    sections[sectionEditIndex].rules=$('#sectionEditRules').value.trim();
+    sections[sectionEditIndex].coachTips=$('#sectionEditCoachTips').value.trim();
+  }
+  $('#sectionEditDialog').close();
+  renderFramework();renderExerciseSections();updateReview();
+}
+function regenerateSectionWithConfirm(index){
+  const name=sections[index]?.name||'sektionen';
+  if(!confirm(`Lav et helt nyt forslag til “${name}”? De nuværende aktiviteter og AI-indhold i sektionen bliver erstattet.`))return;
+  regenerateSection(index);
+}
+function deleteSectionWithConfirm(index){
+  if(sections.length<=1)return alert('Træningen skal indeholde mindst én sektion.');
+  const name=sections[index]?.name||'sektionen';
+  if(!confirm(`Vil du slette “${name}”?`))return;
+  sections.splice(index,1);
+  collapsedSections.clear();
+  renderFramework();renderExerciseSections();updateReview();
+}
+
 function bind(){
   document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>showView(b.dataset.view));
   document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>goToStep(+b.dataset.step));
@@ -797,6 +880,7 @@ function bind(){
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).close());
   on('homeBrandBtn','click',()=>{showView('designView');setCreationMode('choice');showStep(1)});
   if($('#addSectionForm'))$('#addSectionForm').onsubmit=submitAddSection;
+  if($('#sectionEditForm'))$('#sectionEditForm').onsubmit=submitSectionEdit;
   if($('#manualTrainingType'))$('#manualTrainingType').onchange=syncManualSetup;
   if($('#manualVenue'))$('#manualVenue').onchange=syncManualSetup;
   document.querySelectorAll('[data-manual-concept]').forEach(button=>button.onclick=()=>{
@@ -942,7 +1026,7 @@ function setCreationMode(mode){
 function selectedTrainingType(){return plannerConcept||'junior'}
 
 function verifyInteractiveControls(){
-  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue','resetEquipmentProfileBtn','singleFundamentalChoices','adultExerciseOptions','addFinisherBtn','homeBrandBtn','aiSectionContext','inlineFundamentalChoices','inlineFinisherWrap'];
+  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue','resetEquipmentProfileBtn','singleFundamentalChoices','adultExerciseOptions','addFinisherBtn','homeBrandBtn','aiSectionContext','inlineFundamentalChoices','inlineFinisherWrap','sectionEditDialog','sectionEditForm','sectionEditStructureFields','sectionEditGuidanceFields'];
   const missing=required.filter(id=>!byId(id));
   if(missing.length)console.error('Manglende interaktive elementer:',missing);
   else console.info('FunkFit interaktive kontroller: OK');
@@ -955,7 +1039,7 @@ function showStep(n){
   document.querySelectorAll('.step-panel').forEach((p,i)=>p.classList.toggle('active',i===n-1));
   document.querySelectorAll('.step').forEach(b=>b.classList.toggle('active',+b.dataset.step===n));
   if(n===2){
-    collapseAllSections();
+    expandAllSections();
     renderExerciseSections();
   }
   if(n===3)updateReview();
@@ -1172,8 +1256,11 @@ function renderExerciseSections(){
     normalizeSection(s);
     const v=sectionVisual(s),collapsed=collapsedSections.has(si),count=sectionActivityCount(s);
     const progress=Math.round(((si+1)/sections.length)*100);
-    const finisher=s.type==='Finisher';
+    const finisher=s.sectionPurpose==='Finisher';
+    const canMoveUp=si>0&&s.sectionPurpose!=='Ledopvarmning';
+    const canMoveDown=si<sections.length-1&&s.sectionPurpose!=='Finisher';
     return `<article class="exercise-section ${collapsed?'collapsed':''}" style="--section-color:${v.color}">
+      <div class="section-progress section-progress-top"><span>${esc(s.sectionPurpose||v.label)}</span><div class="section-progress-bar"><span style="width:${progress}%"></span></div><span>${progress}%</span></div>
       <div class="section-card-header">
         <div class="section-title-group">
           <div class="section-icon">${finisher?'🎵':v.icon}</div>
@@ -1182,85 +1269,71 @@ function renderExerciseSections(){
             <small>Sektion ${si+1} af ${sections.length} · ${esc(s.sectionPurpose)}</small>
             <div class="inline-section-controls simple-inline-controls">
               ${inlineTimingControls(s,si)}
-              ${!finisher?`<button class="ghost" data-open-activities="${si}">${count} aktiviteter</button>`:''}
-              ${!finisher?`<span class="inline-structure-summary">${esc(sectionSummaryText(s))}</span><details class="inline-advanced-controls"><summary>Rediger struktur</summary><div>${inlineStructureEditor(s,si)}</div></details>`:''}
+              ${!finisher?`<span class="section-stat">${count} aktiviteter</span>`:''}
+              ${!finisher?`<span class="inline-structure-summary">${esc(sectionSummaryText(s))}</span>`:''}
             </div>
           </div>
         </div>
         <div class="section-card-actions">
-          <button class="collapse-btn" data-collapse-exercise="${si}">${collapsed?'Fold ud':'Fold sammen'}</button>
-          <details class="section-card-menu"><summary>⋮</summary><div class="section-menu-popover">
-            ${!finisher?`<button data-ai-exercise-section="${si}">✨ AI-forslag til sektionen</button><button data-suggest-one="${si}">+ Foreslå én øvelse</button>`:''}
-            <button data-move-up="${si}">↑ Flyt op</button>
-            <button data-move-down="${si}">↓ Flyt ned</button>
-            <button data-duplicate="${si}">⧉ Duplikér</button>
-            <button data-del-section="${si}">Slet sektion</button>
+          <button class="collapse-btn" data-collapse-exercise="${si}">${collapsed?'Fold ud':'Fold ind'}</button>
+          <details class="section-card-menu"><summary aria-label="Flere handlinger">⋮</summary><div class="section-menu-popover">
+            ${!finisher?`<button data-edit-structure="${si}">Redigér struktur</button>`:''}
+            <button data-edit-guidance="${si}">Redigér regler og trænertips</button>
+            <div class="section-menu-divider"></div>
+            <button data-ai-exercise-section="${si}">✨ Tilpas sektionen med AI</button>
+            <button data-regenerate-section="${si}">Lav et helt nyt forslag</button>
+            ${!finisher?`<button data-suggest-one="${si}">Foreslå én øvelse</button>`:''}
+            <div class="section-menu-divider"></div>
+            <button data-move-up="${si}" ${canMoveUp?'':'disabled'}>Flyt op</button>
+            <button data-move-down="${si}" ${canMoveDown?'':'disabled'}>Flyt ned</button>
+            <button data-duplicate="${si}">Duplikér</button>
+            <div class="section-menu-divider"></div>
+            <button class="menu-danger" data-delete-section="${si}">Slet sektion</button>
           </div></details>
         </div>
       </div>
-      <div class="section-progress"><span>${esc(s.sectionPurpose||v.label)}</span><div class="section-progress-bar"><span style="width:${progress}%"></span></div><span>${progress}%</span></div>
-      ${finisher?`<div class="finisher-song-summary finisher-inline-editor">
+      <div class="section-expanded-content">
+        ${finisher?`<div class="finisher-song-summary finisher-inline-editor">
           <h4>🎵 Finisher = én sang</h4>
           <p>Vælg sangen direkte her.</p>
           <div class="finisher-inline-grid">
-            <label>Sangtitel *
-              <input data-finisher-field="songTitle" data-finisher-index="${si}" value="${esc(s.songTitle||'')}" placeholder="Fx Uptown Funk">
-            </label>
-            <label>Kunstner
-              <input data-finisher-field="songArtist" data-finisher-index="${si}" value="${esc(s.songArtist||'')}" placeholder="Fx Mark Ronson feat. Bruno Mars">
-            </label>
-            <label>Længde (min)
-              <input data-finisher-field="songMinutes" data-finisher-index="${si}" type="number" min="1" max="12" step=".1" value="${s.songMinutes||4}">
-            </label>
-            <label class="span-2">Link til sang
-              <div class="song-link-field"><input data-finisher-field="songUrl" data-finisher-index="${si}" type="url" value="${esc(s.songUrl||'')}" placeholder="https://..."><button type="button" class="secondary" data-open-finisher-url="${si}">Åbn link</button></div>
-            </label>
+            <label>Sangtitel *<input data-finisher-field="songTitle" data-finisher-index="${si}" value="${esc(s.songTitle||'')}" placeholder="Fx Uptown Funk"></label>
+            <label>Kunstner<input data-finisher-field="songArtist" data-finisher-index="${si}" value="${esc(s.songArtist||'')}" placeholder="Fx Mark Ronson feat. Bruno Mars"></label>
+            <label>Længde (min)<input data-finisher-field="songMinutes" data-finisher-index="${si}" type="number" min="1" max="12" step=".1" value="${s.songMinutes||4}"></label>
+            <label class="span-2">Link til sang<div class="song-link-field"><input data-finisher-field="songUrl" data-finisher-index="${si}" type="url" value="${esc(s.songUrl||'')}" placeholder="https://..."><button type="button" class="secondary" data-open-finisher-url="${si}">Åbn link</button></div></label>
           </div>
-        </div>`:
-        `${(s.description||s.rules||s.coachTips)?`<div class="element-summary">${s.description?`<p><strong>Beskrivelse:</strong> ${esc(s.description)}</p>`:''}${s.rules?`<p><strong>Regler:</strong> ${esc(s.rules)}</p>`:''}${s.coachTips?`<p><strong>Trænertips:</strong> ${esc(s.coachTips)}</p>`:''}</div>`:''}
-        <div class="element-actions">
-          <button data-edit-element="${si}">Redigér beskrivelse og regler</button>
-          <button data-ai-exercise-section="${si}">✨ AI-forslag til sektion</button>
-          <button class="secondary" data-regenerate-exercise="${si}">🔄 Regenerér</button>
-          <button class="secondary" data-save-exercise-element="${si}">Gem i Mit bibliotek</button>
-        </div>
-        ${s.type==='Teknik'?renderFundamentalsPicker(s,si,true):''}
-        <div class="exercise-list">${s.exercises?.length?s.exercises.map((it,ai)=>activityRow(it,si,ai,fam)).join(''):'<div class="empty">Ingen aktiviteter endnu.</div>'}</div>
-        <div class="section-add-row">
-          <button data-add-ex="${si}">+ Tilføj øvelse</button>
-          <button class="secondary" data-add-run="${si}">🏃 Tilføj løb</button>
-          <button class="ghost" data-suggest-one="${si}">✨ Foreslå én øvelse</button>
-        </div>`}
+        </div>`:`
+          <div class="exercise-list exercise-list-primary">${s.exercises?.length?s.exercises.map((it,ai)=>activityRow(it,si,ai,fam)).join(''):'<div class="empty">Ingen aktiviteter endnu.</div>'}</div>
+          ${s.sectionPurpose==='Teknik'?renderFundamentalsPicker(s,si,true):''}
+          ${s.rules?`<section class="section-guidance-card rules-card"><div class="guidance-icon">📋</div><div><h4>Regler</h4><p>${esc(s.rules)}</p></div></section>`:''}
+          ${s.coachTips?`<section class="section-guidance-card coach-card"><div class="guidance-icon">💡</div><div><h4>Trænertips</h4><p>${esc(s.coachTips)}</p></div></section>`:''}
+          <div class="section-add-row">
+            <button data-add-ex="${si}">+ Tilføj øvelse</button>
+            <button class="secondary" data-add-run="${si}">🏃 Tilføj løb</button>
+          </div>`}
+        <div class="section-library-row"><button class="secondary" data-save-exercise-element="${si}">Gem sektion i Mit bibliotek</button></div>
+      </div>
     </article>`;
   }).join('');
 
   const host=$('#exerciseSections');
   host.querySelectorAll('[data-fundamental-section]').forEach(b=>b.onclick=()=>applyFundamentalToSection(+b.dataset.fundamentalSection,b.dataset.fundamentalKey));
   host.querySelectorAll('[data-collapse-exercise]').forEach(b=>b.onclick=()=>toggleSectionCollapse(+b.dataset.collapseExercise));
+  host.querySelectorAll('[data-edit-structure]').forEach(b=>b.onclick=()=>{closeSectionMenuFrom(b);openSectionEditDialog(+b.dataset.editStructure,'structure')});
+  host.querySelectorAll('[data-edit-guidance]').forEach(b=>b.onclick=()=>{closeSectionMenuFrom(b);openSectionEditDialog(+b.dataset.editGuidance,'guidance')});
   host.querySelectorAll('[data-move-up]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveUp,+b.dataset.moveUp-1));
   host.querySelectorAll('[data-move-down]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveDown,+b.dataset.moveDown+1));
   host.querySelectorAll('[data-duplicate]').forEach(b=>b.onclick=()=>duplicateSection(+b.dataset.duplicate));
-  host.querySelectorAll('[data-del-section]').forEach(b=>b.onclick=()=>{
-    if(sections.length>1){sections.splice(+b.dataset.delSection,1);renderFramework();renderExerciseSections();updateReview()}
-  });
+  host.querySelectorAll('[data-delete-section]').forEach(b=>b.onclick=()=>deleteSectionWithConfirm(+b.dataset.deleteSection));
+  host.querySelectorAll('[data-regenerate-section]').forEach(b=>b.onclick=()=>regenerateSectionWithConfirm(+b.dataset.regenerateSection));
   host.querySelectorAll('[data-add-ex]').forEach(b=>b.onclick=()=>openPicker(+b.dataset.addEx));
   host.querySelectorAll('[data-add-run]').forEach(b=>b.onclick=()=>openRunDialog(+b.dataset.addRun));
   host.querySelectorAll('[data-del-activity]').forEach(b=>b.onclick=()=>{
     const[a,c]=b.dataset.delActivity.split('-').map(Number);
     sections[a].exercises.splice(c,1);renderExerciseSections();renderFramework();
   });
-  host.querySelectorAll('[data-edit-element]').forEach(b=>b.onclick=()=>{
-    const index=+b.dataset.editElement;
-    if(sections[index]?.type==='Finisher'){
-      document.querySelector(`[data-finisher-index="${index}"][data-finisher-field="songTitle"]`)?.focus();
-      return;
-    }
-    showStep(1);
-    setTimeout(()=>document.querySelector(`[data-section-index="${index}"][data-section-field="description"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),50);
-  });
-  host.querySelectorAll('[data-regenerate-exercise]').forEach(b=>b.onclick=()=>regenerateSection(+b.dataset.regenerateExercise));
   host.querySelectorAll('[data-save-exercise-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveExerciseElement));
-  host.querySelectorAll('[data-ai-exercise-section]').forEach(b=>b.onclick=()=>openAISectionDialog('section',+b.dataset.aiExerciseSection));
+  host.querySelectorAll('[data-ai-exercise-section]').forEach(b=>b.onclick=()=>{closeSectionMenuFrom(b);openAISectionDialog('section',+b.dataset.aiExerciseSection)});
   host.querySelectorAll('[data-suggest-one]').forEach(b=>b.onclick=()=>suggestOneExercise(+b.dataset.suggestOne));
   host.querySelectorAll('[data-open-finisher-url]').forEach(button=>button.onclick=()=>openSongUrl(+button.dataset.openFinisherUrl));
   host.querySelectorAll('[data-finisher-field]').forEach(el=>{
@@ -1271,9 +1344,7 @@ function renderExerciseSections(){
       const value=field==='songMinutes'?(+el.value||4):el.value;
       sections[i][field]=value;
       if(field==='songMinutes')sections[i].minutes=value;
-      applySectionRules(sections[i]);
-      updateTimeControl();
-      updateReview();
+      applySectionRules(sections[i]);updateTimeControl();updateReview();
     });
   });
   host.querySelectorAll('[data-inline-name]').forEach(input=>{
@@ -1286,15 +1357,10 @@ function renderExerciseSections(){
     sections[i][field]=['minutes','work','rest','rounds','timeCap','ladderStart','ladderStep','ladderEnd'].includes(field)?(+el.value||0):el.value;
     applySectionRules(sections[i]);renderFramework();renderExerciseSections();updateReview();
   });
-  host.querySelectorAll('[data-open-activities]').forEach(b=>b.onclick=()=>{
-    const card=b.closest('.exercise-section');card?.classList.remove('collapsed');
-    card?.querySelector('.exercise-list')?.scrollIntoView({behavior:'smooth',block:'center'});
-  });
   bindExerciseInfoButtons(host);
   updateTimeControl();
   bindActivityInputs();
 }
-
 function metricInput(label,key,value,si,ei,type='text',options=[]){
   if(options.length)return `<label>${label}<select data-metric="${si}-${ei}-${key}">${options.map(x=>`<option ${x===value?'selected':''}>${x}</option>`).join('')}</select></label>`;
   return `<label>${label}<input data-metric="${si}-${ei}-${key}" type="${type}" value="${esc(value||'')}"></label>`;
@@ -2277,7 +2343,7 @@ function renderSaved(){
 function editWorkout(w){
   currentId=w.id;plannerConcept=w.trainingType|| (w.familyMode?'family':'junior');
   document.querySelectorAll('#conceptChoices .choice-card').forEach(x=>x.classList.toggle('selected',x.dataset.value===plannerConcept));
-  $('#workoutName').value=w.name;$('#workoutDate').value=w.date;$('#participantCount').value=w.participants;$('#familyMode').checked=!!w.familyMode;$('#adultCount').value=w.adultCount||0;$('#adultCountLabel').classList.toggle('hidden',!w.familyMode);$('#spotifyPlaylistUrl').value=w.music?.spotify||'';$('#tidalPlaylistUrl').value=w.music?.tidal||'';$('#telmorePlaylistUrl').value=w.music?.telmore||'';sections=structuredClone(w.sections);normalizeSections();collapseAllSections();renderFramework();renderExerciseSections();updateReview();setCreationMode('choice');showView('designView');showStep(2);
+  $('#workoutName').value=w.name;$('#workoutDate').value=w.date;$('#participantCount').value=w.participants;$('#familyMode').checked=!!w.familyMode;$('#adultCount').value=w.adultCount||0;$('#adultCountLabel').classList.toggle('hidden',!w.familyMode);$('#spotifyPlaylistUrl').value=w.music?.spotify||'';$('#tidalPlaylistUrl').value=w.music?.tidal||'';$('#telmorePlaylistUrl').value=w.music?.telmore||'';sections=structuredClone(w.sections);normalizeSections();expandAllSections();renderFramework();renderExerciseSections();updateReview();setCreationMode('choice');showView('designView');showStep(2);
 }
 
 let clearedWorkoutSnapshot=null;
