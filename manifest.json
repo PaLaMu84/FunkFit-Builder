@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.7.4-alpha.14",
-  "short_name": "FunkFit 0.7.4a14",
+  "name": "FunkFit Builder v0.7.4-alpha.15",
+  "short_name": "FunkFit 0.7.4a15",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "Forenklet sektionslinje og automatisk versionsnummer i adresselinjen"
+  "description": "Kontekstafhængige øvelsesfelter og kompakt Finpuds-layout"
 }

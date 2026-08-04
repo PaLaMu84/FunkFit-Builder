@@ -92,7 +92,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.14';
+const APP_VERSION='0.7.4-alpha.15';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -1380,14 +1380,85 @@ function metricInput(label,key,value,si,ei,type='text',options=[]){
   if(options.length)return `<label>${label}<select data-metric="${si}-${ei}-${key}">${options.map(x=>`<option ${x===value?'selected':''}>${x}</option>`).join('')}</select></label>`;
   return `<label>${label}<input data-metric="${si}-${ei}-${key}" type="${type}" value="${esc(value||'')}"></label>`;
 }
-function trainingFields(it,si,ei){
+function exerciseFieldContext(ex,rawSection,trainingType=selectedTrainingType()){
+  const section=rawSection||{};
+  const text=normalizeText(`${ex?.name||''} ${ex?.category||''} ${(ex?.focus||[]).join(' ')} ${(ex?.bodyAreas||[]).join(' ')}`);
+  const equipment=(ex?.equipment||[]).map(normalizeText);
+  const format=section.format||'';
+  const repetitionModel=section.repetitionModel||'';
+  const setBased=format==='Sætbaseret';
+  const technique=format==='Kvalitetsarbejde'||section.sectionPurpose==='Teknik';
+  const intervals=format==='Intervaller';
+  const commonFlow=format==='Fælles flow';
+  const weighted=equipment.some(value=>['kettlebell','håndvægt','medicinbold','sandsæk','vægtskive','slæde'].some(token=>value.includes(token)))||/\b(kettlebell|dumbbell|kb |db |wall ball|sandbag|sandsæk|slæde|vægt)\b/.test(text);
+  const ergometer=String(ex?.category||'').toLowerCase()==='ergometer'||equipment.some(value=>value.includes('romaskine')||value.includes('skierg'))||/\b(row|rowing|ski erg|skierg|romaskine)\b/.test(text);
+  const carry=String(ex?.category||'').toLowerCase()==='carry'||/\b(carry|bære|suitcase|farmer)\b/.test(text);
+  const locomotion=carry||ergometer||['kondition','agility','motorik','reaktion'].includes(String(ex?.category||'').toLowerCase())||/\b(crawl|shuttle|løb|run|sprint|slæde skub|sled push|sled pull|broad jump)\b/.test(text);
+  const hold=String(ex?.category||'').toLowerCase().includes('isometrisk')||/\b(plank|wall sit|hollow hold|dead hang|isometrisk|statisk hold|hold)\b/.test(text);
+  const explosive=['power','plyometri','jump/land'].includes(String(ex?.category||'').toLowerCase())||/\b(jump|hop|slam|clean|snatch|swing|burpee|kast)\b/.test(text);
+  const conditioning=ergometer||locomotion||['kondition','agility','motorik','reaktion','core puls'].includes(String(ex?.category||'').toLowerCase());
+  const unilateral=/\b(enarms|enarm|enbens|enben|single|ensidig|pr side|sideplanke|suitcase|split squat|lunge|step-up)\b/.test(text);
+
+  let quantity='reps';
+  if(repetitionModel==='Tid pr. øvelse'||hold)quantity='time';
+  else if(repetitionModel==='Distance pr. øvelse'||locomotion)quantity='distance';
+  if(intervals&&quantity==='time')quantity='none'; // Arbejdstiden styres allerede på sektionsniveau.
+  if(commonFlow)quantity='none';
+
+  const showTempo=(setBased||technique)&&!explosive&&!conditioning&&!hold;
+  return {
+    trainingType,weighted,ergometer,carry,locomotion,hold,explosive,conditioning,unilateral,
+    quantity,showSets:setBased,showPause:setBased,showTempo,
+    sectionControlsTiming:['AMRAP','EMOM','Intervaller','Fast antal runder','For time'].includes(format)
+  };
+}
+function quantityFieldLabel(context,section){
+  if(context.quantity==='distance')return context.ergometer?'Meter':'Distance';
+  if(context.quantity==='time')return 'Tid';
+  if(section?.format==='EMOM')return 'Reps pr. tidsblok';
+  if(section?.format==='Intervaller')return 'Mål pr. interval';
+  return 'Reps';
+}
+function visibleMetricDefinitions(it,ex,section,trainingType=selectedTrainingType()){
   it.metrics=it.metrics||{};
-  const m=it.metrics,type=selectedTrainingType();
-  if(type==='hiit')return `<div class="type-fields"><h4>HIIT</h4>${metricInput('Arbejde (sek.)','work',m.work,si,ei,'number')}${metricInput('Pause (sek.)','rest',m.rest,si,ei,'number')}${metricInput('Runder','rounds',m.rounds,si,ei,'number')}${metricInput('Intensitet','intensity',m.intensity,si,ei,'text',['Moderat','Høj','Maksimal'])}</div>`;
-  if(type==='hyrox')return `<div class="type-fields"><h4>Hyrox</h4>${metricInput('Distance','distance',m.distance,si,ei)}${metricInput('Erg-meter','ergMeters',m.ergMeters,si,ei,'number')}${metricInput('Vægt','weight',m.weight,si,ei)}${metricInput('Reps','reps',m.reps,si,ei)}${metricInput('Løbedistance','runDistance',m.runDistance,si,ei)}</div>`;
-  if(type==='trx')return `<div class="type-fields"><h4>TRX</h4>${metricInput('Kropsvinkel','bodyAngle',m.bodyAngle,si,ei,'text',['Let','Mellem','Stejl'])}${metricInput('Reps/tid','repsOrTime',m.repsOrTime,si,ei)}${metricInput('Tempo','tempo',m.tempo,si,ei)}${metricInput('Udførelse','laterality',m.laterality,si,ei,'text',['Tosidig','Ensidig'])}</div>`;
-  if(type==='adult'){const section=normalizeSection(sections[si]);const setBased=section.format==='Sætbaseret';return `<div class="type-fields"><h4>Funktionel voksen</h4>${metricInput('Kg','weight',m.weight,si,ei)}${metricInput(section.repetitionModel==='Tid pr. øvelse'?'Tid':'Reps','reps',m.reps,si,ei)}${setBased?metricInput('Sæt','sets',m.sets,si,ei,'number'):''}${metricInput('Tempo','tempo',m.tempo,si,ei)}${setBased?metricInput('Pause','pause',m.pause,si,ei):''}</div>`;}
-  return '';
+  const m=it.metrics,context=exerciseFieldContext(ex,section,trainingType),fields=[];
+  const add=(label,key,value,type='text',options=[])=>fields.push({label,key,value,type,options});
+
+  if(trainingType==='adult'){
+    if(context.weighted)add('Kg','weight',m.weight);
+    if(context.quantity!=='none')add(quantityFieldLabel(context,section),'reps',m.reps);
+    if(context.showSets)add('Sæt','sets',m.sets,'number');
+    if(context.showTempo)add('Tempo','tempo',m.tempo);
+    if(context.showPause)add('Pause','pause',m.pause);
+  }else if(trainingType==='hiit'){
+    if(context.weighted)add('Kg','weight',m.weight);
+    if(context.quantity!=='none')add(quantityFieldLabel(context,section),'reps',m.reps);
+    add('Intensitet','intensity',m.intensity||'Høj','text',['Moderat','Høj','Maksimal']);
+  }else if(trainingType==='hyrox'){
+    if(context.weighted)add('Kg','weight',m.weight);
+    if(context.ergometer)add('Meter','ergMeters',m.ergMeters||m.reps,'number');
+    else if(context.quantity==='distance')add('Distance','distance',m.distance||m.reps);
+    else if(context.quantity!=='none')add(quantityFieldLabel(context,section),'reps',m.reps);
+  }else if(trainingType==='trx'){
+    add('Kropsvinkel','bodyAngle',m.bodyAngle||'Mellem','text',['Let','Mellem','Stejl']);
+    if(context.quantity!=='none')add(quantityFieldLabel(context,section),'repsOrTime',m.repsOrTime||m.reps);
+    if(context.showTempo)add('Tempo','tempo',m.tempo);
+    if(context.unilateral)add('Udførelse','laterality',m.laterality||'Ensidig','text',['Tosidig','Ensidig']);
+  }
+  return {context,fields};
+}
+function renderMetricFields(fields,si,ei){
+  return fields.map(field=>metricInput(field.label,field.key,field.value,si,ei,field.type,field.options)).join('');
+}
+function trainingFields(it,si,ei){
+  const type=selectedTrainingType();
+  if(!['adult','hiit','hyrox','trx'].includes(type))return '';
+  const ex=exercises.find(item=>item.id===it.exerciseId);
+  const section=normalizeSection(sections[si]);
+  const {fields}=visibleMetricDefinitions(it,ex,section,type);
+  if(!fields.length)return '';
+  const title=({adult:'Funktionel voksen',hiit:'HIIT',hyrox:'Hyrox',trx:'TRX'})[type];
+  return `<div class="type-fields contextual-fields"><h4>${title}</h4>${renderMetricFields(fields,si,ei)}</div>`;
 }
 
 function runActivityRow(it,si,ai){
@@ -1395,7 +1466,7 @@ function runActivityRow(it,si,ai){
     <div class="run-activity-head">
       <div class="run-icon">🏃</div>
       <div><strong>${esc(it.runType)}</strong><small>${esc(`${it.value} ${it.unit} · ${it.intensity}`)}</small></div>
-      <button class="ghost" data-del-activity="${si}-${ai}">Fjern</button>
+      <button class="ghost activity-remove-btn" data-del-activity="${si}-${ai}">Fjern</button>
     </div>
     <div class="type-fields run-fields">
       <label>Type<select data-run-field="runType" data-run-index="${si}-${ai}">${['Almindeligt løb','Jog','Sprint','Shuttle run','Zigzag mellem kegler','Slalom','Baglæns løb','Sidestep','Bakkeløb','Trappeløb','Stafetløb','Reaktionsløb'].map(x=>`<option ${x===it.runType?'selected':''}>${x}</option>`).join('')}</select></label>
@@ -1460,33 +1531,47 @@ function bindExerciseInfoButtons(host=document){
   });
 }
 
+function audiencePrescriptionFields(it,ex,section,audience,si,ai){
+  const context=exerciseFieldContext(ex,section,audience==='adult'?'adult':'junior');
+  const prefix=audience==='adult'?'Voksen':'Junior';
+  const fields=[];
+  if(context.weighted){
+    const key=audience==='adult'?'akg':'jkg',value=audience==='adult'?it.adultKg:it.juniorKg;
+    fields.push(`<label>${prefix} kg<input data-${key}="${si}-${ai}" value="${esc(value||'')}"></label>`);
+  }
+  if(context.quantity!=='none'){
+    const key=audience==='adult'?'areps':'jreps',value=audience==='adult'?it.adultReps:it.juniorReps;
+    fields.push(`<label>${prefix} ${quantityFieldLabel(context,section).toLowerCase()}<input data-${key}="${si}-${ai}" value="${esc(value||'')}"></label>`);
+  }
+  const noteKey=audience==='adult'?'anote':'jnote',noteValue=audience==='adult'?it.adultNote:it.juniorNote;
+  fields.push(`<label>${prefix} note<input data-${noteKey}="${si}-${ai}" value="${esc(noteValue||'')}"></label>`);
+  return fields.join('');
+}
 function exerciseActivityRow(it,si,ai,fam){
   const ex=exercises.find(x=>x.id===it.exerciseId),type=selectedTrainingType();
+  const section=normalizeSection(sections[si]);
   const identity=`<div class="exercise-identity">
     <div><strong>${esc(ex?.name||'Ukendt')}</strong><small>${esc((ex?.bodyAreas||[]).join(' · '))}</small></div>
     ${exerciseInfoButton(ex?.id,`Vis beskrivelse af ${ex?.name||'øvelsen'}`)}
   </div>`;
 
-  const juniorFields=['junior','family'].includes(type)?`<div class="exercise-main">
+  const juniorFields=['junior','family'].includes(type)?`<div class="exercise-main contextual-exercise-main">
     ${identity}
-    <label>Junior kg<input data-jkg="${si}-${ai}" value="${esc(it.juniorKg||'')}"></label>
-    <label>Junior reps/tid<input data-jreps="${si}-${ai}" value="${esc(it.juniorReps||'')}"></label>
-    <label>Junior note<input data-jnote="${si}-${ai}" value="${esc(it.juniorNote||'')}"></label>
-    <button class="ghost" data-del-activity="${si}-${ai}">Fjern</button>
-  </div>`:`<div class="exercise-main compact-exercise">${identity}<button class="ghost" data-del-activity="${si}-${ai}">Fjern</button></div>`;
+    ${audiencePrescriptionFields(it,ex,section,'junior',si,ai)}
+    <button class="ghost activity-remove-btn" data-del-activity="${si}-${ai}">Fjern</button>
+  </div>`:`<div class="exercise-main compact-exercise">${identity}<button class="ghost activity-remove-btn" data-del-activity="${si}-${ai}">Fjern</button></div>`;
 
   const adultExerciseId=it.adultExerciseId||it.exerciseId;
-  return `<div class="exercise-row">${juniorFields}${type==='family'?`<div class="adult-settings"><div class="adult-grid">
+  const adultEx=exercises.find(x=>x.id===adultExerciseId)||ex;
+  return `<div class="exercise-row">${juniorFields}${type==='family'?`<div class="adult-settings"><div class="adult-grid contextual-adult-grid">
     <label>Voksenøvelse
       <div class="adult-exercise-choice">
-        <input data-aex-search="${si}-${ai}" list="adultExerciseOptions" value="${esc(exercises.find(x=>x.id===adultExerciseId)?.name||ex?.name||'')}" placeholder="Søg efter voksenøvelse">
+        <input data-aex-search="${si}-${ai}" list="adultExerciseOptions" value="${esc(adultEx?.name||'')}" placeholder="Søg efter voksenøvelse">
         <input type="hidden" data-aex="${si}-${ai}" value="${esc(adultExerciseId)}">
         <button type="button" class="exercise-info-btn" data-adult-exercise-info="${si}-${ai}" title="Vis beskrivelse af voksenøvelsen" aria-label="Vis beskrivelse af voksenøvelsen">?</button>
       </div>
     </label>
-    <label>Voksen kg<input data-akg="${si}-${ai}" value="${esc(it.adultKg||'')}"></label>
-    <label>Voksen reps/tid<input data-areps="${si}-${ai}" value="${esc(it.adultReps||'')}"></label>
-    <label>Voksen note<input data-anote="${si}-${ai}" value="${esc(it.adultNote||'')}"></label>
+    ${audiencePrescriptionFields(it,adultEx,section,'adult',si,ai)}
   </div></div>`:''}${trainingFields(it,si,ai)}</div>`;
 }
 function activityRow(it,si,ai,fam){
@@ -1529,6 +1614,7 @@ function bindActivityInputs(){
     const hidden=host.querySelector(`[data-aex="${a}-${b}"]`);
     if(hidden)hidden.value=match.id;
     input.value=match.name;
+    renderExerciseSections();
   });
   bind('[data-akg]','akg','adultKg');
   bind('[data-areps]','areps','adultReps');
@@ -2533,7 +2619,7 @@ function printWorkout(w,mode){
       ${w.familyMode&&adultEx?line('Voksenalternativ',`${adultEx.name}${it.adultReps?` · ${it.adultReps}`:''}${it.adultKg?` · ${it.adultKg} kg`:''}`):''}
     </article>`;
   };
-  const instructorActivity=(it,w)=>{
+  const instructorActivity=(it,w,currentPrintSection)=>{
     if(it.kind==='run'){
       return `<article class="print-activity">
         <h3>🏃 ${esc(it.runType)}</h3>
@@ -2544,7 +2630,8 @@ function printWorkout(w,mode){
       </article>`;
     }
     const ex=map.get(it.exerciseId),aex=map.get(it.adultExerciseId||it.exerciseId);
-    const metrics=Object.entries(it.metrics||{}).filter(([,value])=>value!==''&&value!=null).map(([key,value])=>`${key}: ${value}`).join(' · ');
+    const metricDefinitions=visibleMetricDefinitions(it,ex,normalizeSection(structuredClone(currentPrintSection||{})),w.trainingType||'junior').fields;
+    const metrics=metricDefinitions.filter(field=>field.value!==''&&field.value!=null).map(field=>`${field.label}: ${field.value}`).join(' · ');
     return `<article class="print-activity">
       <h3>${esc(ex?.name||'Ukendt')}</h3>
       ${line('Udførelse',ex?.description)}
@@ -2588,7 +2675,7 @@ function printWorkout(w,mode){
           ${line('Regler',s.rules)}
           ${line('Trænertips',s.coachTips)}
         </div>`}
-      ${(s.exercises||[]).map(it=>participant?participantActivity(it,w):instructorActivity(it,w)).join('')}
+      ${(s.exercises||[]).map(it=>participant?participantActivity(it,w):instructorActivity(it,w,s)).join('')}
     </section>`;
   };
 
