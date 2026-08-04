@@ -92,6 +92,18 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
+const APP_VERSION='0.7.4-alpha.14';
+function updateAddressVersion(){
+  try{
+    const url=new URL(window.location.href);
+    if(url.searchParams.get('v')!==APP_VERSION){
+      url.searchParams.set('v',APP_VERSION);
+      window.history.replaceState(window.history.state,'',url.pathname+url.search+url.hash);
+    }
+  }catch(error){
+    console.warn('Kunne ikke opdatere versionsnummeret i adresselinjen.',error);
+  }
+}
 const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a',EQKEY='funkfit-equipment-profiles-v074a';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
 let plannerConcept='junior',plannerVenue='indoor';
@@ -625,6 +637,7 @@ function prepareTemplateSections(rawSections){
 }
 
 async function init(){
+  updateAddressVersion();
   const base=await fetch('data/exercises.json').then(r=>r.json());
   templates=await fetch('data/workoutTemplates.json').then(r=>r.json());
   exercises=[...customs(),...base];
@@ -1260,13 +1273,15 @@ function renderExerciseSections(){
     const canMoveUp=si>0&&s.sectionPurpose!=='Ledopvarmning';
     const canMoveDown=si<sections.length-1&&s.sectionPurpose!=='Finisher';
     return `<article class="exercise-section ${collapsed?'collapsed':''}" style="--section-color:${v.color}">
-      <div class="section-progress section-progress-top"><span>${esc(s.sectionPurpose||v.label)}</span><div class="section-progress-bar"><span style="width:${progress}%"></span></div><span>${progress}%</span></div>
+      <div class="section-progress section-progress-top">
+        <span>Sektion ${si+1} af ${sections.length} · ${esc(s.sectionPurpose||v.label)}</span>
+        <div class="section-progress-bar" aria-label="Sektion ${si+1} af ${sections.length}"><span style="width:${progress}%"></span></div>
+      </div>
       <div class="section-card-header">
         <div class="section-title-group">
           <div class="section-icon">${finisher?'🎵':v.icon}</div>
           <div class="section-title-text">
             <input class="inline-section-name" data-inline-name="${si}" value="${esc(s.name)}" aria-label="Sektionens navn">
-            <small>Sektion ${si+1} af ${sections.length} · ${esc(s.sectionPurpose)}</small>
             <div class="inline-section-controls simple-inline-controls">
               ${inlineTimingControls(s,si)}
               ${!finisher?`<span class="section-stat">${count} aktiviteter</span>`:''}

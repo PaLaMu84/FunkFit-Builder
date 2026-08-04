@@ -1,16 +1,9 @@
-# Gentest – v0.7.4-alpha.13
+# Gentest – v0.7.4-alpha.14
 
-1. Åbn Finpuds og kontrollér, at alle sektioners øvelser er foldet ud.
-2. Kontrollér, at fremdriftslinjen ligger over sektionsoverskriften.
-3. Kontrollér, at øvelseslisten ligger direkte under overskriften.
-4. Kontrollér, at sektionens beskrivelse ikke vises.
-5. Kontrollér Regler- og Trænertips-boksene.
-6. Åbn ⋮-menuen på computer og mobil og gennemgå alle menupunkter.
-7. Kontrollér, at der ikke står AI-, regenerér- eller foreslå-knapper andre steder i sektionen.
-8. Vælg “Redigér struktur”, skift format/organisering og gem.
-9. Vælg “Redigér regler og trænertips”, ret begge felter og gem.
-10. Vælg “Lav et helt nyt forslag” og kontrollér bekræftelsen.
-11. Vælg “Slet sektion” og kontrollér bekræftelsen.
-12. Duplikér en sektion og kontrollér navn og placering.
-13. Kontrollér “Gem sektion i Mit bibliotek” nederst til højre.
-14. Gennemgå AI-valgkortene på bred skærm og mobil.
+1. Åbn appen med adressen `?v=0.6.2`.
+2. Kontrollér, at adresselinjen automatisk ændres til `?v=0.7.4-alpha.14`.
+3. Åbn Finpuds med mindst fem sektioner.
+4. Kontrollér, at øverste linje fx viser “Sektion 1 af 5 · Ledopvarmning”.
+5. Kontrollér, at procenttallet ikke længere står til højre.
+6. Kontrollér, at samme sektionstekst ikke gentages under sektionsnavnet.
+7. Kontrollér, at fremdriftsbjælken stadig viser sektionens placering visuelt.
