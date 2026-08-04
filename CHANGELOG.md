@@ -1,12 +1,17 @@
-# FunkFit Builder v0.7.4-alpha.14
+# FunkFit Builder v0.7.4-alpha.15
 
-## Finpuds
-- Procentlinjen viser nu “Sektion X af Y · sektionstype”.
-- Den separate procenttekst er fjernet.
-- Den dublerede tekst under sektionsnavnet er fjernet.
-- Selve fremdriftsbjælken er bevaret.
+## Finpuds-layout
+- Sektionsikonet er placeret helt øverst til venstre.
+- Fjern-knappen på en aktivitet er mindre og ligger diskret øverst til højre på øvelseskortet.
 
-## Adresse og versionsnummer
-- Appen opdaterer automatisk `v`-parameteren i adresselinjen til den aktuelle version.
-- En adresse som `?v=0.6.2` bliver derfor ændret til `?v=0.7.4-alpha.14`.
-- Andre query-parametre og eventuelt hash bevares.
+## Regelstyrede øvelsesfelter
+- Felter bestemmes nu af både sektionens format og den konkrete øvelse.
+- AMRAP med kettlebell clean viser kg og reps – ikke sæt, tempo eller pause.
+- Sæt og pause vises kun i sætbaseret styrke. Tempo vises kun ved kontrollerede styrkeøvelser og skjules ved eksplosive/konditionsprægede øvelser.
+- Intervaller bruger arbejde, pause og runder på sektionsniveau frem for at gentage dem på hver øvelse.
+- Carry/ergometer/crawl bruger distance, statiske hold bruger tid, og almindelige styrkeøvelser bruger reps.
+- TRX, HIIT, Hyrox, Junior og Familie har tilsvarende kontekstafhængige felter.
+- Instruktør-PDF viser kun de felter, der er relevante efter samme regelsæt.
+
+## Manual
+- Regelpakken er tilføjet både i appens Manual og ordbog og i `MANUAL_OG_ORDBOG.md`.
