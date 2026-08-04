@@ -672,3 +672,73 @@ dialog{width:min(860px,calc(100% - 1rem));max-height:90vh;overflow:auto;border:0
   .inline-advanced-controls{width:100%}.inline-advanced-controls>div{display:grid;grid-template-columns:1fr;min-width:0;width:100%}
 }
 @media(max-width:560px){.docs-model-grid{grid-template-columns:1fr}}
+
+/* v0.7.4-alpha.13 – Finpuds og valgmuligheder */
+.planner-toggles{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.7rem;
+  margin-top:.8rem;
+  align-items:stretch;
+}
+.planner-toggles .planner-toggle-card{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  align-items:start;
+  gap:.65rem;
+  min-height:92px;
+  padding:.85rem;
+  margin:0;
+  border:1px solid #cbd5e1;
+  border-radius:14px;
+  background:#fff;
+  cursor:pointer;
+}
+.planner-toggle-card input{margin:.18rem 0 0;accent-color:#2563eb}
+.planner-toggle-card>span{display:flex;flex-direction:column;gap:.2rem;min-width:0}
+.planner-toggle-card strong{font-size:.92rem;line-height:1.25;color:#0f172a}
+.planner-toggle-card small{color:#64748b;font-weight:500;line-height:1.35}
+.planner-toggle-card:has(input:checked){border-color:#60a5fa;background:#eff6ff;box-shadow:0 0 0 2px rgba(37,99,235,.08)}
+.section-progress-top{
+  margin:0;
+  padding:.55rem 1rem .5rem;
+  background:#fff;
+  border-bottom:1px solid #e2e8f0;
+}
+.exercise-section.collapsed .section-expanded-content{display:none}
+.exercise-list-primary{border-top:0;padding-top:1rem}
+.section-menu-divider{height:1px;margin:.25rem 0;background:#e2e8f0}
+.section-menu-popover button:disabled{opacity:.42;cursor:not-allowed}
+.section-menu-popover .menu-danger{color:#b91c1c;background:#fff1f2}
+.section-menu-popover .menu-danger:hover{color:#fff;background:#b91c1c}
+.section-guidance-card{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  gap:.75rem;
+  margin:.8rem 1rem;
+  padding:1rem;
+  border-radius:14px;
+  border:1px solid #cbd5e1;
+  background:#fff;
+}
+.section-guidance-card .guidance-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;font-size:1.1rem}
+.section-guidance-card h4{margin:0 0 .3rem;font-size:.95rem}
+.section-guidance-card p{margin:0;white-space:pre-wrap;line-height:1.5;color:#334155}
+.rules-card{border-left:5px solid #f97316;background:#fff7ed}
+.rules-card .guidance-icon{background:#ffedd5}
+.coach-card{border-left:5px solid #2563eb;background:#eff6ff}
+.coach-card .guidance-icon{background:#dbeafe}
+.section-library-row{display:flex;justify-content:flex-end;padding:.25rem 1rem 1rem}
+.section-library-row button{background:#fff;color:#334155;border:1px solid #cbd5e1}
+.section-edit-dialog{width:min(720px,calc(100% - 1.5rem))}
+.section-edit-structure{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+.section-edit-guidance{display:grid;gap:.75rem}
+.dialog-actions{display:flex;justify-content:flex-end;margin-top:1rem}
+@media(max-width:900px){.planner-toggles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){
+  .planner-toggles{grid-template-columns:1fr}
+  .planner-toggles .planner-toggle-card{min-height:0}
+  .section-edit-structure{grid-template-columns:1fr}
+  .section-guidance-card{margin:.7rem}
+  .section-library-row{padding:.25rem .7rem .8rem}
+}
