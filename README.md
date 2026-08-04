@@ -6,3 +6,7 @@ Se:
 - `CHANGELOG.md`
 - `TESTLISTE.md`
 - `INSTALL.md`
+
+
+## Dokumentation
+Se `MANUAL_OG_ORDBOG.md` for den opdaterede model, definitioner og regler.
