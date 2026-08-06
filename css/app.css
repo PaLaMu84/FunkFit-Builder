@@ -863,3 +863,94 @@ html,body{
   .main-nav{padding:.55rem}
   .nav-tab{padding:.58rem .4rem;font-size:.84rem}
 }
+
+
+/* v0.7.4-alpha.18 – udstyrsoversigt */
+.review-card{
+  display:grid;
+  gap:1rem;
+}
+.review-card-heading{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:1rem;
+}
+.review-card-heading h3{
+  margin-top:0;
+}
+.review-participant-field{
+  width:min(160px,100%);
+  display:grid;
+  gap:.35rem;
+  font-weight:800;
+}
+.review-participant-field input{
+  min-height:46px;
+  font-size:1.05rem;
+}
+.equipment-summary-card{
+  border:1px solid #cbd8ee;
+  border-radius:18px;
+  padding:1rem;
+  background:#f8fbff;
+}
+.equipment-summary-card h4{
+  margin:.15rem 0 .8rem;
+  font-size:1.35rem;
+}
+.equipment-summary-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.55rem;
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+.equipment-summary-list li{
+  display:flex;
+  flex-direction:column;
+  gap:.12rem;
+  padding:.72rem .8rem;
+  border:1px solid #dbe4f3;
+  border-radius:13px;
+  background:#fff;
+}
+.equipment-summary-list li strong{
+  font-size:1rem;
+}
+.equipment-summary-list li span{
+  color:#5d6b82;
+  font-size:.84rem;
+}
+.equipment-summary-note{
+  margin:.85rem 0 0;
+  color:#5d6b82;
+  font-size:.88rem;
+}
+.print-equipment-summary{
+  break-inside:avoid;
+  border:2px solid #18243b;
+  border-radius:14px;
+  padding:1rem;
+  margin:0 0 1rem;
+}
+.print-equipment-summary h2{
+  margin-top:0;
+}
+.print-equipment-summary ul{
+  columns:2;
+  margin-bottom:.5rem;
+}
+@media(max-width:700px){
+  .review-card-heading{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  .review-participant-field{
+    width:100%;
+  }
+  .equipment-summary-list{
+    grid-template-columns:1fr;
+  }
+}

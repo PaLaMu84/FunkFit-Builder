@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>Ryd FunkFit-cache</title>
+<title>Opdatér FunkFit-cache</title>
 <body style="font-family:system-ui;padding:2rem">
-<h1>Rydder FunkFit-cache…</h1>
-<p>Siden genindlæses automatisk.</p>
+<h1>Opdaterer FunkFit-cache…</h1>
+<p>Kun app-cache opdateres. Gemte træninger og øvrige lokale data bevares.</p><p>Siden genindlæses automatisk.</p>
 <script>
 (async()=>{
   for(const registration of await navigator.serviceWorker.getRegistrations()){
@@ -12,7 +12,7 @@
   for(const key of await caches.keys()){
     await caches.delete(key);
   }
-  location.replace('./?v=0.6.2');
+  location.replace('./?v=0.7.4-alpha.18');
 })();
 </script>
 </body>

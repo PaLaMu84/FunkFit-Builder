@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.17';
+const APP_VERSION='0.7.4-alpha.18';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -106,6 +106,7 @@ function updateAddressVersion(){
   }
 }
 const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a',EQKEY='funkfit-equipment-profiles-v074a';
+const WBACKUPKEY='funkfit-workouts-backup-v1';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
 let plannerConcept='junior',plannerVenue='indoor';
 const EQUIPMENT_PROFILES={
@@ -162,8 +163,30 @@ let creationMode='choice',structureChoice='auto',singleSectionTarget=null,active
 
 
 
-const saveWorkouts=x=>localStorage.setItem(WKEY,JSON.stringify(x));
-const workouts=()=>read(WKEY,[]);
+function validWorkoutList(value){
+  return Array.isArray(value)?value.filter(item=>item&&typeof item==='object'&&item.id):[];
+}
+function saveWorkouts(value){
+  const safe=validWorkoutList(value);
+  const payload=JSON.stringify(safe);
+  localStorage.setItem(WKEY,payload);
+  localStorage.setItem(WBACKUPKEY,payload);
+}
+function workouts(){
+  const current=validWorkoutList(read(WKEY,[]));
+  const backup=validWorkoutList(read(WBACKUPKEY,[]));
+  if(current.length){
+    if(JSON.stringify(current)!==JSON.stringify(backup)){
+      localStorage.setItem(WBACKUPKEY,JSON.stringify(current));
+    }
+    return current;
+  }
+  if(backup.length){
+    localStorage.setItem(WKEY,JSON.stringify(backup));
+    return backup;
+  }
+  return [];
+}
 const customs=()=>read(CKEY,[]);
 const favorites=()=>new Set(read(FKEY,[]));
 const elementLibrary=()=>read(EKEY,[]);
@@ -480,6 +503,7 @@ function buildFinisherFromTemplate(templateId,overrides={}){
     work:Number(template.work||0),rest:Number(template.rest||0),rounds:Number(template.rounds||1),timeCap:Number(template.timeCap||template.minutes||0),
     ladderStart:Number(template.ladderStart||1),ladderStep:Number(template.ladderStep||1),ladderEnd:Number(template.ladderEnd||10),
     description:template.description||'',rules:template.rules||'',coachTips:template.coachTips||'',
+    equipment:structuredClone(template.equipment||[]),
     exercises:(template.activities||[]).map(finisherActivityFromSpec),
     songTitle:overrides.songTitle||'',songArtist:overrides.songArtist||'',songUrl:overrides.songUrl||''
   };
@@ -1091,6 +1115,17 @@ function bind(){
   $('#addSectionBtn').onclick=openAddSectionDialog;
   $('#saveWorkoutBtn').onclick=saveCurrent;
   $('#playCurrentBtn').onclick=()=>startPlayer(collect());
+  on('reviewParticipants','input',event=>{
+    const value=Math.max(1,+event.target.value||1);
+    $('#participantCount').value=value;
+    if($('#plannerParticipants'))$('#plannerParticipants').value=value;
+    updateReview();
+  });
+  on('participantCount','input',event=>{
+    const value=Math.max(1,+event.target.value||1);
+    if($('#plannerParticipants'))$('#plannerParticipants').value=value;
+    updateReview();
+  });
   $('#newWorkoutBtn').onclick=newWorkout;
   on('clearWorkoutBtn','click',clearCurrentWorkout);
   on('undoClearWorkoutBtn','click',undoClearWorkout);
@@ -1519,7 +1554,7 @@ function renderExerciseSections(){
   host.querySelectorAll('[data-add-run]').forEach(b=>b.onclick=()=>openRunDialog(+b.dataset.addRun));
   host.querySelectorAll('[data-del-activity]').forEach(b=>b.onclick=()=>{
     const[a,c]=b.dataset.delActivity.split('-').map(Number);
-    sections[a].exercises.splice(c,1);renderExerciseSections();renderFramework();
+    sections[a].exercises.splice(c,1);renderExerciseSections();renderFramework();updateReview();
   });
   host.querySelectorAll('[data-save-exercise-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveExerciseElement));
   host.querySelectorAll('[data-ai-exercise-section]').forEach(b=>b.onclick=()=>{closeSectionMenuFrom(b);openAISectionDialog('section',+b.dataset.aiExerciseSection)});
@@ -1771,7 +1806,7 @@ function bindActivityInputs(){
     const [a,b]=e.dataset.runIndex.split('-').map(Number);
     const field=e.dataset.runField;
     sections[a].exercises[b][field]=field==='value'?(+e.value||1):e.value;
-    renderFramework();
+    renderFramework();updateReview();
   });
   bind('[data-jkg]','jkg','juniorKg');
   bind('[data-jreps]','jreps','juniorReps');
@@ -1791,7 +1826,7 @@ function bindActivityInputs(){
     const hidden=host.querySelector(`[data-aex="${a}-${b}"]`);
     if(hidden)hidden.value=match.id;
     input.value=match.name;
-    renderExerciseSections();
+    renderExerciseSections();updateReview();
   });
   bind('[data-akg]','akg','adultKg');
   bind('[data-areps]','areps','adultReps');
@@ -1821,7 +1856,7 @@ function renderPicker(){
     </div>
   </div>`).join('');
   bindExerciseInfoButtons($('#pickerGrid'));
-  $('#pickerGrid').querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{sections[pickerSection].exercises=sections[pickerSection].exercises||[];sections[pickerSection].exercises.push({kind:'exercise',exerciseId:b.dataset.pick,juniorKg:'',juniorReps:'',juniorNote:'',adultExerciseId:b.dataset.pick,adultKg:'',adultReps:'',adultNote:''});$('#exercisePickerDialog').close();renderExerciseSections()});
+  $('#pickerGrid').querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{sections[pickerSection].exercises=sections[pickerSection].exercises||[];sections[pickerSection].exercises.push({kind:'exercise',exerciseId:b.dataset.pick,juniorKg:'',juniorReps:'',juniorNote:'',adultExerciseId:b.dataset.pick,adultKg:'',adultReps:'',adultNote:''});$('#exercisePickerDialog').close();renderExerciseSections();updateReview()});
 }
 function createExercise(e){
   e.preventDefault();const d=Object.fromEntries(new FormData(e.target)),split=s=>s.split(',').map(x=>x.trim()).filter(Boolean);
@@ -2713,12 +2748,246 @@ function clearImportedWorkout(){
   $('#importProposal').innerHTML='';
 }
 
+
+const EQUIPMENT_LABELS={
+  'Kettlebell':['kettlebell','kettlebells'],
+  'Håndvægt':['håndvægt','håndvægte'],
+  'Måtte':['måtte','måtter'],
+  'Boks':['boks','bokse'],
+  'Medicinbold':['medicinbold','medicinbolde'],
+  'Kegler':['kegle','kegler'],
+  'Elastik':['elastik','elastikker'],
+  'Bænk':['bænk','bænke'],
+  'Sandsæk':['sandsæk','sandsække'],
+  'Slæde':['slæde','slæder'],
+  'SkiErg':['SkiErg','SkiErgs'],
+  'Romaskine':['romaskine','romaskiner'],
+  'Reb':['reb','reb'],
+  'Vægtskive':['vægtskive','vægtskiver'],
+  'TRX':['TRX','TRX'],
+  'Væg':['væg','vægge']
+};
+const ONE_DUMBBELL_EXERCISES=new Set([
+  'goblet-squat','db-row','single-leg-rdl','russian-twist',
+  'triceps-extension','suitcase-carry','overhead-carry'
+]);
+const TWO_DUMBBELL_EXERCISES=new Set([
+  'farmer-carry','romanian-deadlift','sumo-deadlift','calf-raise',
+  'db-shoulder-press','floor-press','biceps-curl','lateral-raise',
+  'front-raise','renegade-row','front-rack-carry','db-push-press',
+  'db-thruster'
+]);
+
+function equipmentUnitMultiplier(ex,equipment){
+  if(equipment==='Håndvægt'){
+    if(ONE_DUMBBELL_EXERCISES.has(ex?.id))return 1;
+    if(TWO_DUMBBELL_EXERCISES.has(ex?.id))return 2;
+    return 1;
+  }
+  if(equipment==='Kettlebell'){
+    return ex?.id==='farmer-carry'?2:1;
+  }
+  return 1;
+}
+function equipmentDisplay(name,quantity){
+  const labels=EQUIPMENT_LABELS[name];
+  if(!labels)return `${quantity} × ${name}`;
+  const label=quantity===1?labels[0]:labels[1];
+  return `${quantity} ${label}`;
+}
+function isFacilityEquipment(name){
+  return name==='Væg';
+}
+function equipmentTeamCount(participants){
+  return Math.min(6,Math.max(2,Math.ceil(participants/5)));
+}
+function sectionStationCount(section,activityCount){
+  return Math.max(1,+section.stationCount||activityCount||1);
+}
+function activeCountForSection(section,participants,activityCount){
+  const org=normalizeText(section.organization||'');
+  const task=normalizeText(section.taskStructure||'');
+  if(org.includes('you go')||org.includes('i go'))return Math.ceil(participants/2);
+  if(org.includes('stafet')||org==='hold')return equipmentTeamCount(participants);
+  if(org.includes('rotation')||task==='stationer'){
+    return Math.ceil(participants/sectionStationCount(section,activityCount));
+  }
+  return participants;
+}
+function coneRequirement(section,participants,activityCount,activity){
+  const org=normalizeText(section.organization||'');
+  const task=normalizeText(section.taskStructure||'');
+  const runText=normalizeText(`${activity?.runType||''} ${activity?.route||''}`);
+  if(org.includes('stafet'))return Math.max(4,equipmentTeamCount(participants)*2);
+  if(task==='stationer'||org.includes('rotation'))return Math.max(4,sectionStationCount(section,activityCount)*2);
+  if(/zigzag|slalom|shuttle|reaktion|sprint|kegle/.test(runText)){
+    return Math.max(4,Math.min(12,Math.ceil(participants/4)*2));
+  }
+  return 4;
+}
+function addRequirement(map,name,quantity,detail='',mode='max'){
+  if(!name||name==='Kropsvægt'||quantity<=0)return;
+  const current=map.get(name);
+  if(!current){
+    map.set(name,{name,quantity,detail});
+    return;
+  }
+  if(mode==='sum'){
+    current.quantity+=quantity;
+    if(detail&&!current.detail)current.detail=detail;
+    return;
+  }
+  if(quantity>current.quantity){
+    map.set(name,{name,quantity,detail});
+  }
+}
+function exerciseEquipmentMap(ex,activeCount,section,activity,participants,activityCount){
+  const map=new Map();
+  (ex?.equipment||[]).forEach(name=>{
+    if(!name||name==='Kropsvægt')return;
+    if(isFacilityEquipment(name)){
+      addRequirement(map,name,1,'Adgang under træningen');
+      return;
+    }
+    const quantity=name==='Kegler'
+      ?coneRequirement(section,participants,activityCount,activity)
+      :activeCount*equipmentUnitMultiplier(ex,name);
+    const multiplier=equipmentUnitMultiplier(ex,name);
+    const detail=multiplier===2?'2 pr. aktiv deltager':'';
+    addRequirement(map,name,quantity,detail);
+  });
+  return map;
+}
+function mergeActivityMaps(target,source,mode='max'){
+  source.forEach(item=>addRequirement(target,item.name,item.quantity,item.detail,mode));
+}
+function activityEquipmentMap(activity,section,participants,activityCount,forcedActiveCount=null){
+  const map=new Map();
+  const activeCount=forcedActiveCount??activeCountForSection(section,participants,activityCount);
+
+  if(activity?.kind==='run'){
+    const runText=normalizeText(`${activity.runType||''} ${activity.route||''}`);
+    if(/kegle|shuttle|zigzag|slalom|stafet|reaktion|sprint/.test(runText)){
+      addRequirement(map,'Kegler',coneRequirement(section,participants,activityCount,activity),'Til baner og vendepunkter');
+    }
+    return map;
+  }
+
+  const juniorEx=exercises.find(ex=>ex.id===activity?.exerciseId);
+  const family=selectedTrainingType()==='family'||$('#familyMode')?.checked;
+  const adults=family?Math.min(participants,Math.max(0,+$('#adultCount')?.value||0)):0;
+  const juniors=Math.max(0,participants-adults);
+  const adultEx=family?exercises.find(ex=>ex.id===(activity?.adultExerciseId||activity?.exerciseId)):null;
+
+  if(family&&adultEx&&adultEx.id!==juniorEx?.id){
+    const juniorActive=activeCountForSection(section,juniors,activityCount);
+    const adultActive=activeCountForSection(section,adults,activityCount);
+    mergeActivityMaps(map,exerciseEquipmentMap(juniorEx,juniorActive,section,activity,participants,activityCount),'sum');
+    mergeActivityMaps(map,exerciseEquipmentMap(adultEx,adultActive,section,activity,participants,activityCount),'sum');
+  }else{
+    mergeActivityMaps(map,exerciseEquipmentMap(juniorEx,activeCount,section,activity,participants,activityCount),'max');
+  }
+  return map;
+}
+function sectionDeclaredEquipment(section){
+  const template=section.sectionPurpose==='Finisher'?finisherTemplateById(section.finisherTemplateId):null;
+  return [...new Set([...(section.equipment||[]),...(template?.equipment||[])])];
+}
+function sectionEquipmentRequirements(rawSection,participants){
+  const section=normalizeSection(structuredClone(rawSection));
+  const activities=section.finisherMode==='song'?[]:(section.exercises||[]);
+  const result=new Map();
+  const stationMode=normalizeText(section.taskStructure)==='stationer'||normalizeText(section.organization).includes('rotation');
+  const activityCount=Math.max(1,activities.length);
+  const mergeMode=stationMode?'sum':'max';
+
+  activities.forEach(activity=>{
+    const active=stationMode
+      ?Math.ceil(participants/sectionStationCount(section,activityCount))
+      :activeCountForSection(section,participants,activityCount);
+    mergeActivityMaps(result,activityEquipmentMap(activity,section,participants,activityCount,active),mergeMode);
+  });
+
+  const declared=sectionDeclaredEquipment(section);
+  const active=activeCountForSection(section,participants,Math.max(1,activities.length));
+  declared.forEach(name=>{
+    if(!name||name==='Kropsvægt')return;
+    if(isFacilityEquipment(name)){
+      addRequirement(result,name,1,'Adgang under træningen');
+      return;
+    }
+    const quantity=name==='Kegler'
+      ?coneRequirement(section,participants,Math.max(1,activities.length),null)
+      :active;
+    addRequirement(result,name,quantity,stationMode?'Fordelt på stationer':'');
+  });
+
+  return result;
+}
+function workoutEquipmentRequirements(participants){
+  const total=new Map();
+  sections.forEach(section=>{
+    const sectionMap=sectionEquipmentRequirements(section,participants);
+    sectionMap.forEach(item=>addRequirement(total,item.name,item.quantity,item.detail,'max'));
+  });
+  return [...total.values()].sort((a,b)=>{
+    const priority=['Kettlebell','Håndvægt','Måtte','Boks','Medicinbold','TRX','Sandsæk','Slæde','Romaskine','SkiErg','Elastik','Bænk','Kegler','Reb','Vægtskive','Væg'];
+    return priority.indexOf(a.name)-priority.indexOf(b.name)||a.name.localeCompare(b.name,'da');
+  });
+}
+function renderEquipmentSummary(participants){
+  const list=byId('reviewEquipmentList');
+  const note=byId('reviewEquipmentNote');
+  if(!list||!note)return;
+  const requirements=workoutEquipmentRequirements(participants);
+  if(!requirements.length){
+    list.innerHTML='<li><strong>Intet særligt udstyr</strong><span>Kropsvægt og almindelig træningsplads</span></li>';
+  }else{
+    list.innerHTML=requirements.map(item=>{
+      const label=isFacilityEquipment(item.name)?`Adgang til ${EQUIPMENT_LABELS[item.name]?.[0]||item.name}`:equipmentDisplay(item.name,item.quantity);
+      return `<li><strong>${esc(label)}</strong>${item.detail?`<span>${esc(item.detail)}</span>`:''}</li>`;
+    }).join('');
+  }
+  note.textContent=`Beregnet til ${participants} deltagere ud fra det højeste samtidige behov. Udstyr kan genbruges mellem sektioner.`;
+}
+function equipmentSummaryPrintHtml(workout){
+  const previousSections=sections;
+  const previousConcept=plannerConcept;
+  const previousFamily=$('#familyMode')?.checked;
+  const previousAdults=$('#adultCount')?.value;
+  try{
+    sections=structuredClone(workout.sections||[]);
+    plannerConcept=workout.trainingType||'junior';
+    if($('#familyMode'))$('#familyMode').checked=!!workout.familyMode;
+    if($('#adultCount'))$('#adultCount').value=workout.adultCount||0;
+    const participants=Math.max(1,+workout.participants||1);
+    const requirements=workoutEquipmentRequirements(participants);
+    const items=requirements.length
+      ?requirements.map(item=>`<li>${esc(isFacilityEquipment(item.name)?`Adgang til ${EQUIPMENT_LABELS[item.name]?.[0]||item.name}`:equipmentDisplay(item.name,item.quantity))}${item.detail?` <small>(${esc(item.detail)})</small>`:''}</li>`).join('')
+      :'<li>Intet særligt udstyr – kun kropsvægt og træningsplads.</li>';
+    return `<section class="print-equipment-summary"><h2>Du skal bruge</h2><ul>${items}</ul><p>Beregnet til ${participants} deltagere ud fra højeste samtidige behov.</p></section>`;
+  }finally{
+    sections=previousSections;
+    plannerConcept=previousConcept;
+    if($('#familyMode'))$('#familyMode').checked=!!previousFamily;
+    if($('#adultCount'))$('#adultCount').value=previousAdults||0;
+  }
+}
+
 function collect(){return{id:currentId||crypto.randomUUID(),trainingType:selectedTrainingType(),profileId:userProfile().id,theme:$('#plannerTheme')?.value||'',name:$('#workoutName').value,date:$('#workoutDate').value,participants:+$('#participantCount').value,familyMode:$('#familyMode').checked,adultCount:+($('#adultCount').value||0),savedAt:new Date().toISOString(),sections:structuredClone(sections),music:{spotify:$('#spotifyPlaylistUrl').value.trim(),tidal:$('#tidalPlaylistUrl').value.trim(),telmore:$('#telmorePlaylistUrl').value.trim()}}}
 function saveCurrent(){
   const invalidFinisher=sections.find(s=>normalizeSection(s).sectionPurpose==='Finisher'&&finisherValidationMessage(s));
   if(invalidFinisher)return alert(finisherValidationMessage(invalidFinisher)+' Ret finisheren, før træningen gemmes.');
   const w=collect(),all=workouts().filter(x=>x.id!==w.id);all.unshift(w);saveWorkouts(all);currentId=w.id;renderSaved();alert('Træningen er gemt.')} 
-function updateReview(){$('#reviewName').textContent=$('#workoutName').value;$('#reviewSections').textContent=sections.length;$('#reviewMinutes').textContent=sections.reduce((n,s)=>n+(+s.minutes||0),0)}
+function updateReview(){
+  const participants=Math.max(1,+$('#participantCount')?.value||20);
+  $('#reviewName').textContent=$('#workoutName').value;
+  $('#reviewSections').textContent=sections.length;
+  $('#reviewMinutes').textContent=sections.reduce((n,s)=>n+(+s.minutes||0),0);
+  const reviewParticipants=byId('reviewParticipants');
+  if(reviewParticipants&&document.activeElement!==reviewParticipants)reviewParticipants.value=participants;
+  renderEquipmentSummary(participants);
+}
 
 function trainingTypeLabel(type){return ({junior:'FunkFit Junior',family:'Familietræning',adult:'Funktionel voksen',trx:'TRX',hiit:'HIIT',hyrox:'Hyrox'})[type]||'FunkFit-træning'}
 function trainingTypeClass(type){return `saved-type-${String(type||'other').replace(/[^a-z0-9-]/gi,'')}`}
@@ -2994,7 +3263,8 @@ function printWorkout(w,mode){
   </header>`;
 
   $('#printView').className=mode==='participant'?'print-view participant-print':'print-view instructor-print';
-  $('#printView').innerHTML=heading+w.sections.map(section=>sectionHtml(section,mode==='participant')).join('');
+  const equipmentHtml=mode==='instructor'?equipmentSummaryPrintHtml(w):'';
+  $('#printView').innerHTML=heading+equipmentHtml+w.sections.map(section=>sectionHtml(section,mode==='participant')).join('');
   window.print();
 }
 function startPlayer(w){
