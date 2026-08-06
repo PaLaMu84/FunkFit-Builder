@@ -20,6 +20,48 @@ En sektion beskrives i seks adskilte lag. De må ikke blandes sammen.
 - **YGIG:** Organisering. Makkere skifter efter opgaven; det er ikke automatisk et interval.
 - **Stationer:** Opgavestruktur. Organisering er rotation, og formatet er typisk intervaller.
 
+
+## Ledopvarmning
+Ledopvarmning er rolig, systematisk mobilisering – ikke puls- eller styrketræning.
+
+Arbejd gennem hele kroppen enten nedefra og op eller oppefra og ned. Husk:
+- nakke: rolige bevægelser op og ned
+- skuldre og arme
+- rotation i øvre ryg
+- hofter
+- knæ
+- ankler/fodled
+- håndled
+
+Varigheden er normalt cirka fem minutter. Bevæg roligt og kontrolleret uden at skabe høj puls.
+
+## Regelpakke for AI-balance
+AI må ikke kun vælge de øvelser, der scorer højest enkeltvis. Den skal også vurdere variationen i den samlede sektion og i resten af træningen.
+
+### Opvarmning med fire øvelser
+AI forsøger som udgangspunkt at dække:
+1. puls og bevægelse
+2. underkrop
+3. overkrop
+4. core eller helkrop
+
+Der må som udgangspunkt højst være to øvelser med samme primære bevægelsesmønster eller primære kropsområde. En opvarmning må derfor ikke ende med fire næsten ens skulder-, core- eller konditionsøvelser.
+
+### Primært fokus
+- Core som sekundær stabilisator tæller ikke som en egentlig coreøvelse.
+- Øvelsens kategori og primære bevægelsesmønster vægter højere end alle sekundære kropsområder.
+- Push, pull, squat, hinge, lunge, carry, hop/løb og core behandles som forskellige bevægelsesmønstre.
+
+### Balance i hele træningen
+Når AI bygger næste sektion, nedprioriterer den bevægelsesmønstre og kropsområder, der allerede fylder meget. Det reducerer fx:
+- mange presøvelser uden træk
+- flere squatvarianter uden hinge
+- gentagne skuldertunge sektioner
+- unødvendigt mange direkte coreøvelser
+
+Et tydeligt brugerønske kan tilsidesætte standardbalancen. Beder brugeren specifikt om fx ben, skuldre eller meget core, må dette fokus fylde mere.
+
+
 ## Regelpakke for relevante øvelsesfelter
 Finpuds viser kun felter, der giver mening for både sektionens arbejdsformat og den konkrete øvelse. Styring, der gælder hele sektionen, skal ikke gentages på hvert øvelseskort.
 
@@ -63,3 +105,36 @@ Eksempel: Kettlebell clean i en AMRAP viser **kg og reps**. Tempo, pause og sæt
 ### 7. Grundregel
 Et felt skal kun vises, når instruktøren med rimelighed kan bruge det til at planlægge eller gennemføre netop den øvelse i netop det format. Skjulte felter må ikke udskrives i instruktør-PDF’en.
 
+
+
+## Finisher – sang eller andet format
+En Finisher er sektionens **formål**: en kort, tydelig afslutning på træningen. Den er ikke automatisk en sang.
+
+### Valg 1: Sang
+- Varigheden følger sangen.
+- Sangtitel, kunstner og link kan gemmes.
+- Kataloget indeholder forskellige sangmekanikker, fx omkvæds-burpees, planke i versene og en fælles high-five-finale.
+- En sangbaseret finisher bruger ikke den almindelige øvelsesliste.
+
+### Valg 2: Andet format
+En finisher kan bl.a. være:
+- kort AMRAP eller EMOM
+- Tabata eller andre intervaller
+- stigende eller faldende ladder
+- chipper eller For time-opgave
+- stafet, makkerchallenge eller holdmission
+- carry-, løbe-, core-, TRX- eller Hyrox-afslutning
+- en fælles reaktionsleg eller personlig kvalitetsudfordring
+
+### Katalog og AI-forslag
+Appen indeholder **25 forskellige finishere**. Hvert katalogelement kan indsætte navn, varighed, arbejdsformat, organisering, opgave, regler, trænertips og relevante aktiviteter.
+
+AI-forslaget vurderer:
+- træningssporet: Junior, Familie, Funktionel voksen, TRX, HIIT eller Hyrox
+- tilgængeligt udstyr
+- deltagerantal og risiko for kø
+- brugerens mål og tekstønsker
+- variation i forhold til resten af træningens kropsområder
+- nyligt foreslåede finishere, så kataloget bruges mere varieret
+
+Et forslag er et udgangspunkt. Finisherens navn, struktur, regler, trænertips og aktiviteter kan fortsat redigeres i Finpuds.

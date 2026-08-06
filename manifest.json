@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.7.4-alpha.15",
-  "short_name": "FunkFit 0.7.4a15",
+  "name": "FunkFit Builder v0.7.4-alpha.17",
+  "short_name": "FunkFit 0.7.4a17",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "Kontekstafhængige øvelsesfelter og kompakt Finpuds-layout"
+  "description": "AI-balance, systematisk ledopvarmning og strammere mobilnavigation"
 }

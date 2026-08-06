@@ -1,25 +1,24 @@
-# Gentest – v0.7.4-alpha.15
+# Gentest – v0.7.4-alpha.17
 
-1. Åbn en AMRAP og tilføj Kettlebell clean som Funktionel voksen.
-   - Forvent: Kg og Reps.
-   - Må ikke vise: Sæt, Tempo eller Pause.
-2. Skift samme sektion til Sætbaseret.
-   - Forvent: Kg, Reps, Sæt og Pause. Tempo skal fortsat være skjult, fordi clean er eksplosiv.
-3. Tilføj Farmer carry i AMRAP.
-   - Forvent: Kg og Distance.
-4. Tilføj Plank i AMRAP.
-   - Forvent: Tid og ingen Kg.
-5. Åbn en interval-/stationssektion.
-   - Arbejde, pause og runder skal stå på sektionsniveau og ikke gentages på hver øvelse.
-6. Kontrollér TRX:
-   - Kropsvinkel vises.
-   - Tempo vises kun ved relevant kontrolleret arbejde.
-7. Kontrollér Hyrox:
-   - Ergometer viser meter.
-   - Carry/slæde viser relevant vægt og distance.
-8. Kontrollér Familie:
-   - Junior- og voksenfelterne følger hver sin valgte øvelse.
-9. Kontrollér at sektionsikonet ligger øverst til venstre.
-10. Kontrollér at Fjern-knappen er lille og øverst til højre på øvelseskortet.
-11. Opret instruktør-PDF og kontrollér, at skjulte/stale metrics ikke udskrives.
-12. Åbn Manual og ordbog og kontrollér regelpakken.
+## Mobil
+1. Åbn appen på en smal mobilskærm.
+2. Kontrollér, at hele headeren og venstre side af indholdet er synlig.
+3. Kontrollér, at navigationen står i et 2 × 2-grid.
+4. Kontrollér, at siden ikke kan rulles vandret.
+5. Kontrollér, at navn og dato vises uden den gamle introduktionstekst.
+
+## Ledopvarmning
+6. Generér en ny træning med ledopvarmning.
+7. Kontrollér, at reglen nævner nakke, skuldre/arme, øvre ryg, hofter, knæ, ankler/fodled og håndled.
+8. Kontrollér, at ledopvarmningen beskrives som rolig og uden høj puls.
+
+## AI-balance
+9. Generér mindst fem almindelige opvarmninger med fire øvelser.
+10. Kontrollér, at de som udgangspunkt dækker puls, underkrop, overkrop og core/helkrop.
+11. Kontrollér, at fire øvelser ikke alle har samme primære kropsområde.
+12. Generér en helkropstræning og kontrollér variation mellem push, pull, squat, hinge, carry, kondition og core.
+13. Skriv et tydeligt fokus, fx “meget ben”, og kontrollér, at AI må prioritere dette.
+
+## AMRAP
+14. Kontrollér, at en kettlebell clean i AMRAP fortsat kan have kg og reps.
+15. Kontrollér, at sæt, tempo og individuel pause fortsat er skjult i almindelig AMRAP.
