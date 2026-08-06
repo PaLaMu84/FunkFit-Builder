@@ -744,7 +744,7 @@ dialog{width:min(860px,calc(100% - 1rem));max-height:90vh;overflow:auto;border:0
 }
 
 
-/* v0.7.4-alpha.15 – relevante øvelsesfelter og kompakt kortlayout */
+/* v0.7.4-alpha.16 – relevante øvelsesfelter og kompakt kortlayout */
 .exercise-section>.section-icon,
 .exercise-section .section-icon{
   position:absolute;
@@ -790,4 +790,76 @@ dialog{width:min(860px,calc(100% - 1rem));max-height:90vh;overflow:auto;border:0
   .exercise-main .exercise-identity{grid-column:auto}
   .activity-remove-btn{top:.55rem;right:.55rem}
   .field-rule-grid{grid-template-columns:1fr}
+}
+
+
+/* v0.7.4-alpha.16 – fleksibel Finisher og katalog */
+.finisher-editor{display:grid;gap:.8rem;padding:.75rem 1rem 0}
+.finisher-choice-bar,.finisher-form-grid{display:grid;grid-template-columns:minmax(150px,.7fr) minmax(220px,1.5fr) auto;gap:.65rem;align-items:end}
+.finisher-choice-bar label,.finisher-form-grid label{display:flex;flex-direction:column;gap:.3rem;font-size:.82rem;font-weight:800}
+.finisher-choice-bar select,.finisher-form-grid select{width:100%}
+.finisher-template-preview{display:grid;gap:.25rem;padding:.75rem .85rem;border:1px solid #fde68a;border-radius:12px;background:#fffbeb}
+.finisher-template-preview>div{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem}
+.finisher-template-preview strong{color:#0f172a}.finisher-template-preview span{color:#92400e;font-size:.78rem;font-weight:800}
+.finisher-template-preview p{margin:0;color:#475569;line-height:1.45}
+.finisher-format-summary{display:grid;gap:.25rem}
+.finisher-format-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin:.15rem 0 .35rem}
+.finisher-format-badges span{padding:.32rem .55rem;border-radius:999px;background:#fef3c7;color:#92400e;font-size:.78rem;font-weight:800}
+.finisher-task-card{border-left:5px solid #eab308;background:#fffbeb}
+.finisher-task-card .guidance-icon{background:#fef3c7}
+.single-finisher-wrap .finisher-template-preview{margin:.7rem 0}
+@media(max-width:760px){.finisher-choice-bar,.finisher-form-grid{grid-template-columns:1fr}.finisher-choice-bar button,.finisher-form-grid button{width:100%}}
+
+
+/* v0.7.4-alpha.17 – stram mobilnavigation og ingen vandret overflow */
+html,body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+.topbar,.main-nav,main,.app-view,.panel{
+  min-width:0;
+}
+.main-nav{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  align-items:stretch;
+}
+.nav-tab{
+  width:100%;
+  min-width:0;
+  min-height:58px;
+  padding:.65rem .55rem;
+  white-space:normal;
+  line-height:1.15;
+  text-align:center;
+  overflow-wrap:anywhere;
+}
+.workout-identity-compact{
+  grid-template-columns:1fr;
+}
+.workout-identity-compact .workout-identity-fields{
+  width:100%;
+}
+.step,.step>*{
+  min-width:0;
+}
+@media(max-width:700px){
+  .topbar{padding:1rem .85rem}
+  .topbar h1{font-size:clamp(2rem,10.5vw,2.8rem)}
+  .main-nav{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:.5rem;
+    padding:.65rem .75rem;
+  }
+  .nav-tab{
+    min-height:54px;
+    font-size:.9rem;
+  }
+  main{width:100%;padding:.75rem}
+  .panel{width:100%;padding:1rem}
+}
+@media(max-width:390px){
+  .main-nav{padding:.55rem}
+  .nav-tab{padding:.58rem .4rem;font-size:.84rem}
 }

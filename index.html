@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.15</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a15">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a15">
+  <title>FunkFit Builder v0.7.4-alpha.17</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a17">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a17">
 </head>
 <body>
 <header class="topbar">
   <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
-    <p class="eyebrow">VERSION 0.7.4-ALPHA.14</p>
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.17</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </button>
@@ -37,12 +37,7 @@
       <div><p class="eyebrow">TRIN 1</p><h2>Overordnede rammer</h2></div>
     </div>
 
-    <section class="workout-identity-card">
-      <div>
-        <p class="eyebrow">TRÆNINGEN</p>
-        <h3>Navn og dato</h3>
-        <p>Gælder både AI-forslag og træninger, du bygger selv.</p>
-      </div>
+    <section class="workout-identity-card workout-identity-compact" aria-label="Træningens navn og dato">
       <div class="workout-identity-fields">
         <label>Træningens navn<input id="workoutName" value="Ny FunkFit Junior-træning" placeholder="Fx FunkFit Junior – agentmission"></label>
         <label>Dato<input id="workoutDate" type="date"></label>
@@ -117,8 +112,15 @@
             <span>Ledopvarmning bygges som del af en hel træning. Finisher kan tilføjes separat.</span>
           </label>
           <div id="singleFinisherWrap" class="single-finisher-wrap hidden">
-            <strong>Finisher – én sang</strong>
-            <div class="planner-fields">
+            <strong>Finisher</strong>
+            <p class="field-help">Vælg en sangbaseret finisher eller et kort afslutningsformat fra kataloget.</p>
+            <div class="finisher-form-grid">
+              <label>Type<select id="singleFinisherMode"><option value="song">🎵 Sang</option><option value="format">🏁 Andet format</option></select></label>
+              <label>Katalog<select id="singleFinisherCatalog"></select></label>
+              <button id="singleFinisherSuggestBtn" type="button" class="secondary">✨ Foreslå finisher</button>
+            </div>
+            <div id="singleFinisherPreview" class="finisher-template-preview"></div>
+            <div id="singleFinisherSongFields" class="planner-fields">
               <label>Sangtitel<input id="singleFinisherTitle" placeholder="Fx sangens titel"></label>
               <label>Kunstner<input id="singleFinisherArtist" placeholder="Fx kunstner"></label>
               <label>Længde (min)<input id="singleFinisherMinutes" type="number" min="1" max="12" step=".1" value="4"></label>
@@ -204,7 +206,7 @@
         <div class="planner-toggles">
           <label class="planner-toggle-card"><input id="avoidWaiting" type="checkbox" checked><span><strong>Undgå ventetid og kø</strong><small>Flere stationer, mindre grupper og færre flaskehalse.</small></span></label>
           <label id="includeJointWarmupWrap" class="planner-toggle-card"><input id="includeJointWarmup" type="checkbox" checked><span><strong>Fast ledopvarmning</strong><small>5 minutters rolig mobilisering først.</small></span></label>
-          <label id="includeFinisherWrap" class="planner-toggle-card"><input id="includeTeamChallenge" type="checkbox" checked><span><strong>Planlæg en finisher</strong><small>Én afsluttende sang til sidst.</small></span></label>
+          <label id="includeFinisherWrap" class="planner-toggle-card"><input id="includeTeamChallenge" type="checkbox" checked><span><strong>Planlæg en finisher</strong><small>Vælg mellem sang og et kort afslutningsformat.</small></span></label>
           <label id="includeGameWrap" class="planner-toggle-card"><input id="includeGame" type="checkbox" checked><span><strong>Medtag en leg</strong><small>Kun til Junior og Familietræning.</small></span></label>
           <label class="planner-toggle-card"><input id="useFavoritesFirst" type="checkbox"><span><strong>Prioritér mine favoritter</strong><small>Brug gemte favoritøvelser først, når de passer.</small></span></label>
         </div>
@@ -361,7 +363,7 @@ Hovedtræning 20 min
       <div class="actions">
         <button id="aiBuildSectionBtn" type="button">Byg en sektion</button>
         <button id="aiBuildGameBtn" type="button" class="secondary">🎲 Byg en leg</button>
-        <button id="addFinisherBtn" type="button" class="ghost">🎵 Tilføj finisher</button>
+        <button id="addFinisherBtn" type="button" class="ghost">🏁 Tilføj finisher</button>
       </div>
     </div>
 
@@ -466,6 +468,16 @@ Hovedtræning 20 min
       <p><strong>YGIG:</strong> En organisering, hvor makkere skifter efter den aftalte opgave. Det er ikke automatisk et 40/20-interval.</p>
       <p><strong>Stationer:</strong> Opgavestrukturen er stationer, organiseringen er rotation, og arbejdsformatet er ofte intervaller.</p>
     </div>
+    <div class="docs-rules ai-balance-manual">
+      <h3>AI-balance og opvarmning</h3>
+      <div class="field-rule-grid">
+        <article><h4>Ledopvarmning</h4><p>Arbejd roligt gennem hele kroppen enten nedefra og op eller oppefra og ned. Husk nakke op/ned, skuldre og arme, rotation i øvre ryg, hofter, knæ, ankler/fodled og håndled.</p></article>
+        <article><h4>Opvarmning med fire øvelser</h4><p>AI forsøger at dække puls/bevægelse, underkrop, overkrop og core/helkrop. Den må ikke vælge fire næsten ens skulder-, core- eller konditionsøvelser.</p></article>
+        <article><h4>Primært fokus tæller mest</h4><p>Core som sekundær stabilisator tæller ikke som en egentlig coreøvelse. Balancen styres primært af øvelsens bevægelsesmønster og primære kropsområde.</p></article>
+        <article><h4>Hele træningen</h4><p>Ved nye sektioner nedprioriterer AI bevægelsesmønstre og kropsområder, der allerede fylder meget. Gentagelser tillades, når brugeren specifikt beder om et bestemt fokus.</p></article>
+      </div>
+    </div>
+
     <div class="docs-rules field-rule-manual">
       <h3>Regelpakke for øvelsesfelter</h3>
       <p>Finpuds viser kun felter, der giver mening for både <strong>sektionens format</strong> og <strong>den konkrete øvelse</strong>. Tidsstyring, pauser og runder må ikke gentages på hvert øvelseskort, når de allerede styres for hele sektionen.</p>
@@ -476,6 +488,17 @@ Hovedtræning 20 min
         <article><h4>Teknik og kvalitetsarbejde</h4><p>Vis relevante reps eller tid, eventuel belastning og tempo ved kontrollerede styrkeøvelser. Kvalitet kommer før høj mængde.</p></article>
         <article><h4>Øvelsestypen bestemmer mængden</h4><p>Carry, crawl, slæde og ergometer bruger typisk distance. Planker og statiske hold bruger tid. Almindelige styrkeøvelser bruger reps.</p></article>
         <article><h4>Eksempel</h4><p>Kettlebell clean i en AMRAP viser <strong>kg og reps</strong>. Tempo, pause og sæt skjules. I en sætbaseret styrkeblok vises kg, reps, sæt og pause. Tempo er fortsat skjult, fordi clean er eksplosiv.</p></article>
+      </div>
+    </div>
+
+    <div class="docs-rules finisher-manual">
+      <h3>Finisher: sang eller andet format</h3>
+      <p>En <strong>Finisher</strong> beskriver sektionens formål – den behøver ikke være en sang. I Finpuds vælges først mellem <strong>Sang</strong> og <strong>Andet format</strong>.</p>
+      <div class="field-rule-grid">
+        <article><h4>🎵 Sang</h4><p>Varigheden følger sangen. Sangtitel, kunstner og link kan gemmes. Kataloget indeholder også forskellige måder at bruge sangen på.</p></article>
+        <article><h4>🏁 Andet format</h4><p>Finisheren kan fx være AMRAP, EMOM, intervaller, ladder, chipper, stafet, makkerchallenge eller en kort fælles udfordring.</p></article>
+        <article><h4>Katalog</h4><p>Appen indeholder 25 varierede finishere. Et katalogvalg indsætter format, tid, regler, trænertips og relevante aktiviteter.</p></article>
+        <article><h4>AI-forslag</h4><p>Forslaget vægter målgruppe, udstyr, deltagerantal, brugerens ønsker og variation i forhold til resten af træningen.</p></article>
       </div>
     </div>
 
@@ -624,8 +647,15 @@ Hovedtræning 20 min
         <strong>FunkFit Fundamentals</strong><small>Vælg én eller flere.</small><div id="inlineFundamentalChoices" class="single-fundamental-choices"></div>
       </div>
       <div id="inlineFinisherWrap" class="span-2 single-finisher-wrap hidden">
-        <strong>Finisher – én sang</strong>
-        <div class="form-grid">
+        <strong>Finisher</strong>
+        <p class="field-help">Vælg sang eller et andet afslutningsformat. AI kan vælge fra kataloget.</p>
+        <div class="finisher-form-grid">
+          <label>Type<select id="inlineFinisherMode"><option value="song">🎵 Sang</option><option value="format">🏁 Andet format</option></select></label>
+          <label>Katalog<select id="inlineFinisherCatalog"></select></label>
+          <button id="inlineFinisherSuggestBtn" type="button" class="secondary">✨ Foreslå finisher</button>
+        </div>
+        <div id="inlineFinisherPreview" class="finisher-template-preview"></div>
+        <div id="inlineFinisherSongFields" class="form-grid">
           <label>Sangtitel<input id="inlineFinisherTitle"></label><label>Kunstner<input id="inlineFinisherArtist"></label>
           <label>Længde (min)<input id="inlineFinisherMinutes" type="number" min="1" max="12" step=".1" value="4"></label>
           <label>Link<input id="inlineFinisherUrl" type="url"></label>
@@ -664,7 +694,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.15 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a15"></script>
+<footer>FunkFit Builder v0.7.4-alpha.17 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a17"></script>
 </body>
 </html>

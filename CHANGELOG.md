@@ -1,17 +1,22 @@
-# FunkFit Builder v0.7.4-alpha.15
+# FunkFit Builder v0.7.4-alpha.17
 
-## Finpuds-layout
-- Sektionsikonet er placeret helt øverst til venstre.
-- Fjern-knappen på en aktivitet er mindre og ligger diskret øverst til højre på øvelseskortet.
+## AI-balancering
+- AI vurderer nu både den enkelte øvelse, sektionens samlede variation og resten af træningen.
+- En opvarmning med fire øvelser forsøger at dække puls, underkrop, overkrop og core/helkrop.
+- Core som sekundær stabilisator tæller ikke som en direkte coreøvelse.
+- Gentagelser af samme bevægelsesmønster og kropsområde nedprioriteres.
+- Et tydeligt brugerønske kan fortsat prioritere fx ben, skuldre eller core.
 
-## Regelstyrede øvelsesfelter
-- Felter bestemmes nu af både sektionens format og den konkrete øvelse.
-- AMRAP med kettlebell clean viser kg og reps – ikke sæt, tempo eller pause.
-- Sæt og pause vises kun i sætbaseret styrke. Tempo vises kun ved kontrollerede styrkeøvelser og skjules ved eksplosive/konditionsprægede øvelser.
-- Intervaller bruger arbejde, pause og runder på sektionsniveau frem for at gentage dem på hver øvelse.
-- Carry/ergometer/crawl bruger distance, statiske hold bruger tid, og almindelige styrkeøvelser bruger reps.
-- TRX, HIIT, Hyrox, Junior og Familie har tilsvarende kontekstafhængige felter.
-- Instruktør-PDF viser kun de felter, der er relevante efter samme regelsæt.
+## Ledopvarmning
+- Ny fast grundregel med systematisk gennemgang enten oppefra og ned eller nedefra og op.
+- Nakke, skuldre/arme, rotation i øvre ryg, hofter, knæ, ankler/fodled og håndled indgår.
+- Tidligere standardtekst migreres automatisk.
 
-## Manual
-- Regelpakken er tilføjet både i appens Manual og ordbog og i `MANUAL_OG_ORDBOG.md`.
+## Layout
+- Den overflødige tekst “TRÆNINGEN · Navn og dato · Gælder både …” er fjernet.
+- Navn og dato er bevaret i en kompakt blok.
+- Topnavigationen bruger fire lige kolonner på større skærme og 2 × 2 på mobil.
+- Vandret overflow på mobil er blokeret.
+
+## Bevidst uændret
+- Reps er fortsat et relevant mængdefelt i en almindelig rundebaseret AMRAP.
