@@ -21,6 +21,37 @@ En sektion beskrives i seks adskilte lag. De må ikke blandes sammen.
 - **Stationer:** Opgavestruktur. Organisering er rotation, og formatet er typisk intervaller.
 
 
+
+## Udstyrsoversigten: “Du skal bruge”
+Til sidst i planlægningen viser boksen **Klar til at gemme** en samlet udstyrsoversigt.
+
+Deltagertallet kan ændres direkte i boksen. Oversigten genberegnes med det samme, så instruktøren kan åbne en gemt træning kort før start, rette antallet af deltagere og se det opdaterede behov.
+
+### Beregningsprincipper
+- Oversigten viser det **højeste samtidige behov** for hver udstyrstype.
+- Udstyr, som anvendes i forskellige sektioner, tælles ikke dobbelt, fordi det kan genbruges.
+- Ved individuel og samtidig træning beregnes som udgangspunkt ét sæt udstyr pr. aktiv deltager.
+- Ved YGIG beregnes som udgangspunkt udstyr til halvdelen af deltagerne, fordi makkere skiftes.
+- Ved stationer beregnes behovet pr. gruppe og lægges sammen på tværs af samtidige stationer.
+- Ved stafet og holdarbejde beregnes udstyr efter et praktisk antal hold.
+- En håndvægtøvelse kan kræve én eller to håndvægte pr. aktiv deltager afhængigt af øvelsen.
+- Farmer carry med kettlebells beregnes med to kettlebells pr. aktiv deltager.
+- Kegler beregnes efter baner, stationer og vendepunkter frem for én kegle pr. person.
+- Kropsvægt vises ikke som udstyr. Væg vises som adgang til væg.
+
+Eksempel ved 20 samtidige deltagere:
+- 20 kettlebells, når alle bruger én
+- 40 håndvægte, når alle bruger to
+- 20 måtter, når alle skal have én
+
+Oversigten følger også med i instruktør-PDF’en.
+
+## Beskyttelse af gemte træninger
+Gemte træninger ligger i browserens lokale lager og må ikke slettes ved versionsskift eller almindelig cache-nulstilling.
+
+Appen gemmer derfor en ekstra lokal sikkerhedskopi af listen over gemte træninger. Hvis den normale lagernøgle mangler, forsøger appen at gendanne træningerne fra sikkerhedskopien. En træning slettes kun, når brugeren aktivt vælger **Slet** på den konkrete træning.
+
+
 ## Ledopvarmning
 Ledopvarmning er rolig, systematisk mobilisering – ikke puls- eller styrketræning.
 
