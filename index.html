@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.28</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a28">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a28">
+  <title>FunkFit Builder v0.7.4-alpha.29</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a29">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a29">
 </head>
 <body>
 <header class="topbar">
   <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
-    <p class="eyebrow">VERSION 0.7.4-ALPHA.28</p>
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.29</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </button>
@@ -396,10 +396,26 @@ Hovedtræning 20 min
 
   <section id="step3" class="step-panel panel">
     <div class="section-heading">
-      <div><p class="eyebrow">TRIN 3</p><h2>Tilknyt musik</h2></div>
+      <div><p class="eyebrow">TRIN 3</p><h2>Tilknyt musik</h2><p>Vælg først, om FunkFit skal hjælpe med playlisten, eller om du vil bygge og tilknytte den selv.</p></div>
     </div>
 
-    <section class="music-planner-card">
+    <section class="music-builder-choice-card">
+      <p class="eyebrow">HVORDAN VIL DU LAVE MUSIKKEN?</p>
+      <div class="music-builder-choice-grid">
+        <button type="button" class="music-builder-choice selected" data-music-build-mode="ai">
+          <span>✨</span>
+          <strong>Brug AI til at lave min playliste</strong>
+          <small>Vælg genrer og ønsker. FunkFit tilpasser musikken til træningens sektioner.</small>
+        </button>
+        <button type="button" class="music-builder-choice" data-music-build-mode="manual">
+          <span>🎵</span>
+          <strong>Jeg vil selv bygge playlisten</strong>
+          <small>Tilføj numre sang for sang eller tilknyt en playliste, du allerede har lavet.</small>
+        </button>
+      </div>
+    </section>
+
+    <section id="aiMusicBuilder" class="music-planner-card">
       <div class="music-planner-intro">
         <div>
           <p class="eyebrow">AI-MUSIKPLANLÆGNING</p>
@@ -458,6 +474,24 @@ Hovedtræning 20 min
         <div class="music-plan-number">3</div>
         <div class="music-plan-content">
           <h4>Musikønsker</h4>
+          <div class="music-genre-block">
+            <strong>Hvilke genrer må AI bruge?</strong>
+            <p class="field-help">Vælg gerne flere. AI skal holde sig til de valgte genrer, medmindre en sektion kræver noget helt andet.</p>
+            <div id="musicGenreChoices" class="music-genre-grid">
+              <button type="button" class="music-genre-chip selected" data-music-genre="pop">Pop</button>
+              <button type="button" class="music-genre-chip" data-music-genre="rock">Rock</button>
+              <button type="button" class="music-genre-chip" data-music-genre="hiphop">Hiphop</button>
+              <button type="button" class="music-genre-chip" data-music-genre="rnb">R&amp;B</button>
+              <button type="button" class="music-genre-chip" data-music-genre="soul-funk">Soul / Funk</button>
+              <button type="button" class="music-genre-chip" data-music-genre="indie">Indie / Alternative</button>
+              <button type="button" class="music-genre-chip" data-music-genre="dance">Dance / Elektronisk</button>
+              <button type="button" class="music-genre-chip" data-music-genre="danish">Dansk pop / rock</button>
+              <button type="button" class="music-genre-chip" data-music-genre="latin">Latin</button>
+              <button type="button" class="music-genre-chip" data-music-genre="reggae">Reggae</button>
+              <button type="button" class="music-genre-chip" data-music-genre="country">Country</button>
+              <button type="button" class="music-genre-chip" data-music-genre="metal-punk">Metal / Punk</button>
+            </div>
+          </div>
           <div class="music-preference-grid">
             <label>Gerne
               <input id="musicPrefer" placeholder="Fx rock, pop, hiphop, danske hits">
@@ -511,6 +545,75 @@ Hovedtræning 20 min
           <p id="musicPlanStatus" class="music-plan-status" role="status" aria-live="polite"></p>
         </div>
       </div>
+    </section>
+
+    <section id="manualMusicBuilder" class="manual-music-builder hidden">
+      <div class="music-planner-intro">
+        <div>
+          <p class="eyebrow">BYG SELV</p>
+          <h3>Din egen playliste</h3>
+          <p>Du kan enten bygge tracklisten direkte i FunkFit og koble hvert nummer til en sektion – eller gemme linket til en playliste, du allerede har lavet i din musiktjeneste.</p>
+        </div>
+      </div>
+
+      <div class="manual-music-mode-grid">
+        <button type="button" class="manual-music-mode selected" data-manual-music-mode="tracks">
+          <strong>Byg sang for sang</strong>
+          <small>Bedst hvis playlisten skal følge træningens sektioner.</small>
+        </button>
+        <button type="button" class="manual-music-mode" data-manual-music-mode="link">
+          <strong>Tilknyt eksisterende playliste</strong>
+          <small>Bedst hvis playlisten allerede ligger i Spotify, TIDAL eller Telmore.</small>
+        </button>
+      </div>
+
+      <section id="manualTrackBuilder" class="manual-music-panel">
+        <div class="manual-track-heading">
+          <div>
+            <h4>Tilføj numre</h4>
+            <p>Vælg hvilken træningssektion nummeret hører til. Playlistens rækkefølge følger sektionerne.</p>
+          </div>
+          <label>Playlistens navn
+            <input id="manualPlaylistName" placeholder="Fx FunkFit Junior – torsdag">
+          </label>
+        </div>
+        <form id="manualTrackForm" class="manual-track-form">
+          <label>Sektion
+            <select id="manualTrackSection"></select>
+          </label>
+          <label>Sangtitel
+            <input id="manualTrackTitle" required placeholder="Fx Don't Stop Me Now">
+          </label>
+          <label>Kunstner
+            <input id="manualTrackArtist" required placeholder="Fx Queen">
+          </label>
+          <label>Album <small>(valgfrit)</small>
+            <input id="manualTrackAlbum" placeholder="Fx Jazz">
+          </label>
+          <button type="submit">+ Tilføj nummer</button>
+        </form>
+        <p class="field-help">Hvis Spotify er forbundet, forsøger FunkFit at kontrollere titel og kunstner mod Spotify, når nummeret tilføjes.</p>
+      </section>
+
+      <section id="manualLinkBuilder" class="manual-music-panel hidden">
+        <div class="manual-link-grid">
+          <label>Musiktjeneste
+            <select id="manualLinkedService">
+              <option value="spotify">Spotify</option>
+              <option value="tidal">TIDAL</option>
+              <option value="telmore">Telmore Musik</option>
+            </select>
+          </label>
+          <label>Playlistens navn
+            <input id="manualLinkedName" placeholder="Fx FunkFit – træning 10/9">
+          </label>
+          <label class="span-2">Link til playlisten
+            <input id="manualLinkedUrl" type="url" placeholder="Indsæt playlist-link">
+          </label>
+        </div>
+        <button id="saveManualLinkedPlaylistBtn" type="button">Gem playlisten med træningen</button>
+        <div id="manualLinkedPlaylistSummary" class="linked-playlist-summary hidden"></div>
+      </section>
     </section>
 
     <section id="musicPlanResultCard" class="music-result-card hidden">
@@ -593,7 +696,7 @@ Hovedtræning 20 min
     </section>
 
     <details class="manual-playlist-links">
-      <summary>Har du allerede en playliste? Gem linket her</summary>
+      <summary>Avanceret: direkte playlist-links</summary>
       <div class="music-service-grid">
         <article class="music-service">
           <h3>Spotify</h3>
@@ -892,6 +995,26 @@ Hovedtræning 20 min
   </form>
 </dialog>
 
+<dialog id="musicReplaceDialog" class="music-replace-dialog">
+  <form id="musicReplaceForm" method="dialog">
+    <button type="button" class="close" data-close="musicReplaceDialog" aria-label="Luk">×</button>
+    <p class="eyebrow">SKIFT NUMMER</p>
+    <h2 id="musicReplaceHeading">Skift nummer</h2>
+    <p id="musicReplaceSection" class="field-help"></p>
+    <div class="form-grid">
+      <label>Sangtitel<input id="musicReplaceTitle" required></label>
+      <label>Kunstner<input id="musicReplaceArtist" required></label>
+      <label class="span-2">Album <small>(valgfrit)</small><input id="musicReplaceAlbum"></label>
+    </div>
+    <div class="music-replace-actions">
+      <button id="findSpotifyAlternativesBtn" type="button" class="secondary">Find alternativer i Spotify</button>
+      <button type="submit">Gem nyt nummer</button>
+    </div>
+    <div id="spotifyAlternativeResults" class="spotify-alternative-results"></div>
+    <p id="musicReplaceStatus" class="music-plan-status"></p>
+  </form>
+</dialog>
+
 <dialog id="workoutPlayer" class="workout-player">
   <div class="player-shell">
     <header class="player-header">
@@ -920,7 +1043,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.28 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a28"></script>
+<footer>FunkFit Builder v0.7.4-alpha.29 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a29"></script>
 </body>
 </html>
