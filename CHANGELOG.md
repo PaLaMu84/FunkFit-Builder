@@ -1,14 +1,30 @@
-# FunkFit Builder v0.7.4-alpha.21
+# FunkFit Builder v0.7.4-alpha.22
 
-## React Lights
-- React Lights er tilføjet som udstyr/modalitet til FunkFit Junior og Familie.
-- 12 React Lights-øvelser er tilføjet til øvelsesbiblioteket.
-- Øvelserne dækker reaktion, sprint, agility, squat, lunge, core, bear crawl, burpees, makkerduel, holdstafet, hukommelse og bevægelsessignaler.
-- AI kan prioritere React Lights ved ønsker om reaktion, koordination og agility.
-- AI må kun vælge React Lights-øvelser, når React Lights er markeret som tilgængeligt udstyr.
-- “Du skal bruge” behandler React Lights som fælles sæt udstyr: normalt 1 sæt pr. samtidig React Lights-station.
-- Manualen er opdateret med katalog og programmeringsregler.
+## Musikplanlægning v1
+- Musik er nu planlagt sektion for sektion i stedet for kun som et playlist-link.
+- Brugeren vælger Spotify, TIDAL eller Telmore Musik.
+- Brugeren vælger fra start mellem alle sektioner eller kun udvalgte sektioner.
+- Hver sektion får en automatisk intensitetsprofil, BPM-mål og musikalsk stemning.
+- Ledopvarmning har en hård regel mod dance/EDM/klubmusik og hurtige/aggressive beats.
+- Opvarmning bygger energien gradvist op.
+- Teknik holdes fokuseret og mindre distraherende.
+- AMRAP/EMOM/HIIT/Hyrox/intervaller, teamchallenge og finisher får højere energi efter behov.
+- Allerede valgte finisher-sange kan bevares.
 
-## Data
-- Øvelsesbiblioteket er udvidet fra 106 til 118 øvelser.
+## Google AI
+- Google Gemini 3.6 Flash er koblet ind via Interactions API.
+- Google Search er aktiveret for at reducere opdigtede musikforslag og hjælpe med aktuelle numre.
+- API-nøglen gemmes kun i sessionStorage og aldrig i en gemt træning.
+- Produktionsversionen bør senere bruge server-side proxy.
+
+## Playlist-import
+- Playlist CSV: title, artist, album, isrc.
+- Spotify: CSV-flow via TuneMyMusic.
+- TIDAL: CSV-flow via TuneMyMusic.
+- Telmore Musik: CSV-flow via Soundiiz.
+- Separat Sektionsplan CSV viser sektion, intensitet, BPM, nummer og begrundelse.
+- Musikplanen gemmes sammen med træningen.
+
+## Eksisterende funktion
+- Manuelle Spotify/TIDAL/Telmore playlist-links er bevaret i et fold-ud-felt.
 - Gemte træninger bruger fortsat samme lagernøgle.

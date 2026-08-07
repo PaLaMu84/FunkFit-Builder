@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.21</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a21">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a21">
+  <title>FunkFit Builder v0.7.4-alpha.22</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a22">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a22">
 </head>
 <body>
 <header class="topbar">
   <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
-    <p class="eyebrow">VERSION 0.7.4-ALPHA.21</p>
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.22</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </button>
@@ -29,7 +29,7 @@
   <div class="stepper">
     <button class="step active" data-step="1"><span>1</span><strong>Planlæg</strong><small>Fortæl hvad du vil træne</small></button>
     <button class="step" data-step="2"><span>2</span><strong>Finpuds</strong><small>Ret sektioner og øvelser</small></button>
-    <button class="step" data-step="3"><span>3</span><strong>Musik</strong><small>Tilknyt playlister</small></button>
+    <button class="step" data-step="3"><span>3</span><strong>Musik</strong><small>Planlæg musik til sektionerne</small></button>
   </div>
 
   <section id="step1" class="step-panel active panel">
@@ -393,23 +393,157 @@ Hovedtræning 20 min
       <div><p class="eyebrow">TRIN 3</p><h2>Tilknyt musik</h2></div>
     </div>
 
-    <div class="music-service-grid">
-      <article class="music-service">
-        <h3>Spotify</h3>
-        <input id="spotifyPlaylistUrl" type="url" placeholder="https://open.spotify.com/playlist/...">
-        <button id="openSpotifyBtn" class="spotify-btn">Åbn Spotify</button>
-      </article>
-      <article class="music-service">
-        <h3>TIDAL</h3>
-        <input id="tidalPlaylistUrl" type="url" placeholder="https://tidal.com/browse/playlist/...">
-        <button id="openTidalBtn" class="tidal-btn">Åbn TIDAL</button>
-      </article>
-      <article class="music-service">
-        <h3>Telmore Musik</h3>
-        <input id="telmorePlaylistUrl" type="url" placeholder="https://musik.telmore.dk/...">
-        <button id="openTelmoreBtn" class="telmore-btn">Åbn Telmore</button>
-      </article>
-    </div>
+    <section class="music-planner-card">
+      <div class="music-planner-intro">
+        <div>
+          <p class="eyebrow">AI-MUSIKPLANLÆGNING</p>
+          <h3>Musik, der følger træningens intensitet</h3>
+          <p>AI planlægger musik sektion for sektion. Ledopvarmning får rolig musik, mens arbejdsblokke og teamchallenges kan få mere energi.</p>
+        </div>
+        <span class="music-ai-badge">Google Gemini 3.6 Flash</span>
+      </div>
+
+      <div class="music-plan-step">
+        <div class="music-plan-number">1</div>
+        <div class="music-plan-content">
+          <h4>Hvilken musiktjeneste bruger du?</h4>
+          <div id="musicServiceChoices" class="music-choice-grid">
+            <button type="button" class="music-choice selected" data-music-service="spotify">
+              <strong>Spotify</strong><small>Playlistfil via TuneMyMusic</small>
+            </button>
+            <button type="button" class="music-choice" data-music-service="tidal">
+              <strong>TIDAL</strong><small>Playlistfil via TuneMyMusic</small>
+            </button>
+            <button type="button" class="music-choice" data-music-service="telmore">
+              <strong>Telmore Musik</strong><small>Playlistfil via Soundiiz</small>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="music-plan-step">
+        <div class="music-plan-number">2</div>
+        <div class="music-plan-content">
+          <h4>Hvilke sektioner skal AI planlægge?</h4>
+          <div id="musicScopeChoices" class="music-scope-grid">
+            <button type="button" class="music-scope-choice selected" data-music-scope="all">
+              <strong>Alle sektioner</strong>
+              <small>AI laver et samlet musikforløb fra start til slut.</small>
+            </button>
+            <button type="button" class="music-scope-choice" data-music-scope="selected">
+              <strong>Kun udvalgte sektioner</strong>
+              <small>Vælg præcis hvilke sektioner, der skal have AI-musik.</small>
+            </button>
+          </div>
+          <div id="musicSectionSelectorWrap" class="music-section-selector-wrap hidden">
+            <div class="music-selector-actions">
+              <strong>Vælg sektioner</strong>
+              <div>
+                <button id="musicSelectAllSectionsBtn" type="button" class="ghost compact-btn">Alle</button>
+                <button id="musicSelectNoSectionsBtn" type="button" class="ghost compact-btn">Ingen</button>
+              </div>
+            </div>
+            <div id="musicSectionSelector" class="music-section-selector"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="music-plan-step">
+        <div class="music-plan-number">3</div>
+        <div class="music-plan-content">
+          <h4>Musikønsker</h4>
+          <div class="music-preference-grid">
+            <label>Gerne
+              <input id="musicPrefer" placeholder="Fx rock, pop, hiphop, danske hits">
+            </label>
+            <label>Undgå
+              <input id="musicAvoid" placeholder="Fx techno, EDM, bestemte kunstnere">
+            </label>
+            <label>Sprog
+              <select id="musicLanguage">
+                <option value="mixed">Blandet</option>
+                <option value="danish">Primært dansk</option>
+                <option value="international">Primært internationalt</option>
+              </select>
+            </label>
+            <label>Kendskab
+              <select id="musicFamiliarity">
+                <option value="mixed">Blanding af kendt og nyt</option>
+                <option value="hits">Mest kendte numre</option>
+                <option value="discover">Gerne nye/opdagelser</option>
+              </select>
+            </label>
+          </div>
+          <label class="music-check-option">
+            <input id="musicCleanOnly" type="checkbox" checked>
+            <span><strong>Undgå explicit lyrics</strong><small>Anbefales især til Junior og Familie.</small></span>
+          </label>
+          <label class="music-check-option">
+            <input id="musicKeepFinisherSong" type="checkbox" checked>
+            <span><strong>Behold allerede valgte finisher-sange</strong><small>AI erstatter ikke en sang, der allerede er valgt til en finisher.</small></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="music-plan-step">
+        <div class="music-plan-number">4</div>
+        <div class="music-plan-content">
+          <h4>Google AI</h4>
+          <p class="field-help">Til test kan din egen Gemini API-nøgle bruges direkte i browseren. Den gemmes kun i den aktuelle browser-session og kommer ikke med i den gemte træning. En senere produktionsversion bør bruge en server-side proxy.</p>
+          <div class="music-ai-key-row">
+            <label>Gemini API-nøgle
+              <input id="musicGeminiKey" type="password" autocomplete="off" placeholder="Indsæt nøgle fra Google AI Studio">
+            </label>
+            <button id="clearMusicGeminiKeyBtn" type="button" class="ghost">Glem nøgle</button>
+          </div>
+          <button id="generateMusicPlanBtn" type="button" class="music-generate-btn">✨ Planlæg musik med AI</button>
+          <p id="musicPlanStatus" class="music-plan-status" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="musicPlanResultCard" class="music-result-card hidden">
+      <div class="music-result-heading">
+        <div>
+          <p class="eyebrow">MUSIKPLAN</p>
+          <h3 id="musicPlanTitle">Musik til træningen</h3>
+          <p id="musicPlanSummary"></p>
+        </div>
+        <div class="music-export-actions">
+          <button id="downloadMusicPlaylistBtn" type="button">⬇ Playlist CSV</button>
+          <button id="downloadMusicSectionPlanBtn" type="button" class="secondary">⬇ Sektionsplan CSV</button>
+        </div>
+      </div>
+      <div id="musicPlanSections" class="music-plan-sections"></div>
+      <div class="music-import-card">
+        <div>
+          <strong id="musicImportTitle">Importér playlisten</strong>
+          <p id="musicImportHelp"></p>
+        </div>
+        <button id="openMusicImporterBtn" type="button" class="secondary">Åbn import</button>
+      </div>
+    </section>
+
+    <details class="manual-playlist-links">
+      <summary>Har du allerede en playliste? Gem linket her</summary>
+      <div class="music-service-grid">
+        <article class="music-service">
+          <h3>Spotify</h3>
+          <input id="spotifyPlaylistUrl" type="url" placeholder="https://open.spotify.com/playlist/...">
+          <button id="openSpotifyBtn" class="spotify-btn">Åbn Spotify</button>
+        </article>
+        <article class="music-service">
+          <h3>TIDAL</h3>
+          <input id="tidalPlaylistUrl" type="url" placeholder="https://tidal.com/browse/playlist/...">
+          <button id="openTidalBtn" class="tidal-btn">Åbn TIDAL</button>
+        </article>
+        <article class="music-service">
+          <h3>Telmore Musik</h3>
+          <input id="telmorePlaylistUrl" type="url" placeholder="https://musik.telmore.dk/...">
+          <button id="openTelmoreBtn" class="telmore-btn">Åbn Telmore</button>
+        </article>
+      </div>
+    </details>
 
     <div class="review-card">
       <div class="review-card-heading">
@@ -491,6 +625,15 @@ Hovedtræning 20 min
         <article><h4>Primært fokus tæller mest</h4><p>Core som sekundær stabilisator tæller ikke som en egentlig coreøvelse. Balancen styres primært af øvelsens bevægelsesmønster og primære kropsområde.</p></article>
         <article><h4>Hele træningen</h4><p>Ved nye sektioner nedprioriterer AI bevægelsesmønstre og kropsområder, der allerede fylder meget. Gentagelser tillades, når brugeren specifikt beder om et bestemt fokus.</p></article>
       </div>
+    </div>
+
+    <div class="docs-rules music-manual">
+      <h3>Musikplanlægning</h3>
+      <p><strong>Ledopvarmning:</strong> rolig, samtalevenlig musik omkring 65-95 BPM. Ingen dance/EDM/klubmusik eller aggressive beats.</p>
+      <p><strong>Opvarmning og teknik:</strong> energien bygges gradvist op, og musikken må ikke overdøve instruktionen.</p>
+      <p><strong>Arbejdsblokke:</strong> AI må øge tempo og energi efter format og intensitet.</p>
+      <p><strong>Alle eller udvalgte:</strong> instruktøren vælger, om AI skal planlægge hele træningen eller kun bestemte sektioner.</p>
+      <p><strong>Playlistfil:</strong> appen eksporterer CSV til videre import i Spotify/TIDAL via TuneMyMusic og Telmore Musik via Soundiiz.</p>
     </div>
 
     <div class="docs-rules field-rule-manual">
@@ -709,7 +852,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.21 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a21"></script>
+<footer>FunkFit Builder v0.7.4-alpha.22 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a22"></script>
 </body>
 </html>
