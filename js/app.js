@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.27';
+const APP_VERSION='0.7.4-alpha.28';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -1161,12 +1161,16 @@ function bind(){
   on('musicGeminiKey','input',event=>{
     if(event.target.value.trim())sessionStorage.setItem('funkfit-gemini-key',event.target.value.trim());
     else sessionStorage.removeItem('funkfit-gemini-key');
+    const status=byId('musicKeyTestStatus');
+    if(status){status.textContent='';status.classList.remove('success','error')}
   });
   on('clearMusicGeminiKeyBtn','click',()=>{
     sessionStorage.removeItem('funkfit-gemini-key');
     if(byId('musicGeminiKey'))byId('musicGeminiKey').value='';
     if(byId('musicPlanStatus'))byId('musicPlanStatus').textContent='Gemini-nøglen er fjernet fra denne browser-session.';
   });
+  on('testMusicGeminiKeyBtn','click',testGeminiKey);
+  on('openGoogleAiStudioBtn','click',()=>window.open('https://aistudio.google.com/apikey','_blank','noopener'));
   on('musicCleanOnly','change',event=>event.target.dataset.userTouched='1');
   on('generateMusicPlanBtn','click',generateMusicPlan);
   on('copyMusicPlaylistBtn','click',copyMusicPlaylist);
@@ -3746,36 +3750,130 @@ function geminiModelAccessFailure(message=''){
 function geminiQuotaFailure(message=''){
   return /quota|rate.?limit|resource_exhausted|429/i.test(String(message));
 }
+function geminiErrorMessage(data,status){
+  return data?.error?.message
+    ||data?.message
+    ||(typeof data?.error==='string'?data.error:'')
+    ||`Google AI svarede med fejl ${status}.`;
+}
+function extractGenerateContentText(data){
+  return (data?.candidates?.[0]?.content?.parts||[])
+    .map(part=>part?.text||'')
+    .join('')
+    .trim();
+}
 async function requestGeminiMusicPlan(key,activeModel){
-  const response=await fetch('https://generativelanguage.googleapis.com/v1beta/interactions',{
+  const endpoint=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(activeModel)}:generateContent`;
+  const response=await fetch(endpoint,{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
       'x-goog-api-key':key
     },
     body:JSON.stringify({
-      model:activeModel,
-      input:musicPrompt(),
-      response_format:{
-        type:'text',
-        mime_type:'application/json',
-        schema:musicResponseSchema()
+      contents:[{
+        role:'user',
+        parts:[{text:musicPrompt()}]
+      }],
+      generationConfig:{
+        responseMimeType:'application/json',
+        responseSchema:musicResponseSchema(),
+        temperature:0.75
       }
     })
   });
   const data=await response.json().catch(()=>({}));
   if(!response.ok){
-    const message=data?.error?.message||`Google AI svarede med fejl ${response.status}.`;
-    const error=new Error(message);
+    const error=new Error(geminiErrorMessage(data,response.status));
     error.status=response.status;
     error.model=activeModel;
+    error.code=data?.error?.code||'';
     throw error;
   }
-  const text=extractGeminiOutput(data);
+  const text=extractGenerateContentText(data);
   if(!text)throw new Error(`${activeModel} returnerede ikke en læsbar playliste.`);
   return normalizeMusicPlanResult(parseMusicJson(text));
 }
 
+async function testGeminiKey(){
+  const key=byId('musicGeminiKey')?.value.trim()||sessionStorage.getItem('funkfit-gemini-key')||'';
+  const status=byId('musicKeyTestStatus');
+  const button=byId('testMusicGeminiKeyBtn');
+  if(!key){
+    if(status)status.textContent='Indsæt først en Gemini API-nøgle.';
+    byId('musicGeminiKey')?.focus();
+    return false;
+  }
+  sessionStorage.setItem('funkfit-gemini-key',key);
+  if(button){button.disabled=true;button.textContent='Tester…'}
+  if(status)status.textContent='Kontrollerer nøglen hos Google AI…';
+
+  let lastModelError=null;
+  try{
+    for(const model of MUSIC_GEMINI_MODELS){
+      const endpoint=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+      const response=await fetch(endpoint,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'x-goog-api-key':key
+        },
+        body:JSON.stringify({
+          contents:[{parts:[{text:'Svar kun med ordet OK.'}]}],
+          generationConfig:{maxOutputTokens:8,temperature:0}
+        })
+      });
+      const data=await response.json().catch(()=>({}));
+      if(response.ok){
+        if(status)status.textContent=`✓ Google-nøglen virker · ${model.replace('gemini-','Gemini ')}`;
+        status?.classList.add('success');
+        status?.classList.remove('error');
+        return true;
+      }
+
+      const message=geminiErrorMessage(data,response.status);
+      if(response.status===401){
+        if(status)status.textContent='✗ Google afviser nøglen: den er ugyldig, udløbet eller deaktiveret. Opret en ny Auth key i Google AI Studio.';
+        status?.classList.add('error');
+        status?.classList.remove('success');
+        return false;
+      }
+      if(response.status===403){
+        if(status)status.textContent=`✗ Nøglen findes, men projektet har ikke adgang til Gemini API: ${message}`;
+        status?.classList.add('error');
+        status?.classList.remove('success');
+        return false;
+      }
+      if(response.status===429){
+        if(status)status.textContent='✓ Nøglen bliver accepteret, men projektets kvote er opbrugt lige nu.';
+        status?.classList.add('success');
+        status?.classList.remove('error');
+        return true;
+      }
+      if(response.status===404||geminiModelAccessFailure(message)){
+        lastModelError=message;
+        continue;
+      }
+      if(status)status.textContent=`✗ Google AI-fejl ${response.status}: ${message}`;
+      status?.classList.add('error');
+      status?.classList.remove('success');
+      return false;
+    }
+
+    if(status)status.textContent=`✗ Nøglen blev accepteret, men ingen af FunkFits Gemini-modeller er tilgængelige.${lastModelError?' '+lastModelError:''}`;
+    status?.classList.add('error');
+    status?.classList.remove('success');
+    return false;
+  }catch(error){
+    console.error('Test af Gemini-nøgle fejlede',error);
+    if(status)status.textContent=`Kunne ikke kontakte Google AI: ${error.message}`;
+    status?.classList.add('error');
+    status?.classList.remove('success');
+    return false;
+  }finally{
+    if(button){button.disabled=false;button.textContent='Test Google-nøgle'}
+  }
+}
 async function generateMusicPlan(){
   const indexes=currentMusicSectionIndexes();
   if(!indexes.length)return alert('Vælg mindst én sektion til playlisten.');
@@ -3823,15 +3921,21 @@ async function generateMusicPlan(){
   }catch(error){
     console.error('Musikplanlægning fejlede',error);
     const networkFailure=error instanceof TypeError&&/fetch|network|failed/i.test(error.message||'');
-    const quotaFailure=geminiQuotaFailure(error.message);
-    const modelFailure=geminiModelAccessFailure(error.message);
+    const quotaFailure=geminiQuotaFailure(error.message)||error.status===429;
+    const modelFailure=geminiModelAccessFailure(error.message)||error.status===404;
+    const authFailure=error.status===401;
+    const permissionFailure=error.status===403;
     status.textContent=networkFailure
       ?'Kunne ikke kontakte Google AI fra browseren. Genindlæs siden og prøv igen.'
-      :quotaFailure
-        ?'Google AI har nået gratiskvoten for denne nøgle/projekt. Prøv igen senere eller kontrollér Usage / Rate limits i Google AI Studio.'
-        :modelFailure
-          ?'Google har ændret modeladgangen. FunkFit prøvede både Gemini 3.5 Flash-Lite og 3.1 Flash-Lite, men ingen var tilgængelige for projektet.'
-          :`Kunne ikke lave playlisten: ${error.message}`;
+      :authFailure
+        ?'Google afviser API-nøglen (401). Tryk “Test Google-nøgle”. Hvis testen også fejler, skal nøglen erstattes med en ny Auth key fra Google AI Studio.'
+        :permissionFailure
+          ?'Google accepterer nøglen, men projektet har ikke adgang til Gemini API (403). Kontrollér projekt/API-adgang i Google AI Studio.'
+          :quotaFailure
+            ?'Google AI har nået gratiskvoten for denne nøgle/projekt. Prøv igen senere eller kontrollér Usage / Rate limits i Google AI Studio.'
+            :modelFailure
+              ?'Google har ændret modeladgangen. FunkFit prøvede både Gemini 3.5 Flash-Lite og 3.1 Flash-Lite, men ingen var tilgængelige for projektet.'
+              :`Kunne ikke lave playlisten: ${error.message}`;
   }finally{
     button.disabled=false;
     button.textContent='✨ Planlæg musik med AI';

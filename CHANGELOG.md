@@ -1,25 +1,23 @@
-# FunkFit Builder v0.7.4-alpha.27
+# FunkFit Builder v0.7.4-alpha.28
 
-## Ny musik-AI-plan
-- Gemini 2.5 Flash-Lite er fjernet.
-- Primær model: `gemini-3.5-flash-lite`.
-- Automatisk fallback: `gemini-3.1-flash-lite`, hvis Google afviser primærmodellen pga. modeladgang.
-- Google Search-grounding er fjernet helt fra API-kaldet.
-- Det holder almindelig musikgenerering på Free Tier og undgår den betalte Search-del på Gemini 3.
+## Google AI – ny plan
+- Musik-AI er flyttet fra Interactions API til det enklere `generateContent`-endpoint.
+- Gemini 3.5 Flash-Lite er fortsat primær model.
+- Gemini 3.1 Flash-Lite er fortsat automatisk fallback.
+- Structured JSON-output er bevaret.
+- Google Search-grounding er fortsat slået fra.
 
-## Sangvalg
-- Prompten kræver primært velkendte, officielt udgivne numre.
-- AI må ikke opfinde sangtitler eller kunstnere.
-- Obskure/usikre forslag skal erstattes af mere kendte alternativer.
+## Test Google-nøgle
+- Ny knap: “Test Google-nøgle”.
+- 401 forklares som ugyldig/udløbet/deaktiveret API-nøgle.
+- 403 forklares som manglende projekt/API-adgang.
+- 429 identificeres som gyldig nøgle men opbrugt kvote.
+- Model-404 adskilles fra nøglefejl.
+- Direkte knap til Google AI Studio API Keys.
 
-## Spotify-verifikation
-- Hvis Spotify er forbundet, kontrolleres AI-forslag automatisk mod Spotifys katalog.
-- Matchede numre normaliseres til Spotifys titel, kunstner og album.
-- UI viser “Spotify-verificeret” eller “Ikke matchet i Spotify”.
-- Direkte playlist-oprettelse genbruger verificerede Spotify-URI'er.
-
-## TIDAL
-- TIDAL-flowet er uændret: CSV + TuneMyMusic, som foretager katalogmatch ved import.
+## Sikkerhed
+- Nøglen gemmes kun i sessionStorage.
+- Den gemmes aldrig sammen med træningen.
 
 ## Data
 - Gemte træninger bruger fortsat samme lagernøgle.
