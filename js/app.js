@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.18';
+const APP_VERSION='0.7.4-alpha.23';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -108,6 +108,7 @@ function updateAddressVersion(){
 const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a',EQKEY='funkfit-equipment-profiles-v074a';
 const WBACKUPKEY='funkfit-workouts-backup-v1';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
+let musicPlan=[],musicService='spotify',musicScope='all',selectedMusicSections=new Set();
 let plannerConcept='junior',plannerVenue='indoor';
 const EQUIPMENT_PROFILES={
   indoor:['Kropsvægt','Måtte','Kettlebell','Håndvægt','Boks','Bænk','Medicinbold','Væg','Kegler','Sjippetov','Elastik','Romaskine'],
@@ -698,10 +699,10 @@ function buildGameSuggestion(minutes=8,focus='',theme=''){
     description:`Historie: Holdene er på en mission i “${mission}”. De skal løse ${taskText}, hente markører og få hele holdet sikkert tilbage, før tiden løber ud.`,
     rules:`1. Del deltagerne i 2-4 hold og giv hvert hold en base.
 2. Én deltager eller ét makkerpar løser næste bevægelsesopgave og henter én markør.
-3. Når instruktøren råber “INCOMING!”, skal alle straks fryse i en stærk position. Bevægelse efter signalet koster markøren.
+3. På instruktørens signal skal alle straks fryse i en stærk position. Bevægelse efter signalet koster markøren.
 4. Deltageren vender tilbage og sender næste afsted.
 5. Ingen elimineres. Flest markører ved tidens udløb vinder – eller alle hold vinder, hvis en fælles målsætning nås.`,
-    coachTips:'Vis en prøverunde og øv INCOMING-signalet først. Brug flere parallelle baner, så der ikke opstår kø. Hold afstandene korte og udskift en øvelse med et kropsvægtsalternativ, hvis udstyret bliver en flaskehals.',
+    coachTips:'Vis en prøverunde og øv signalet først. Brug flere parallelle baner, så der ikke opstår kø. Hold afstandene korte og udskift en øvelse med et kropsvægtsalternativ, hvis udstyret bliver en flaskehals.',
     variations:'Lettere: gå i stedet for at løbe, én enkel opgave og ingen straf. Sværere: makkertransport, hemmelig kode eller to markører pr. perfekt runde.',
     exercises:picked.map(makeItem)
   });
@@ -786,7 +787,7 @@ function regenerateSection(index){
     fresh.format=old.format;
     sections[index]=applySectionRules(fresh);
   }
-  renderFramework();renderExerciseSections();updateReview();
+  renderFramework();renderExerciseSections();updateReview();renderMusicPlanner();
 }
 
 function sectionVisual(section){
@@ -1132,6 +1133,36 @@ function bind(){
   $('#openSpotifyBtn').onclick=()=>openPlaylist($('#spotifyPlaylistUrl').value,'Spotify');
   $('#openTidalBtn').onclick=()=>openPlaylist($('#tidalPlaylistUrl').value,'TIDAL');
   $('#openTelmoreBtn').onclick=()=>openPlaylist($('#telmorePlaylistUrl').value,'Telmore Musik');
+  document.querySelectorAll('[data-music-service]').forEach(button=>button.onclick=()=>{
+    musicService=button.dataset.musicService;
+    updateMusicServiceUI();
+  });
+  document.querySelectorAll('[data-music-scope]').forEach(button=>button.onclick=()=>{
+    musicScope=button.dataset.musicScope;
+    updateMusicScopeUI();
+  });
+  on('musicSelectAllSectionsBtn','click',()=>{
+    selectedMusicSections=new Set(sections.map((_,i)=>i));
+    renderMusicSectionSelector();
+  });
+  on('musicSelectNoSectionsBtn','click',()=>{
+    selectedMusicSections.clear();
+    renderMusicSectionSelector();
+  });
+  on('musicGeminiKey','input',event=>{
+    if(event.target.value.trim())sessionStorage.setItem('funkfit-gemini-key',event.target.value.trim());
+    else sessionStorage.removeItem('funkfit-gemini-key');
+  });
+  on('clearMusicGeminiKeyBtn','click',()=>{
+    sessionStorage.removeItem('funkfit-gemini-key');
+    if(byId('musicGeminiKey'))byId('musicGeminiKey').value='';
+    if(byId('musicPlanStatus'))byId('musicPlanStatus').textContent='Gemini-nøglen er fjernet fra denne browser-session.';
+  });
+  on('musicCleanOnly','change',event=>event.target.dataset.userTouched='1');
+  on('generateMusicPlanBtn','click',generateMusicPlan);
+  on('downloadMusicPlaylistBtn','click',downloadMusicPlaylist);
+  on('downloadMusicSectionPlanBtn','click',downloadMusicSectionPlan);
+  on('openMusicImporterBtn','click',openMusicImporter);
 
   $('#pickerSearch').oninput=renderPicker;
   $('#pickerBody').onchange=renderPicker;
@@ -1272,7 +1303,7 @@ function showStep(n){
     expandAllSections();
     renderExerciseSections();
   }
-  if(n===3)updateReview();
+  if(n===3){updateReview();renderMusicPlanner();}
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1588,9 +1619,14 @@ function renderExerciseSections(){
   updateTimeControl();
   bindActivityInputs();
 }
+function compactMetricSize(value,type='text'){
+  if(type==='number')return 5;
+  const length=String(value??'').trim().length;
+  return Math.min(18,Math.max(5,length+2));
+}
 function metricInput(label,key,value,si,ei,type='text',options=[]){
-  if(options.length)return `<label>${label}<select data-metric="${si}-${ei}-${key}">${options.map(x=>`<option ${x===value?'selected':''}>${x}</option>`).join('')}</select></label>`;
-  return `<label>${label}<input data-metric="${si}-${ei}-${key}" type="${type}" value="${esc(value||'')}"></label>`;
+  if(options.length)return `<label class="compact-metric-label">${label}<select class="compact-metric-control" data-metric="${si}-${ei}-${key}">${options.map(x=>`<option ${x===value?'selected':''}>${x}</option>`).join('')}</select></label>`;
+  return `<label class="compact-metric-label">${label}<input class="compact-metric-control" data-metric="${si}-${ei}-${key}" type="${type}" size="${compactMetricSize(value,type)}" value="${esc(value||'')}"></label>`;
 }
 function exerciseFieldContext(ex,rawSection,trainingType=selectedTrainingType()){
   const section=rawSection||{};
@@ -1669,8 +1705,7 @@ function trainingFields(it,si,ei){
   const section=normalizeSection(sections[si]);
   const {fields}=visibleMetricDefinitions(it,ex,section,type);
   if(!fields.length)return '';
-  const title=({adult:'Funktionel voksen',hiit:'HIIT',hyrox:'Hyrox',trx:'TRX'})[type];
-  return `<div class="type-fields contextual-fields"><h4>${title}</h4>${renderMetricFields(fields,si,ei)}</div>`;
+  return `<div class="type-fields contextual-fields compact-metric-fields">${renderMetricFields(fields,si,ei)}</div>`;
 }
 
 function runActivityRow(it,si,ai){
@@ -1775,7 +1810,9 @@ function exerciseActivityRow(it,si,ai,fam){
 
   const adultExerciseId=it.adultExerciseId||it.exerciseId;
   const adultEx=exercises.find(x=>x.id===adultExerciseId)||ex;
-  return `<div class="exercise-row">${juniorFields}${type==='family'?`<div class="adult-settings"><div class="adult-grid contextual-adult-grid">
+  return `<div class="exercise-row">${juniorFields}${type==='family'?`<div class="adult-settings">
+    <h4 class="family-adult-heading">Funktionel voksen</h4>
+    <div class="adult-grid contextual-adult-grid">
     <label>Voksenøvelse
       <div class="adult-exercise-choice">
         <input data-aex-search="${si}-${ai}" list="adultExerciseOptions" value="${esc(adultEx?.name||'')}" placeholder="Søg efter voksenøvelse">
@@ -1797,10 +1834,18 @@ function bindActivityInputs(){
     const[a,b]=(e.dataset[key]).split('-').map(Number);
     sections[a].exercises[b][prop]=e.value;
   });
-  host.querySelectorAll('[data-metric]').forEach(e=>e.onchange=()=>{
-    const [a,b,key]=e.dataset.metric.split('-');
-    sections[+a].exercises[+b].metrics=sections[+a].exercises[+b].metrics||{};
-    sections[+a].exercises[+b].metrics[key]=e.value;
+  host.querySelectorAll('[data-metric]').forEach(e=>{
+    const resize=()=>{
+      if(!e.classList.contains('compact-metric-control')||e.tagName==='SELECT'||e.type==='number')return;
+      e.size=compactMetricSize(e.value,e.type);
+    };
+    e.oninput=resize;
+    e.onchange=()=>{
+      const [a,b,key]=e.dataset.metric.split('-');
+      sections[+a].exercises[+b].metrics=sections[+a].exercises[+b].metrics||{};
+      sections[+a].exercises[+b].metrics[key]=e.value;
+      resize();
+    };
   });
   host.querySelectorAll('[data-run-field]').forEach(e=>e.onchange=()=>{
     const [a,b]=e.dataset.runIndex.split('-').map(Number);
@@ -2028,7 +2073,9 @@ function normalizedIntentTerms(values=[]){
     samarbejde:['samarbejde','makker','team','hold'],
     eksplosivitet:['eksplosivitet','eksplosiv','power'],
     balance:['balance','stabilitet'],
-    teknik:['teknik','teknisk']
+    teknik:['teknik','teknisk'],
+    reaktion:['reaktion','reaktionstid','react','lights','reaktionslys'],
+    koordination:['koordination','koordineret','motorik','agility']
   };
   Object.entries(synonymGroups).forEach(([canonical,words])=>{
     if(words.some(word=>cleaned.includes(word)))terms.add(canonical);
@@ -2072,6 +2119,8 @@ function scoreExercise(ex,goals,sectionType){
   if(sectionType==='warmup'&&(hay.includes('kondition')||hay.includes('koordination')||hay.includes('agility')||hay.includes('kropsvægt')))score+=5;
   if(sectionType==='main'&&(hay.includes('funktionel')||hay.includes('styrke')||hay.includes('helkrop')))score+=3;
   if(sectionType==='team'&&(hay.includes('makker')||hay.includes('stafet')||hay.includes('teamchallenge')))score+=7;
+  if((goals||[]).join(' ').toLowerCase().match(/reaktion|react lights|reaktionslys|koordination|agility/)
+      &&(ex.equipment||[]).includes('React Lights'))score+=14;
   if(plannerConcept==='trx'&&(hay.includes('trx')||(ex.equipment||[]).includes('TRX')))score+=12;
   if(plannerConcept==='hyrox'&&hay.includes('hyrox'))score+=8;
   if(plannerConcept==='hiit'&&hay.includes('hiit'))score+=8;
@@ -2765,6 +2814,7 @@ const EQUIPMENT_LABELS={
   'Reb':['reb','reb'],
   'Vægtskive':['vægtskive','vægtskiver'],
   'TRX':['TRX','TRX'],
+  'React Lights':['sæt React Lights','sæt React Lights'],
   'Væg':['væg','vægge']
 };
 const ONE_DUMBBELL_EXERCISES=new Set([
@@ -2797,6 +2847,9 @@ function equipmentDisplay(name,quantity){
 }
 function isFacilityEquipment(name){
   return name==='Væg';
+}
+function isSharedSetEquipment(name){
+  return name==='React Lights';
 }
 function equipmentTeamCount(participants){
   return Math.min(6,Math.max(2,Math.ceil(participants/5)));
@@ -2851,9 +2904,13 @@ function exerciseEquipmentMap(ex,activeCount,section,activity,participants,activ
     }
     const quantity=name==='Kegler'
       ?coneRequirement(section,participants,activityCount,activity)
-      :activeCount*equipmentUnitMultiplier(ex,name);
+      :isSharedSetEquipment(name)
+        ?1
+        :activeCount*equipmentUnitMultiplier(ex,name);
     const multiplier=equipmentUnitMultiplier(ex,name);
-    const detail=multiplier===2?'2 pr. aktiv deltager':'';
+    const detail=isSharedSetEquipment(name)
+      ?'1 sæt pr. samtidig React Lights-station'
+      :multiplier===2?'2 pr. aktiv deltager':'';
     addRequirement(map,name,quantity,detail);
   });
   return map;
@@ -2918,7 +2975,9 @@ function sectionEquipmentRequirements(rawSection,participants){
     }
     const quantity=name==='Kegler'
       ?coneRequirement(section,participants,Math.max(1,activities.length),null)
-      :active;
+      :isSharedSetEquipment(name)
+        ?1
+        :active;
     addRequirement(result,name,quantity,stationMode?'Fordelt på stationer':'');
   });
 
@@ -2974,7 +3033,487 @@ function equipmentSummaryPrintHtml(workout){
   }
 }
 
-function collect(){return{id:currentId||crypto.randomUUID(),trainingType:selectedTrainingType(),profileId:userProfile().id,theme:$('#plannerTheme')?.value||'',name:$('#workoutName').value,date:$('#workoutDate').value,participants:+$('#participantCount').value,familyMode:$('#familyMode').checked,adultCount:+($('#adultCount').value||0),savedAt:new Date().toISOString(),sections:structuredClone(sections),music:{spotify:$('#spotifyPlaylistUrl').value.trim(),tidal:$('#tidalPlaylistUrl').value.trim(),telmore:$('#telmorePlaylistUrl').value.trim()}}}
+
+const MUSIC_IMPORTERS={
+  spotify:{
+    label:'Spotify',
+    url:'https://www.tunemymusic.com/transfer/csv-to-spotify',
+    help:'Download Playlist CSV og upload filen i TuneMyMusic. Vælg Spotify som destination og kontrollér de matchede numre.'
+  },
+  tidal:{
+    label:'TIDAL',
+    url:'https://www.tunemymusic.com/transfer/csv-to-tidal',
+    help:'Download Playlist CSV og upload filen i TuneMyMusic. Vælg TIDAL som destination og kontrollér de matchede numre.'
+  },
+  telmore:{
+    label:'Telmore Musik',
+    url:'https://soundiiz.com/webapp',
+    help:'Download Playlist CSV. Åbn Soundiiz, vælg Import playlist → By File, upload CSV-filen og vælg Telmore Musik som destination.'
+  }
+};
+
+function musicIntensityProfile(rawSection,index){
+  const section=normalizeSection(structuredClone(rawSection));
+  const purpose=section.sectionPurpose||section.type||'Hovedelement';
+  const format=normalizeText(section.format||'');
+  const style=normalizeText(section.style||'');
+  const minutes=Math.max(1,+section.minutes||5);
+  let profile={
+    level:3,
+    label:'Middel',
+    bpmMin:100,
+    bpmMax:130,
+    mood:'stabil, motiverende og rytmisk',
+    avoid:'ingen unødigt aggressiv eller distraherende musik'
+  };
+
+  if(purpose==='Ledopvarmning'){
+    profile={
+      level:1,label:'Rolig',bpmMin:65,bpmMax:95,
+      mood:'rolig, varm, afslappet og samtalevenlig; fx akustisk pop, indie, soul, rolig hiphop eller instrumental',
+      avoid:'ingen dance, EDM, techno, klubmusik, hård rock eller hurtige/aggressive beats'
+    };
+  }else if(purpose==='Opvarmning'){
+    profile={
+      level:2,label:'Let stigende',bpmMin:95,bpmMax:120,
+      mood:'positiv og let energisk med tydelig rytme, men stadig kontrolleret',
+      avoid:'ingen maksimal intensitet eller hård klublyd'
+    };
+  }else if(purpose==='Teknik'){
+    profile={
+      level:2,label:'Fokuseret',bpmMin:85,bpmMax:115,
+      mood:'rolig, fokuseret og rytmisk uden at stjæle opmærksomheden fra instruktionen',
+      avoid:'ingen hektiske drops, voldsom bas eller meget aggressiv musik'
+    };
+  }else if(purpose==='Leg'){
+    profile={
+      level:4,label:'Legende',bpmMin:110,bpmMax:140,
+      mood:'sjov, genkendelig, energisk og legende',
+      avoid:'undgå mørk eller aggressiv stemning'
+    };
+  }else if(purpose==='Teamchallenge'){
+    profile={
+      level:5,label:'Høj',bpmMin:125,bpmMax:155,
+      mood:'stor energi, fællesskab, drive og tydeligt beat',
+      avoid:'undgå langsomme eller flade numre'
+    };
+  }else if(purpose==='Finisher'){
+    profile={
+      level:5,label:'Finale',bpmMin:125,bpmMax:160,
+      mood:'finale, energi, overskud og et tydeligt afsluttende løft',
+      avoid:'undgå langsom eller anonym musik'
+    };
+  }else if(/hiit|amrap|emom|interval|for time|hyrox/.test(format)||/hiit|hyrox|kondition/.test(style)){
+    profile={
+      level:4,label:'Høj',bpmMin:120,bpmMax:150,
+      mood:'drivende, energisk og motiverende med stabil pulsfornemmelse',
+      avoid:'undgå lange stille introer og store energidyk'
+    };
+  }else if(/styrke/.test(format)||/styrke/.test(style)){
+    profile={
+      level:3,label:'Styrke',bpmMin:95,bpmMax:125,
+      mood:'tungt, fokuseret og motiverende uden at blive hektisk',
+      avoid:'undgå meget hurtige tracks, der presser tempoet unødigt'
+    };
+  }
+
+  const trackCount=Math.min(7,Math.max(1,Math.ceil(minutes/3.4)));
+  return {...profile,index,minutes,trackCount,purpose,format:section.format||'',name:section.name||purpose};
+}
+function musicTargetText(profile){
+  return `${profile.label} · ${profile.bpmMin}-${profile.bpmMax} BPM`;
+}
+function currentMusicSectionIndexes(){
+  if(musicScope==='all')return sections.map((_,i)=>i);
+  return [...selectedMusicSections].filter(i=>i>=0&&i<sections.length).sort((a,b)=>a-b);
+}
+function syncMusicSelectionToSections(){
+  const valid=new Set([...selectedMusicSections].filter(i=>i>=0&&i<sections.length));
+  if(!valid.size&&sections.length)sections.forEach((_,i)=>valid.add(i));
+  selectedMusicSections=valid;
+}
+function renderMusicSectionSelector(){
+  const host=byId('musicSectionSelector');
+  if(!host)return;
+  syncMusicSelectionToSections();
+  host.innerHTML=sections.map((section,index)=>{
+    const profile=musicIntensityProfile(section,index);
+    const existing=normalizeSection(section).sectionPurpose==='Finisher'&&section.finisherMode==='song'&&section.songTitle
+      ?`<small>🎵 Allerede valgt: ${esc(section.songTitle)}${section.songArtist?` · ${esc(section.songArtist)}`:''}</small>`
+      :'';
+    return `<label class="music-section-choice ${selectedMusicSections.has(index)?'active':''}">
+      <input type="checkbox" data-music-section="${index}" ${selectedMusicSections.has(index)?'checked':''}>
+      <span>
+        <strong>${index+1}. ${esc(section.name||profile.purpose)}</strong>
+        <small>${esc(musicTargetText(profile))} · ${profile.minutes} min</small>
+        ${existing}
+      </span>
+    </label>`;
+  }).join('');
+  host.querySelectorAll('[data-music-section]').forEach(input=>input.onchange=()=>{
+    const index=+input.dataset.musicSection;
+    input.checked?selectedMusicSections.add(index):selectedMusicSections.delete(index);
+    input.closest('.music-section-choice').classList.toggle('active',input.checked);
+  });
+}
+function updateMusicServiceUI(){
+  document.querySelectorAll('[data-music-service]').forEach(button=>button.classList.toggle('selected',button.dataset.musicService===musicService));
+  const importer=MUSIC_IMPORTERS[musicService]||MUSIC_IMPORTERS.spotify;
+  if(byId('musicImportTitle'))byId('musicImportTitle').textContent=`Importér til ${importer.label}`;
+  if(byId('musicImportHelp'))byId('musicImportHelp').textContent=importer.help;
+  if(byId('openMusicImporterBtn'))byId('openMusicImporterBtn').textContent=`Åbn import til ${importer.label}`;
+}
+function updateMusicScopeUI(){
+  document.querySelectorAll('[data-music-scope]').forEach(button=>button.classList.toggle('selected',button.dataset.musicScope===musicScope));
+  byId('musicSectionSelectorWrap')?.classList.toggle('hidden',musicScope!=='selected');
+  if(musicScope==='selected')renderMusicSectionSelector();
+}
+function renderMusicPlanner(){
+  syncMusicSelectionToSections();
+  updateMusicServiceUI();
+  updateMusicScopeUI();
+  const key=byId('musicGeminiKey');
+  if(key&&!key.value)key.value=sessionStorage.getItem('funkfit-gemini-key')||'';
+  const clean=byId('musicCleanOnly');
+  if(clean&&!clean.dataset.userTouched){
+    clean.checked=['junior','family'].includes(selectedTrainingType());
+  }
+  renderMusicPlan();
+}
+function selectedMusicProfiles(){
+  return currentMusicSectionIndexes().map(index=>musicIntensityProfile(sections[index],index));
+}
+function musicPrompt(){
+  const service=(MUSIC_IMPORTERS[musicService]||MUSIC_IMPORTERS.spotify).label;
+  const profiles=selectedMusicProfiles();
+  const cleanOnly=!!byId('musicCleanOnly')?.checked;
+  const keepFinisher=!!byId('musicKeepFinisherSong')?.checked;
+  const prefer=byId('musicPrefer')?.value.trim()||'ingen særlige ønsker';
+  const avoid=byId('musicAvoid')?.value.trim()||'ingen yderligere';
+  const language=({mixed:'blandet dansk og internationalt',danish:'primært dansk',international:'primært internationalt'})[byId('musicLanguage')?.value]||'blandet';
+  const familiarity=({mixed:'blanding af kendte numre og enkelte nye fund',hits:'primært kendte og let genkendelige numre',discover:'gerne nyere eller mindre oplagte fund'})[byId('musicFamiliarity')?.value]||'blandet';
+  const audience=trainingTypeLabel(selectedTrainingType());
+
+  const sectionText=profiles.map(profile=>{
+    const raw=sections[profile.index];
+    const existing=normalizeSection(raw).sectionPurpose==='Finisher'&&raw.finisherMode==='song'&&raw.songTitle
+      ?` Eksisterende finisher-sang: "${raw.songTitle}" af "${raw.songArtist||'ukendt kunstner'}".`
+      :'';
+    return `- sectionIndex ${profile.index}: "${profile.name}", formål ${profile.purpose}, ${profile.minutes} min, intensitet ${profile.level}/5 (${profile.label}), mål ${profile.bpmMin}-${profile.bpmMax} BPM, ønsket stemning: ${profile.mood}. Undgå: ${profile.avoid}. Foreslå ca. ${profile.trackCount} numre.${existing}`;
+  }).join('\n');
+
+  return `Du er musikansvarlig for en funktionel træning. Lav en musikplan med REELLE eksisterende musiknumre til ${service}.
+Brug Google Search, når det hjælper, og undgå at opfinde numre eller kunstnere. Søg gerne efter tegn på, at numrene findes på ${service}; endelig katalogmatch sker ved import.
+Målgruppe: ${audience}.
+Musikønsker: gerne ${prefer}. Undgå: ${avoid}. Sprog: ${language}. Kendskab: ${familiarity}.
+${cleanOnly?'Brug kun clean/familievenlige versioner og undgå explicit lyrics.':'Explicit lyrics er ikke automatisk forbudt, men vælg stadig musik, der passer til holdtræning.'}
+${keepFinisher?'Hvis en sektion har en eksisterende finisher-sang, skal den beholdes og indgå i planen i stedet for at blive erstattet.':'Eksisterende finisher-sange må gerne erstattes.'}
+
+VIGTIGE PROGRAMMERINGSREGLER:
+1. Musikken skal følge træningens intensitetskurve – ikke bare være hurtig hele tiden.
+2. Ledopvarmning er rolig: 65-95 BPM, samtalevenlig. INGEN dance, EDM, techno, klubmusik, hård rock eller hurtige/aggressive beats.
+3. Opvarmning må bygge energien gradvist op.
+4. Teknik skal være fokuseret og ikke stjæle opmærksomhed fra instruktion.
+5. Højintense arbejdsblokke må have tydeligt drive og højere energi.
+6. Teamchallenge og finale må føles som et løft.
+7. Undgå samme sang flere gange og helst ikke samme kunstner mere end to gange.
+8. Sørg for cirka nok musik til at dække hver sektions varighed.
+9. Returnér kun de sektioner, der står nedenfor, og brug præcis deres sectionIndex.
+10. BPM må gerne være et kvalificeret estimat, men sangtitel og kunstner skal være korrekte.
+
+SEKTIONER:
+${sectionText}
+
+Lav et kort playlistenavn og en kort dansk opsummering.`;
+}
+function musicResponseSchema(){
+  return {
+    type:'object',
+    properties:{
+      playlistName:{type:'string'},
+      summary:{type:'string'},
+      sections:{
+        type:'array',
+        items:{
+          type:'object',
+          properties:{
+            sectionIndex:{type:'integer'},
+            sectionName:{type:'string'},
+            mood:{type:'string'},
+            bpmRange:{type:'string'},
+            tracks:{
+              type:'array',
+              items:{
+                type:'object',
+                properties:{
+                  title:{type:'string'},
+                  artist:{type:'string'},
+                  album:{type:'string'},
+                  bpm:{type:'integer'},
+                  reason:{type:'string'},
+                  clean:{type:'boolean'}
+                },
+                required:['title','artist','album','bpm','reason','clean']
+              }
+            }
+          },
+          required:['sectionIndex','sectionName','mood','bpmRange','tracks']
+        }
+      }
+    },
+    required:['playlistName','summary','sections']
+  };
+}
+function extractGeminiOutput(data){
+  if(typeof data?.output_text==='string')return data.output_text;
+  if(typeof data?.outputText==='string')return data.outputText;
+  const steps=data?.steps||data?.outputs||[];
+  for(let i=steps.length-1;i>=0;i--){
+    const step=steps[i];
+    if(step?.type==='model_output'){
+      const text=(step.content||[]).find(item=>item?.type==='text')?.text;
+      if(text)return text;
+    }
+    if(step?.type==='text'&&step.text)return step.text;
+  }
+  return '';
+}
+function parseMusicJson(text){
+  const cleaned=String(text||'').trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');
+  return JSON.parse(cleaned);
+}
+function normalizeMusicPlanResult(result){
+  const allowed=new Set(currentMusicSectionIndexes());
+  const sectionsOut=(result.sections||[])
+    .filter(section=>allowed.has(+section.sectionIndex))
+    .map(section=>{
+      const index=+section.sectionIndex;
+      const profile=musicIntensityProfile(sections[index],index);
+      return {
+        sectionIndex:index,
+        sectionName:sections[index]?.name||section.sectionName||profile.purpose,
+        minutes:profile.minutes,
+        intensity:profile.label,
+        bpmRange:section.bpmRange||`${profile.bpmMin}-${profile.bpmMax} BPM`,
+        mood:section.mood||profile.mood,
+        tracks:(section.tracks||[]).filter(track=>track?.title&&track?.artist).map(track=>({
+          title:String(track.title).trim(),
+          artist:String(track.artist).trim(),
+          album:String(track.album||'').trim(),
+          bpm:Math.max(0,+track.bpm||0),
+          reason:String(track.reason||'').trim(),
+          clean:track.clean!==false
+        }))
+      };
+    })
+    .sort((a,b)=>a.sectionIndex-b.sectionIndex);
+
+  const seen=new Set();
+  sectionsOut.forEach(section=>{
+    section.tracks=section.tracks.filter(track=>{
+      const key=normalizeText(`${track.artist}|${track.title}`);
+      if(seen.has(key))return false;
+      seen.add(key);
+      return true;
+    });
+  });
+
+  return {
+    playlistName:String(result.playlistName||`${byId('workoutName')?.value||'FunkFit'} – musik`).trim(),
+    summary:String(result.summary||'AI-planlagt musik efter træningens sektioner og intensitet.').trim(),
+    service:musicService,
+    scope:musicScope,
+    generatedAt:new Date().toISOString(),
+    sections:sectionsOut
+  };
+}
+async function generateMusicPlan(){
+  const indexes=currentMusicSectionIndexes();
+  if(!indexes.length)return alert('Vælg mindst én sektion til musikplanen.');
+  const key=byId('musicGeminiKey')?.value.trim()||sessionStorage.getItem('funkfit-gemini-key')||'';
+  if(!key){
+    byId('musicPlanStatus').textContent='Indsæt først en Gemini API-nøgle.';
+    byId('musicGeminiKey')?.focus();
+    return;
+  }
+  sessionStorage.setItem('funkfit-gemini-key',key);
+  const button=byId('generateMusicPlanBtn');
+  const status=byId('musicPlanStatus');
+  button.disabled=true;
+  button.textContent='⏳ Finder musik…';
+  status.textContent='Google AI planlægger intensitetskurven og søger efter eksisterende numre. Det kan tage lidt tid.';
+  try{
+    const response=await fetch('https://generativelanguage.googleapis.com/v1beta/interactions',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-goog-api-key':key
+      },
+      body:JSON.stringify({
+        model:'gemini-3.6-flash',
+        input:musicPrompt(),
+        tools:[{type:'google_search'}],
+        response_format:{
+          type:'text',
+          mime_type:'application/json',
+          schema:musicResponseSchema()
+        }
+      })
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok){
+      const message=data?.error?.message||`Google AI svarede med fejl ${response.status}.`;
+      throw new Error(message);
+    }
+    const text=extractGeminiOutput(data);
+    if(!text)throw new Error('Google AI returnerede ikke en læsbar musikplan.');
+    musicPlan=normalizeMusicPlanResult(parseMusicJson(text));
+    status.textContent=`Musikplan klar · ${musicPlan.sections.reduce((n,s)=>n+s.tracks.length,0)} numre. Kontrollér match ved import.`;
+    renderMusicPlan();
+  }catch(error){
+    console.error('Musikplanlægning fejlede',error);
+    const networkFailure=error instanceof TypeError&&/fetch|network|failed/i.test(error.message||'');
+    status.textContent=networkFailure
+      ?'Kunne ikke kontakte Google AI fra browseren. Genindlæs først den nye version. Hvis fejlen fortsætter, skal Gemini-kaldet flyttes bag en server-side proxy.'
+      :`Kunne ikke lave musikplanen: ${error.message}`;
+  }finally{
+    button.disabled=false;
+    button.textContent='✨ Planlæg musik med AI';
+  }
+}
+function musicTrackCount(){
+  return musicPlan?.sections?.reduce((sum,section)=>sum+(section.tracks?.length||0),0)||0;
+}
+function renderMusicPlan(){
+  const card=byId('musicPlanResultCard');
+  if(!card)return;
+  const hasPlan=musicPlan&&Array.isArray(musicPlan.sections)&&musicPlan.sections.some(section=>section.tracks?.length);
+  card.classList.toggle('hidden',!hasPlan);
+  if(!hasPlan)return;
+  byId('musicPlanTitle').textContent=musicPlan.playlistName||'Musik til træningen';
+  byId('musicPlanSummary').textContent=`${musicPlan.summary||''} · ${musicTrackCount()} numre`;
+  const host=byId('musicPlanSections');
+  host.innerHTML=(musicPlan.sections||[]).map((section,sectionPlanIndex)=>{
+    const profile=musicIntensityProfile(sections[section.sectionIndex]||{},section.sectionIndex);
+    return `<article class="music-section-plan">
+      <div class="music-section-plan-head">
+        <div>
+          <span class="music-intensity-pill level-${profile.level}">${esc(section.intensity||profile.label)}</span>
+          <h4>${section.sectionIndex+1}. ${esc(section.sectionName)}</h4>
+          <p>${section.minutes||profile.minutes} min · ${esc(section.bpmRange||musicTargetText(profile))} · ${esc(section.mood||'')}</p>
+        </div>
+        <strong>${section.tracks.length} numre</strong>
+      </div>
+      <ol class="music-track-list">
+        ${section.tracks.map((track,trackIndex)=>`<li>
+          <div class="music-track-main">
+            <strong>${esc(track.title)}</strong>
+            <span>${esc(track.artist)}${track.album?` · ${esc(track.album)}`:''}</span>
+            <small>${track.bpm?`${track.bpm} BPM · `:''}${esc(track.reason||'')}</small>
+          </div>
+          <button type="button" class="ghost compact-btn" data-remove-music-track="${sectionPlanIndex}-${trackIndex}" aria-label="Fjern ${esc(track.title)}">Fjern</button>
+        </li>`).join('')}
+      </ol>
+    </article>`;
+  }).join('');
+  host.querySelectorAll('[data-remove-music-track]').forEach(button=>button.onclick=()=>{
+    const [sectionIndex,trackIndex]=button.dataset.removeMusicTrack.split('-').map(Number);
+    musicPlan.sections[sectionIndex].tracks.splice(trackIndex,1);
+    renderMusicPlan();
+  });
+  updateMusicServiceUI();
+}
+function csvEscape(value){
+  const text=String(value??'').replace(/"/g,'""');
+  return `"${text}"`;
+}
+function musicTracksFlat(){
+  return (musicPlan?.sections||[]).flatMap(section=>(section.tracks||[]).map(track=>({...track,section})));
+}
+function safeFilename(value){
+  return String(value||'FunkFit-musik').trim().replace(/[\\/:*?"<>|]+/g,'-').replace(/\s+/g,' ').slice(0,80)||'FunkFit-musik';
+}
+function downloadTextFile(filename,text,type='text/plain;charset=utf-8'){
+  const blob=new Blob(['\ufeff'+text],{type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function downloadMusicPlaylist(){
+  const tracks=musicTracksFlat();
+  if(!tracks.length)return alert('Lav først en musikplan.');
+  const rows=['title,artist,album,isrc'];
+  tracks.forEach(({title,artist,album})=>rows.push([title,artist,album||'',''].map(csvEscape).join(',')));
+  downloadTextFile(`${safeFilename(musicPlan.playlistName)}.csv`,rows.join('\r\n'),'text/csv;charset=utf-8');
+}
+function downloadMusicSectionPlan(){
+  const tracks=musicTracksFlat();
+  if(!tracks.length)return alert('Lav først en musikplan.');
+  const rows=['section,section_minutes,intensity,bpm_range,title,artist,album,bpm,reason'];
+  tracks.forEach(({section,title,artist,album,bpm,reason})=>rows.push([
+    section.sectionName,section.minutes,section.intensity,section.bpmRange,title,artist,album||'',bpm||'',reason||''
+  ].map(csvEscape).join(',')));
+  downloadTextFile(`${safeFilename(musicPlan.playlistName)}-sektionsplan.csv`,rows.join('\r\n'),'text/csv;charset=utf-8');
+}
+function openMusicImporter(){
+  const importer=MUSIC_IMPORTERS[musicService]||MUSIC_IMPORTERS.spotify;
+  window.open(importer.url,'_blank','noopener');
+}
+function restoreMusicPlanFromWorkout(workout){
+  musicService=workout?.music?.service||'spotify';
+  musicScope=workout?.music?.scope||'all';
+  musicPlan=workout?.music?.plan?structuredClone(workout.music.plan):[];
+  selectedMusicSections=new Set(
+    Array.isArray(workout?.music?.selectedSections)
+      ?workout.music.selectedSections.map(Number)
+      :sections.map((_,i)=>i)
+  );
+  if(byId('musicPrefer'))byId('musicPrefer').value=workout?.music?.preferences?.prefer||'';
+  if(byId('musicAvoid'))byId('musicAvoid').value=workout?.music?.preferences?.avoid||'';
+  if(byId('musicLanguage'))byId('musicLanguage').value=workout?.music?.preferences?.language||'mixed';
+  if(byId('musicFamiliarity'))byId('musicFamiliarity').value=workout?.music?.preferences?.familiarity||'mixed';
+  if(byId('musicCleanOnly')){
+    byId('musicCleanOnly').checked=workout?.music?.preferences?.cleanOnly??['junior','family'].includes(selectedTrainingType());
+    byId('musicCleanOnly').dataset.userTouched='1';
+  }
+  if(byId('musicKeepFinisherSong'))byId('musicKeepFinisherSong').checked=workout?.music?.preferences?.keepFinisherSong!==false;
+  renderMusicPlanner();
+}
+function clearMusicPlanState(){
+  musicPlan=[];
+  musicService='spotify';
+  musicScope='all';
+  selectedMusicSections=new Set(sections.map((_,i)=>i));
+  if(byId('musicPrefer'))byId('musicPrefer').value='';
+  if(byId('musicAvoid'))byId('musicAvoid').value='';
+  if(byId('musicLanguage'))byId('musicLanguage').value='mixed';
+  if(byId('musicFamiliarity'))byId('musicFamiliarity').value='mixed';
+  if(byId('musicKeepFinisherSong'))byId('musicKeepFinisherSong').checked=true;
+  if(byId('musicCleanOnly')){
+    byId('musicCleanOnly').checked=['junior','family'].includes(selectedTrainingType());
+    delete byId('musicCleanOnly').dataset.userTouched;
+  }
+  renderMusicPlanner();
+}
+
+function collect(){return{id:currentId||crypto.randomUUID(),trainingType:selectedTrainingType(),profileId:userProfile().id,theme:$('#plannerTheme')?.value||'',name:$('#workoutName').value,date:$('#workoutDate').value,participants:+$('#participantCount').value,familyMode:$('#familyMode').checked,adultCount:+($('#adultCount').value||0),savedAt:new Date().toISOString(),sections:structuredClone(sections),music:{
+  spotify:$('#spotifyPlaylistUrl').value.trim(),
+  tidal:$('#tidalPlaylistUrl').value.trim(),
+  telmore:$('#telmorePlaylistUrl').value.trim(),
+  service:musicService,
+  scope:musicScope,
+  selectedSections:[...selectedMusicSections].sort((a,b)=>a-b),
+  plan:musicPlan&&musicPlan.sections?structuredClone(musicPlan):[],
+  preferences:{
+    prefer:byId('musicPrefer')?.value.trim()||'',
+    avoid:byId('musicAvoid')?.value.trim()||'',
+    language:byId('musicLanguage')?.value||'mixed',
+    familiarity:byId('musicFamiliarity')?.value||'mixed',
+    cleanOnly:!!byId('musicCleanOnly')?.checked,
+    keepFinisherSong:!!byId('musicKeepFinisherSong')?.checked
+  }
+}}}
 function saveCurrent(){
   const invalidFinisher=sections.find(s=>normalizeSection(s).sectionPurpose==='Finisher'&&finisherValidationMessage(s));
   if(invalidFinisher)return alert(finisherValidationMessage(invalidFinisher)+' Ret finisheren, før træningen gemmes.');
@@ -3015,7 +3554,7 @@ function renderSaved(){
 function editWorkout(w){
   currentId=w.id;plannerConcept=w.trainingType|| (w.familyMode?'family':'junior');
   document.querySelectorAll('#conceptChoices .choice-card').forEach(x=>x.classList.toggle('selected',x.dataset.value===plannerConcept));
-  $('#workoutName').value=w.name;$('#workoutDate').value=w.date;$('#participantCount').value=w.participants;$('#familyMode').checked=!!w.familyMode;$('#adultCount').value=w.adultCount||0;$('#adultCountLabel').classList.toggle('hidden',!w.familyMode);$('#spotifyPlaylistUrl').value=w.music?.spotify||'';$('#tidalPlaylistUrl').value=w.music?.tidal||'';$('#telmorePlaylistUrl').value=w.music?.telmore||'';sections=structuredClone(w.sections);normalizeSections();expandAllSections();renderFramework();renderExerciseSections();updateReview();setCreationMode('choice');showView('designView');showStep(2);
+  $('#workoutName').value=w.name;$('#workoutDate').value=w.date;$('#participantCount').value=w.participants;$('#familyMode').checked=!!w.familyMode;$('#adultCount').value=w.adultCount||0;$('#adultCountLabel').classList.toggle('hidden',!w.familyMode);$('#spotifyPlaylistUrl').value=w.music?.spotify||'';$('#tidalPlaylistUrl').value=w.music?.tidal||'';$('#telmorePlaylistUrl').value=w.music?.telmore||'';sections=structuredClone(w.sections);normalizeSections();restoreMusicPlanFromWorkout(w);expandAllSections();renderFramework();renderExerciseSections();updateReview();setCreationMode('choice');showView('designView');showStep(2);
 }
 
 let clearedWorkoutSnapshot=null;
@@ -3031,6 +3570,12 @@ function draftSnapshot(){
     plannerConcept,
     plannerVenue,
     sections:structuredClone(sections),
+    musicState:{
+      service:musicService,
+      scope:musicScope,
+      selectedSections:[...selectedMusicSections],
+      plan:musicPlan&&musicPlan.sections?structuredClone(musicPlan):[]
+    },
     fields:{
       workoutName:$('#workoutName')?.value||'',
       workoutDate:$('#workoutDate')?.value||'',
@@ -3040,6 +3585,12 @@ function draftSnapshot(){
       spotify:$('#spotifyPlaylistUrl')?.value||'',
       tidal:$('#tidalPlaylistUrl')?.value||'',
       telmore:$('#telmorePlaylistUrl')?.value||'',
+      musicPrefer:byId('musicPrefer')?.value||'',
+      musicAvoid:byId('musicAvoid')?.value||'',
+      musicLanguage:byId('musicLanguage')?.value||'mixed',
+      musicFamiliarity:byId('musicFamiliarity')?.value||'mixed',
+      musicCleanOnly:!!byId('musicCleanOnly')?.checked,
+      musicKeepFinisherSong:!!byId('musicKeepFinisherSong')?.checked,
       plannerTheme:$('#plannerTheme')?.value||'',
       plannerDuration:$('#plannerDuration')?.value||'60',
       plannerParticipants:$('#plannerParticipants')?.value||'20',
@@ -3054,6 +3605,11 @@ function applyDraftSnapshot(snapshot){
   plannerConcept=snapshot.plannerConcept||'junior';
   plannerVenue=snapshot.plannerVenue||'indoor';
   sections=structuredClone(snapshot.sections||[]).map(normalizeSection);
+  const ms=snapshot.musicState||{};
+  musicService=ms.service||'spotify';
+  musicScope=ms.scope||'all';
+  selectedMusicSections=new Set(Array.isArray(ms.selectedSections)?ms.selectedSections:sections.map((_,i)=>i));
+  musicPlan=ms.plan&&ms.plan.sections?structuredClone(ms.plan):[];
   const f=snapshot.fields||{};
   if($('#workoutName'))$('#workoutName').value=f.workoutName||'';
   if($('#workoutDate'))$('#workoutDate').value=f.workoutDate||todayISO();
@@ -3063,6 +3619,12 @@ function applyDraftSnapshot(snapshot){
   if($('#spotifyPlaylistUrl'))$('#spotifyPlaylistUrl').value=f.spotify||'';
   if($('#tidalPlaylistUrl'))$('#tidalPlaylistUrl').value=f.tidal||'';
   if($('#telmorePlaylistUrl'))$('#telmorePlaylistUrl').value=f.telmore||'';
+  if(byId('musicPrefer'))byId('musicPrefer').value=f.musicPrefer||'';
+  if(byId('musicAvoid'))byId('musicAvoid').value=f.musicAvoid||'';
+  if(byId('musicLanguage'))byId('musicLanguage').value=f.musicLanguage||'mixed';
+  if(byId('musicFamiliarity'))byId('musicFamiliarity').value=f.musicFamiliarity||'mixed';
+  if(byId('musicCleanOnly')){byId('musicCleanOnly').checked=f.musicCleanOnly??['junior','family'].includes(selectedTrainingType());byId('musicCleanOnly').dataset.userTouched='1';}
+  if(byId('musicKeepFinisherSong'))byId('musicKeepFinisherSong').checked=f.musicKeepFinisherSong!==false;
   if($('#plannerTheme'))$('#plannerTheme').value=f.plannerTheme||'';
   if($('#plannerDuration'))$('#plannerDuration').value=f.plannerDuration||60;
   if($('#plannerParticipants'))$('#plannerParticipants').value=f.plannerParticipants||20;

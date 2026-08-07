@@ -22,6 +22,44 @@ En sektion beskrives i seks adskilte lag. De må ikke blandes sammen.
 
 
 
+
+### Visning af øvelsesfelter
+- Teksten **Funktionel voksen** vises kun i Familietræning, hvor den er nødvendig for at skelne voksenalternativet fra juniorøvelsen.
+- I Funktionel voksen, HIIT, Hyrox og TRX vises der ikke en ekstra overskrift med træningssporets navn over felterne. Kun de felter, der er relevante for den konkrete øvelse og det konkrete format, vises.
+- Feltlogikken ændres ikke: fx kan kg, reps, sæt, tempo, pause, distance, kropsvinkel eller intensitet stadig vises, når de fagligt er relevante.
+- Felterne skal være kompakte. Korte værdier som `3`, `8-10` eller `3-1-1` skal ikke fylde en hel kolonne. Feltet må vokse, når indholdet kræver mere plads.
+- De responsive regler er viewport-baserede og gælder både Android og iPhone.
+
+
+
+## React Lights
+React Lights er tilgængeligt som udstyr/modalitet i **FunkFit Junior** og **Familie**.
+
+Det bruges især til reaktion, koordination, retningsskift, leg, makkerarbejde og korte intensive intervaller. React Lights skal vælges under **Tilgængeligt udstyr**, før AI må bruge øvelserne automatisk.
+
+Kataloget indeholder:
+- React Lights – farvejagt
+- React Lights – sprint til lys
+- React Lights – side shuffle
+- React Lights – squat & touch
+- React Lights – lunge reach
+- React Lights – plank touch
+- React Lights – bear crawl
+- React Lights – burpee & touch
+- React Lights – makkerduel
+- React Lights – holdstafet
+- React Lights – husk rækkefølgen
+- React Lights – bevægelse + signal
+
+### Programmeringsregler
+- React Lights regnes som **et fælles sæt udstyr**, ikke ét redskab pr. deltager.
+- Ved én aktiv React Lights-station viser “Du skal bruge” som udgangspunkt **1 sæt React Lights**.
+- Ved flere samtidige stationer lægges antallet af nødvendige sæt sammen.
+- AI prioriterer React Lights ved ønsker om reaktion, koordination og agility, men kun når udstyret er markeret som tilgængeligt.
+- Ved store hold bør React Lights oftest bruges som station, makkerøvelse, holdchallenge eller stafet, så ventetid undgås.
+- I Familietræning kan barn og voksen lave samme opgave eller få hver sin sværhedsgrad gennem afstand, tempo og kompleksitet.
+
+
 ## Udstyrsoversigten: “Du skal bruge”
 Til sidst i planlægningen viser boksen **Klar til at gemme** en samlet udstyrsoversigt.
 
@@ -169,3 +207,55 @@ AI-forslaget vurderer:
 - nyligt foreslåede finishere, så kataloget bruges mere varieret
 
 Et forslag er et udgangspunkt. Finisherens navn, struktur, regler, trænertips og aktiviteter kan fortsat redigeres i Finpuds.
+
+
+## Musikplanlægning
+Musik er en del af træningens intensitetsstyring. Musikplanen bygges **sektion for sektion**, så hele træningen ikke automatisk får samme tempo og energi.
+
+### Arbejdsgang
+1. Vælg musiktjeneste: Spotify, TIDAL eller Telmore Musik.
+2. Vælg om AI skal planlægge **alle sektioner** eller **kun udvalgte sektioner**.
+3. Angiv musikønsker og musik, der skal undgås.
+4. Google Gemini kan derefter foreslå eksisterende numre og knytte dem til træningens sektioner.
+5. Kontrollér forslagene, fjern evt. numre og download playlistfilen.
+6. Importér playlistfilen til den valgte musiktjeneste.
+
+### Intensitetsregler
+- **Ledopvarmning:** ca. 65-95 BPM. Rolig og samtalevenlig musik. Ingen dance, EDM, techno, klubmusik, hård rock eller hurtige/aggressive beats.
+- **Opvarmning:** ca. 95-120 BPM. Energien må stige gradvist.
+- **Teknik:** ca. 85-115 BPM. Musikken må ikke stjæle opmærksomhed fra instruktion.
+- **Styrke:** typisk ca. 95-125 BPM. Motiverende, men ikke hektisk.
+- **AMRAP/EMOM/HIIT/Hyrox/intervaller:** typisk ca. 120-150 BPM med tydeligt drive.
+- **Leg:** typisk 110-140 BPM med sjov og genkendelig energi.
+- **Teamchallenge:** typisk 125-155 BPM.
+- **Finisher:** kan få træningens største musikalske løft. Hvis en sang allerede er valgt til finisheren, kan den bevares.
+
+BPM er et styringsmål og ikke et absolut krav. Det vigtigste er musikalsk energi, tydelig rytme og at musikken passer til opgaven.
+
+### Junior og Familie
+Indstillingen **Undgå explicit lyrics** er som standard aktiv for Junior og Familie. Instruktøren kan ændre den.
+
+### Google Gemini
+Versionen bruger Google Gemini 3.6 Flash med Google Search til musikforslag. I den nuværende testversion indsætter brugeren sin egen API-nøgle. Nøglen gemmes kun i browserens session og indgår ikke i den gemte træning.
+
+I en produktionsversion bør AI-kaldet gå gennem en server-side proxy, så API-nøglen ikke sendes direkte fra klientappen.
+
+### Playlistfil
+FunkFit Builder eksporterer en universel CSV med felterne:
+`title, artist, album, isrc`
+
+- Spotify og TIDAL kan få CSV-filen matchet og importeret via TuneMyMusic.
+- Telmore Musik kan importeres via Soundiiz.
+- Den endelige importtjeneste matcher numrene mod destinationens aktuelle katalog. AI-forslaget er derfor ikke en garanti for, at alle numre findes i alle tjenester.
+
+Der kan også downloades en separat **Sektionsplan CSV**, som viser sektion, intensitet, BPM-mål, sang og AI'ens begrundelse. Denne fil er til instruktøren og ikke til playlistimport.
+
+
+## Gemini-browserfejl og CORS
+I testversionen kaldes Gemini direkte fra browseren. Interactions API kan kaldes med `Content-Type` og `x-goog-api-key`. Der må ikke tilføjes unødvendige ekstra request-headere, da de kan udløse en CORS preflight-fejl i browseren.
+
+v0.7.4-alpha.23 fjerner den tidligere `Api-Revision`-header, som kunne give `Failed to fetch` på mobil og desktop.
+
+Hvis en rigtig API-fejl returneres fra Google, vises Googles fejlbesked. Hvis browseren slet ikke kan etablere forbindelsen, vises en særskilt netværks-/CORS-besked.
+
+Gemini API-nøgler skal behandles som passwords. En nøgle, der er blevet delt eller eksponeret, bør tilbagekaldes og erstattes.

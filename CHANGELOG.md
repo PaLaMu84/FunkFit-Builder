@@ -1,19 +1,16 @@
-# FunkFit Builder v0.7.4-alpha.18
+# FunkFit Builder v0.7.4-alpha.23
 
-## Du skal bruge
-- “Klar til at gemme” viser nu en samlet udstyrsoversigt.
-- Deltagertallet kan ændres direkte i boksen.
-- Udstyrsbehovet genberegnes straks.
-- Beregningen anvender højeste samtidige behov, så udstyr kan genbruges mellem sektioner.
-- YGIG, stationer, hold/stafet, familiealternativer og øvelser med én eller to vægte håndteres særskilt.
-- Instruktør-PDF’en indeholder samme udstyrsoversigt.
+## Gemini / musikplanlægning
+- Fjernet `Api-Revision` fra browserens Gemini-request.
+- Request bruger nu kun `Content-Type` og `x-goog-api-key`.
+- Retter den kendte CORS/preflight-situation, som kan vise `Failed to fetch`.
+- Netværks-/CORS-fejl får nu en mere brugbar fejlbesked.
+- API-fejl fra Google vises fortsat med den konkrete fejltekst.
+- Gemini-nøglen gemmes fortsat kun i sessionStorage og aldrig i den gemte træning.
 
-## Gemte træninger
-- Den eksisterende lagernøgle er bevaret.
-- Gemte træninger spejles i en ekstra lokal sikkerhedskopi.
-- Manglende hovedlager gendannes automatisk fra sikkerhedskopien.
-- Cache-opdatering sletter ikke localStorage.
-- Brugeren kan fortsat slette enkelte træninger aktivt.
+## Sikkerhed
+- Browserbaseret API-nøgle er fortsat kun en testløsning.
+- Produktionsløsningen skal senere bruge server-side proxy.
 
-## Finisher
-- Katalogets eget udstyr gemmes nu i Finisher-sektionen, også når en finisher ikke indeholder almindelige øvelseskort.
+## Data
+- Eksisterende lagernøgle til gemte træninger er uændret.
