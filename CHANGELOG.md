@@ -1,23 +1,25 @@
-# FunkFit Builder v0.7.4-alpha.26
+# FunkFit Builder v0.7.4-alpha.27
+
+## Ny musik-AI-plan
+- Gemini 2.5 Flash-Lite er fjernet.
+- Primær model: `gemini-3.5-flash-lite`.
+- Automatisk fallback: `gemini-3.1-flash-lite`, hvis Google afviser primærmodellen pga. modeladgang.
+- Google Search-grounding er fjernet helt fra API-kaldet.
+- Det holder almindelig musikgenerering på Free Tier og undgår den betalte Search-del på Gemini 3.
+
+## Sangvalg
+- Prompten kræver primært velkendte, officielt udgivne numre.
+- AI må ikke opfinde sangtitler eller kunstnere.
+- Obskure/usikre forslag skal erstattes af mere kendte alternativer.
+
+## Spotify-verifikation
+- Hvis Spotify er forbundet, kontrolleres AI-forslag automatisk mod Spotifys katalog.
+- Matchede numre normaliseres til Spotifys titel, kunstner og album.
+- UI viser “Spotify-verificeret” eller “Ikke matchet i Spotify”.
+- Direkte playlist-oprettelse genbruger verificerede Spotify-URI'er.
 
 ## TIDAL
-- Ny hovedhandling: “Hent CSV + åbn TuneMyMusic”.
-- Klikket downloader playlist-CSV og åbner direkte TuneMyMusics CSV→TIDAL-side.
-- Brugeren skal kun vælge den netop hentede fil og logge ind på TIDAL.
-- Appen forklarer tydeligt, at browserens sikkerhedsmodel forhindrer automatisk udfyldning af filfeltet.
-
-## Spotify direkte
-- Første fungerende Spotify OAuth/PKCE-flow er bygget ind.
-- Client ID kan gemmes lokalt.
-- Appen viser præcis Redirect URI til Spotify Dashboard.
-- “Forbind Spotify” bruger Authorization Code with PKCE uden client secret.
-- Access/refresh tokens gemmes kun i browserens session.
-- “Opret playlist i Spotify”:
-  - søger hvert AI-nummer i Spotify
-  - opretter en privat playlist via `POST /me/playlists`
-  - tilføjer URI'er via `POST /playlists/{id}/items`
-  - gemmer playlist-linket i træningen
-- Ikke-matchede numre springes over og rapporteres.
+- TIDAL-flowet er uændret: CSV + TuneMyMusic, som foretager katalogmatch ved import.
 
 ## Data
 - Gemte træninger bruger fortsat samme lagernøgle.
