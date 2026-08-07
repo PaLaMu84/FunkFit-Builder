@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.7.4-alpha.23",
-  "short_name": "FunkFit 0.7.4a23",
+  "name": "FunkFit Builder v0.7.4-alpha.25",
+  "short_name": "FunkFit 0.7.4a25",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "Retter Gemini CORS-fejl i musikplanlægningen"
+  "description": "Gemini 2.5 Flash-Lite og playlist-first musikflow"
 }

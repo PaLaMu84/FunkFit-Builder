@@ -236,7 +236,7 @@ BPM er et styringsmål og ikke et absolut krav. Det vigtigste er musikalsk energ
 Indstillingen **Undgå explicit lyrics** er som standard aktiv for Junior og Familie. Instruktøren kan ændre den.
 
 ### Google Gemini
-Versionen bruger Google Gemini 3.6 Flash med Google Search til musikforslag. I den nuværende testversion indsætter brugeren sin egen API-nøgle. Nøglen gemmes kun i browserens session og indgår ikke i den gemte træning.
+Versionen bruger Google Gemini 2.5 Flash-Lite med Google Search til musikforslag. I den nuværende testversion indsætter brugeren sin egen API-nøgle. Nøglen gemmes kun i browserens session og indgår ikke i den gemte træning.
 
 I en produktionsversion bør AI-kaldet gå gennem en server-side proxy, så API-nøglen ikke sendes direkte fra klientappen.
 
@@ -259,3 +259,36 @@ v0.7.4-alpha.23 fjerner den tidligere `Api-Revision`-header, som kunne give `Fai
 Hvis en rigtig API-fejl returneres fra Google, vises Googles fejlbesked. Hvis browseren slet ikke kan etablere forbindelsen, vises en særskilt netværks-/CORS-besked.
 
 Gemini API-nøgler skal behandles som passwords. En nøgle, der er blevet delt eller eksponeret, bør tilbagekaldes og erstattes.
+
+## Design – otte punkter
+AI-designet af en hel træning er opdelt i otte tydelige punkter:
+
+1. Hvem træner?
+2. Hvor foregår træningen?
+3. Rammer
+4. Hvad skal fylde i træningen?
+5. Tilgængeligt udstyr
+6. Din idé eller særlige ønsker
+7. Ekstra valg til træningsforslaget
+8. Træningens struktur
+
+Punkt 7 er bevidst et selvstændigt trin, så valg som **Undgå ventetid og kø**, **Fast ledopvarmning**, **Planlæg en finisher**, **Medtag en leg** og **Prioritér elementer i Mit bibliotek** ikke overses.
+
+## Playlist-resultat – ikke CSV som hovedflow
+Fra v0.7.4-alpha.25 er selve resultatet en **playliste i FunkFit Builder**.
+
+Playlisten:
+- har et navn
+- er opdelt efter træningens sektioner
+- viser sangtitel og kunstner
+- viser intensitet/BPM og hvorfor nummeret passer
+- kan redigeres ved at fjerne enkelte numre
+- kan kopieres som en almindelig trackliste
+- har direkte “Find”-links til den valgte musiktjeneste
+
+CSV findes kun under **Avanceret eksport** som teknisk reservefunktion. Brugeren skal ikke behøve at forstå eller håndtere CSV for at bruge musikplanlægningen.
+
+### Direkte oprettelse hos musiktjenesten
+At oprette en rigtig bruger-playliste direkte i Spotify/TIDAL/Telmore kræver en understøttet login-/API-integration hos den pågældende tjeneste. Det kan ikke laves pålideligt ved blot at generere en fil eller et anonymt link.
+
+Spotify understøtter OAuth/PKCE og playlist-oprettelse, så en direkte Spotify-integration kan bygges som næste trin. TIDAL og Telmore skal vurderes særskilt ud fra deres aktuelle developer-vilkår og API-muligheder.
