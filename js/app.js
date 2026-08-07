@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.26';
+const APP_VERSION='0.7.4-alpha.27';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -3280,6 +3280,37 @@ async function searchSpotifyTrack(track){
     .map(item=>({item,score:spotifyTrackMatchScore(item,track)}))
     .sort((a,b)=>b.score-a.score)[0]?.item||null;
 }
+
+async function verifyMusicPlanWithSpotify(){
+  let matched=0,missing=0;
+  if(!musicPlan?.sections?.length||!spotifyConnected())return {matched,missing};
+
+  for(const section of musicPlan.sections){
+    for(const track of section.tracks||[]){
+      try{
+        const match=await searchSpotifyTrack(track);
+        if(match?.uri){
+          track.spotifyUri=match.uri;
+          track.spotifyUrl=match.external_urls?.spotify||'';
+          track.spotifyVerified=true;
+          track.title=match.name||track.title;
+          track.artist=(match.artists||[]).map(artist=>artist.name).join(', ')||track.artist;
+          track.album=match.album?.name||track.album||'';
+          matched++;
+        }else{
+          track.spotifyVerified=false;
+          missing++;
+        }
+      }catch(error){
+        console.warn('Spotify-verifikation fejlede for',track.title,error);
+        track.spotifyVerified=false;
+        missing++;
+      }
+    }
+  }
+  return {matched,missing};
+}
+
 async function createSpotifyPlaylist(){
   if(!musicTrackCount())return alert('Lav først en playliste.');
   if(!await validSpotifyToken()){
@@ -3299,6 +3330,11 @@ async function createSpotifyPlaylist(){
     const missing=[];
     for(let i=0;i<tracks.length;i++){
       status.textContent=`Finder numrene i Spotify… ${i+1}/${tracks.length}`;
+      const existingUri=tracks[i].spotifyUri;
+      if(existingUri){
+        matches.push({source:tracks[i],spotify:{uri:existingUri,external_urls:{spotify:tracks[i].spotifyUrl||''}}});
+        continue;
+      }
       const match=await searchSpotifyTrack(tracks[i]);
       if(match?.uri)matches.push({source:tracks[i],spotify:match});
       else missing.push(tracks[i]);
@@ -3384,7 +3420,10 @@ const MUSIC_IMPORTERS={
 function musicServiceTrackUrl(track){
   const service=MUSIC_IMPORTERS[musicService]||MUSIC_IMPORTERS.spotify;
   const query=`${track.title} ${track.artist}`.trim();
-  if(musicService==='spotify')return service.searchBase+encodeURIComponent(query);
+  if(musicService==='spotify'){
+    if(track.spotifyUrl)return track.spotifyUrl;
+    return service.searchBase+encodeURIComponent(query);
+  }
   if(musicService==='tidal')return service.searchBase+encodeURIComponent(query);
   return service.url;
 }
@@ -3572,8 +3611,8 @@ function musicPrompt(){
     return `- sectionIndex ${profile.index}: "${profile.name}", formål ${profile.purpose}, ${profile.minutes} min, intensitet ${profile.level}/5 (${profile.label}), mål ${profile.bpmMin}-${profile.bpmMax} BPM, ønsket stemning: ${profile.mood}. Undgå: ${profile.avoid}. Foreslå ca. ${profile.trackCount} numre.${existing}`;
   }).join('\n');
 
-  return `Du er musikansvarlig for en funktionel træning. Lav en musikplan med REELLE eksisterende musiknumre til ${service}.
-Brug Google Search, når det hjælper, og undgå at opfinde numre eller kunstnere. Søg gerne efter tegn på, at numrene findes på ${service}. Brugeren skal ende med en konkret playliste med titel og kunstner, ikke en løs inspirationsliste.
+  return `Du er musikansvarlig for en funktionel træning. Lav en konkret playliste med REELLE eksisterende musiknumre til ${service}.
+Du har ikke adgang til web-søgning i dette kald. Vælg derfor primært velkendte, officielt udgivne numre og undgå obskure eller usikre titler. Opfind aldrig sangtitler eller kunstnere. Hvis du er usikker på et nummer, vælg et mere kendt alternativ. Brugeren skal ende med en konkret playliste med titel og kunstner, ikke en løs inspirationsliste.
 Målgruppe: ${audience}.
 Musikønsker: gerne ${prefer}. Undgå: ${avoid}. Sprog: ${language}. Kendskab: ${familiarity}.
 ${cleanOnly?'Brug kun clean/familievenlige versioner og undgå explicit lyrics.':'Explicit lyrics er ikke automatisk forbudt, men vælg stadig musik, der passer til holdtræning.'}
@@ -3590,6 +3629,7 @@ VIGTIGE PROGRAMMERINGSREGLER:
 8. Sørg for cirka nok musik til at dække hver sektions varighed.
 9. Returnér kun de sektioner, der står nedenfor, og brug præcis deres sectionIndex.
 10. BPM må gerne være et kvalificeret estimat, men sangtitel og kunstner skal være korrekte.
+11. Prioritér numre, der med høj sandsynlighed findes i de store streamingkataloger. Spotify verificerer bagefter titel/kunstner mod sit eget katalog; TIDAL matches senere via TuneMyMusic.
 
 SEKTIONER:
 ${sectionText}
@@ -3697,9 +3737,48 @@ function normalizeMusicPlanResult(result){
     sections:sectionsOut
   };
 }
+
+const MUSIC_GEMINI_MODELS=['gemini-3.5-flash-lite','gemini-3.1-flash-lite'];
+
+function geminiModelAccessFailure(message=''){
+  return /no longer available|not available|not found|unsupported model|model.*not.*exist|404/i.test(String(message));
+}
+function geminiQuotaFailure(message=''){
+  return /quota|rate.?limit|resource_exhausted|429/i.test(String(message));
+}
+async function requestGeminiMusicPlan(key,activeModel){
+  const response=await fetch('https://generativelanguage.googleapis.com/v1beta/interactions',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-goog-api-key':key
+    },
+    body:JSON.stringify({
+      model:activeModel,
+      input:musicPrompt(),
+      response_format:{
+        type:'text',
+        mime_type:'application/json',
+        schema:musicResponseSchema()
+      }
+    })
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok){
+    const message=data?.error?.message||`Google AI svarede med fejl ${response.status}.`;
+    const error=new Error(message);
+    error.status=response.status;
+    error.model=activeModel;
+    throw error;
+  }
+  const text=extractGeminiOutput(data);
+  if(!text)throw new Error(`${activeModel} returnerede ikke en læsbar playliste.`);
+  return normalizeMusicPlanResult(parseMusicJson(text));
+}
+
 async function generateMusicPlan(){
   const indexes=currentMusicSectionIndexes();
-  if(!indexes.length)return alert('Vælg mindst én sektion til musikplanen.');
+  if(!indexes.length)return alert('Vælg mindst én sektion til playlisten.');
   const key=byId('musicGeminiKey')?.value.trim()||sessionStorage.getItem('funkfit-gemini-key')||'';
   if(!key){
     byId('musicPlanStatus').textContent='Indsæt først en Gemini API-nøgle.';
@@ -3711,44 +3790,48 @@ async function generateMusicPlan(){
   const status=byId('musicPlanStatus');
   button.disabled=true;
   button.textContent='⏳ Finder musik…';
-  status.textContent='Google AI planlægger intensitetskurven og søger efter eksisterende numre. Det kan tage lidt tid.';
+  status.textContent='AI bygger en playliste efter sektionernes intensitet.';
+
+  let lastError=null;
+  let usedModel='';
   try{
-    const response=await fetch('https://generativelanguage.googleapis.com/v1beta/interactions',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-goog-api-key':key
-      },
-      body:JSON.stringify({
-        model:'gemini-2.5-flash-lite',
-        input:musicPrompt(),
-        tools:[{type:'google_search'}],
-        response_format:{
-          type:'text',
-          mime_type:'application/json',
-          schema:musicResponseSchema()
-        }
-      })
-    });
-    const data=await response.json().catch(()=>({}));
-    if(!response.ok){
-      const message=data?.error?.message||`Google AI svarede med fejl ${response.status}.`;
-      throw new Error(message);
+    for(const activeModel of MUSIC_GEMINI_MODELS){
+      try{
+        status.textContent=`AI bygger playlisten med ${activeModel.replace('gemini-','Gemini ')}…`;
+        musicPlan=await requestGeminiMusicPlan(key,activeModel);
+        usedModel=activeModel;
+        break;
+      }catch(error){
+        lastError=error;
+        if(geminiModelAccessFailure(error.message))continue;
+        throw error;
+      }
     }
-    const text=extractGeminiOutput(data);
-    if(!text)throw new Error('Google AI returnerede ikke en læsbar musikplan.');
-    musicPlan=normalizeMusicPlanResult(parseMusicJson(text));
-    status.textContent=`Playliste klar · ${musicPlan.sections.reduce((n,s)=>n+s.tracks.length,0)} numre fordelt på træningens sektioner.`;
+    if(!musicPlan?.sections?.length)throw lastError||new Error('Ingen tilgængelig Gemini-model kunne lave playlisten.');
+
+    musicPlan.model=usedModel;
+    renderMusicPlan();
+
+    if(musicService==='spotify'&&spotifyConnected()){
+      status.textContent='Playlisten er lavet. Kontrollerer numrene mod Spotify-kataloget…';
+      const verification=await verifyMusicPlanWithSpotify();
+      status.textContent=`Playliste klar · ${musicTrackCount()} numre · ${verification.matched} verificeret i Spotify${verification.missing?` · ${verification.missing} ikke matchet`:''}.`;
+    }else{
+      status.textContent=`Playliste klar · ${musicTrackCount()} numre · ${usedModel.replace('gemini-','Gemini ')}.`;
+    }
     renderMusicPlan();
   }catch(error){
     console.error('Musikplanlægning fejlede',error);
     const networkFailure=error instanceof TypeError&&/fetch|network|failed/i.test(error.message||'');
-    const quotaFailure=/quota|rate.?limit|resource_exhausted|429/i.test(error.message||'');
+    const quotaFailure=geminiQuotaFailure(error.message);
+    const modelFailure=geminiModelAccessFailure(error.message);
     status.textContent=networkFailure
       ?'Kunne ikke kontakte Google AI fra browseren. Genindlæs siden og prøv igen.'
       :quotaFailure
-        ?'Google AI har nået gratiskvoten for denne nøgle. Gemini 2.5 Flash-Lite bruger gratis tier; prøv igen senere eller kontrollér kvoten i Google AI Studio.'
-        :`Kunne ikke lave playlisten: ${error.message}`;
+        ?'Google AI har nået gratiskvoten for denne nøgle/projekt. Prøv igen senere eller kontrollér Usage / Rate limits i Google AI Studio.'
+        :modelFailure
+          ?'Google har ændret modeladgangen. FunkFit prøvede både Gemini 3.5 Flash-Lite og 3.1 Flash-Lite, men ingen var tilgængelige for projektet.'
+          :`Kunne ikke lave playlisten: ${error.message}`;
   }finally{
     button.disabled=false;
     button.textContent='✨ Planlæg musik med AI';
@@ -3782,7 +3865,7 @@ function renderMusicPlan(){
           <a class="music-track-main music-track-link" href="${esc(musicServiceTrackUrl(track))}" target="_blank" rel="noopener" title="Find ${esc(track.title)} i ${esc((MUSIC_IMPORTERS[musicService]||MUSIC_IMPORTERS.spotify).label)}">
             <strong>${esc(track.title)}</strong>
             <span>${esc(track.artist)}${track.album?` · ${esc(track.album)}`:''}</span>
-            <small>${track.bpm?`${track.bpm} BPM · `:''}${esc(track.reason||'')}</small>
+            <small>${track.spotifyVerified===true?'✓ Spotify-verificeret · ':track.spotifyVerified===false?'⚠ Ikke matchet i Spotify · ':''}${track.bpm?`${track.bpm} BPM · `:''}${esc(track.reason||'')}</small>
           </a>
           <div class="music-track-actions">
             <a class="ghost compact-btn" href="${esc(musicServiceTrackUrl(track))}" target="_blank" rel="noopener">Find</a>

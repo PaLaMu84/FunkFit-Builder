@@ -236,7 +236,7 @@ BPM er et styringsmål og ikke et absolut krav. Det vigtigste er musikalsk energ
 Indstillingen **Undgå explicit lyrics** er som standard aktiv for Junior og Familie. Instruktøren kan ændre den.
 
 ### Google Gemini
-Versionen bruger Google Gemini 2.5 Flash-Lite med Google Search til musikforslag. I den nuværende testversion indsætter brugeren sin egen API-nøgle. Nøglen gemmes kun i browserens session og indgår ikke i den gemte træning.
+Versionen bruger Google Gemini 3.5 Flash-Lite til musikforslag uden Google Search-grounding. I den nuværende testversion indsætter brugeren sin egen API-nøgle. Nøglen gemmes kun i browserens session og indgår ikke i den gemte træning.
 
 I en produktionsversion bør AI-kaldet gå gennem en server-side proxy, så API-nøglen ikke sendes direkte fra klientappen.
 
@@ -328,3 +328,15 @@ Når Spotify er forbundet:
 Numre, der ikke kan matches sikkert i Spotify, springes over og rapporteres til instruktøren.
 
 Spotify-metadata bruges kun til at matche og oprette playlisten efter AI-forslaget. Spotify-katalogdata sendes ikke tilbage til AI-modellen.
+
+## Musik-AI – gratis og robust modelstrategi
+Fra v0.7.4-alpha.27 bruger musikplanlægningen først **Gemini 3.5 Flash-Lite**. Hvis Google afviser modellen som utilgængelig for projektet, prøver appen automatisk **Gemini 3.1 Flash-Lite**.
+
+Begge modeller kan bruges på Gemini API's Free Tier til almindelig tekstgenerering. **Google Search-grounding er bevidst slået fra**, fordi Search-grounding på Gemini 3 ikke indgår i Free Tier.
+
+AI'ens opgave er derfor at vælge velkendte, eksisterende numre ud fra træningens sektioner og intensitet. Den endelige katalogkontrol sker tættere på musiktjenesten:
+
+- **Spotify:** Hvis Spotify er forbundet, verificerer FunkFit automatisk AI-forslagene mod Spotifys katalog og normaliserer titel, kunstner og album før playlisten oprettes.
+- **TIDAL:** TuneMyMusic matcher CSV-listen mod TIDAL-kataloget under importen.
+
+Det reducerer afhængigheden af Google Search og gør gratis-sporet mere stabilt.

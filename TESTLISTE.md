@@ -1,26 +1,28 @@
-# Gentest – v0.7.4-alpha.26
+# Gentest – v0.7.4-alpha.27
+
+## Google AI
+1. Upload versionen og åbn reset-cache.html.
+2. Kontrollér, at Google AI viser Gemini 3.5 Flash-Lite.
+3. Brug den nuværende Gemini API-nøgle.
+4. Generér en playliste.
+5. Kontrollér, at fejlen “gemini-2.5-flash-lite is no longer available” er væk.
+6. Kontrollér, at requesten ikke indeholder Google Search-værktøjet.
+7. Hvis 3.5 Flash-Lite afvises som modeladgang, skal appen automatisk prøve 3.1 Flash-Lite.
+8. Ved kvote-429 skal appen vise dansk kvotefejl.
+
+## Spotify
+9. Forbind Spotify.
+10. Generér en ny playliste med Spotify valgt.
+11. Kontrollér, at numrene efter generation bliver verificeret mod Spotify.
+12. Matchede numre skal vise “Spotify-verificeret”.
+13. Klik “Opret playlist i Spotify”.
+14. Kontrollér, at verificerede URI'er genbruges.
 
 ## TIDAL
-1. Generér en playliste og vælg TIDAL.
-2. Tryk “Hent CSV + åbn TuneMyMusic”.
-3. Kontrollér, at en CSV downloades.
-4. Kontrollér, at TuneMyMusic åbner på CSV→TIDAL-siden.
-5. Upload den downloadede fil og gennemfør TIDAL-overførslen.
+15. Generér en playliste med TIDAL valgt.
+16. Klik “Hent CSV + åbn TuneMyMusic”.
+17. Kontrollér, at CSV downloades og TuneMyMusic åbnes.
 
-## Spotify opsætning
-6. Vælg Spotify.
-7. Åbn Spotify-opsætning og kontrollér Redirect URI.
-8. Opret/åbn en Spotify Developer-app og registrér Redirect URI præcist.
-9. Indsæt Client ID og gem.
-10. Tryk “Forbind Spotify”.
-11. Godkend scopes og kontrollér, at FunkFit vender tilbage til Musik-siden og viser “Forbundet”.
-
-## Spotify playlist
-12. Generér en playliste.
-13. Tryk “Opret playlist i Spotify”.
-14. Kontrollér søgning/matching af numrene.
-15. Kontrollér, at en privat playlist oprettes i Spotify.
-16. Kontrollér, at matchede numre ligger i korrekt rækkefølge.
-17. Kontrollér, at eventuelt ikke-matchede numre rapporteres.
-18. Gem træningen og genåbn den: Spotify playlist-linket skal være bevaret.
-19. Kontrollér, at gamle gemte træninger stadig findes.
+## Data
+18. Gem og genåbn træningen.
+19. Kontrollér, at eksisterende gemte træninger stadig findes.
