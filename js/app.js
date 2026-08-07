@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.25';
+const APP_VERSION='0.7.4-alpha.26';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -109,6 +109,13 @@ const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-fa
 const WBACKUPKEY='funkfit-workouts-backup-v1';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
 let musicPlan=[],musicService='spotify',musicScope='all',selectedMusicSections=new Set();
+const SPOTIFY_CLIENT_ID_KEY='funkfit-spotify-client-id-v1';
+const SPOTIFY_TOKEN_KEY='funkfit-spotify-token-v1';
+const SPOTIFY_REFRESH_KEY='funkfit-spotify-refresh-v1';
+const SPOTIFY_EXPIRES_KEY='funkfit-spotify-expires-v1';
+const SPOTIFY_PKCE_VERIFIER_KEY='funkfit-spotify-pkce-verifier-v1';
+const SPOTIFY_OAUTH_STATE_KEY='funkfit-spotify-oauth-state-v1';
+const SPOTIFY_RETURN_DRAFT_KEY='funkfit-spotify-return-draft-v1';
 let plannerConcept='junior',plannerVenue='indoor';
 const EQUIPMENT_PROFILES={
   indoor:['Kropsvægt','Måtte','Kettlebell','Håndvægt','Boks','Bænk','Medicinbold','Væg','Kegler','Sjippetov','Elastik','Romaskine'],
@@ -846,7 +853,9 @@ async function init(){
   $('#templateSelect').innerHTML=templates.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   $('#workoutDate').value=new Date().toISOString().slice(0,10);
   sections=prepareTemplateSections(templates[0].sections);
-  populatePickerFilters();bind();syncManualChoiceButtons();setCreationMode('choice');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();
+  populatePickerFilters();bind();syncManualChoiceButtons();setCreationMode('choice');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();renderMusicPlanner();
+  await handleSpotifyOAuthCallback();
+  updateSpotifyIntegrationUI();
 }
 
 
@@ -1162,6 +1171,21 @@ function bind(){
   on('generateMusicPlanBtn','click',generateMusicPlan);
   on('copyMusicPlaylistBtn','click',copyMusicPlaylist);
   on('openPlaylistServiceBtn','click',openSelectedMusicService);
+  on('spotifyClientId','input',event=>setSpotifyClientId(event.target.value));
+  on('saveSpotifyClientIdBtn','click',()=>{
+    setSpotifyClientId(byId('spotifyClientId')?.value||'');
+    updateSpotifyIntegrationUI();
+    if(byId('spotifyIntegrationStatus'))byId('spotifyIntegrationStatus').textContent='Spotify Client ID er gemt på denne enhed.';
+  });
+  on('copySpotifyRedirectBtn','click',async()=>{
+    const value=spotifyRedirectUri();
+    try{await navigator.clipboard.writeText(value)}catch{}
+    if(byId('spotifyIntegrationStatus'))byId('spotifyIntegrationStatus').textContent='Redirect URI er kopieret.';
+  });
+  on('openSpotifyDashboardBtn','click',()=>window.open('https://developer.spotify.com/dashboard','_blank','noopener'));
+  on('connectSpotifyBtn','click',connectSpotify);
+  on('createSpotifyPlaylistBtn','click',createSpotifyPlaylist);
+  on('downloadAndOpenTidalBtn','click',downloadAndOpenTidal);
   on('downloadMusicPlaylistBtn','click',downloadMusicPlaylist);
   on('downloadMusicSectionPlanBtn','click',downloadMusicSectionPlan);
   on('openMusicImporterBtn','click',openMusicImporter);
@@ -3037,18 +3061,316 @@ function equipmentSummaryPrintHtml(workout){
 }
 
 
+
+function spotifyRedirectUri(){
+  return `${window.location.origin}${window.location.pathname}`;
+}
+function spotifyClientId(){
+  return localStorage.getItem(SPOTIFY_CLIENT_ID_KEY)||'';
+}
+function setSpotifyClientId(value){
+  const clean=String(value||'').trim();
+  if(clean)localStorage.setItem(SPOTIFY_CLIENT_ID_KEY,clean);
+  else localStorage.removeItem(SPOTIFY_CLIENT_ID_KEY);
+}
+function spotifyAccessToken(){
+  return sessionStorage.getItem(SPOTIFY_TOKEN_KEY)||'';
+}
+function spotifyConnected(){
+  return !!spotifyAccessToken();
+}
+function randomBase64Url(bytes=48){
+  const data=new Uint8Array(bytes);
+  crypto.getRandomValues(data);
+  let binary='';
+  data.forEach(byte=>binary+=String.fromCharCode(byte));
+  return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+async function sha256Base64Url(value){
+  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));
+  let binary='';
+  new Uint8Array(digest).forEach(byte=>binary+=String.fromCharCode(byte));
+  return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function spotifyTokenExpiresSoon(){
+  const expires=+sessionStorage.getItem(SPOTIFY_EXPIRES_KEY)||0;
+  return !expires||Date.now()>expires-60000;
+}
+async function refreshSpotifyToken(){
+  const refresh=sessionStorage.getItem(SPOTIFY_REFRESH_KEY)||'';
+  const clientId=spotifyClientId();
+  if(!refresh||!clientId)return '';
+  const body=new URLSearchParams({
+    grant_type:'refresh_token',
+    refresh_token:refresh,
+    client_id:clientId
+  });
+  const response=await fetch('https://accounts.spotify.com/api/token',{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(data?.error_description||data?.error||`Spotify tokenfejl ${response.status}`);
+  sessionStorage.setItem(SPOTIFY_TOKEN_KEY,data.access_token);
+  sessionStorage.setItem(SPOTIFY_EXPIRES_KEY,String(Date.now()+(+data.expires_in||3600)*1000));
+  if(data.refresh_token)sessionStorage.setItem(SPOTIFY_REFRESH_KEY,data.refresh_token);
+  updateSpotifyIntegrationUI();
+  return data.access_token;
+}
+async function validSpotifyToken(){
+  if(!spotifyAccessToken())return '';
+  if(!spotifyTokenExpiresSoon())return spotifyAccessToken();
+  try{return await refreshSpotifyToken()}catch(error){
+    console.warn('Kunne ikke forny Spotify-token',error);
+    clearSpotifySession();
+    return '';
+  }
+}
+function clearSpotifySession(){
+  [SPOTIFY_TOKEN_KEY,SPOTIFY_REFRESH_KEY,SPOTIFY_EXPIRES_KEY,SPOTIFY_PKCE_VERIFIER_KEY,SPOTIFY_OAUTH_STATE_KEY].forEach(key=>sessionStorage.removeItem(key));
+  updateSpotifyIntegrationUI();
+}
+async function connectSpotify(){
+  const clientId=(byId('spotifyClientId')?.value||spotifyClientId()).trim();
+  if(!clientId){
+    byId('spotifySetupDetails')?.setAttribute('open','');
+    byId('spotifyClientId')?.focus();
+    return alert('Indsæt først Spotify Client ID.');
+  }
+  setSpotifyClientId(clientId);
+
+  const verifier=randomBase64Url(64);
+  const challenge=await sha256Base64Url(verifier);
+  const state=randomBase64Url(24);
+  sessionStorage.setItem(SPOTIFY_PKCE_VERIFIER_KEY,verifier);
+  sessionStorage.setItem(SPOTIFY_OAUTH_STATE_KEY,state);
+  try{
+    sessionStorage.setItem(SPOTIFY_RETURN_DRAFT_KEY,JSON.stringify(draftSnapshot()));
+  }catch(error){
+    console.warn('Kunne ikke gemme kladden før Spotify-login',error);
+  }
+
+  const params=new URLSearchParams({
+    client_id:clientId,
+    response_type:'code',
+    redirect_uri:spotifyRedirectUri(),
+    scope:'playlist-modify-private playlist-modify-public',
+    code_challenge_method:'S256',
+    code_challenge:challenge,
+    state,
+    show_dialog:'false'
+  });
+  window.location.href=`https://accounts.spotify.com/authorize?${params.toString()}`;
+}
+async function handleSpotifyOAuthCallback(){
+  const url=new URL(window.location.href);
+  const code=url.searchParams.get('code');
+  const error=url.searchParams.get('error');
+  const returnedState=url.searchParams.get('state');
+  if(!code&&!error)return false;
+
+  try{
+    if(error)throw new Error(`Spotify-login blev afvist: ${error}`);
+    const expected=sessionStorage.getItem(SPOTIFY_OAUTH_STATE_KEY)||'';
+    if(!expected||returnedState!==expected)throw new Error('Spotify-login kunne ikke valideres. Prøv at forbinde igen.');
+    const verifier=sessionStorage.getItem(SPOTIFY_PKCE_VERIFIER_KEY)||'';
+    const clientId=spotifyClientId();
+    if(!verifier||!clientId)throw new Error('Spotify-login mangler PKCE-oplysninger. Forbind igen.');
+
+    const body=new URLSearchParams({
+      grant_type:'authorization_code',
+      code,
+      redirect_uri:spotifyRedirectUri(),
+      client_id:clientId,
+      code_verifier:verifier
+    });
+    const response=await fetch('https://accounts.spotify.com/api/token',{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data?.error_description||data?.error||`Spotify tokenfejl ${response.status}`);
+
+    sessionStorage.setItem(SPOTIFY_TOKEN_KEY,data.access_token);
+    sessionStorage.setItem(SPOTIFY_EXPIRES_KEY,String(Date.now()+(+data.expires_in||3600)*1000));
+    if(data.refresh_token)sessionStorage.setItem(SPOTIFY_REFRESH_KEY,data.refresh_token);
+  }finally{
+    sessionStorage.removeItem(SPOTIFY_PKCE_VERIFIER_KEY);
+    sessionStorage.removeItem(SPOTIFY_OAUTH_STATE_KEY);
+    url.searchParams.delete('code');
+    url.searchParams.delete('state');
+    url.searchParams.delete('error');
+    url.searchParams.set('v',APP_VERSION);
+    window.history.replaceState(window.history.state,'',url.pathname+url.search+url.hash);
+  }
+
+  const draftText=sessionStorage.getItem(SPOTIFY_RETURN_DRAFT_KEY);
+  if(draftText){
+    try{applyDraftSnapshot(JSON.parse(draftText))}catch(error){console.warn('Kunne ikke gendanne kladden efter Spotify-login',error)}
+    sessionStorage.removeItem(SPOTIFY_RETURN_DRAFT_KEY);
+  }
+  showView('designView');
+  showStep(3);
+  updateSpotifyIntegrationUI();
+  if(byId('spotifyIntegrationStatus'))byId('spotifyIntegrationStatus').textContent='Spotify er forbundet. Du kan nu oprette playlisten direkte.';
+  return true;
+}
+function updateSpotifyIntegrationUI(){
+  const clientInput=byId('spotifyClientId');
+  if(clientInput&&document.activeElement!==clientInput)clientInput.value=spotifyClientId();
+  if(byId('spotifyRedirectUri'))byId('spotifyRedirectUri').value=spotifyRedirectUri();
+  const connected=spotifyConnected();
+  const badge=byId('spotifyConnectionBadge');
+  if(badge){
+    badge.textContent=connected?'Forbundet':'Ikke forbundet';
+    badge.classList.toggle('connected',connected);
+  }
+  const connectButton=byId('connectSpotifyBtn');
+  if(connectButton)connectButton.textContent=connected?'Forbind igen':'Forbind Spotify';
+  const createButton=byId('createSpotifyPlaylistBtn');
+  if(createButton)createButton.disabled=!connected||!musicTrackCount();
+}
+async function spotifyFetch(path,options={}){
+  const token=await validSpotifyToken();
+  if(!token)throw new Error('Spotify er ikke forbundet.');
+  const response=await fetch(`https://api.spotify.com/v1${path}`,{
+    ...options,
+    headers:{
+      Authorization:`Bearer ${token}`,
+      ...(options.body?{'Content-Type':'application/json'}:{}),
+      ...(options.headers||{})
+    }
+  });
+  if(response.status===401){
+    clearSpotifySession();
+    throw new Error('Spotify-login er udløbet. Forbind Spotify igen.');
+  }
+  if(response.status===429){
+    const retry=response.headers.get('Retry-After');
+    throw new Error(`Spotify har midlertidigt begrænset antallet af kald.${retry?` Prøv igen om ${retry} sekunder.`:''}`);
+  }
+  const text=await response.text();
+  let data={};
+  if(text){try{data=JSON.parse(text)}catch{data={raw:text}}}
+  if(!response.ok)throw new Error(data?.error?.message||data?.error_description||`Spotify-fejl ${response.status}`);
+  return data;
+}
+function normalizeSpotifyMatch(value=''){
+  return normalizeText(value).replace(/\b(remaster(?:ed)?|radio edit|edit|version|feat|featuring)\b.*$/,'').trim();
+}
+function spotifyTrackMatchScore(candidate,track){
+  const title=normalizeSpotifyMatch(candidate?.name||'');
+  const wantedTitle=normalizeSpotifyMatch(track.title||'');
+  const artists=normalizeText((candidate?.artists||[]).map(a=>a.name).join(' '));
+  const wantedArtist=normalizeText(track.artist||'');
+  let score=0;
+  if(title===wantedTitle)score+=8;
+  else if(title.includes(wantedTitle)||wantedTitle.includes(title))score+=5;
+  if(artists.includes(wantedArtist)||wantedArtist.includes(artists))score+=7;
+  if(track.album&&normalizeText(candidate?.album?.name||'').includes(normalizeText(track.album)))score+=2;
+  return score;
+}
+async function searchSpotifyTrack(track){
+  const query=`track:${track.title} artist:${track.artist}`;
+  const data=await spotifyFetch(`/search?${new URLSearchParams({q:query,type:'track',limit:'5'}).toString()}`);
+  const candidates=data?.tracks?.items||[];
+  return candidates
+    .map(item=>({item,score:spotifyTrackMatchScore(item,track)}))
+    .sort((a,b)=>b.score-a.score)[0]?.item||null;
+}
+async function createSpotifyPlaylist(){
+  if(!musicTrackCount())return alert('Lav først en playliste.');
+  if(!await validSpotifyToken()){
+    updateSpotifyIntegrationUI();
+    return alert('Forbind Spotify først.');
+  }
+
+  const status=byId('spotifyIntegrationStatus');
+  const button=byId('createSpotifyPlaylistBtn');
+  button.disabled=true;
+  button.textContent='⏳ Opretter…';
+  status.textContent='Finder numrene i Spotify…';
+
+  try{
+    const tracks=musicTracksFlat();
+    const matches=[];
+    const missing=[];
+    for(let i=0;i<tracks.length;i++){
+      status.textContent=`Finder numrene i Spotify… ${i+1}/${tracks.length}`;
+      const match=await searchSpotifyTrack(tracks[i]);
+      if(match?.uri)matches.push({source:tracks[i],spotify:match});
+      else missing.push(tracks[i]);
+    }
+    if(!matches.length)throw new Error('Ingen af numrene kunne matches i Spotify.');
+
+    status.textContent='Opretter playlisten i Spotify…';
+    const playlist=await spotifyFetch('/me/playlists',{
+      method:'POST',
+      body:JSON.stringify({
+        name:musicPlan.playlistName||`${byId('workoutName')?.value||'FunkFit'} – musik`,
+        public:false,
+        description:'Planlagt i FunkFit Builder efter træningens sektioner og intensitet.'
+      })
+    });
+
+    const uris=matches.map(match=>match.spotify.uri);
+    for(let i=0;i<uris.length;i+=100){
+      await spotifyFetch(`/playlists/${encodeURIComponent(playlist.id)}/items`,{
+        method:'POST',
+        body:JSON.stringify({uris:uris.slice(i,i+100)})
+      });
+    }
+
+    if(playlist?.external_urls?.spotify){
+      if(byId('spotifyPlaylistUrl'))byId('spotifyPlaylistUrl').value=playlist.external_urls.spotify;
+      musicPlan.spotifyPlaylistUrl=playlist.external_urls.spotify;
+    }
+
+    const missingText=missing.length?` ${missing.length} nummer${missing.length===1?'':'e'} kunne ikke matches og blev sprunget over.`:'';
+    status.textContent=`✓ Spotify-playlisten er oprettet med ${matches.length} numre.${missingText}`;
+    if(playlist?.external_urls?.spotify){
+      const open=confirm(`Playlisten er oprettet med ${matches.length} numre.${missingText}\n\nÅbn den i Spotify nu?`);
+      if(open)window.open(playlist.external_urls.spotify,'_blank','noopener');
+    }
+  }catch(error){
+    console.error('Spotify playlist-fejl',error);
+    status.textContent=`Kunne ikke oprette Spotify-playlisten: ${error.message}`;
+  }finally{
+    button.disabled=false;
+    button.textContent='Opret playlist i Spotify';
+    updateSpotifyIntegrationUI();
+  }
+}
+function playlistCsvText(){
+  const tracks=musicTracksFlat();
+  const rows=['title,artist,album,isrc'];
+  tracks.forEach(({title,artist,album})=>rows.push([title,artist,album||'',''].map(csvEscape).join(',')));
+  return rows.join('\r\n');
+}
+function downloadAndOpenTidal(){
+  if(!musicTrackCount())return alert('Lav først en playliste.');
+  const filename=`${safeFilename(musicPlan.playlistName)}.csv`;
+  downloadTextFile(filename,playlistCsvText(),'text/csv;charset=utf-8');
+  const popup=window.open('https://www.tunemymusic.com/transfer/csv-to-tidal','_blank','noopener');
+  const message='CSV-filen er hentet. Vælg den netop hentede fil hos TuneMyMusic og fortsæt med TIDAL som destination.';
+  if(byId('musicPlanStatus'))byId('musicPlanStatus').textContent=message;
+  if(!popup)alert(`${message}\n\nBrowseren blokerede muligvis det nye vindue. Åbn TuneMyMusic manuelt.`);
+}
+
 const MUSIC_IMPORTERS={
   spotify:{
     label:'Spotify',
     url:'https://open.spotify.com/',
     searchBase:'https://open.spotify.com/search/',
-    help:'Playlisten er klar i FunkFit. Åbn Spotify og brug sanglinksene nedenfor til at finde numrene. Direkte oprettelse af en Spotify-playliste kræver Spotify-login/OAuth og kommer som næste integration.'
+    help:'Forbind Spotify og opret playlisten direkte på din konto. Du kan fortsat åbne eller finde enkelte numre manuelt.'
   },
   tidal:{
     label:'TIDAL',
-    url:'https://listen.tidal.com/',
+    url:'https://www.tunemymusic.com/transfer/csv-to-tidal',
     searchBase:'https://listen.tidal.com/search?q=',
-    help:'Playlisten er klar i FunkFit. Åbn TIDAL og brug sanglinksene nedenfor til at finde numrene.'
+    help:'Hent CSV-filen og åbn TuneMyMusic. Vælg filen, log ind på TIDAL og lad TuneMyMusic oprette playlisten.'
   },
   telmore:{
     label:'Telmore Musik',
@@ -3203,6 +3525,9 @@ function renderMusicSectionSelector(){
 function updateMusicServiceUI(){
   document.querySelectorAll('[data-music-service]').forEach(button=>button.classList.toggle('selected',button.dataset.musicService===musicService));
   const importer=MUSIC_IMPORTERS[musicService]||MUSIC_IMPORTERS.spotify;
+  byId('spotifyIntegrationCard')?.classList.toggle('hidden',musicService!=='spotify');
+  byId('tidalIntegrationCard')?.classList.toggle('hidden',musicService!=='tidal');
+  updateSpotifyIntegrationUI();
   if(byId('musicImportTitle'))byId('musicImportTitle').textContent=`Brug playlisten i ${importer.label}`;
   if(byId('musicImportHelp'))byId('musicImportHelp').textContent=importer.help;
   if(byId('openMusicImporterBtn'))byId('openMusicImporterBtn').textContent=`Åbn ${importer.label}`;
@@ -3492,11 +3817,8 @@ function downloadTextFile(filename,text,type='text/plain;charset=utf-8'){
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function downloadMusicPlaylist(){
-  const tracks=musicTracksFlat();
-  if(!tracks.length)return alert('Lav først en musikplan.');
-  const rows=['title,artist,album,isrc'];
-  tracks.forEach(({title,artist,album})=>rows.push([title,artist,album||'',''].map(csvEscape).join(',')));
-  downloadTextFile(`${safeFilename(musicPlan.playlistName)}.csv`,rows.join('\r\n'),'text/csv;charset=utf-8');
+  if(!musicTrackCount())return alert('Lav først en playliste.');
+  downloadTextFile(`${safeFilename(musicPlan.playlistName)}.csv`,playlistCsvText(),'text/csv;charset=utf-8');
 }
 function downloadMusicSectionPlan(){
   const tracks=musicTracksFlat();
@@ -3548,7 +3870,7 @@ function clearMusicPlanState(){
 }
 
 function collect(){return{id:currentId||crypto.randomUUID(),trainingType:selectedTrainingType(),profileId:userProfile().id,theme:$('#plannerTheme')?.value||'',name:$('#workoutName').value,date:$('#workoutDate').value,participants:+$('#participantCount').value,familyMode:$('#familyMode').checked,adultCount:+($('#adultCount').value||0),savedAt:new Date().toISOString(),sections:structuredClone(sections),music:{
-  spotify:$('#spotifyPlaylistUrl').value.trim(),
+  spotify:$('#spotifyPlaylistUrl').value.trim()||musicPlan?.spotifyPlaylistUrl||'',
   tidal:$('#tidalPlaylistUrl').value.trim(),
   telmore:$('#telmorePlaylistUrl').value.trim(),
   service:musicService,

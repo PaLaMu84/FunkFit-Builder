@@ -1584,3 +1584,76 @@ a{
     text-align:center;
   }
 }
+
+
+/* v0.7.4-alpha.26 – direkte Spotify + TIDAL/TuneMyMusic-flow */
+.playlist-integration-card{
+  display:grid;
+  gap:.8rem;
+  padding:1rem;
+  border:1px solid #dbe3ef;
+  border-radius:16px;
+  background:#fbfdff;
+}
+.playlist-integration-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:1rem;
+}
+.playlist-integration-head h4{margin:.15rem 0 .35rem}
+.connection-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:.35rem .65rem;
+  border-radius:999px;
+  background:#eef2f7;
+  color:#5d6878;
+  font-size:.78rem;
+  font-weight:900;
+  white-space:nowrap;
+}
+.connection-badge.connected{background:#dcfce7;color:#166534}
+.spotify-setup-details{
+  border:1px solid #dce5ef;
+  border-radius:13px;
+  padding:.7rem;
+  background:#fff;
+}
+.spotify-setup-details summary{cursor:pointer;font-weight:900}
+.spotify-setup-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.65rem;
+  margin-top:.75rem;
+}
+.readonly-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:.4rem;
+}
+.spotify-setup-actions,
+.spotify-direct-actions{
+  display:flex;
+  gap:.55rem;
+  flex-wrap:wrap;
+  margin-top:.65rem;
+}
+.spotify-direct-actions button{flex:1 1 220px}
+.playlist-primary-action{
+  width:100%;
+  min-height:50px;
+}
+@media(max-width:700px){
+  .playlist-integration-head,
+  .spotify-setup-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+  }
+  .connection-badge{width:max-content;max-width:100%}
+  .readonly-row{grid-template-columns:minmax(0,1fr)}
+  .readonly-row button,
+  .spotify-setup-actions button,
+  .spotify-direct-actions button{width:100%}
+}
