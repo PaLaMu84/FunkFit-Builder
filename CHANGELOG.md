@@ -1,19 +1,14 @@
-# FunkFit Builder v0.7.4-alpha.18
+# FunkFit Builder v0.7.4-alpha.21
 
-## Du skal bruge
-- “Klar til at gemme” viser nu en samlet udstyrsoversigt.
-- Deltagertallet kan ændres direkte i boksen.
-- Udstyrsbehovet genberegnes straks.
-- Beregningen anvender højeste samtidige behov, så udstyr kan genbruges mellem sektioner.
-- YGIG, stationer, hold/stafet, familiealternativer og øvelser med én eller to vægte håndteres særskilt.
-- Instruktør-PDF’en indeholder samme udstyrsoversigt.
+## React Lights
+- React Lights er tilføjet som udstyr/modalitet til FunkFit Junior og Familie.
+- 12 React Lights-øvelser er tilføjet til øvelsesbiblioteket.
+- Øvelserne dækker reaktion, sprint, agility, squat, lunge, core, bear crawl, burpees, makkerduel, holdstafet, hukommelse og bevægelsessignaler.
+- AI kan prioritere React Lights ved ønsker om reaktion, koordination og agility.
+- AI må kun vælge React Lights-øvelser, når React Lights er markeret som tilgængeligt udstyr.
+- “Du skal bruge” behandler React Lights som fælles sæt udstyr: normalt 1 sæt pr. samtidig React Lights-station.
+- Manualen er opdateret med katalog og programmeringsregler.
 
-## Gemte træninger
-- Den eksisterende lagernøgle er bevaret.
-- Gemte træninger spejles i en ekstra lokal sikkerhedskopi.
-- Manglende hovedlager gendannes automatisk fra sikkerhedskopien.
-- Cache-opdatering sletter ikke localStorage.
-- Brugeren kan fortsat slette enkelte træninger aktivt.
-
-## Finisher
-- Katalogets eget udstyr gemmes nu i Finisher-sektionen, også når en finisher ikke indeholder almindelige øvelseskort.
+## Data
+- Øvelsesbiblioteket er udvidet fra 106 til 118 øvelser.
+- Gemte træninger bruger fortsat samme lagernøgle.

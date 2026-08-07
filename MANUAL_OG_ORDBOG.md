@@ -22,6 +22,44 @@ En sektion beskrives i seks adskilte lag. De må ikke blandes sammen.
 
 
 
+
+### Visning af øvelsesfelter
+- Teksten **Funktionel voksen** vises kun i Familietræning, hvor den er nødvendig for at skelne voksenalternativet fra juniorøvelsen.
+- I Funktionel voksen, HIIT, Hyrox og TRX vises der ikke en ekstra overskrift med træningssporets navn over felterne. Kun de felter, der er relevante for den konkrete øvelse og det konkrete format, vises.
+- Feltlogikken ændres ikke: fx kan kg, reps, sæt, tempo, pause, distance, kropsvinkel eller intensitet stadig vises, når de fagligt er relevante.
+- Felterne skal være kompakte. Korte værdier som `3`, `8-10` eller `3-1-1` skal ikke fylde en hel kolonne. Feltet må vokse, når indholdet kræver mere plads.
+- De responsive regler er viewport-baserede og gælder både Android og iPhone.
+
+
+
+## React Lights
+React Lights er tilgængeligt som udstyr/modalitet i **FunkFit Junior** og **Familie**.
+
+Det bruges især til reaktion, koordination, retningsskift, leg, makkerarbejde og korte intensive intervaller. React Lights skal vælges under **Tilgængeligt udstyr**, før AI må bruge øvelserne automatisk.
+
+Kataloget indeholder:
+- React Lights – farvejagt
+- React Lights – sprint til lys
+- React Lights – side shuffle
+- React Lights – squat & touch
+- React Lights – lunge reach
+- React Lights – plank touch
+- React Lights – bear crawl
+- React Lights – burpee & touch
+- React Lights – makkerduel
+- React Lights – holdstafet
+- React Lights – husk rækkefølgen
+- React Lights – bevægelse + signal
+
+### Programmeringsregler
+- React Lights regnes som **et fælles sæt udstyr**, ikke ét redskab pr. deltager.
+- Ved én aktiv React Lights-station viser “Du skal bruge” som udgangspunkt **1 sæt React Lights**.
+- Ved flere samtidige stationer lægges antallet af nødvendige sæt sammen.
+- AI prioriterer React Lights ved ønsker om reaktion, koordination og agility, men kun når udstyret er markeret som tilgængeligt.
+- Ved store hold bør React Lights oftest bruges som station, makkerøvelse, holdchallenge eller stafet, så ventetid undgås.
+- I Familietræning kan barn og voksen lave samme opgave eller få hver sin sværhedsgrad gennem afstand, tempo og kompleksitet.
+
+
 ## Udstyrsoversigten: “Du skal bruge”
 Til sidst i planlægningen viser boksen **Klar til at gemme** en samlet udstyrsoversigt.
 

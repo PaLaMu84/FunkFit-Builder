@@ -1,20 +1,13 @@
-# Gentest – v0.7.4-alpha.18
+# Gentest – v0.7.4-alpha.21
 
-## Udstyrsoversigt
-1. Byg en træning med 20 deltagere, kettlebell clean, en øvelse med to håndvægte og en måtteøvelse.
-2. Gå til “Klar til at gemme”.
-3. Kontrollér, at “Du skal bruge” fx viser 20 kettlebells, 40 håndvægte og 20 måtter.
-4. Ret deltagertallet til 12 direkte i boksen.
-5. Kontrollér, at tallene opdateres med det samme.
-6. Gem træningen, åbn den igen i Finpuds og ret deltagertallet på ny.
-7. Kontrollér YGIG: udstyret skal som udgangspunkt beregnes til cirka halvdelen.
-8. Kontrollér stationer: udstyr på samtidige stationer skal lægges sammen.
-9. Kontrollér, at udstyr fra forskellige sektioner anvender højeste behov og ikke summeres unødigt.
-10. Kontrollér, at instruktør-PDF’en indeholder “Du skal bruge”.
-
-## Gemte træninger
-11. Kontrollér antallet af gemte træninger før opdatering.
-12. Upload den nye version og åbn reset-cache.html.
-13. Kontrollér, at de gemte træninger stadig findes.
-14. Genindlæs appen flere gange.
-15. Slet én konkret træning og kontrollér, at kun den valgte forsvinder.
+## React Lights
+1. Vælg FunkFit Junior og kontrollér, at React Lights findes under Tilgængeligt udstyr.
+2. Markér React Lights og søg efter “React Lights” i øvelsesvælgeren.
+3. Kontrollér, at de 12 nye øvelser kan tilføjes.
+4. Fjern React Lights fra tilgængeligt udstyr og generér en AI-træning: AI må ikke vælge React Lights.
+5. Markér React Lights og skriv fx “reaktion og koordination”: AI må nu kunne prioritere React Lights.
+6. Gentag i Familietræning.
+7. Kontrollér, at øvelsesbeskrivelser viser junior- og voksenvariant.
+8. Brug én React Lights-station og kontrollér “Du skal bruge”: 1 sæt React Lights.
+9. Brug flere samtidige React Lights-stationer og kontrollér, at behovet kan stige.
+10. Kontrollér, at gemte træninger fra tidligere version stadig findes.
