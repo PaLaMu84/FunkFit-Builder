@@ -4829,5 +4829,528 @@
       "FunkFit Junior",
       "Funktionel"
     ]
+  },
+  {
+    "id": "react-lights-color-chase",
+    "name": "React Lights – farvejagt",
+    "category": "Reaktion",
+    "equipment": [
+      "React Lights"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Intervaller",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "Placér lysene i et lille område. Deltageren bevæger sig frit og rammer det lys eller den farve, der aktiveres.",
+    "focus": [
+      "Reaktion",
+      "Koordination",
+      "Kondition"
+    ],
+    "easier": "Placér lysene tættere på hinanden og brug kun 2-3 lys.",
+    "harder": "Større afstand, flere lys eller krav om bestemt bevægelse mellem lysene.",
+    "junior": "20-30 sekunders arbejde. Fokus på hurtig reaktion og kontrol.",
+    "adult": "30-40 sekunders arbejde med større afstand eller højere tempo.",
+    "mistakes": "For stor bane, så opgaven bliver ren løbetræning. Dårlig kontrol ved vendingerne.",
+    "bodyAreas": [
+      "Helkrop",
+      "Kondition"
+    ],
+    "styles": [
+      "Funktionel",
+      "Leg",
+      "Koordination"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ]
+  },
+  {
+    "id": "react-lights-sprint",
+    "name": "React Lights – sprint til lys",
+    "category": "Reaktion",
+    "equipment": [
+      "React Lights"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Intervaller",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "Placér lysene 3-8 meter fra startpunktet. Sprint til det aktive lys, sluk det og tilbage til midten.",
+    "focus": [
+      "Reaktion",
+      "Sprint",
+      "Retningsskift"
+    ],
+    "easier": "Kortere afstand og færre lys.",
+    "harder": "Længere afstand, sidevendt start eller start fra gulvet.",
+    "junior": "15-25 sekunder med korte, skarpe spurter.",
+    "adult": "20-30 sekunder med høj intensitet.",
+    "mistakes": "For lange intervaller eller glatte vendinger uden kontrol.",
+    "bodyAreas": [
+      "Ben",
+      "Kondition",
+      "Helkrop"
+    ],
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "Agility"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ]
+  },
+  {
+    "id": "react-lights-lateral-shuffle",
+    "name": "React Lights – side shuffle",
+    "category": "Agility",
+    "equipment": [
+      "React Lights"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Intervaller",
+      "Makker"
+    ],
+    "description": "Placér lysene i en vandret linje. Bevæg dig sidelæns og ram det aktive lys uden at krydse benene unødigt.",
+    "focus": [
+      "Agility",
+      "Reaktion",
+      "Ben"
+    ],
+    "easier": "Kort linje og langsommere signaler.",
+    "harder": "Større afstand eller lavere atletisk position.",
+    "junior": "20-30 sekunder. Hold brystet frem og fødderne aktive.",
+    "adult": "30-40 sekunder med større afstand.",
+    "mistakes": "Krydser benene ukontrolleret eller vender hele kroppen mod lyset.",
+    "bodyAreas": [
+      "Ben",
+      "Kondition"
+    ],
+    "styles": [
+      "Funktionel",
+      "Agility",
+      "Koordination"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ]
+  },
+  {
+    "id": "react-lights-squat-touch",
+    "name": "React Lights – squat & touch",
+    "category": "Squat",
+    "equipment": [
+      "React Lights"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Intervaller",
+      "Makker"
+    ],
+    "description": "Placér lysene omkring deltageren i hofte- til knæhøjde eller på gulvet. Lav en kontrolleret squat og ram det aktive lys.",
+    "focus": [
+      "Squat",
+      "Reaktion",
+      "Ben"
+    ],
+    "easier": "Placér lysene højere og tættere på.",
+    "harder": "Dybere squat, større afstand eller skift mellem højre og venstre hånd.",
+    "junior": "6-12 kontrollerede reaktioner eller 20 sekunder.",
+    "adult": "10-16 reaktioner eller 30 sekunder.",
+    "mistakes": "Falder ind i knæene eller skynder sig så meget, at squat-teknikken forsvinder.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "styles": [
+      "Funktionel",
+      "Koordination"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ]
+  },
+  {
+    "id": "react-lights-lunge-reach",
+    "name": "React Lights – lunge reach",
+    "category": "Lunge",
+    "equipment": [
+      "React Lights"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Middel",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Intervaller",
+      "Makker"
+    ],
+    "description": "Placér lysene foran og diagonalt for deltageren. Træd ud i et lunge og ram det aktive lys, før du vender tilbage til midten.",
+    "focus": [
+      "Lunge",
+      "Balance",
+      "Reaktion"
+    ],
+    "easier": "Kortere skridt og lysene tættere på.",
+    "harder": "Større rækkevidde eller skiftevis modsatte hånd.",
+    "junior": "6-10 reaktioner pr. side samlet.",
+    "adult": "8-14 reaktioner med kontrollerede udfald.",
+    "mistakes": "Knæet falder ind eller deltageren kaster sig efter lyset.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "styles": [
+      "Funktionel",
+      "Balance",
+      "Koordination"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ]
+  },
+  {
+    "id": "react-lights-plank-touch",
+    "name": "React Lights – plank touch",
+    "category": "Core",
+    "equipment": [
+      "React Lights",
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Middel",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Intervaller",
+      "Makker"
+    ],
+    "description": "Placér 2-4 lys foran hænderne. Hold en stærk plankeposition og løft én hånd ad gangen for at ramme det aktive lys.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Reaktion"
+    ],
+    "easier": "Planke på knæ eller lysene tæt på hænderne.",
+    "harder": "Større afstand mellem lysene eller smallere fodstilling.",
+    "junior": "15-25 sekunder med rolig hofte.",
+    "adult": "20-35 sekunder med stabil kropslinje.",
+    "mistakes": "Hofterne roterer kraftigt eller lænden hænger.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre"
+    ],
+    "styles": [
+      "Funktionel",
+      "Core",
+      "Koordination"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ]
+  },
+  {
+    "id": "react-lights-bear-crawl",
+    "name": "React Lights – bear crawl",
+    "category": "Core",
+    "equipment": [
+      "React Lights"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Middel",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Intervaller",
+      "Makker"
+    ],
+    "description": "Placér lysene omkring et lille område. Bevæg dig i bear crawl til det aktive lys og ram det med nærmeste hånd.",
+    "focus": [
+      "Core",
+      "Koordination",
+      "Reaktion"
+    ],
+    "easier": "Kort afstand og knæene lidt højere.",
+    "harder": "Større område eller krav om baglæns bear crawl tilbage.",
+    "junior": "15-25 sekunder.",
+    "adult": "20-30 sekunder med lav og kontrolleret position.",
+    "mistakes": "Hofterne kommer for højt op eller bevægelsen bliver ukontrolleret.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre",
+      "Helkrop"
+    ],
+    "styles": [
+      "Funktionel",
+      "Core",
+      "Leg"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ]
+  },
+  {
+    "id": "react-lights-burpee-touch",
+    "name": "React Lights – burpee & touch",
+    "category": "Helkrop",
+    "equipment": [
+      "React Lights"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Middel",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Intervaller",
+      "Makker"
+    ],
+    "description": "Lav en burpee ved midten. Når du kommer op, reagerer du på det aktive lys og bevæger dig hurtigt ud for at ramme det.",
+    "focus": [
+      "Helkrop",
+      "Kondition",
+      "Reaktion"
+    ],
+    "easier": "Burpee uden bryst i gulvet eller step-back burpee.",
+    "harder": "Større afstand til lysene eller to lys efter hver burpee.",
+    "junior": "4-8 reaktioner med god teknik.",
+    "adult": "6-10 reaktioner eller 20-30 sekunder.",
+    "mistakes": "For høj fart på bekostning af burpee-teknik og sikre vendinger.",
+    "bodyAreas": [
+      "Helkrop",
+      "Kondition"
+    ],
+    "styles": [
+      "Funktionel",
+      "HIIT",
+      "Leg"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ]
+  },
+  {
+    "id": "react-lights-partner-duel",
+    "name": "React Lights – makkerduel",
+    "category": "Makker",
+    "equipment": [
+      "React Lights"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Makker",
+      "Intervaller",
+      "Teamchallenge"
+    ],
+    "description": "To deltagere står over for samme lysopsætning. Når et lys aktiveres, gælder det om at være først til at ramme det.",
+    "focus": [
+      "Reaktion",
+      "Samarbejde",
+      "Konkurrence"
+    ],
+    "easier": "Skift til samarbejde: makkerparret skal sammen nå et fælles antal lys.",
+    "harder": "Startpositioner som squat, planke eller ryg mod lysene.",
+    "junior": "20-30 sekunders duel. Skift modstander jævnligt.",
+    "adult": "30-40 sekunders duel eller bedst af tre.",
+    "mistakes": "For tæt opsætning, så deltagerne kolliderer. Sørg for egne bevægelseszoner.",
+    "bodyAreas": [
+      "Helkrop",
+      "Kondition"
+    ],
+    "styles": [
+      "Leg",
+      "Makker",
+      "Konkurrence"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ]
+  },
+  {
+    "id": "react-lights-team-relay",
+    "name": "React Lights – holdstafet",
+    "category": "Reaktion",
+    "equipment": [
+      "React Lights",
+      "Kegler"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Teamchallenge",
+      "Makker",
+      "Intervaller"
+    ],
+    "description": "Holdene sender én deltager ad gangen ud for at ramme det aktive lys og tilbage til skiftezonen.",
+    "focus": [
+      "Reaktion",
+      "Stafet",
+      "Kondition"
+    ],
+    "easier": "Kort bane og ét aktivt lys ad gangen.",
+    "harder": "Flere mulige lys, forskellige bevægelsesformer eller ekstra opgave før skift.",
+    "junior": "2-4 minutters holdchallenge med korte ture.",
+    "adult": "3-5 minutter med højere tempo eller længere bane.",
+    "mistakes": "For få baner, så der opstår kø. Brug parallelle zoner og klare skifteregler.",
+    "bodyAreas": [
+      "Helkrop",
+      "Kondition"
+    ],
+    "styles": [
+      "Teamchallenge",
+      "Leg",
+      "Kondition"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ]
+  },
+  {
+    "id": "react-lights-memory",
+    "name": "React Lights – husk rækkefølgen",
+    "category": "Koordination",
+    "equipment": [
+      "React Lights"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Middel",
+    "intensity": "Lav",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "Lysene viser en kort rækkefølge. Deltageren skal huske og ramme dem i samme rækkefølge.",
+    "focus": [
+      "Reaktion",
+      "Hukommelse",
+      "Koordination"
+    ],
+    "easier": "Brug 2-3 lys i sekvensen.",
+    "harder": "Længere sekvenser eller en bevægelse mellem hvert lys.",
+    "junior": "3-6 sekvenser med korte pauser.",
+    "adult": "4-8 sekvenser eller længere mønstre.",
+    "mistakes": "For svær sekvens fra start. Byg gradvist op.",
+    "bodyAreas": [
+      "Helkrop"
+    ],
+    "styles": [
+      "Leg",
+      "Koordination",
+      "Teknik"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ]
+  },
+  {
+    "id": "react-lights-movement-call",
+    "name": "React Lights – bevægelse + signal",
+    "category": "Reaktion",
+    "equipment": [
+      "React Lights"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Middel",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Intervaller",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "Knyt en bevægelse til hvert lys eller hver farve, fx squat, hop, side shuffle eller touch. Deltageren udfører den bevægelse, signalet angiver.",
+    "focus": [
+      "Reaktion",
+      "Koordination",
+      "Helkrop"
+    ],
+    "easier": "Brug kun to bevægelser.",
+    "harder": "Fire eller flere signaler og hurtigere skift.",
+    "junior": "20-30 sekunder med 2-4 enkle bevægelser.",
+    "adult": "30-45 sekunder og mere komplekse kombinationer.",
+    "mistakes": "For mange regler på én gang. Deltagerne skal kende bevægelserne før tempoet øges.",
+    "bodyAreas": [
+      "Helkrop",
+      "Kondition"
+    ],
+    "styles": [
+      "Funktionel",
+      "Leg",
+      "Koordination"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ]
   }
 ]
