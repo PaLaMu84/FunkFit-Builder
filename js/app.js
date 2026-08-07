@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.22';
+const APP_VERSION='0.7.4-alpha.23';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -3347,8 +3347,7 @@ async function generateMusicPlan(){
       method:'POST',
       headers:{
         'Content-Type':'application/json',
-        'x-goog-api-key':key,
-        'Api-Revision':'2026-05-20'
+        'x-goog-api-key':key
       },
       body:JSON.stringify({
         model:'gemini-3.6-flash',
@@ -3373,7 +3372,10 @@ async function generateMusicPlan(){
     renderMusicPlan();
   }catch(error){
     console.error('Musikplanlægning fejlede',error);
-    status.textContent=`Kunne ikke lave musikplanen: ${error.message}`;
+    const networkFailure=error instanceof TypeError&&/fetch|network|failed/i.test(error.message||'');
+    status.textContent=networkFailure
+      ?'Kunne ikke kontakte Google AI fra browseren. Genindlæs først den nye version. Hvis fejlen fortsætter, skal Gemini-kaldet flyttes bag en server-side proxy.'
+      :`Kunne ikke lave musikplanen: ${error.message}`;
   }finally{
     button.disabled=false;
     button.textContent='✨ Planlæg musik med AI';

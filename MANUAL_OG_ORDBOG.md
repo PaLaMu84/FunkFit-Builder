@@ -249,3 +249,13 @@ FunkFit Builder eksporterer en universel CSV med felterne:
 - Den endelige importtjeneste matcher numrene mod destinationens aktuelle katalog. AI-forslaget er derfor ikke en garanti for, at alle numre findes i alle tjenester.
 
 Der kan også downloades en separat **Sektionsplan CSV**, som viser sektion, intensitet, BPM-mål, sang og AI'ens begrundelse. Denne fil er til instruktøren og ikke til playlistimport.
+
+
+## Gemini-browserfejl og CORS
+I testversionen kaldes Gemini direkte fra browseren. Interactions API kan kaldes med `Content-Type` og `x-goog-api-key`. Der må ikke tilføjes unødvendige ekstra request-headere, da de kan udløse en CORS preflight-fejl i browseren.
+
+v0.7.4-alpha.23 fjerner den tidligere `Api-Revision`-header, som kunne give `Failed to fetch` på mobil og desktop.
+
+Hvis en rigtig API-fejl returneres fra Google, vises Googles fejlbesked. Hvis browseren slet ikke kan etablere forbindelsen, vises en særskilt netværks-/CORS-besked.
+
+Gemini API-nøgler skal behandles som passwords. En nøgle, der er blevet delt eller eksponeret, bør tilbagekaldes og erstattes.
