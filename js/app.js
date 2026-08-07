@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.18';
+const APP_VERSION='0.7.4-alpha.21';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -698,10 +698,10 @@ function buildGameSuggestion(minutes=8,focus='',theme=''){
     description:`Historie: Holdene er på en mission i “${mission}”. De skal løse ${taskText}, hente markører og få hele holdet sikkert tilbage, før tiden løber ud.`,
     rules:`1. Del deltagerne i 2-4 hold og giv hvert hold en base.
 2. Én deltager eller ét makkerpar løser næste bevægelsesopgave og henter én markør.
-3. Når instruktøren råber “INCOMING!”, skal alle straks fryse i en stærk position. Bevægelse efter signalet koster markøren.
+3. På instruktørens signal skal alle straks fryse i en stærk position. Bevægelse efter signalet koster markøren.
 4. Deltageren vender tilbage og sender næste afsted.
 5. Ingen elimineres. Flest markører ved tidens udløb vinder – eller alle hold vinder, hvis en fælles målsætning nås.`,
-    coachTips:'Vis en prøverunde og øv INCOMING-signalet først. Brug flere parallelle baner, så der ikke opstår kø. Hold afstandene korte og udskift en øvelse med et kropsvægtsalternativ, hvis udstyret bliver en flaskehals.',
+    coachTips:'Vis en prøverunde og øv signalet først. Brug flere parallelle baner, så der ikke opstår kø. Hold afstandene korte og udskift en øvelse med et kropsvægtsalternativ, hvis udstyret bliver en flaskehals.',
     variations:'Lettere: gå i stedet for at løbe, én enkel opgave og ingen straf. Sværere: makkertransport, hemmelig kode eller to markører pr. perfekt runde.',
     exercises:picked.map(makeItem)
   });
@@ -1588,9 +1588,14 @@ function renderExerciseSections(){
   updateTimeControl();
   bindActivityInputs();
 }
+function compactMetricSize(value,type='text'){
+  if(type==='number')return 5;
+  const length=String(value??'').trim().length;
+  return Math.min(18,Math.max(5,length+2));
+}
 function metricInput(label,key,value,si,ei,type='text',options=[]){
-  if(options.length)return `<label>${label}<select data-metric="${si}-${ei}-${key}">${options.map(x=>`<option ${x===value?'selected':''}>${x}</option>`).join('')}</select></label>`;
-  return `<label>${label}<input data-metric="${si}-${ei}-${key}" type="${type}" value="${esc(value||'')}"></label>`;
+  if(options.length)return `<label class="compact-metric-label">${label}<select class="compact-metric-control" data-metric="${si}-${ei}-${key}">${options.map(x=>`<option ${x===value?'selected':''}>${x}</option>`).join('')}</select></label>`;
+  return `<label class="compact-metric-label">${label}<input class="compact-metric-control" data-metric="${si}-${ei}-${key}" type="${type}" size="${compactMetricSize(value,type)}" value="${esc(value||'')}"></label>`;
 }
 function exerciseFieldContext(ex,rawSection,trainingType=selectedTrainingType()){
   const section=rawSection||{};
@@ -1669,8 +1674,7 @@ function trainingFields(it,si,ei){
   const section=normalizeSection(sections[si]);
   const {fields}=visibleMetricDefinitions(it,ex,section,type);
   if(!fields.length)return '';
-  const title=({adult:'Funktionel voksen',hiit:'HIIT',hyrox:'Hyrox',trx:'TRX'})[type];
-  return `<div class="type-fields contextual-fields"><h4>${title}</h4>${renderMetricFields(fields,si,ei)}</div>`;
+  return `<div class="type-fields contextual-fields compact-metric-fields">${renderMetricFields(fields,si,ei)}</div>`;
 }
 
 function runActivityRow(it,si,ai){
@@ -1775,7 +1779,9 @@ function exerciseActivityRow(it,si,ai,fam){
 
   const adultExerciseId=it.adultExerciseId||it.exerciseId;
   const adultEx=exercises.find(x=>x.id===adultExerciseId)||ex;
-  return `<div class="exercise-row">${juniorFields}${type==='family'?`<div class="adult-settings"><div class="adult-grid contextual-adult-grid">
+  return `<div class="exercise-row">${juniorFields}${type==='family'?`<div class="adult-settings">
+    <h4 class="family-adult-heading">Funktionel voksen</h4>
+    <div class="adult-grid contextual-adult-grid">
     <label>Voksenøvelse
       <div class="adult-exercise-choice">
         <input data-aex-search="${si}-${ai}" list="adultExerciseOptions" value="${esc(adultEx?.name||'')}" placeholder="Søg efter voksenøvelse">
@@ -1797,10 +1803,18 @@ function bindActivityInputs(){
     const[a,b]=(e.dataset[key]).split('-').map(Number);
     sections[a].exercises[b][prop]=e.value;
   });
-  host.querySelectorAll('[data-metric]').forEach(e=>e.onchange=()=>{
-    const [a,b,key]=e.dataset.metric.split('-');
-    sections[+a].exercises[+b].metrics=sections[+a].exercises[+b].metrics||{};
-    sections[+a].exercises[+b].metrics[key]=e.value;
+  host.querySelectorAll('[data-metric]').forEach(e=>{
+    const resize=()=>{
+      if(!e.classList.contains('compact-metric-control')||e.tagName==='SELECT'||e.type==='number')return;
+      e.size=compactMetricSize(e.value,e.type);
+    };
+    e.oninput=resize;
+    e.onchange=()=>{
+      const [a,b,key]=e.dataset.metric.split('-');
+      sections[+a].exercises[+b].metrics=sections[+a].exercises[+b].metrics||{};
+      sections[+a].exercises[+b].metrics[key]=e.value;
+      resize();
+    };
   });
   host.querySelectorAll('[data-run-field]').forEach(e=>e.onchange=()=>{
     const [a,b]=e.dataset.runIndex.split('-').map(Number);
@@ -2028,7 +2042,9 @@ function normalizedIntentTerms(values=[]){
     samarbejde:['samarbejde','makker','team','hold'],
     eksplosivitet:['eksplosivitet','eksplosiv','power'],
     balance:['balance','stabilitet'],
-    teknik:['teknik','teknisk']
+    teknik:['teknik','teknisk'],
+    reaktion:['reaktion','reaktionstid','react','lights','reaktionslys'],
+    koordination:['koordination','koordineret','motorik','agility']
   };
   Object.entries(synonymGroups).forEach(([canonical,words])=>{
     if(words.some(word=>cleaned.includes(word)))terms.add(canonical);
@@ -2072,6 +2088,8 @@ function scoreExercise(ex,goals,sectionType){
   if(sectionType==='warmup'&&(hay.includes('kondition')||hay.includes('koordination')||hay.includes('agility')||hay.includes('kropsvægt')))score+=5;
   if(sectionType==='main'&&(hay.includes('funktionel')||hay.includes('styrke')||hay.includes('helkrop')))score+=3;
   if(sectionType==='team'&&(hay.includes('makker')||hay.includes('stafet')||hay.includes('teamchallenge')))score+=7;
+  if((goals||[]).join(' ').toLowerCase().match(/reaktion|react lights|reaktionslys|koordination|agility/)
+      &&(ex.equipment||[]).includes('React Lights'))score+=14;
   if(plannerConcept==='trx'&&(hay.includes('trx')||(ex.equipment||[]).includes('TRX')))score+=12;
   if(plannerConcept==='hyrox'&&hay.includes('hyrox'))score+=8;
   if(plannerConcept==='hiit'&&hay.includes('hiit'))score+=8;
@@ -2765,6 +2783,7 @@ const EQUIPMENT_LABELS={
   'Reb':['reb','reb'],
   'Vægtskive':['vægtskive','vægtskiver'],
   'TRX':['TRX','TRX'],
+  'React Lights':['sæt React Lights','sæt React Lights'],
   'Væg':['væg','vægge']
 };
 const ONE_DUMBBELL_EXERCISES=new Set([
@@ -2797,6 +2816,9 @@ function equipmentDisplay(name,quantity){
 }
 function isFacilityEquipment(name){
   return name==='Væg';
+}
+function isSharedSetEquipment(name){
+  return name==='React Lights';
 }
 function equipmentTeamCount(participants){
   return Math.min(6,Math.max(2,Math.ceil(participants/5)));
@@ -2851,9 +2873,13 @@ function exerciseEquipmentMap(ex,activeCount,section,activity,participants,activ
     }
     const quantity=name==='Kegler'
       ?coneRequirement(section,participants,activityCount,activity)
-      :activeCount*equipmentUnitMultiplier(ex,name);
+      :isSharedSetEquipment(name)
+        ?1
+        :activeCount*equipmentUnitMultiplier(ex,name);
     const multiplier=equipmentUnitMultiplier(ex,name);
-    const detail=multiplier===2?'2 pr. aktiv deltager':'';
+    const detail=isSharedSetEquipment(name)
+      ?'1 sæt pr. samtidig React Lights-station'
+      :multiplier===2?'2 pr. aktiv deltager':'';
     addRequirement(map,name,quantity,detail);
   });
   return map;
@@ -2918,7 +2944,9 @@ function sectionEquipmentRequirements(rawSection,participants){
     }
     const quantity=name==='Kegler'
       ?coneRequirement(section,participants,Math.max(1,activities.length),null)
-      :active;
+      :isSharedSetEquipment(name)
+        ?1
+        :active;
     addRequirement(result,name,quantity,stationMode?'Fordelt på stationer':'');
   });
 
