@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.29</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a29">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a29">
+  <title>FunkFit Builder v0.7.4-alpha.30</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a30">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a30">
 </head>
 <body>
 <header class="topbar">
   <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
-    <p class="eyebrow">VERSION 0.7.4-ALPHA.29</p>
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.30</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </button>
@@ -626,6 +626,7 @@ Hovedtræning 20 min
         <div class="music-export-actions">
           <button id="copyMusicPlaylistBtn" type="button">📋 Kopiér playlisten</button>
           <button id="openPlaylistServiceBtn" type="button" class="secondary">Åbn musiktjenesten</button>
+          <button id="deleteMusicPlaylistBtn" type="button" class="ghost">Slet playlisten</button>
         </div>
       </div>
       <div id="musicPlanSections" class="music-plan-sections"></div>
@@ -796,6 +797,13 @@ Hovedtræning 20 min
         <article><h4>Primært fokus tæller mest</h4><p>Core som sekundær stabilisator tæller ikke som en egentlig coreøvelse. Balancen styres primært af øvelsens bevægelsesmønster og primære kropsområde.</p></article>
         <article><h4>Hele træningen</h4><p>Ved nye sektioner nedprioriterer AI bevægelsesmønstre og kropsområder, der allerede fylder meget. Gentagelser tillades, når brugeren specifikt beder om et bestemt fokus.</p></article>
       </div>
+    </div>
+
+    <div class="docs-rules track-manual">
+      <h3>HYROX, HIIT og TRX – skarpere spor</h3>
+      <p><strong>HYROX:</strong> AI prioriterer officielle stationer, der kan udføres uden SkiErg/romaskine: sled push, sled pull, burpee broad jumps, farmers carry, sandbag lunges og wall balls. Hyrox-inspirerede støtteøvelser bruges sekundært. En HYROX-sektion kan automatisk sætte løb mellem hver arbejdsøvelse.</p>
+      <p><strong>HIIT:</strong> Intervalstruktur, recovery og bevægelseskvalitet styrer sporet. Tekniske/tunge løft vælges ikke som standard i højintense intervaller.</p>
+      <p><strong>TRX:</strong> Hoveddelen af arbejdsøvelserne kræver TRX og fordeles på plank, hinge, pull, squat, push, lunge og rotate.</p>
     </div>
 
     <div class="docs-rules music-manual">
@@ -1033,7 +1041,7 @@ Hovedtræning 20 min
       <div class="player-format-row"><span id="playerFormat" class="player-pill"></span><span id="playerTiming" class="player-pill"></span></div>
       <h1 id="playerExercise">Øvelse</h1>
       <div class="player-prescriptions">
-        <article><p class="player-label">JUNIOR</p><strong id="playerJunior">–</strong><small id="playerJuniorNote"></small></article>
+        <article><p id="playerPrimaryLabel" class="player-label">JUNIOR</p><strong id="playerJunior">–</strong><small id="playerJuniorNote"></small></article>
         <article id="playerAdultCard" class="hidden"><p class="player-label">VOKSEN</p><strong id="playerAdult">–</strong><small id="playerAdultNote"></small></article>
       </div>
       <p class="player-hint">Tap eller mellemrum = næste øvelse</p>
@@ -1043,7 +1051,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.29 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a29"></script>
+<footer>FunkFit Builder v0.7.4-alpha.30 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a30"></script>
 </body>
 </html>

@@ -36,14 +36,20 @@
     ],
     "styles": [
       "Funktionel",
-      "CrossFit-inspireret"
+      "CrossFit-inspireret",
+      "Hyrox-inspireret",
+      "HIIT"
     ],
     "instructionVideo": "assets/videos/01-air-squat.mp4",
     "trainingForms": [
       "Familie",
       "FunkFit Junior",
-      "Funktionel"
-    ]
+      "Funktionel",
+      "Hyrox",
+      "HIIT"
+    ],
+    "hyroxRole": "inspired",
+    "hiitTier": "primary"
   },
   {
     "id": "goblet-squat",
@@ -83,14 +89,18 @@
     ],
     "styles": [
       "Funktionel",
-      "CrossFit-inspireret"
+      "CrossFit-inspireret",
+      "Hyrox-inspireret"
     ],
     "instructionVideo": "assets/videos/02-goblet-squat.mp4",
     "trainingForms": [
       "Familie",
       "FunkFit Junior",
-      "Funktionel"
-    ]
+      "Funktionel",
+      "Hyrox"
+    ],
+    "hyroxRole": "inspired",
+    "equipmentMode": "any"
   },
   {
     "id": "farmer-carry",
@@ -132,7 +142,8 @@
     "styles": [
       "Funktionel",
       "Hyrox-inspireret",
-      "CrossFit-inspireret"
+      "CrossFit-inspireret",
+      "HYROX officiel"
     ],
     "instructionVideo": "assets/videos/03-farmer-carry.mp4",
     "trainingForms": [
@@ -141,7 +152,9 @@
       "Funktionel",
       "HIIT",
       "Hyrox"
-    ]
+    ],
+    "hyroxRole": "official",
+    "equipmentMode": "any"
   },
   {
     "id": "bear-crawl",
@@ -229,14 +242,21 @@
     ],
     "styles": [
       "Funktionel",
-      "CrossFit-inspireret"
+      "CrossFit-inspireret",
+      "Hyrox-inspireret",
+      "HIIT"
     ],
     "instructionVideo": "assets/videos/05-push-up.mp4",
     "trainingForms": [
       "Familie",
       "FunkFit Junior",
-      "Funktionel"
-    ]
+      "Funktionel",
+      "Hyrox",
+      "HIIT"
+    ],
+    "hyroxRole": "inspired",
+    "hiitTier": "primary",
+    "equipmentMode": "any"
   },
   {
     "id": "db-row",
@@ -282,7 +302,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "kb-deadlift",
@@ -366,14 +387,18 @@
       "Balder"
     ],
     "styles": [
-      "Funktionel"
+      "Funktionel",
+      "HIIT"
     ],
     "instructionVideo": "assets/videos/08-step-up.mp4",
     "trainingForms": [
       "Familie",
       "FunkFit Junior",
-      "Funktionel"
-    ]
+      "Funktionel",
+      "HIIT"
+    ],
+    "hiitTier": "primary",
+    "equipmentMode": "any"
   },
   {
     "id": "plank-shoulder-tap",
@@ -414,15 +439,19 @@
     "styles": [
       "Funktionel",
       "HIIT",
-      "CrossFit-inspireret"
+      "CrossFit-inspireret",
+      "Hyrox-inspireret"
     ],
     "instructionVideo": "assets/videos/09-plank-shoulder-tap.mp4",
     "trainingForms": [
       "Familie",
       "FunkFit Junior",
       "Funktionel",
-      "HIIT"
-    ]
+      "HIIT",
+      "Hyrox"
+    ],
+    "hyroxRole": "inspired",
+    "equipmentMode": "any"
   },
   {
     "id": "medball-slam",
@@ -520,7 +549,9 @@
       "Funktionel",
       "HIIT",
       "Hyrox"
-    ]
+    ],
+    "hyroxRole": "inspired",
+    "hiitTier": "primary"
   },
   {
     "id": "wall-ball",
@@ -562,7 +593,8 @@
       "Funktionel",
       "HIIT",
       "Hyrox-inspireret",
-      "CrossFit-inspireret"
+      "CrossFit-inspireret",
+      "HYROX officiel"
     ],
     "trainingForms": [
       "Familie",
@@ -570,7 +602,10 @@
       "Funktionel",
       "HIIT",
       "Hyrox"
-    ]
+    ],
+    "hyroxRole": "official",
+    "hiitTier": "technical",
+    "equipmentMode": "all"
   },
   {
     "id": "reverse-lunge",
@@ -608,13 +643,19 @@
     "adult": "8-12 pr. ben.",
     "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
     "styles": [
-      "Funktionel"
+      "Funktionel",
+      "Hyrox-inspireret",
+      "HIIT"
     ],
     "trainingForms": [
       "Familie",
       "FunkFit Junior",
-      "Funktionel"
-    ]
+      "Funktionel",
+      "Hyrox",
+      "HIIT"
+    ],
+    "hyroxRole": "inspired",
+    "hiitTier": "primary"
   },
   {
     "id": "walking-lunge",
@@ -654,7 +695,8 @@
     "mistakes": "For høj belastning, manglende kontrol eller dårlig kropsstilling.",
     "styles": [
       "Funktionel",
-      "Hyrox-inspireret"
+      "Hyrox-inspireret",
+      "HIIT"
     ],
     "trainingForms": [
       "Familie",
@@ -662,7 +704,10 @@
       "Funktionel",
       "HIIT",
       "Hyrox"
-    ]
+    ],
+    "hyroxRole": "inspired",
+    "hiitTier": "primary",
+    "equipmentMode": "any"
   },
   {
     "id": "split-squat",
@@ -705,7 +750,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "box-squat",
@@ -751,7 +797,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "squat-jump",
@@ -791,14 +838,18 @@
     "styles": [
       "Funktionel",
       "HIIT",
-      "CrossFit-inspireret"
+      "CrossFit-inspireret",
+      "Hyrox-inspireret"
     ],
     "trainingForms": [
       "Familie",
       "FunkFit Junior",
       "Funktionel",
-      "HIIT"
-    ]
+      "HIIT",
+      "Hyrox"
+    ],
+    "hyroxRole": "inspired",
+    "hiitTier": "primary"
   },
   {
     "id": "glute-bridge",
@@ -846,7 +897,8 @@
       "FunkFit Junior",
       "Funktionel",
       "HIIT"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "single-leg-glute-bridge",
@@ -894,7 +946,8 @@
       "FunkFit Junior",
       "Funktionel",
       "HIIT"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "romanian-deadlift",
@@ -940,7 +993,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "single-leg-rdl",
@@ -986,7 +1040,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "kb-swing",
@@ -1028,14 +1083,18 @@
     "styles": [
       "Funktionel",
       "HIIT",
-      "CrossFit-inspireret"
+      "CrossFit-inspireret",
+      "Hyrox-inspireret"
     ],
     "trainingForms": [
       "Familie",
       "FunkFit Junior",
       "Funktionel",
-      "HIIT"
-    ]
+      "HIIT",
+      "Hyrox"
+    ],
+    "hyroxRole": "inspired",
+    "hiitTier": "technical"
   },
   {
     "id": "sumo-deadlift",
@@ -1081,7 +1140,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "calf-raise",
@@ -1124,7 +1184,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "box-jump",
@@ -1171,7 +1232,8 @@
       "FunkFit Junior",
       "Funktionel",
       "HIIT"
-    ]
+    ],
+    "hiitTier": "technical"
   },
   {
     "id": "lateral-step-up",
@@ -1256,14 +1318,19 @@
     "styles": [
       "Funktionel",
       "HIIT",
-      "CrossFit-inspireret"
+      "CrossFit-inspireret",
+      "Hyrox-inspireret"
     ],
     "trainingForms": [
       "Familie",
       "FunkFit Junior",
       "Funktionel",
-      "HIIT"
-    ]
+      "HIIT",
+      "Hyrox"
+    ],
+    "hyroxRole": "inspired",
+    "hiitTier": "primary",
+    "equipmentMode": "any"
   },
   {
     "id": "dead-bug",
@@ -1477,14 +1544,17 @@
     "styles": [
       "Funktionel",
       "HIIT",
-      "CrossFit-inspireret"
+      "CrossFit-inspireret",
+      "Hyrox-inspireret"
     ],
     "trainingForms": [
       "Familie",
       "FunkFit Junior",
       "Funktionel",
-      "HIIT"
-    ]
+      "HIIT",
+      "Hyrox"
+    ],
+    "hyroxRole": "inspired"
   },
   {
     "id": "russian-twist",
@@ -1530,7 +1600,8 @@
       "FunkFit Junior",
       "Funktionel",
       "HIIT"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "plank",
@@ -1621,7 +1692,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "db-shoulder-press",
@@ -1710,7 +1782,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "all"
   },
   {
     "id": "incline-push-up",
@@ -1756,7 +1829,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "pike-push-up",
@@ -1931,7 +2005,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "triceps-extension",
@@ -1973,7 +2048,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "lateral-raise",
@@ -2151,7 +2227,8 @@
       "Funktionel",
       "HIIT",
       "Hyrox"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "front-rack-carry",
@@ -2200,7 +2277,8 @@
       "Funktionel",
       "HIIT",
       "Hyrox"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "overhead-carry",
@@ -2246,7 +2324,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "burpee",
@@ -2292,7 +2371,9 @@
       "Funktionel",
       "HIIT",
       "Hyrox"
-    ]
+    ],
+    "hyroxRole": "inspired",
+    "hiitTier": "primary"
   },
   {
     "id": "trx-row",
@@ -2338,7 +2419,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "pull"
   },
   {
     "id": "trx-squat",
@@ -2384,7 +2466,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "squat"
   },
   {
     "id": "trx-chest-press",
@@ -2430,7 +2513,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "push"
   },
   {
     "id": "trx-lunge",
@@ -2476,7 +2560,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "lunge"
   },
   {
     "id": "trx-hamstring-curl",
@@ -2522,7 +2607,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "hinge"
   },
   {
     "id": "trx-plank",
@@ -2566,7 +2652,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "plank"
   },
   {
     "id": "trx-y-fly",
@@ -2612,7 +2699,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "pull"
   },
   {
     "id": "trx-mountain-climber",
@@ -2658,7 +2746,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "plank"
   },
   {
     "id": "trx-high-row",
@@ -2704,7 +2793,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "pull"
   },
   {
     "id": "trx-t-fly",
@@ -2747,7 +2837,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "pull"
   },
   {
     "id": "trx-biceps-curl",
@@ -2791,7 +2882,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "pull"
   },
   {
     "id": "trx-triceps-press",
@@ -2835,7 +2927,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "push"
   },
   {
     "id": "trx-split-squat",
@@ -2880,7 +2973,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "lunge"
   },
   {
     "id": "trx-lateral-lunge",
@@ -2925,7 +3019,8 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "lunge"
   },
   {
     "id": "trx-hip-press",
@@ -2971,7 +3066,9 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "hinge",
+    "equipmentMode": "all"
   },
   {
     "id": "trx-knee-tuck",
@@ -3017,7 +3114,9 @@
       "Funktionel",
       "HIIT",
       "TRX"
-    ]
+    ],
+    "trxPattern": "plank",
+    "equipmentMode": "all"
   },
   {
     "id": "trx-pike",
@@ -3058,7 +3157,9 @@
     "trainingForms": [
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "plank",
+    "equipmentMode": "all"
   },
   {
     "id": "trx-body-saw",
@@ -3102,7 +3203,9 @@
       "FunkFit Junior",
       "Funktionel",
       "TRX"
-    ]
+    ],
+    "trxPattern": "plank",
+    "equipmentMode": "all"
   },
   {
     "id": "db-push-press",
@@ -3148,7 +3251,8 @@
       "FunkFit Junior",
       "Funktionel",
       "HIIT"
-    ]
+    ],
+    "hiitTier": "technical"
   },
   {
     "id": "kb-clean",
@@ -3237,7 +3341,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "step-up-knee-drive",
@@ -3284,7 +3389,8 @@
       "FunkFit Junior",
       "Funktionel",
       "HIIT"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "glute-bridge-march",
@@ -3373,7 +3479,8 @@
       "FunkFit Junior",
       "Funktionel",
       "HIIT"
-    ]
+    ],
+    "hiitTier": "primary"
   },
   {
     "id": "line-hops",
@@ -3465,7 +3572,9 @@
       "FunkFit Junior",
       "Funktionel",
       "HIIT"
-    ]
+    ],
+    "hiitTier": "primary",
+    "equipmentMode": "any"
   },
   {
     "id": "squat-thrust",
@@ -3556,7 +3665,9 @@
       "FunkFit Junior",
       "Funktionel",
       "HIIT"
-    ]
+    ],
+    "hiitTier": "primary",
+    "equipmentMode": "any"
   },
   {
     "id": "tuck-jump",
@@ -3647,7 +3758,9 @@
       "FunkFit Junior",
       "Funktionel",
       "HIIT"
-    ]
+    ],
+    "hiitTier": "primary",
+    "equipmentMode": "any"
   },
   {
     "id": "burpee-broad-jump",
@@ -3685,7 +3798,8 @@
     ],
     "styles": [
       "Hyrox-inspireret",
-      "HIIT"
+      "HIIT",
+      "HYROX officiel"
     ],
     "instructionVideo": "",
     "trainingForms": [
@@ -3694,7 +3808,9 @@
       "Funktionel",
       "HIIT",
       "Hyrox"
-    ]
+    ],
+    "hyroxRole": "official",
+    "hiitTier": "technical"
   },
   {
     "id": "ski-erg",
@@ -3826,7 +3942,8 @@
     ],
     "styles": [
       "Hyrox-inspireret",
-      "Funktionel"
+      "Funktionel",
+      "HYROX officiel"
     ],
     "instructionVideo": "",
     "trainingForms": [
@@ -3835,7 +3952,8 @@
       "Funktionel",
       "HIIT",
       "Hyrox"
-    ]
+    ],
+    "hyroxRole": "official"
   },
   {
     "id": "sled-push",
@@ -3872,7 +3990,8 @@
       "Kondition"
     ],
     "styles": [
-      "Hyrox-inspireret"
+      "Hyrox-inspireret",
+      "HYROX officiel"
     ],
     "instructionVideo": "",
     "trainingForms": [
@@ -3881,7 +4000,8 @@
       "Funktionel",
       "HIIT",
       "Hyrox"
-    ]
+    ],
+    "hyroxRole": "official"
   },
   {
     "id": "sled-pull",
@@ -3919,7 +4039,8 @@
       "Ben"
     ],
     "styles": [
-      "Hyrox-inspireret"
+      "Hyrox-inspireret",
+      "HYROX officiel"
     ],
     "instructionVideo": "",
     "trainingForms": [
@@ -3928,7 +4049,9 @@
       "Funktionel",
       "HIIT",
       "Hyrox"
-    ]
+    ],
+    "hyroxRole": "official",
+    "equipmentMode": "all"
   },
   {
     "id": "bear-hug-carry",
@@ -3976,7 +4099,8 @@
       "Funktionel",
       "HIIT",
       "Hyrox"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "plate-ground-overhead",
@@ -4433,7 +4557,8 @@
       "TRX",
       "Funktionel"
     ],
-    "instructionVideo": ""
+    "instructionVideo": "",
+    "trxPattern": "rotate"
   },
   {
     "id": "trx-assisted-pistol",
@@ -4475,7 +4600,8 @@
       "TRX",
       "Funktionel"
     ],
-    "instructionVideo": ""
+    "instructionVideo": "",
+    "trxPattern": "squat"
   },
   {
     "id": "db-thruster",
@@ -4782,7 +4908,8 @@
       "Familie",
       "FunkFit Junior",
       "Funktionel"
-    ]
+    ],
+    "equipmentMode": "any"
   },
   {
     "id": "jump-and-stick",
@@ -5091,7 +5218,8 @@
     "trainingForms": [
       "FunkFit Junior",
       "Familie"
-    ]
+    ],
+    "equipmentMode": "all"
   },
   {
     "id": "react-lights-bear-crawl",
@@ -5265,7 +5393,8 @@
     "trainingForms": [
       "FunkFit Junior",
       "Familie"
-    ]
+    ],
+    "equipmentMode": "all"
   },
   {
     "id": "react-lights-memory",
@@ -5352,5 +5481,479 @@
       "FunkFit Junior",
       "Familie"
     ]
+  },
+  {
+    "id": "v-up",
+    "name": "V-up",
+    "category": "Core",
+    "equipment": [
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "Intervaller"
+    ],
+    "description": "Løft samtidig ben og overkrop og før hænderne mod fødderne med kontrolleret core.",
+    "focus": [
+      "Core"
+    ],
+    "easier": "Tuck-up eller skiftevis ét ben.",
+    "harder": "Langsommere excentrisk fase eller flere reps.",
+    "junior": "6-10 reps.",
+    "adult": "10-20 reps.",
+    "mistakes": "Kaster overkroppen op eller mister kontrol i lænden.",
+    "bodyAreas": [
+      "Core"
+    ],
+    "styles": [
+      "Funktionel",
+      "Hyrox-inspireret"
+    ],
+    "trainingForms": [
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ],
+    "hyroxRole": "inspired",
+    "hiitTier": "primary"
+  },
+  {
+    "id": "devil-press",
+    "name": "Devil press",
+    "category": "Helkrop",
+    "equipment": [
+      "Håndvægt"
+    ],
+    "audience": [
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Høj",
+    "format": [
+      "Intervaller",
+      "AMRAP",
+      "Chipper"
+    ],
+    "description": "Burpee med håndvægte efterfulgt af et kontrolleret dobbelt dumbbell-sving til overhead.",
+    "focus": [
+      "Helkrop",
+      "Kondition",
+      "Power"
+    ],
+    "easier": "Én håndvægt eller burpee + dumbbell swing uden overhead.",
+    "harder": "Tungere vægte eller flere kontrollerede reps.",
+    "junior": "Kun teknisk tilpasset variant.",
+    "adult": "4-10 reps.",
+    "mistakes": "Runder ryggen, presser vægtene med armene i stedet for hoftekraft eller vælger for tung belastning.",
+    "bodyAreas": [
+      "Helkrop",
+      "Kondition"
+    ],
+    "styles": [
+      "Hyrox-inspireret",
+      "HIIT"
+    ],
+    "trainingForms": [
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ],
+    "hyroxRole": "inspired",
+    "hiitTier": "technical"
+  },
+  {
+    "id": "hand-release-push-up",
+    "name": "Hand release push-up",
+    "category": "Push",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Intervaller",
+      "AMRAP",
+      "Chipper"
+    ],
+    "description": "Sænk brystet til gulvet, løft kort hænderne og pres kroppen op igen som én enhed.",
+    "focus": [
+      "Bryst",
+      "Triceps",
+      "Core"
+    ],
+    "easier": "Knæ i gulvet eller hænder på boks.",
+    "harder": "Højere tempo uden at miste kropslinjen.",
+    "junior": "5-10 reps.",
+    "adult": "8-20 reps.",
+    "mistakes": "Hoften hænger eller skuldrene løftes mod ørerne.",
+    "bodyAreas": [
+      "Bryst",
+      "Arme",
+      "Core"
+    ],
+    "styles": [
+      "Hyrox-inspireret",
+      "HIIT"
+    ],
+    "trainingForms": [
+      "Funktionel",
+      "HIIT",
+      "Hyrox"
+    ],
+    "hyroxRole": "inspired",
+    "hiitTier": "primary"
+  },
+  {
+    "id": "jumping-jack",
+    "name": "Jumping jack",
+    "category": "Kondition",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Intervaller",
+      "Station",
+      "Opvarmning"
+    ],
+    "description": "Hop fødderne ud og ind samtidig med at armene føres over hovedet.",
+    "focus": [
+      "Kondition",
+      "Koordination"
+    ],
+    "easier": "Step-jack uden hop.",
+    "harder": "Højere tempo eller power jack.",
+    "junior": "20-40 sek.",
+    "adult": "30-60 sek.",
+    "mistakes": "Ukontrollerede landinger eller for høj intensitet i opvarmningen.",
+    "bodyAreas": [
+      "Helkrop",
+      "Kondition"
+    ],
+    "styles": [
+      "HIIT",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "Funktionel",
+      "HIIT"
+    ],
+    "hiitTier": "primary"
+  },
+  {
+    "id": "high-knees",
+    "name": "High knees",
+    "category": "Kondition",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Intervaller",
+      "Station",
+      "Opvarmning"
+    ],
+    "description": "Løb på stedet med aktive knæløft og hurtig fodkontakt.",
+    "focus": [
+      "Kondition",
+      "Koordination"
+    ],
+    "easier": "Marchér hurtigt med knæløft.",
+    "harder": "Højere frekvens eller frem/tilbage.",
+    "junior": "15-30 sek.",
+    "adult": "20-45 sek.",
+    "mistakes": "Læner sig langt bagud eller mister rytmen.",
+    "bodyAreas": [
+      "Ben",
+      "Kondition"
+    ],
+    "styles": [
+      "HIIT",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "Funktionel",
+      "HIIT"
+    ],
+    "hiitTier": "primary"
+  },
+  {
+    "id": "battle-rope-waves",
+    "name": "Battle rope waves",
+    "category": "Kondition",
+    "equipment": [
+      "Battle rope"
+    ],
+    "audience": [
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Intervaller",
+      "Station",
+      "YGIG"
+    ],
+    "description": "Lav kontinuerlige bølger med rebene fra en stabil atletisk position.",
+    "focus": [
+      "Kondition",
+      "Skuldre",
+      "Core"
+    ],
+    "easier": "Kortere intervaller eller mindre bevægeudslag.",
+    "harder": "Højere frekvens eller power slams.",
+    "junior": "15-20 sek. let.",
+    "adult": "20-40 sek.",
+    "mistakes": "Spænder nakken eller mister stabil position.",
+    "bodyAreas": [
+      "Skuldre",
+      "Core",
+      "Kondition"
+    ],
+    "styles": [
+      "HIIT",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "Funktionel",
+      "HIIT"
+    ],
+    "hiitTier": "primary"
+  },
+  {
+    "id": "trx-low-row",
+    "name": "TRX low row",
+    "category": "TRX træk",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Intervaller",
+      "Sætbaseret"
+    ],
+    "description": "Træk brystet mod håndtagene med albuerne tæt på kroppen og hold kroppen som en planke.",
+    "focus": [
+      "Ryg",
+      "Biceps",
+      "Core"
+    ],
+    "easier": "Stå mere oprejst.",
+    "harder": "Gå fødderne tættere mod ankerpunktet.",
+    "junior": "6-10 reps.",
+    "adult": "8-15 reps.",
+    "mistakes": "Hofterne falder eller skuldrene trækkes op.",
+    "bodyAreas": [
+      "Ryg",
+      "Arme",
+      "Core"
+    ],
+    "styles": [
+      "TRX"
+    ],
+    "trainingForms": [
+      "TRX",
+      "Funktionel"
+    ],
+    "trxPattern": "pull"
+  },
+  {
+    "id": "trx-mid-row",
+    "name": "TRX mid row",
+    "category": "TRX træk",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Intervaller",
+      "Sætbaseret"
+    ],
+    "description": "Træk kroppen mod håndtagene med albuerne cirka 45 grader fra kroppen.",
+    "focus": [
+      "Ryg",
+      "Biceps",
+      "Core"
+    ],
+    "easier": "Mere lodret kropsvinkel.",
+    "harder": "Mere vandret kropsvinkel.",
+    "junior": "6-10 reps.",
+    "adult": "8-15 reps.",
+    "mistakes": "Mister kropslinjen eller bruger momentum.",
+    "bodyAreas": [
+      "Ryg",
+      "Arme",
+      "Core"
+    ],
+    "styles": [
+      "TRX"
+    ],
+    "trainingForms": [
+      "TRX",
+      "Funktionel"
+    ],
+    "trxPattern": "pull"
+  },
+  {
+    "id": "trx-chest-fly",
+    "name": "TRX chest fly",
+    "category": "TRX push",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Intervaller",
+      "Sætbaseret"
+    ],
+    "description": "Åbn armene kontrolleret fra en stabil plankeposition og før håndtagene sammen igen.",
+    "focus": [
+      "Bryst",
+      "Skuldre",
+      "Core"
+    ],
+    "easier": "Mere oprejst kropsvinkel og mindre bevægeudslag.",
+    "harder": "Mere vandret kropsvinkel.",
+    "junior": "Kun let teknisk variant.",
+    "adult": "8-12 reps.",
+    "mistakes": "For dyb position eller manglende core-kontrol.",
+    "bodyAreas": [
+      "Bryst",
+      "Skuldre",
+      "Core"
+    ],
+    "styles": [
+      "TRX"
+    ],
+    "trainingForms": [
+      "TRX",
+      "Funktionel"
+    ],
+    "trxPattern": "push"
+  },
+  {
+    "id": "trx-single-leg-squat",
+    "name": "TRX single-leg squat",
+    "category": "TRX ben",
+    "equipment": [
+      "TRX"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Sætbaseret",
+      "Kvalitetsarbejde"
+    ],
+    "description": "Brug TRX til støtte og lav en kontrolleret squat på ét ben.",
+    "focus": [
+      "Ben",
+      "Balance",
+      "Core"
+    ],
+    "easier": "Mere støtte fra armene eller kortere dybde.",
+    "harder": "Mindre støtte og større dybde.",
+    "junior": "5-8 pr. ben.",
+    "adult": "6-12 pr. ben.",
+    "mistakes": "Knæet falder ind eller armene overtager arbejdet.",
+    "bodyAreas": [
+      "Ben",
+      "Balder",
+      "Core"
+    ],
+    "styles": [
+      "TRX"
+    ],
+    "trainingForms": [
+      "TRX",
+      "Funktionel"
+    ],
+    "trxPattern": "squat"
+  },
+  {
+    "id": "trx-atomic-push-up",
+    "name": "TRX atomic push-up",
+    "category": "TRX core",
+    "equipment": [
+      "TRX",
+      "Måtte"
+    ],
+    "audience": [
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Intervaller",
+      "AMRAP"
+    ],
+    "description": "Fødderne i stropperne: lav push-up og træk derefter knæene kontrolleret mod brystet.",
+    "focus": [
+      "Core",
+      "Bryst",
+      "Skuldre"
+    ],
+    "easier": "Kun knee tuck eller push-up separat.",
+    "harder": "Højere tempo med stabil kropslinje.",
+    "junior": "Kun skaleret variant.",
+    "adult": "5-10 reps.",
+    "mistakes": "Hænger i lænden eller mister skulderkontrol.",
+    "bodyAreas": [
+      "Core",
+      "Bryst",
+      "Skuldre"
+    ],
+    "styles": [
+      "TRX"
+    ],
+    "trainingForms": [
+      "TRX",
+      "Funktionel"
+    ],
+    "trxPattern": "plank",
+    "equipmentMode": "all"
   }
 ]
