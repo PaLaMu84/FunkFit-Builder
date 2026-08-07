@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.28';
+const APP_VERSION='0.7.4-alpha.29';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -109,6 +109,8 @@ const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-fa
 const WBACKUPKEY='funkfit-workouts-backup-v1';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
 let musicPlan=[],musicService='spotify',musicScope='all',selectedMusicSections=new Set();
+let musicBuildMode='ai',manualMusicMode='tracks',linkedPlaylist=null,musicReplaceTarget=null;
+let selectedMusicGenres=new Set(['pop']);
 const SPOTIFY_CLIENT_ID_KEY='funkfit-spotify-client-id-v1';
 const SPOTIFY_TOKEN_KEY='funkfit-spotify-token-v1';
 const SPOTIFY_REFRESH_KEY='funkfit-spotify-refresh-v1';
@@ -1142,6 +1144,20 @@ function bind(){
   $('#openSpotifyBtn').onclick=()=>openPlaylist($('#spotifyPlaylistUrl').value,'Spotify');
   $('#openTidalBtn').onclick=()=>openPlaylist($('#tidalPlaylistUrl').value,'TIDAL');
   $('#openTelmoreBtn').onclick=()=>openPlaylist($('#telmorePlaylistUrl').value,'Telmore Musik');
+  document.querySelectorAll('[data-music-build-mode]').forEach(button=>button.onclick=()=>{
+    musicBuildMode=button.dataset.musicBuildMode;
+    updateMusicBuildModeUI();
+  });
+  document.querySelectorAll('[data-manual-music-mode]').forEach(button=>button.onclick=()=>{
+    manualMusicMode=button.dataset.manualMusicMode;
+    updateManualMusicModeUI();
+  });
+  document.querySelectorAll('[data-music-genre]').forEach(button=>button.onclick=()=>{
+    const genre=button.dataset.musicGenre;
+    selectedMusicGenres.has(genre)?selectedMusicGenres.delete(genre):selectedMusicGenres.add(genre);
+    if(!selectedMusicGenres.size)selectedMusicGenres.add('pop');
+    updateMusicGenreUI();
+  });
   document.querySelectorAll('[data-music-service]').forEach(button=>button.onclick=()=>{
     musicService=button.dataset.musicService;
     updateMusicServiceUI();
@@ -1193,6 +1209,13 @@ function bind(){
   on('downloadMusicPlaylistBtn','click',downloadMusicPlaylist);
   on('downloadMusicSectionPlanBtn','click',downloadMusicSectionPlan);
   on('openMusicImporterBtn','click',openMusicImporter);
+  if(byId('manualTrackForm'))byId('manualTrackForm').onsubmit=addManualMusicTrack;
+  on('manualPlaylistName','input',event=>{
+    if(musicPlan?.source==='manual'){musicPlan.playlistName=event.target.value;renderMusicPlan()}
+  });
+  on('saveManualLinkedPlaylistBtn','click',saveManualLinkedPlaylist);
+  if(byId('musicReplaceForm'))byId('musicReplaceForm').onsubmit=saveMusicReplacement;
+  on('findSpotifyAlternativesBtn','click',findSpotifyAlternatives);
 
   $('#pickerSearch').oninput=renderPicker;
   $('#pickerBody').onchange=renderPicker;
@@ -3280,9 +3303,10 @@ async function searchSpotifyTrack(track){
   const query=`track:${track.title} artist:${track.artist}`;
   const data=await spotifyFetch(`/search?${new URLSearchParams({q:query,type:'track',limit:'5'}).toString()}`);
   const candidates=data?.tracks?.items||[];
-  return candidates
+  const ranked=candidates
     .map(item=>({item,score:spotifyTrackMatchScore(item,track)}))
-    .sort((a,b)=>b.score-a.score)[0]?.item||null;
+    .sort((a,b)=>b.score-a.score);
+  return ranked[0]?.score>=10?ranked[0].item:null;
 }
 
 async function verifyMusicPlanWithSpotify(){
@@ -3397,6 +3421,279 @@ function downloadAndOpenTidal(){
   const message='CSV-filen er hentet. Vælg den netop hentede fil hos TuneMyMusic og fortsæt med TIDAL som destination.';
   if(byId('musicPlanStatus'))byId('musicPlanStatus').textContent=message;
   if(!popup)alert(`${message}\n\nBrowseren blokerede muligvis det nye vindue. Åbn TuneMyMusic manuelt.`);
+}
+
+
+const MUSIC_GENRE_LABELS={
+  pop:'Pop',
+  rock:'Rock',
+  hiphop:'Hiphop',
+  rnb:'R&B',
+  'soul-funk':'Soul / Funk',
+  indie:'Indie / Alternative',
+  dance:'Dance / Elektronisk',
+  danish:'Dansk pop / rock',
+  latin:'Latin',
+  reggae:'Reggae',
+  country:'Country',
+  'metal-punk':'Metal / Punk'
+};
+const SPOTIFY_GENRE_QUERY={
+  pop:'pop',
+  rock:'rock',
+  hiphop:'hip-hop',
+  rnb:'r-n-b',
+  'soul-funk':'funk',
+  indie:'indie',
+  dance:'dance',
+  danish:'danish',
+  latin:'latin',
+  reggae:'reggae',
+  country:'country',
+  'metal-punk':'punk'
+};
+
+function selectedMusicGenreLabels(){
+  return [...selectedMusicGenres].map(value=>MUSIC_GENRE_LABELS[value]||value);
+}
+function updateMusicBuildModeUI(){
+  document.querySelectorAll('[data-music-build-mode]').forEach(button=>button.classList.toggle('selected',button.dataset.musicBuildMode===musicBuildMode));
+  byId('aiMusicBuilder')?.classList.toggle('hidden',musicBuildMode!=='ai');
+  byId('manualMusicBuilder')?.classList.toggle('hidden',musicBuildMode!=='manual');
+  if(musicBuildMode==='manual')renderManualMusicBuilder();
+}
+function updateManualMusicModeUI(){
+  document.querySelectorAll('[data-manual-music-mode]').forEach(button=>button.classList.toggle('selected',button.dataset.manualMusicMode===manualMusicMode));
+  byId('manualTrackBuilder')?.classList.toggle('hidden',manualMusicMode!=='tracks');
+  byId('manualLinkBuilder')?.classList.toggle('hidden',manualMusicMode!=='link');
+}
+function updateMusicGenreUI(){
+  document.querySelectorAll('[data-music-genre]').forEach(button=>button.classList.toggle('selected',selectedMusicGenres.has(button.dataset.musicGenre)));
+}
+function renderManualSectionOptions(){
+  const select=byId('manualTrackSection');
+  if(!select)return;
+  const previous=select.value;
+  select.innerHTML=sections.map((section,index)=>{
+    const profile=musicIntensityProfile(section,index);
+    return `<option value="${index}">${index+1}. ${esc(section.name||profile.purpose)} · ${esc(profile.label)}</option>`;
+  }).join('');
+  if([...select.options].some(option=>option.value===previous))select.value=previous;
+}
+function renderLinkedPlaylistSummary(){
+  const host=byId('manualLinkedPlaylistSummary');
+  if(!host)return;
+  if(!linkedPlaylist?.url){
+    host.classList.add('hidden');
+    host.innerHTML='';
+    return;
+  }
+  const label=(MUSIC_IMPORTERS[linkedPlaylist.service]||{}).label||linkedPlaylist.service||'Musiktjeneste';
+  host.classList.remove('hidden');
+  host.innerHTML=`<div><strong>${esc(linkedPlaylist.name||'Tilknyttet playliste')}</strong><small>${esc(label)}</small></div><a href="${esc(linkedPlaylist.url)}" target="_blank" rel="noopener">Åbn playlisten</a>`;
+}
+function renderManualMusicBuilder(){
+  updateManualMusicModeUI();
+  renderManualSectionOptions();
+  if(byId('manualPlaylistName')&&!byId('manualPlaylistName').value){
+    byId('manualPlaylistName').value=musicPlan?.playlistName||`${byId('workoutName')?.value||'FunkFit'} – musik`;
+  }
+  if(linkedPlaylist){
+    if(byId('manualLinkedService'))byId('manualLinkedService').value=linkedPlaylist.service||'spotify';
+    if(byId('manualLinkedName'))byId('manualLinkedName').value=linkedPlaylist.name||'';
+    if(byId('manualLinkedUrl'))byId('manualLinkedUrl').value=linkedPlaylist.url||'';
+  }
+  renderLinkedPlaylistSummary();
+}
+function ensureManualMusicPlan(){
+  if(musicPlan?.sections?.length&&!musicPlan.externalOnly)return musicPlan;
+  musicPlan={
+    playlistName:byId('manualPlaylistName')?.value.trim()||`${byId('workoutName')?.value||'FunkFit'} – musik`,
+    summary:'Manuelt bygget playliste koblet til træningens sektioner.',
+    service:musicService,
+    scope:'manual',
+    source:'manual',
+    generatedAt:new Date().toISOString(),
+    sections:sections.map((section,index)=>{
+      const profile=musicIntensityProfile(section,index);
+      return {
+        sectionIndex:index,
+        sectionName:section.name||profile.purpose,
+        minutes:profile.minutes,
+        intensity:profile.label,
+        bpmRange:`${profile.bpmMin}-${profile.bpmMax} BPM`,
+        mood:profile.mood,
+        tracks:[]
+      };
+    })
+  };
+  return musicPlan;
+}
+async function addManualMusicTrack(event){
+  event?.preventDefault();
+  const index=Math.max(0,+byId('manualTrackSection')?.value||0);
+  let track={
+    title:byId('manualTrackTitle')?.value.trim()||'',
+    artist:byId('manualTrackArtist')?.value.trim()||'',
+    album:byId('manualTrackAlbum')?.value.trim()||'',
+    bpm:0,
+    reason:'Valgt manuelt',
+    clean:true,
+    manualOverride:true
+  };
+  if(!track.title||!track.artist)return;
+
+  if(musicService==='spotify'&&spotifyConnected()){
+    try{
+      const match=await searchSpotifyTrack(track);
+      if(match?.uri){
+        track={
+          ...track,
+          title:match.name||track.title,
+          artist:(match.artists||[]).map(artist=>artist.name).join(', ')||track.artist,
+          album:match.album?.name||track.album,
+          spotifyUri:match.uri,
+          spotifyUrl:match.external_urls?.spotify||'',
+          spotifyVerified:true
+        };
+      }else track.spotifyVerified=false;
+    }catch(error){
+      console.warn('Kunne ikke verificere manuelt nummer i Spotify',error);
+    }
+  }
+
+  const plan=ensureManualMusicPlan();
+  plan.playlistName=byId('manualPlaylistName')?.value.trim()||plan.playlistName;
+  const sectionPlan=plan.sections.find(section=>section.sectionIndex===index)||plan.sections[0];
+  sectionPlan.tracks.push(track);
+  musicBuildMode='manual';
+  manualMusicMode='tracks';
+  byId('manualTrackTitle').value='';
+  byId('manualTrackArtist').value='';
+  byId('manualTrackAlbum').value='';
+  renderMusicPlan();
+  updateMusicBuildModeUI();
+}
+function saveManualLinkedPlaylist(){
+  const service=byId('manualLinkedService')?.value||'spotify';
+  const name=byId('manualLinkedName')?.value.trim()||`${byId('workoutName')?.value||'FunkFit'} – musik`;
+  const url=byId('manualLinkedUrl')?.value.trim()||'';
+  if(!url)return alert('Indsæt linket til playlisten først.');
+  linkedPlaylist={service,name,url,savedAt:new Date().toISOString()};
+  musicBuildMode='manual';
+  manualMusicMode='link';
+  musicService=service;
+  if(service==='spotify'&&byId('spotifyPlaylistUrl'))byId('spotifyPlaylistUrl').value=url;
+  if(service==='tidal'&&byId('tidalPlaylistUrl'))byId('tidalPlaylistUrl').value=url;
+  if(service==='telmore'&&byId('telmorePlaylistUrl'))byId('telmorePlaylistUrl').value=url;
+  renderLinkedPlaylistSummary();
+  updateMusicServiceUI();
+}
+function openMusicReplaceDialog(sectionPlanIndex,trackIndex){
+  const section=musicPlan?.sections?.[sectionPlanIndex];
+  const track=section?.tracks?.[trackIndex];
+  if(!track)return;
+  musicReplaceTarget={sectionPlanIndex,trackIndex};
+  byId('musicReplaceHeading').textContent=`Skift “${track.title}”`;
+  byId('musicReplaceSection').textContent=`${section.sectionName} · ${section.intensity||''} · ${section.bpmRange||''}`;
+  byId('musicReplaceTitle').value=track.title||'';
+  byId('musicReplaceArtist').value=track.artist||'';
+  byId('musicReplaceAlbum').value=track.album||'';
+  byId('spotifyAlternativeResults').innerHTML='';
+  byId('musicReplaceStatus').textContent='';
+  byId('findSpotifyAlternativesBtn').classList.toggle('hidden',!spotifyConnected());
+  byId('musicReplaceDialog').showModal();
+}
+async function saveMusicReplacement(event){
+  event?.preventDefault();
+  const target=musicReplaceTarget;
+  const section=target?musicPlan?.sections?.[target.sectionPlanIndex]:null;
+  const oldTrack=section?.tracks?.[target?.trackIndex];
+  if(!oldTrack)return byId('musicReplaceDialog').close();
+  let track={
+    ...oldTrack,
+    title:byId('musicReplaceTitle')?.value.trim()||'',
+    artist:byId('musicReplaceArtist')?.value.trim()||'',
+    album:byId('musicReplaceAlbum')?.value.trim()||'',
+    reason:'Skiftet manuelt',
+    manualOverride:true,
+    spotifyUri:'',
+    spotifyUrl:'',
+    spotifyVerified:undefined
+  };
+  if(!track.title||!track.artist)return;
+  if(musicService==='spotify'&&spotifyConnected()){
+    byId('musicReplaceStatus').textContent='Kontrollerer nummeret i Spotify…';
+    try{
+      const match=await searchSpotifyTrack(track);
+      if(match?.uri){
+        track.title=match.name||track.title;
+        track.artist=(match.artists||[]).map(artist=>artist.name).join(', ')||track.artist;
+        track.album=match.album?.name||track.album;
+        track.spotifyUri=match.uri;
+        track.spotifyUrl=match.external_urls?.spotify||'';
+        track.spotifyVerified=true;
+      }else track.spotifyVerified=false;
+    }catch(error){
+      track.spotifyVerified=false;
+    }
+  }
+  section.tracks[target.trackIndex]=track;
+  byId('musicReplaceDialog').close();
+  renderMusicPlan();
+}
+function existingMusicTrackKeys(){
+  return new Set(musicTracksFlat().map(track=>normalizeText(`${track.artist}|${track.title}`)));
+}
+function existingMusicArtists(){
+  return new Set(musicTracksFlat().map(track=>normalizeText(track.artist||'')));
+}
+async function findSpotifyAlternatives(){
+  if(!spotifyConnected())return alert('Forbind Spotify først.');
+  const target=musicReplaceTarget;
+  const section=target?musicPlan?.sections?.[target.sectionPlanIndex]:null;
+  if(!section)return;
+  const host=byId('spotifyAlternativeResults');
+  host.innerHTML='<p>Søger Spotify…</p>';
+  try{
+    const genres=[...selectedMusicGenres].length?[...selectedMusicGenres]:['pop'];
+    const candidates=[];
+    for(const genreKey of genres.slice(0,4)){
+      const genre=SPOTIFY_GENRE_QUERY[genreKey]||genreKey;
+      const q=`genre:"${genre}"`;
+      const data=await spotifyFetch(`/search?${new URLSearchParams({q,type:'track',limit:'20',market:'from_token'}).toString()}`);
+      (data?.tracks?.items||[]).forEach(item=>candidates.push(item));
+    }
+    const existing=existingMusicTrackKeys();
+    const artists=existingMusicArtists();
+    const unique=new Map();
+    candidates.forEach(item=>{
+      const artist=(item.artists||[]).map(a=>a.name).join(', ');
+      const key=normalizeText(`${artist}|${item.name}`);
+      if(existing.has(key))return;
+      const artistKey=normalizeText(artist);
+      const score=(+item.popularity||0)-(artists.has(artistKey)?25:0);
+      if(!unique.has(key)||unique.get(key).score<score)unique.set(key,{item,score});
+    });
+    const best=[...unique.values()].sort((a,b)=>b.score-a.score).slice(0,6);
+    if(!best.length){
+      host.innerHTML='<p>Jeg fandt ingen gode alternativer i de valgte genrer.</p>';
+      return;
+    }
+    host.innerHTML=`<p><strong>Forslag fra Spotify</strong></p><div class="spotify-alternative-grid">${best.map(({item})=>{
+      const artist=(item.artists||[]).map(a=>a.name).join(', ');
+      return `<button type="button" class="spotify-alternative" data-alt-uri="${esc(item.uri||'')}" data-alt-title="${esc(item.name||'')}" data-alt-artist="${esc(artist)}" data-alt-album="${esc(item.album?.name||'')}"><strong>${esc(item.name)}</strong><small>${esc(artist)}</small></button>`;
+    }).join('')}</div>`;
+    host.querySelectorAll('[data-alt-title]').forEach(button=>button.onclick=()=>{
+      byId('musicReplaceTitle').value=button.dataset.altTitle||'';
+      byId('musicReplaceArtist').value=button.dataset.altArtist||'';
+      byId('musicReplaceAlbum').value=button.dataset.altAlbum||'';
+      byId('musicReplaceStatus').textContent='Alternativ valgt. Tryk “Gem nyt nummer”.';
+    });
+  }catch(error){
+    console.error('Spotify-alternativer fejlede',error);
+    host.innerHTML=`<p>Kunne ikke hente alternativer: ${esc(error.message)}</p>`;
+  }
 }
 
 const MUSIC_IMPORTERS={
@@ -3583,8 +3880,12 @@ function updateMusicScopeUI(){
 }
 function renderMusicPlanner(){
   syncMusicSelectionToSections();
+  updateMusicBuildModeUI();
+  updateManualMusicModeUI();
+  updateMusicGenreUI();
   updateMusicServiceUI();
   updateMusicScopeUI();
+  renderManualMusicBuilder();
   const key=byId('musicGeminiKey');
   if(key&&!key.value)key.value=sessionStorage.getItem('funkfit-gemini-key')||'';
   const clean=byId('musicCleanOnly');
@@ -3603,6 +3904,8 @@ function musicPrompt(){
   const keepFinisher=!!byId('musicKeepFinisherSong')?.checked;
   const prefer=byId('musicPrefer')?.value.trim()||'ingen særlige ønsker';
   const avoid=byId('musicAvoid')?.value.trim()||'ingen yderligere';
+  const genres=selectedMusicGenreLabels();
+  const genreText=genres.length?genres.join(', '):'ingen faste genrer';
   const language=({mixed:'blandet dansk og internationalt',danish:'primært dansk',international:'primært internationalt'})[byId('musicLanguage')?.value]||'blandet';
   const familiarity=({mixed:'blanding af kendte numre og enkelte nye fund',hits:'primært kendte og let genkendelige numre',discover:'gerne nyere eller mindre oplagte fund'})[byId('musicFamiliarity')?.value]||'blandet';
   const audience=trainingTypeLabel(selectedTrainingType());
@@ -3618,6 +3921,7 @@ function musicPrompt(){
   return `Du er musikansvarlig for en funktionel træning. Lav en konkret playliste med REELLE eksisterende musiknumre til ${service}.
 Du har ikke adgang til web-søgning i dette kald. Vælg derfor primært velkendte, officielt udgivne numre og undgå obskure eller usikre titler. Opfind aldrig sangtitler eller kunstnere. Hvis du er usikker på et nummer, vælg et mere kendt alternativ. Brugeren skal ende med en konkret playliste med titel og kunstner, ikke en løs inspirationsliste.
 Målgruppe: ${audience}.
+Valgte genrer: ${genreText}. Hold dig primært til disse genrer. Hvis en valgt genre ikke passer til en rolig sektion, vælg en roligere variant inden for en anden valgt genre frem for at ignorere intensitetsreglerne.
 Musikønsker: gerne ${prefer}. Undgå: ${avoid}. Sprog: ${language}. Kendskab: ${familiarity}.
 ${cleanOnly?'Brug kun clean/familievenlige versioner og undgå explicit lyrics.':'Explicit lyrics er ikke automatisk forbudt, men vælg stadig musik, der passer til holdtræning.'}
 ${keepFinisher?'Hvis en sektion har en eksisterende finisher-sang, skal den beholdes og indgå i planen i stedet for at blive erstattet.':'Eksisterende finisher-sange må gerne erstattes.'}
@@ -3736,6 +4040,8 @@ function normalizeMusicPlanResult(result){
     playlistName:String(result.playlistName||`${byId('workoutName')?.value||'FunkFit'} – musik`).trim(),
     summary:String(result.summary||'AI-planlagt playliste efter træningens sektioner og intensitet.').trim(),
     service:musicService,
+    source:'ai',
+    genres:[...selectedMusicGenres],
     scope:musicScope,
     generatedAt:new Date().toISOString(),
     sections:sectionsOut
@@ -3947,13 +4253,19 @@ function musicTrackCount(){
 function renderMusicPlan(){
   const card=byId('musicPlanResultCard');
   if(!card)return;
-  const hasPlan=musicPlan&&Array.isArray(musicPlan.sections)&&musicPlan.sections.some(section=>section.tracks?.length);
+  const hasTracks=musicPlan&&Array.isArray(musicPlan.sections)&&musicPlan.sections.some(section=>section.tracks?.length);
+  const hasLinked=!!linkedPlaylist?.url;
+  const hasPlan=hasTracks||hasLinked;
   card.classList.toggle('hidden',!hasPlan);
   if(!hasPlan)return;
-  byId('musicPlanTitle').textContent=musicPlan.playlistName||'Musik til træningen';
-  byId('musicPlanSummary').textContent=`${musicPlan.summary||''} · ${musicTrackCount()} numre`;
+  byId('musicPlanTitle').textContent=musicPlan?.playlistName||linkedPlaylist?.name||'Musik til træningen';
+  const parts=[];
+  if(musicPlan?.summary)parts.push(musicPlan.summary);
+  if(musicTrackCount())parts.push(`${musicTrackCount()} numre`);
+  if(linkedPlaylist?.url)parts.push(`Tilknyttet ${(MUSIC_IMPORTERS[linkedPlaylist.service]||{}).label||linkedPlaylist.service}`);
+  byId('musicPlanSummary').textContent=parts.join(' · ');
   const host=byId('musicPlanSections');
-  host.innerHTML=(musicPlan.sections||[]).map((section,sectionPlanIndex)=>{
+  host.innerHTML=(musicPlan?.sections||[]).map((section,sectionPlanIndex)=>{
     const profile=musicIntensityProfile(sections[section.sectionIndex]||{},section.sectionIndex);
     return `<article class="music-section-plan">
       <div class="music-section-plan-head">
@@ -3973,12 +4285,17 @@ function renderMusicPlan(){
           </a>
           <div class="music-track-actions">
             <a class="ghost compact-btn" href="${esc(musicServiceTrackUrl(track))}" target="_blank" rel="noopener">Find</a>
+            <button type="button" class="secondary compact-btn" data-swap-music-track="${sectionPlanIndex}-${trackIndex}">Skift</button>
             <button type="button" class="ghost compact-btn" data-remove-music-track="${sectionPlanIndex}-${trackIndex}" aria-label="Fjern ${esc(track.title)}">Fjern</button>
           </div>
         </li>`).join('')}
       </ol>
     </article>`;
-  }).join('');
+  }).join('')+(linkedPlaylist?.url?`<article class="linked-playlist-result"><div><span class="music-intensity-pill level-2">Tilknyttet</span><h4>${esc(linkedPlaylist.name||'Ekstern playliste')}</h4><p>${esc((MUSIC_IMPORTERS[linkedPlaylist.service]||{}).label||linkedPlaylist.service)}</p></div><a href="${esc(linkedPlaylist.url)}" target="_blank" rel="noopener">Åbn playlisten</a></article>`:'');
+  host.querySelectorAll('[data-swap-music-track]').forEach(button=>button.onclick=()=>{
+    const [sectionIndex,trackIndex]=button.dataset.swapMusicTrack.split('-').map(Number);
+    openMusicReplaceDialog(sectionIndex,trackIndex);
+  });
   host.querySelectorAll('[data-remove-music-track]').forEach(button=>button.onclick=()=>{
     const [sectionIndex,trackIndex]=button.dataset.removeMusicTrack.split('-').map(Number);
     musicPlan.sections[sectionIndex].tracks.splice(trackIndex,1);
@@ -4021,8 +4338,12 @@ function openMusicImporter(){
 }
 function restoreMusicPlanFromWorkout(workout){
   musicService=workout?.music?.service||'spotify';
+  musicBuildMode=workout?.music?.mode||((workout?.music?.plan?.sections?.length)?'ai':'manual');
+  manualMusicMode=workout?.music?.manualMode||'tracks';
+  linkedPlaylist=workout?.music?.linkedPlaylist?structuredClone(workout.music.linkedPlaylist):null;
   musicScope=workout?.music?.scope||'all';
   musicPlan=workout?.music?.plan?structuredClone(workout.music.plan):[];
+  selectedMusicGenres=new Set(Array.isArray(workout?.music?.preferences?.genres)&&workout.music.preferences.genres.length?workout.music.preferences.genres:['pop']);
   selectedMusicSections=new Set(
     Array.isArray(workout?.music?.selectedSections)
       ?workout.music.selectedSections.map(Number)
@@ -4042,6 +4363,10 @@ function restoreMusicPlanFromWorkout(workout){
 function clearMusicPlanState(){
   musicPlan=[];
   musicService='spotify';
+  musicBuildMode='ai';
+  manualMusicMode='tracks';
+  linkedPlaylist=null;
+  selectedMusicGenres=new Set(['pop']);
   musicScope='all';
   selectedMusicSections=new Set(sections.map((_,i)=>i));
   if(byId('musicPrefer'))byId('musicPrefer').value='';
@@ -4061,10 +4386,14 @@ function collect(){return{id:currentId||crypto.randomUUID(),trainingType:selecte
   tidal:$('#tidalPlaylistUrl').value.trim(),
   telmore:$('#telmorePlaylistUrl').value.trim(),
   service:musicService,
+  mode:musicBuildMode,
+  manualMode:manualMusicMode,
+  linkedPlaylist:linkedPlaylist?structuredClone(linkedPlaylist):null,
   scope:musicScope,
   selectedSections:[...selectedMusicSections].sort((a,b)=>a-b),
   plan:musicPlan&&musicPlan.sections?structuredClone(musicPlan):[],
   preferences:{
+    genres:[...selectedMusicGenres],
     prefer:byId('musicPrefer')?.value.trim()||'',
     avoid:byId('musicAvoid')?.value.trim()||'',
     language:byId('musicLanguage')?.value||'mixed',
@@ -4131,6 +4460,10 @@ function draftSnapshot(){
     sections:structuredClone(sections),
     musicState:{
       service:musicService,
+      mode:musicBuildMode,
+      manualMode:manualMusicMode,
+      linkedPlaylist:linkedPlaylist?structuredClone(linkedPlaylist):null,
+      genres:[...selectedMusicGenres],
       scope:musicScope,
       selectedSections:[...selectedMusicSections],
       plan:musicPlan&&musicPlan.sections?structuredClone(musicPlan):[]
@@ -4166,6 +4499,10 @@ function applyDraftSnapshot(snapshot){
   sections=structuredClone(snapshot.sections||[]).map(normalizeSection);
   const ms=snapshot.musicState||{};
   musicService=ms.service||'spotify';
+  musicBuildMode=ms.mode||'ai';
+  manualMusicMode=ms.manualMode||'tracks';
+  linkedPlaylist=ms.linkedPlaylist?structuredClone(ms.linkedPlaylist):null;
+  selectedMusicGenres=new Set(Array.isArray(ms.genres)&&ms.genres.length?ms.genres:['pop']);
   musicScope=ms.scope||'all';
   selectedMusicSections=new Set(Array.isArray(ms.selectedSections)?ms.selectedSections:sections.map((_,i)=>i));
   musicPlan=ms.plan&&ms.plan.sections?structuredClone(ms.plan):[];

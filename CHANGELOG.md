@@ -1,23 +1,36 @@
-# FunkFit Builder v0.7.4-alpha.28
+# FunkFit Builder v0.7.4-alpha.29
 
-## Google AI – ny plan
-- Musik-AI er flyttet fra Interactions API til det enklere `generateContent`-endpoint.
-- Gemini 3.5 Flash-Lite er fortsat primær model.
-- Gemini 3.1 Flash-Lite er fortsat automatisk fallback.
-- Structured JSON-output er bevaret.
-- Google Search-grounding er fortsat slået fra.
+## Musik v2 – første valg
+- Musiktrinnet starter nu med:
+  - “Brug AI til at lave min playliste”
+  - “Jeg vil selv bygge playlisten”
+- De to flows er visuelt adskilt.
 
-## Test Google-nøgle
-- Ny knap: “Test Google-nøgle”.
-- 401 forklares som ugyldig/udløbet/deaktiveret API-nøgle.
-- 403 forklares som manglende projekt/API-adgang.
-- 429 identificeres som gyldig nøgle men opbrugt kvote.
-- Model-404 adskilles fra nøglefejl.
-- Direkte knap til Google AI Studio API Keys.
+## AI
+- Ny klikbar genrevælger med 12 genregrupper.
+- Genrevalgene indgår som stærke præferencer i musikprompten.
+- Genrevalg gemmes med træningen.
+- Spotify-match er strammet, så korrekt sangtitel + forkert kunstner ikke accepteres som sikkert match.
 
-## Sikkerhed
-- Nøglen gemmes kun i sessionStorage.
-- Den gemmes aldrig sammen med træningen.
+## Byg selv
+- “Byg sang for sang”:
+  - vælg træningssektion
+  - titel
+  - kunstner
+  - album
+  - tilføj direkte til samme playlistemodel som AI
+- Hvis Spotify er forbundet, verificeres manuelle numre mod Spotify.
+- “Tilknyt eksisterende playliste”:
+  - Spotify / TIDAL / Telmore
+  - navn + URL
+  - gemmes med træningen
 
-## Data
-- Gemte træninger bruger fortsat samme lagernøgle.
+## Skift nummer
+- Alle numre har nu “Skift”.
+- Titel, kunstner og album kan udskiftes uden at ændre resten af playlisten.
+- Ved forbundet Spotify kan brugeren hente alternative katalognumre ud fra de valgte genrer.
+- Spotify-alternativer vælges fra rigtige Spotify-resultater.
+
+## Persistens
+- Musikmode, manuel mode, genrer, linked playlist og trackliste gemmes med træningen.
+- Eksisterende lagernøgle til gemte træninger er uændret.
