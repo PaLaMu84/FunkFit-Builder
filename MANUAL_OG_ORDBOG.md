@@ -340,3 +340,18 @@ AI'ens opgave er derfor at vælge velkendte, eksisterende numre ud fra træninge
 - **TIDAL:** TuneMyMusic matcher CSV-listen mod TIDAL-kataloget under importen.
 
 Det reducerer afhængigheden af Google Search og gør gratis-sporet mere stabilt.
+
+## Google API-diagnostik
+Fra v0.7.4-alpha.28 bruger musikplanlægningen Googles almindelige `generateContent`-endpoint i stedet for Interactions API. `generateContent` er fortsat fuldt understøttet af Gemini API og er tilstrækkeligt til FunkFits enkeltstående strukturerede musikforslag.
+
+Der er tilføjet **Test Google-nøgle**:
+
+- **Grøn / virker:** nøglen er accepteret af Google og mindst én af FunkFits modeller svarer.
+- **401:** nøglen er manglende, ugyldig, udløbet eller deaktiveret. Opret en ny Auth key i Google AI Studio.
+- **403:** nøglen findes, men projektet mangler adgang/tilladelse til Gemini API.
+- **429:** nøglen er accepteret, men kvoten er opbrugt.
+- **404/model:** nøglen virker, men den pågældende model er ikke tilgængelig.
+
+Nye nøgler oprettet i Google AI Studio er Auth keys. FunkFit bruger fortsat `x-goog-api-key`-headeren, som er Googles dokumenterede autentificeringsmetode til Gemini API.
+
+Google API-nøglen gemmes kun i `sessionStorage` og gemmes ikke sammen med træningen.
