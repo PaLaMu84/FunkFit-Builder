@@ -1,16 +1,21 @@
-# FunkFit Builder v0.7.4-alpha.23
+# FunkFit Builder v0.7.4-alpha.25
 
-## Gemini / musikplanlægning
-- Fjernet `Api-Revision` fra browserens Gemini-request.
-- Request bruger nu kun `Content-Type` og `x-goog-api-key`.
-- Retter den kendte CORS/preflight-situation, som kan vise `Failed to fetch`.
-- Netværks-/CORS-fejl får nu en mere brugbar fejlbesked.
-- API-fejl fra Google vises fortsat med den konkrete fejltekst.
-- Gemini-nøglen gemmes fortsat kun i sessionStorage og aldrig i den gemte træning.
+## Gemini
+- Musik-AI er skiftet til `gemini-2.5-flash-lite`.
+- Modellen har gratis Gemini API-tier og understøtter Search grounding og structured output.
+- 429/quota-fejl får nu en kort dansk forklaring.
 
-## Sikkerhed
-- Browserbaseret API-nøgle er fortsat kun en testløsning.
-- Produktionsløsningen skal senere bruge server-side proxy.
+## Playlist-first
+- Resultatet hedder nu “Playliste” og vises direkte i appen.
+- Sangene er fortsat opdelt efter træningens sektioner.
+- Hvert nummer har “Find”-link til den valgte musiktjeneste.
+- Hele playlisten kan kopieres som almindelig tekst.
+- “Åbn Spotify/TIDAL/Telmore Musik” er en primær handling.
+- CSV er flyttet til “Avanceret eksport” og er ikke længere hovedflowet.
+
+## Næste integration
+- Direkte oprettelse af Spotify-playliste kræver OAuth/PKCE og en registreret Spotify-app.
+- TIDAL/Telmore-direkte oprettelse kræver særskilt understøttet API/adgang og er ikke simuleret.
 
 ## Data
-- Eksisterende lagernøgle til gemte træninger er uændret.
+- Gemte træninger bruger fortsat samme lagernøgle.

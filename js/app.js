@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.23';
+const APP_VERSION='0.7.4-alpha.25';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -1160,6 +1160,8 @@ function bind(){
   });
   on('musicCleanOnly','change',event=>event.target.dataset.userTouched='1');
   on('generateMusicPlanBtn','click',generateMusicPlan);
+  on('copyMusicPlaylistBtn','click',copyMusicPlaylist);
+  on('openPlaylistServiceBtn','click',openSelectedMusicService);
   on('downloadMusicPlaylistBtn','click',downloadMusicPlaylist);
   on('downloadMusicSectionPlanBtn','click',downloadMusicSectionPlan);
   on('openMusicImporterBtn','click',openMusicImporter);
@@ -1239,6 +1241,7 @@ function setCreationMode(mode){
   }
 
   byId('plannerStructureBlock')?.classList.toggle('hidden',isSection);
+  byId('plannerOptionsBlock')?.classList.toggle('hidden',isSection);
   byId('singleSectionConfig')?.classList.toggle('hidden',!isSection);
   byId('includeJointWarmupWrap')?.classList.toggle('hidden',isSection);
   byId('includeFinisherWrap')?.classList.toggle('hidden',isSection);
@@ -3037,20 +3040,61 @@ function equipmentSummaryPrintHtml(workout){
 const MUSIC_IMPORTERS={
   spotify:{
     label:'Spotify',
-    url:'https://www.tunemymusic.com/transfer/csv-to-spotify',
-    help:'Download Playlist CSV og upload filen i TuneMyMusic. Vælg Spotify som destination og kontrollér de matchede numre.'
+    url:'https://open.spotify.com/',
+    searchBase:'https://open.spotify.com/search/',
+    help:'Playlisten er klar i FunkFit. Åbn Spotify og brug sanglinksene nedenfor til at finde numrene. Direkte oprettelse af en Spotify-playliste kræver Spotify-login/OAuth og kommer som næste integration.'
   },
   tidal:{
     label:'TIDAL',
-    url:'https://www.tunemymusic.com/transfer/csv-to-tidal',
-    help:'Download Playlist CSV og upload filen i TuneMyMusic. Vælg TIDAL som destination og kontrollér de matchede numre.'
+    url:'https://listen.tidal.com/',
+    searchBase:'https://listen.tidal.com/search?q=',
+    help:'Playlisten er klar i FunkFit. Åbn TIDAL og brug sanglinksene nedenfor til at finde numrene.'
   },
   telmore:{
     label:'Telmore Musik',
-    url:'https://soundiiz.com/webapp',
-    help:'Download Playlist CSV. Åbn Soundiiz, vælg Import playlist → By File, upload CSV-filen og vælg Telmore Musik som destination.'
+    url:'https://musik.telmore.dk/',
+    searchBase:'https://musik.telmore.dk/',
+    help:'Playlisten er klar i FunkFit. Åbn Telmore Musik og tilføj numrene fra listen til en playliste.'
   }
 };
+
+
+function musicServiceTrackUrl(track){
+  const service=MUSIC_IMPORTERS[musicService]||MUSIC_IMPORTERS.spotify;
+  const query=`${track.title} ${track.artist}`.trim();
+  if(musicService==='spotify')return service.searchBase+encodeURIComponent(query);
+  if(musicService==='tidal')return service.searchBase+encodeURIComponent(query);
+  return service.url;
+}
+function musicPlaylistText(){
+  if(!musicPlan?.sections?.length)return '';
+  const lines=[musicPlan.playlistName||'FunkFit-playliste',''];
+  musicPlan.sections.forEach(section=>{
+    lines.push(`${section.sectionName} · ${section.intensity||''} · ${section.bpmRange||''}`.replace(/\s+·\s+$/,''));
+    section.tracks.forEach(track=>lines.push(`${track.title} — ${track.artist}`));
+    lines.push('');
+  });
+  return lines.join('\n').trim();
+}
+async function copyMusicPlaylist(){
+  const text=musicPlaylistText();
+  if(!text)return alert('Lav først en playliste.');
+  try{
+    await navigator.clipboard.writeText(text);
+    const button=byId('copyMusicPlaylistBtn');
+    if(button){
+      const old=button.textContent;
+      button.textContent='✓ Kopieret';
+      setTimeout(()=>button.textContent=old,1600);
+    }
+  }catch{
+    alert(text);
+  }
+}
+function openSelectedMusicService(){
+  const service=MUSIC_IMPORTERS[musicService]||MUSIC_IMPORTERS.spotify;
+  window.open(service.url,'_blank','noopener');
+}
 
 function musicIntensityProfile(rawSection,index){
   const section=normalizeSection(structuredClone(rawSection));
@@ -3159,9 +3203,10 @@ function renderMusicSectionSelector(){
 function updateMusicServiceUI(){
   document.querySelectorAll('[data-music-service]').forEach(button=>button.classList.toggle('selected',button.dataset.musicService===musicService));
   const importer=MUSIC_IMPORTERS[musicService]||MUSIC_IMPORTERS.spotify;
-  if(byId('musicImportTitle'))byId('musicImportTitle').textContent=`Importér til ${importer.label}`;
+  if(byId('musicImportTitle'))byId('musicImportTitle').textContent=`Brug playlisten i ${importer.label}`;
   if(byId('musicImportHelp'))byId('musicImportHelp').textContent=importer.help;
-  if(byId('openMusicImporterBtn'))byId('openMusicImporterBtn').textContent=`Åbn import til ${importer.label}`;
+  if(byId('openMusicImporterBtn'))byId('openMusicImporterBtn').textContent=`Åbn ${importer.label}`;
+  if(byId('openPlaylistServiceBtn'))byId('openPlaylistServiceBtn').textContent=`Åbn ${importer.label}`;
 }
 function updateMusicScopeUI(){
   document.querySelectorAll('[data-music-scope]').forEach(button=>button.classList.toggle('selected',button.dataset.musicScope===musicScope));
@@ -3203,7 +3248,7 @@ function musicPrompt(){
   }).join('\n');
 
   return `Du er musikansvarlig for en funktionel træning. Lav en musikplan med REELLE eksisterende musiknumre til ${service}.
-Brug Google Search, når det hjælper, og undgå at opfinde numre eller kunstnere. Søg gerne efter tegn på, at numrene findes på ${service}; endelig katalogmatch sker ved import.
+Brug Google Search, når det hjælper, og undgå at opfinde numre eller kunstnere. Søg gerne efter tegn på, at numrene findes på ${service}. Brugeren skal ende med en konkret playliste med titel og kunstner, ikke en løs inspirationsliste.
 Målgruppe: ${audience}.
 Musikønsker: gerne ${prefer}. Undgå: ${avoid}. Sprog: ${language}. Kendskab: ${familiarity}.
 ${cleanOnly?'Brug kun clean/familievenlige versioner og undgå explicit lyrics.':'Explicit lyrics er ikke automatisk forbudt, men vælg stadig musik, der passer til holdtræning.'}
@@ -3320,7 +3365,7 @@ function normalizeMusicPlanResult(result){
 
   return {
     playlistName:String(result.playlistName||`${byId('workoutName')?.value||'FunkFit'} – musik`).trim(),
-    summary:String(result.summary||'AI-planlagt musik efter træningens sektioner og intensitet.').trim(),
+    summary:String(result.summary||'AI-planlagt playliste efter træningens sektioner og intensitet.').trim(),
     service:musicService,
     scope:musicScope,
     generatedAt:new Date().toISOString(),
@@ -3350,7 +3395,7 @@ async function generateMusicPlan(){
         'x-goog-api-key':key
       },
       body:JSON.stringify({
-        model:'gemini-3.6-flash',
+        model:'gemini-2.5-flash-lite',
         input:musicPrompt(),
         tools:[{type:'google_search'}],
         response_format:{
@@ -3368,14 +3413,17 @@ async function generateMusicPlan(){
     const text=extractGeminiOutput(data);
     if(!text)throw new Error('Google AI returnerede ikke en læsbar musikplan.');
     musicPlan=normalizeMusicPlanResult(parseMusicJson(text));
-    status.textContent=`Musikplan klar · ${musicPlan.sections.reduce((n,s)=>n+s.tracks.length,0)} numre. Kontrollér match ved import.`;
+    status.textContent=`Playliste klar · ${musicPlan.sections.reduce((n,s)=>n+s.tracks.length,0)} numre fordelt på træningens sektioner.`;
     renderMusicPlan();
   }catch(error){
     console.error('Musikplanlægning fejlede',error);
     const networkFailure=error instanceof TypeError&&/fetch|network|failed/i.test(error.message||'');
+    const quotaFailure=/quota|rate.?limit|resource_exhausted|429/i.test(error.message||'');
     status.textContent=networkFailure
-      ?'Kunne ikke kontakte Google AI fra browseren. Genindlæs først den nye version. Hvis fejlen fortsætter, skal Gemini-kaldet flyttes bag en server-side proxy.'
-      :`Kunne ikke lave musikplanen: ${error.message}`;
+      ?'Kunne ikke kontakte Google AI fra browseren. Genindlæs siden og prøv igen.'
+      :quotaFailure
+        ?'Google AI har nået gratiskvoten for denne nøgle. Gemini 2.5 Flash-Lite bruger gratis tier; prøv igen senere eller kontrollér kvoten i Google AI Studio.'
+        :`Kunne ikke lave playlisten: ${error.message}`;
   }finally{
     button.disabled=false;
     button.textContent='✨ Planlæg musik med AI';
@@ -3406,12 +3454,15 @@ function renderMusicPlan(){
       </div>
       <ol class="music-track-list">
         ${section.tracks.map((track,trackIndex)=>`<li>
-          <div class="music-track-main">
+          <a class="music-track-main music-track-link" href="${esc(musicServiceTrackUrl(track))}" target="_blank" rel="noopener" title="Find ${esc(track.title)} i ${esc((MUSIC_IMPORTERS[musicService]||MUSIC_IMPORTERS.spotify).label)}">
             <strong>${esc(track.title)}</strong>
             <span>${esc(track.artist)}${track.album?` · ${esc(track.album)}`:''}</span>
             <small>${track.bpm?`${track.bpm} BPM · `:''}${esc(track.reason||'')}</small>
+          </a>
+          <div class="music-track-actions">
+            <a class="ghost compact-btn" href="${esc(musicServiceTrackUrl(track))}" target="_blank" rel="noopener">Find</a>
+            <button type="button" class="ghost compact-btn" data-remove-music-track="${sectionPlanIndex}-${trackIndex}" aria-label="Fjern ${esc(track.title)}">Fjern</button>
           </div>
-          <button type="button" class="ghost compact-btn" data-remove-music-track="${sectionPlanIndex}-${trackIndex}" aria-label="Fjern ${esc(track.title)}">Fjern</button>
         </li>`).join('')}
       </ol>
     </article>`;
@@ -3457,8 +3508,7 @@ function downloadMusicSectionPlan(){
   downloadTextFile(`${safeFilename(musicPlan.playlistName)}-sektionsplan.csv`,rows.join('\r\n'),'text/csv;charset=utf-8');
 }
 function openMusicImporter(){
-  const importer=MUSIC_IMPORTERS[musicService]||MUSIC_IMPORTERS.spotify;
-  window.open(importer.url,'_blank','noopener');
+  openSelectedMusicService();
 }
 function restoreMusicPlanFromWorkout(workout){
   musicService=workout?.music?.service||'spotify';
