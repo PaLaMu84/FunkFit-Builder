@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.7.4-alpha.21",
-  "short_name": "FunkFit 0.7.4a21",
+  "name": "FunkFit Builder v0.7.4-alpha.22",
+  "short_name": "FunkFit 0.7.4a22",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "React Lights-katalog til FunkFit Junior og Familie"
+  "description": "AI-musikplanlægning pr. sektion med Gemini og playlist-CSV"
 }

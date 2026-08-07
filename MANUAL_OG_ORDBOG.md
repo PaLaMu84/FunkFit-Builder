@@ -207,3 +207,45 @@ AI-forslaget vurderer:
 - nyligt foreslåede finishere, så kataloget bruges mere varieret
 
 Et forslag er et udgangspunkt. Finisherens navn, struktur, regler, trænertips og aktiviteter kan fortsat redigeres i Finpuds.
+
+
+## Musikplanlægning
+Musik er en del af træningens intensitetsstyring. Musikplanen bygges **sektion for sektion**, så hele træningen ikke automatisk får samme tempo og energi.
+
+### Arbejdsgang
+1. Vælg musiktjeneste: Spotify, TIDAL eller Telmore Musik.
+2. Vælg om AI skal planlægge **alle sektioner** eller **kun udvalgte sektioner**.
+3. Angiv musikønsker og musik, der skal undgås.
+4. Google Gemini kan derefter foreslå eksisterende numre og knytte dem til træningens sektioner.
+5. Kontrollér forslagene, fjern evt. numre og download playlistfilen.
+6. Importér playlistfilen til den valgte musiktjeneste.
+
+### Intensitetsregler
+- **Ledopvarmning:** ca. 65-95 BPM. Rolig og samtalevenlig musik. Ingen dance, EDM, techno, klubmusik, hård rock eller hurtige/aggressive beats.
+- **Opvarmning:** ca. 95-120 BPM. Energien må stige gradvist.
+- **Teknik:** ca. 85-115 BPM. Musikken må ikke stjæle opmærksomhed fra instruktion.
+- **Styrke:** typisk ca. 95-125 BPM. Motiverende, men ikke hektisk.
+- **AMRAP/EMOM/HIIT/Hyrox/intervaller:** typisk ca. 120-150 BPM med tydeligt drive.
+- **Leg:** typisk 110-140 BPM med sjov og genkendelig energi.
+- **Teamchallenge:** typisk 125-155 BPM.
+- **Finisher:** kan få træningens største musikalske løft. Hvis en sang allerede er valgt til finisheren, kan den bevares.
+
+BPM er et styringsmål og ikke et absolut krav. Det vigtigste er musikalsk energi, tydelig rytme og at musikken passer til opgaven.
+
+### Junior og Familie
+Indstillingen **Undgå explicit lyrics** er som standard aktiv for Junior og Familie. Instruktøren kan ændre den.
+
+### Google Gemini
+Versionen bruger Google Gemini 3.6 Flash med Google Search til musikforslag. I den nuværende testversion indsætter brugeren sin egen API-nøgle. Nøglen gemmes kun i browserens session og indgår ikke i den gemte træning.
+
+I en produktionsversion bør AI-kaldet gå gennem en server-side proxy, så API-nøglen ikke sendes direkte fra klientappen.
+
+### Playlistfil
+FunkFit Builder eksporterer en universel CSV med felterne:
+`title, artist, album, isrc`
+
+- Spotify og TIDAL kan få CSV-filen matchet og importeret via TuneMyMusic.
+- Telmore Musik kan importeres via Soundiiz.
+- Den endelige importtjeneste matcher numrene mod destinationens aktuelle katalog. AI-forslaget er derfor ikke en garanti for, at alle numre findes i alle tjenester.
+
+Der kan også downloades en separat **Sektionsplan CSV**, som viser sektion, intensitet, BPM-mål, sang og AI'ens begrundelse. Denne fil er til instruktøren og ikke til playlistimport.
