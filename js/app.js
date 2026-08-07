@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.29';
+const APP_VERSION='0.7.4-alpha.30';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -107,7 +107,7 @@ function updateAddressVersion(){
 }
 const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a',EQKEY='funkfit-equipment-profiles-v074a';
 const WBACKUPKEY='funkfit-workouts-backup-v1';
-let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0;
+let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0,playerTrainingType='junior';
 let musicPlan=[],musicService='spotify',musicScope='all',selectedMusicSections=new Set();
 let musicBuildMode='ai',manualMusicMode='tracks',linkedPlaylist=null,musicReplaceTarget=null;
 let selectedMusicGenres=new Set(['pop']);
@@ -120,11 +120,26 @@ const SPOTIFY_OAUTH_STATE_KEY='funkfit-spotify-oauth-state-v1';
 const SPOTIFY_RETURN_DRAFT_KEY='funkfit-spotify-return-draft-v1';
 let plannerConcept='junior',plannerVenue='indoor';
 const EQUIPMENT_PROFILES={
-  indoor:['Kropsvægt','Måtte','Kettlebell','Håndvægt','Boks','Bænk','Medicinbold','Væg','Kegler','Sjippetov','Elastik','Romaskine'],
+  indoor:['Kropsvægt','Måtte','Kettlebell','Håndvægt','Boks','Bænk','Medicinbold','Væg','Kegler','Sjippetov','Elastik'],
   trx:['Kropsvægt','TRX','Måtte'],
-  outdoor:['Kropsvægt','Kettlebell','Håndvægt','Kegler','Sjippetov','Sandsæk','Battle rope','Traktordæk','Slæde','Pull-up stativ','Løbebane','Bakke']
+  outdoor:['Kropsvægt','Kettlebell','Håndvægt','Kegler','Sjippetov','Sandsæk','Battle rope','Traktordæk','Slæde','Reb','Pull-up stativ','Løbebane','Bakke']
 };
+const HYROX_OFFICIAL_IDS=new Set(['sled-push','sled-pull','burpee-broad-jump','farmer-carry','sandbag-lunge','wall-ball']);
+const HYROX_INSPIRED_IDS=new Set(['kb-swing','goblet-squat','burpee','push-up','hand-release-push-up','sit-up','v-up','squat-jump','plank-shoulder-tap','air-squat','reverse-lunge','walking-lunge','mountain-climber','shuttle-run','devil-press']);
+const HIIT_PRIMARY_IDS=new Set(['shuttle-run','burpee','mountain-climber','squat-jump','skater-jump','step-up','push-up','hand-release-push-up','reverse-lunge','walking-lunge','fast-feet','plank-jack','mountain-climber-sprint','air-squat','jumping-jack','high-knees','battle-rope-waves']);
+const HIIT_TECHNICAL_IDS=new Set(['kb-swing','box-jump','burpee-broad-jump','wall-ball','db-push-press','devil-press']);
+const EQUIPMENT_PROFILE_MIGRATION_A30='funkfit-equipment-a30-no-erg-v1';
 function equipmentProfiles(){return read(EQKEY,{})}
+function migrateEquipmentProfilesA30(){
+  if(localStorage.getItem(EQUIPMENT_PROFILE_MIGRATION_A30))return;
+  const all=equipmentProfiles();
+  ['indoor','outdoor'].forEach(key=>{
+    if(Array.isArray(all[key]))all[key]=all[key].filter(item=>!['Romaskine','SkiErg'].includes(item));
+  });
+  localStorage.setItem(EQKEY,JSON.stringify(all));
+  localStorage.setItem(EQUIPMENT_PROFILE_MIGRATION_A30,'1');
+}
+
 function defaultEquipmentProfile(venue){return [...(EQUIPMENT_PROFILES[venue]||EQUIPMENT_PROFILES.indoor)]}
 function loadEquipmentProfile(venue){
   const saved=equipmentProfiles()[venue];
@@ -289,7 +304,7 @@ function inferControl(s){
 }
 function normalizeActivity(it){
   if(it?.kind==='run'){
-    return {kind:'run',runType:it.runType||'Almindeligt løb',value:Number(it.value||200),unit:it.unit||'meter',intensity:it.intensity||'Moderat',route:it.route||'',note:it.note||''};
+    return {kind:'run',runType:it.runType||'Almindeligt løb',value:Number(it.value||200),unit:it.unit||'meter',intensity:it.intensity||'Moderat',route:it.route||'',note:it.note||'',autoHyroxRun:!!it.autoHyroxRun};
   }
   return {...it,kind:'exercise'};
 }
@@ -331,6 +346,49 @@ function validControlsForFormat(format){
   };
   return map[format]||['Samlet tid'];
 }
+
+function isHyroxSection(section){
+  const text=normalizeText(`${section?.name||''} ${section?.style||''} ${section?.format||''}`);
+  return plannerConcept==='hyrox'||text.includes('hyrox');
+}
+function hyroxRunDistance(section){
+  return section?.hyroxRunPreset==='custom'
+    ?Math.max(50,+section.hyroxRunCustom||400)
+    :Math.max(50,+section?.hyroxRunPreset||400);
+}
+function makeAutoHyroxRun(section){
+  return normalizeActivity({
+    kind:'run',
+    runType:'Almindeligt løb',
+    value:hyroxRunDistance(section),
+    unit:'meter',
+    intensity:'Høj',
+    route:'',
+    note:'Automatisk løb i HYROX-strukturen.',
+    autoHyroxRun:true
+  });
+}
+function applyHyroxRunPattern(section){
+  if(!section?.exercises)return section;
+  const base=section.exercises.filter(item=>!item.autoHyroxRun);
+  if(!section.hyroxRunBetween){
+    section.exercises=base;
+    return section;
+  }
+  const work=base.filter(item=>item.kind!=='run');
+  if(!work.length){
+    section.exercises=base;
+    return section;
+  }
+  const result=[];
+  work.forEach((item,index)=>{
+    if(section.hyroxStartWithRun||index>0)result.push(makeAutoHyroxRun(section));
+    result.push(item);
+  });
+  section.exercises=result;
+  return section;
+}
+
 function applySectionRules(s){
   s.type=s.type||inferElementType(s);
   s.sectionPurpose=inferSectionPurpose(s);
@@ -404,6 +462,8 @@ function normalizeSection(s){
   s.songMinutes=Number(s.songMinutes||s.minutes||4);s.minutes=Number(s.minutes||0);s.rounds=Number(s.rounds||1);
   s.work=Number(s.work||0);s.rest=Number(s.rest||0);s.timeCap=Number(s.timeCap||s.minutes||0);
   s.ladderStart=Number(s.ladderStart||1);s.ladderStep=Number(s.ladderStep||1);s.ladderEnd=Number(s.ladderEnd||10);
+  s.hyroxRunBetween=!!s.hyroxRunBetween;s.hyroxStartWithRun=!!s.hyroxStartWithRun;
+  s.hyroxRunPreset=String(s.hyroxRunPreset||'400');s.hyroxRunCustom=Number(s.hyroxRunCustom||400);
   const rawFundamentals=Array.isArray(s.fundamentalKeys)?s.fundamentalKeys:(s.fundamentalKey?[s.fundamentalKey]:[]);
   s.fundamentalKeys=[...new Set(rawFundamentals.filter(key=>FUNKFIT_FUNDAMENTALS[key]))];s.fundamentalKey=s.fundamentalKeys[0]||'';
   s.exercises=(s.exercises||[]).map(normalizeActivity);
@@ -415,7 +475,7 @@ function normalizeSection(s){
     if(legacyRule)s.rules='Arbejd roligt gennem hele kroppen enten nedefra og op eller oppefra og ned. Husk nakke (op/ned), skuldre og arme, rotation i øvre ryg, hofter, knæ, ankler/fodled og håndled.';
     if(legacyTip)s.coachTips='Ca. 5 minutter. Ingen høj puls. Bevæg roligt og kontrolleret gennem alle centrale led.';
   }
-  return applySectionRules(s);
+  applySectionRules(s);applyHyroxRunPattern(s);return s;
 }
 function normalizeSections(){sections.forEach(normalizeSection)}
 function enforceJointWarmupFirst(){
@@ -752,6 +812,49 @@ function applyWaitingRules(section,participants){
   }
   return section;
 }
+
+function applyHIITProgramming(section,blockIndex=0){
+  const profiles=[
+    {work:30,rest:30,label:'30/30'},
+    {work:40,rest:20,label:'40/20'},
+    {work:20,rest:40,label:'20/40'}
+  ];
+  const profile=profiles[blockIndex%profiles.length];
+  section.type='Stationer';
+  section.format='Intervaller';
+  section.taskStructure='Stationer';
+  section.repetitionModel='Tid pr. øvelse';
+  section.organization='Fast rotation';
+  section.control='Intervaller';
+  section.style='HIIT';
+  section.work=profile.work;
+  section.rest=profile.rest;
+  const cycleSeconds=Math.max(1,(profile.work+profile.rest)*Math.max(1,section.exercises.length));
+  section.rounds=Math.max(2,Math.round((section.minutes*60)/cycleSeconds));
+  section.description=`HIIT ${profile.label}: høj relativ intensitet med reel recovery og enkle bevægelser.`;
+  section.rules=`Arbejd omkring RPE 8–9/10 i arbejdsperioderne. Recovery er en del af formatet – kvalitet før all-out tempo.`;
+  section.coachTips='Stop eller skalér, hvis teknikken falder. Skift bevægelsesmønster og undgå at udmatte samme muskelgruppe i alle stationer.';
+  return section;
+}
+function applyTRXProgramming(section){
+  section.style='TRX';
+  section.description='TRX-first arbejdsblok: øvelserne bruger suspension traineren som primært redskab.';
+  section.coachTips='Skalér primært via kropsvinkel, fodplacering, bevægeudslag og stabilitet. Hold spænding i stropperne og god kropslinje.';
+  return section;
+}
+function applyHyroxProgramming(section){
+  section.style='Hyrox';
+  section.hyroxRunBetween=true;
+  section.hyroxRunPreset=section.hyroxRunPreset||'400';
+  section.hyroxRunCustom=section.hyroxRunCustom||400;
+  section.hyroxStartWithRun=true;
+  section.description='HYROX-blok med prioritet til officielle stationer og løb mellem arbejdsøvelserne.';
+  section.rules='Løb og stationer veksler. Officielle HYROX-bevægelser prioriteres; støtteøvelser bruges kun som Hyrox-inspireret variation.';
+  section.coachTips='Hold flowet simpelt. Skalér distance, vægt og reps uden at fjerne løbe-station-rytmen.';
+  applyHyroxRunPattern(section);
+  return section;
+}
+
 function buildSectionSuggestion(type='AMRAP',minutes=12,focus='',theme=''){
   if(type==='Leg')return buildGameSuggestion(minutes,focus,theme);
   if(type==='Teknik'&&isJuniorFamilyContext()){
@@ -765,18 +868,24 @@ function buildSectionSuggestion(type='AMRAP',minutes=12,focus='',theme=''){
   const count=waitingFriendlyExerciseCount(type,participants);
   const picked=pickExercises(count,[...goalValues(),focus],type==='Opvarmning'?'warmup':'main',used);
   s.exercises=picked.map(makeItem);
-  if(shouldSuggestRun(s,focus)){
+  if(plannerConcept==='hyrox'&&type!=='Opvarmning'){
+    applyHyroxProgramming(s);
+  }else if(shouldSuggestRun(s,focus)){
     const plan=activeRunPlan||parseRunPlan(focus);
-    const preset=plannerConcept==='hyrox'?'run-400':plannerVenue==='outdoor'?'run-200':'run-shuttle';
+    const preset=plannerVenue==='outdoor'?'run-200':'run-shuttle';
     const runItem=plan.explicit?requestedRunItem(plan):makeRunItem(preset);
     s.exercises.splice(type==='Chipper'?0:Math.min(1,s.exercises.length),0,runItem);
     if(plan.explicit&&!plan.repeat)plan.inserted=true;
   }
-  if(type==='YGIG'){
+  if(plannerConcept==='trx'&&type!=='Opvarmning')applyTRXProgramming(s);
+  if(plannerConcept==='hiit'&&type!=='Opvarmning')applyHIITProgramming(s,sections.filter(section=>normalizeSection(section).style==='HIIT').length);
+  if(type==='YGIG'&&plannerConcept!=='hiit'){
     s.format='AMRAP';s.organization='You go, I go';s.control='Samlet tid';s.work=0;s.rest=0;
-    s.description='Makkerne arbejder skiftevis i den samlede tid. Byt, når den aftalte mængde eller distance er gennemført.';
-    s.rules='Makker A udfører den aftalte opgave. Makker B restituerer eller holder en enkel position. Byt efter opgaven – ikke efter et fast interval.';
-  }else{
+    if(!['hyrox','trx'].includes(plannerConcept)){
+      s.description='Makkerne arbejder skiftevis i den samlede tid. Byt, når den aftalte mængde eller distance er gennemført.';
+      s.rules='Makker A udfører den aftalte opgave. Makker B restituerer eller holder en enkel position. Byt efter opgaven – ikke efter et fast interval.';
+    }
+  }else if(!['hiit','hyrox','trx'].includes(plannerConcept)){
     s.description=`AI-forslag til ${type.toLowerCase()}${focus?` med fokus på ${focus}`:''}.`;
   }
   s.coachTips=s.coachTips||'Kontrollér belastning, plads og flow. Skalér før start og hold forklaringen kort.';
@@ -848,6 +957,7 @@ function prepareTemplateSections(rawSections){
 
 async function init(){
   updateAddressVersion();
+  migrateEquipmentProfilesA30();
   const base=await fetch('data/exercises.json').then(r=>r.json());
   templates=await fetch('data/workoutTemplates.json').then(r=>r.json());
   exercises=[...customs(),...base];
@@ -1190,6 +1300,7 @@ function bind(){
   on('musicCleanOnly','change',event=>event.target.dataset.userTouched='1');
   on('generateMusicPlanBtn','click',generateMusicPlan);
   on('copyMusicPlaylistBtn','click',copyMusicPlaylist);
+  on('deleteMusicPlaylistBtn','click',deleteCurrentPlaylist);
   on('openPlaylistServiceBtn','click',openSelectedMusicService);
   on('spotifyClientId','input',event=>setSpotifyClientId(event.target.value));
   on('saveSpotifyClientIdBtn','click',()=>{
@@ -1257,9 +1368,9 @@ function bind(){
   $('#playerTapArea').onclick=()=>movePlayer(1);
   $('#playerCloseBtn').onclick=closePlayer;
   $('#playerFullscreenBtn').onclick=toggleFullscreen;
-  $('#playerSpotifyBtn').onclick=()=>openPlaylist($('#spotifyPlaylistUrl').value,'Spotify');
-  $('#playerTidalBtn').onclick=()=>openPlaylist($('#tidalPlaylistUrl').value,'TIDAL');
-  $('#playerTelmoreBtn').onclick=()=>openPlaylist($('#telmorePlaylistUrl').value,'Telmore Musik');
+  $('#playerSpotifyBtn').onclick=event=>openPlaylist(event.currentTarget.dataset.playerPlaylistUrl||'','Spotify');
+  $('#playerTidalBtn').onclick=event=>openPlaylist(event.currentTarget.dataset.playerPlaylistUrl||'','TIDAL');
+  $('#playerTelmoreBtn').onclick=event=>openPlaylist(event.currentTarget.dataset.playerPlaylistUrl||'','Telmore Musik');
   document.addEventListener('keydown',e=>{if(!$('#workoutPlayer').open)return;if(e.code==='Space'||e.code==='ArrowRight'){e.preventDefault();movePlayer(1)}else if(e.code==='ArrowLeft'){e.preventDefault();movePlayer(-1)}});
 }
 
@@ -1502,7 +1613,13 @@ function sectionDynamicFields(s,i){
   const ladder=['Stigende ladder','Faldende ladder','Pyramide'].includes(s.repetitionModel)?`<label>Start-reps<input data-section-index="${i}" data-section-field="ladderStart" type="number" min="1" value="${s.ladderStart||1}"></label><label>Ændring pr. trin<input data-section-index="${i}" data-section-field="ladderStep" type="number" min="1" value="${s.ladderStep||1}"></label><label>Slut/top<input data-section-index="${i}" data-section-field="ladderEnd" type="number" min="1" value="${s.ladderEnd||10}"></label>`:'';
   const ygig=s.organization==='You go, I go'?`<label class="span-2">Opgave pr. tur<input data-section-index="${i}" data-section-field="taskPerTurn" value="${esc(s.taskPerTurn||'Byt, når opgaven er løst')}" placeholder="Fx 10 squats eller 200 m løb – derefter byt"></label><p class="span-2 field-help">YGIG er organiseringen. Makkere bytter efter opgaven – ikke automatisk efter et 40/20-interval.</p>`:'';
   const fundamentals=s.sectionPurpose==='Teknik'?renderFundamentalsPicker(s,i):'';
-  return fundamentals+timing+ladder+ygig;
+  const hyrox=isHyroxSection(s)&&s.sectionPurpose!=='Ledopvarmning'&&s.sectionPurpose!=='Opvarmning'?`<div class="span-2 hyrox-run-controls">
+    <label class="planner-toggle-card compact-toggle"><input data-section-index="${i}" data-section-field="hyroxRunBetween" type="checkbox" ${s.hyroxRunBetween?'checked':''}><span><strong>Løb mellem hver øvelse</strong><small>Indsæt automatisk løb som en del af HYROX-strukturen.</small></span></label>
+    <label>Distance<select data-section-index="${i}" data-section-field="hyroxRunPreset">${['200','300','400','500','1000','custom'].map(value=>`<option value="${value}" ${String(s.hyroxRunPreset)===value?'selected':''}>${value==='custom'?'Brugerdefineret':value+' m'}</option>`).join('')}</select></label>
+    <label>Brugerdefineret (m)<input data-section-index="${i}" data-section-field="hyroxRunCustom" type="number" min="50" step="50" value="${s.hyroxRunCustom||400}"></label>
+    <label class="planner-toggle-card compact-toggle"><input data-section-index="${i}" data-section-field="hyroxStartWithRun" type="checkbox" ${s.hyroxStartWithRun?'checked':''}><span><strong>Start også med løb</strong><small>Giver klassisk løb → station → løb → station.</small></span></label>
+  </div>`:'';
+  return fundamentals+timing+ladder+ygig+hyrox;
 }
 function renderFramework(){
   normalizeSections();enforceWorkoutStructure();
@@ -1546,10 +1663,12 @@ function renderFramework(){
     const event=el.tagName==='TEXTAREA'||el.tagName==='INPUT'?'input':'change';
     el.addEventListener(event,()=>{
       const i=+el.dataset.sectionIndex,field=el.dataset.sectionField;
-      const numeric=['minutes','work','rest','rounds','songMinutes','timeCap','ladderStart','ladderStep','ladderEnd'].includes(field);
+      const numeric=['minutes','work','rest','rounds','songMinutes','timeCap','ladderStart','ladderStep','ladderEnd','hyroxRunCustom'].includes(field);
       if(field==='sectionPurpose'){applyPurposeDefaults(i,el.value);renderFramework();renderExerciseSections();updateReview();return;}
-      sections[i][field]=numeric?(+el.value||0):el.value;if(field==='songMinutes')sections[i].minutes=+el.value||4;
-      applySectionRules(sections[i]);if(structural){renderFramework();renderExerciseSections();}else if(['name','minutes','songTitle','songArtist','songMinutes'].includes(field)){renderExerciseSections();}updateReview();
+      const value=el.type==='checkbox'?el.checked:(numeric?(+el.value||0):el.value);
+      sections[i][field]=value;if(field==='songMinutes')sections[i].minutes=+el.value||4;
+      applySectionRules(sections[i]);applyHyroxRunPattern(sections[i]);
+      if(structural||field.startsWith('hyrox')){renderFramework();renderExerciseSections();}else if(['name','minutes','songTitle','songArtist','songMinutes'].includes(field)){renderExerciseSections();}updateReview();
     });
   });
 }
@@ -1560,8 +1679,14 @@ function inlineTimingControls(s,si){
   if(s.organization==='You go, I go')return `<label>Samlet tid <input data-inline-field="minutes" data-inline-index="${si}" type="number" min="1" value="${s.minutes}"> min</label><span class="ygig-note">Byt efter opgaven</span>`;
   if(s.control==='Intervaller')return `<label>Arbejde <input data-inline-field="work" data-inline-index="${si}" type="number" min="1" value="${s.work||40}"></label><label>Pause <input data-inline-field="rest" data-inline-index="${si}" type="number" min="0" value="${s.rest||20}"></label><label>Runder <input data-inline-field="rounds" data-inline-index="${si}" type="number" min="1" value="${s.rounds||1}"></label>`;
   if(s.control==='Runder'||s.control==='Sæt og pause')return `<label>${s.control==='Runder'?'Runder':'Sæt'} <input data-inline-field="rounds" data-inline-index="${si}" type="number" min="1" value="${s.rounds||1}"></label>`;
-  if(s.control==='Time cap')return `<label>Time cap <input data-inline-field="timeCap" data-inline-index="${si}" type="number" min="0" value="${s.timeCap||s.minutes||0}"> min</label>`;
-  return `<label>Tid <input data-inline-field="minutes" data-inline-index="${si}" type="number" min="1" value="${s.minutes}"> min</label>`;
+  if(s.control==='Time cap')return `<label>Time cap <input data-inline-field="timeCap" data-inline-index="${si}" type="number" min="0" value="${s.timeCap||s.minutes||0}"> min</label>${inlineHyroxRunControls(s,si)}`;
+  return `<label>Tid <input data-inline-field="minutes" data-inline-index="${si}" type="number" min="1" value="${s.minutes}"> min</label>${inlineHyroxRunControls(s,si)}`;
+}
+function inlineHyroxRunControls(s,si){
+  if(!isHyroxSection(s)||['Ledopvarmning','Opvarmning','Finisher'].includes(s.sectionPurpose))return '';
+  return `<label class="inline-check"><input data-inline-field="hyroxRunBetween" data-inline-index="${si}" type="checkbox" ${s.hyroxRunBetween?'checked':''}> Løb mellem øvelser</label>
+    <label>🏃 <select data-inline-field="hyroxRunPreset" data-inline-index="${si}">${['200','300','400','500','1000','custom'].map(value=>`<option value="${value}" ${String(s.hyroxRunPreset)===value?'selected':''}>${value==='custom'?'Egen distance':value+' m'}</option>`).join('')}</select></label>
+    <label class="inline-check"><input data-inline-field="hyroxStartWithRun" data-inline-index="${si}" type="checkbox" ${s.hyroxStartWithRun?'checked':''}> Start med løb</label>`;
 }
 function inlineStructureEditor(s,si){return structureEditorFields(s,si,'inline')}
 
@@ -1666,8 +1791,9 @@ function renderExerciseSections(){
   host.querySelectorAll('[data-inline-field]').forEach(el=>el.onchange=()=>{
     const i=+el.dataset.inlineIndex,field=el.dataset.inlineField;
     if(field==='sectionPurpose'){applyPurposeDefaults(i,el.value);renderFramework();renderExerciseSections();updateReview();return;}
-    sections[i][field]=['minutes','work','rest','rounds','timeCap','ladderStart','ladderStep','ladderEnd'].includes(field)?(+el.value||0):el.value;
-    applySectionRules(sections[i]);renderFramework();renderExerciseSections();updateReview();
+    const numeric=['minutes','work','rest','rounds','timeCap','ladderStart','ladderStep','ladderEnd','hyroxRunCustom'].includes(field);
+    sections[i][field]=el.type==='checkbox'?el.checked:(numeric?(+el.value||0):el.value);
+    applySectionRules(sections[i]);applyHyroxRunPattern(sections[i]);renderFramework();renderExerciseSections();updateReview();
   });
   bindExerciseInfoButtons(host);
   updateTimeControl();
@@ -2108,9 +2234,41 @@ function renderEquipmentChoices(){
 }
 
 function goalValues(){return [...document.querySelectorAll('#goalChoices .goal-chip.selected')].map(x=>x.dataset.value)}
+function equipmentAvailable(name){
+  return name==='Kropsvægt'||plannerEquipment.has(name);
+}
 function exerciseAvailable(ex){
   const req=ex.equipment||['Kropsvægt'];
-  return req.some(eq=>eq==='Kropsvægt'||plannerEquipment.has(eq));
+  if(!req.length)return true;
+  if(ex.equipmentMode==='all')return req.every(equipmentAvailable);
+  return req.some(equipmentAvailable);
+}
+function isTRXExercise(ex){return (ex.equipment||[]).includes('TRX')}
+function isHyroxOfficial(ex){return ex.hyroxRole==='official'||HYROX_OFFICIAL_IDS.has(ex.id)}
+function isHyroxInspired(ex){return ex.hyroxRole==='inspired'||HYROX_INSPIRED_IDS.has(ex.id)}
+function isHIITPrimary(ex){return ex.hiitTier==='primary'||HIIT_PRIMARY_IDS.has(ex.id)}
+function isHIITTechnical(ex){return ex.hiitTier==='technical'||HIIT_TECHNICAL_IDS.has(ex.id)}
+function hiitAdvancedRequest(goals=[]){
+  return /øvet|erfaren|avanceret|kettlebell swing|kb swing|box jump|wall ball|devil press|push press/i.test((goals||[]).join(' '));
+}
+function hiitNeverDefault(ex){
+  const text=normalizeText(`${ex.name||''} ${ex.category||''}`);
+  return /snatch|clean and jerk|clean & jerk|olympisk|biceps curl|triceps extension|renegade row|single leg rdl|romanian deadlift|sumo deadlift|kettlebell deadlift|balance reach/.test(text);
+}
+function trackExerciseEligible(ex,type,goals=[]){
+  if(type==='warmup')return true;
+  if(plannerConcept==='trx')return isTRXExercise(ex);
+  if(plannerConcept==='hyrox')return isHyroxOfficial(ex)||isHyroxInspired(ex);
+  if(plannerConcept==='hiit'){
+    if(hiitNeverDefault(ex))return false;
+    if(isHIITPrimary(ex))return true;
+    return isHIITTechnical(ex)&&hiitAdvancedRequest(goals);
+  }
+  return true;
+}
+function isHIITEngine(ex){
+  return ['shuttle-run','burpee','mountain-climber','mountain-climber-sprint','high-knees','jumping-jack','battle-rope-waves','fast-feet'].includes(ex.id)
+    ||exerciseMovementPattern(ex)==='locomotion';
 }
 function normalizedIntentTerms(values=[]){
   const raw=(values||[]).filter(Boolean).join(' ').toLowerCase();
@@ -2175,9 +2333,9 @@ function scoreExercise(ex,goals,sectionType){
   if(sectionType==='team'&&(hay.includes('makker')||hay.includes('stafet')||hay.includes('teamchallenge')))score+=7;
   if((goals||[]).join(' ').toLowerCase().match(/reaktion|react lights|reaktionslys|koordination|agility/)
       &&(ex.equipment||[]).includes('React Lights'))score+=14;
-  if(plannerConcept==='trx'&&(hay.includes('trx')||(ex.equipment||[]).includes('TRX')))score+=12;
-  if(plannerConcept==='hyrox'&&hay.includes('hyrox'))score+=8;
-  if(plannerConcept==='hiit'&&hay.includes('hiit'))score+=8;
+  if(plannerConcept==='trx'&&isTRXExercise(ex))score+=70;
+  if(plannerConcept==='hyrox'){if(isHyroxOfficial(ex))score+=65;else if(isHyroxInspired(ex))score+=20;}
+  if(plannerConcept==='hiit'){if(isHIITPrimary(ex))score+=35;else if(isHIITTechnical(ex))score+=8;}
   if(plannerConcept==='adult'&&(ex.audience||[]).includes('Voksen'))score+=2;
   if(plannerVenue==='outdoor'&&(hay.includes('løb')||hay.includes('carry')||hay.includes('stafet')))score+=3;
   if(plannerVenue==='indoor'&&(ex.equipment||[]).some(x=>['Måtte','Boks','Bænk','Væg'].includes(x)))score+=2;
@@ -2282,6 +2440,11 @@ function adjustedBalanceScore(entry,chosen,goals,type,globalCounts,targetBucket=
     score-=(globalCounts.areas[area]||0)*1.1;
   }
 
+  if(plannerConcept==='hiit'&&type!=='warmup'&&!explicit){
+    score-=localPattern*10;
+    score-=localArea*10;
+    if(localArea>=1)score-=12;
+  }
   if(type==='warmup'){
     const bucket=warmupBalanceBucket(ex);
     if(targetBucket&&bucket===targetBucket)score+=30;
@@ -2330,12 +2493,42 @@ function pickBalancedGeneral(ranked,count,goals,type,globalCounts){
   }
   return chosen;
 }
+function pickHyroxExercises(ranked,count,goals,globalCounts){
+  const official=ranked.filter(entry=>isHyroxOfficial(entry.ex));
+  const inspired=ranked.filter(entry=>isHyroxInspired(entry.ex));
+  const chosen=[];
+  const officialTarget=Math.min(official.length,Math.max(1,Math.ceil(count*.65)));
+  while(chosen.length<officialTarget){
+    const ex=chooseBestBalanced(official,chosen,goals,'main',globalCounts);
+    if(!ex)break;
+    chosen.push(ex);
+  }
+  const remaining=[...official,...inspired];
+  while(chosen.length<count){
+    const ex=chooseBestBalanced(remaining,chosen,goals,'main',globalCounts);
+    if(!ex)break;
+    chosen.push(ex);
+  }
+  return chosen.slice(0,count);
+}
+function pickHIITExercises(ranked,count,goals,globalCounts){
+  const chosen=[];
+  const engine=ranked.filter(entry=>isHIITEngine(entry.ex))
+    .sort((a,b)=>b.score-a.score)[0]?.ex;
+  if(engine)chosen.push(engine);
+  while(chosen.length<count){
+    const ex=chooseBestBalanced(ranked,chosen,goals,'main',globalCounts);
+    if(!ex)break;
+    chosen.push(ex);
+  }
+  return chosen.slice(0,count);
+}
 function pickExercises(count,goals,type,used=new Set()){
-  const ranked=exercises.filter(ex=>exerciseAvailable(ex)&&!used.has(ex.id))
+  const ranked=exercises.filter(ex=>exerciseAvailable(ex)&&trackExerciseEligible(ex,type,goals)&&!used.has(ex.id))
     .map(ex=>({ex,score:scoreExercise(ex,goals,type)}))
     .sort((a,b)=>b.score-a.score);
 
-  if(strongCoreRequest(goals)){
+  if(strongCoreRequest(goals)&&!['trx','hyrox','hiit'].includes(plannerConcept)){
     const requiredCore=Math.min(count,Math.max(2,Math.ceil(count*.65)));
     const chosen=ranked.filter(x=>isPrimaryCoreExercise(x.ex)).slice(0,requiredCore);
     const chosenIds=new Set(chosen.map(x=>x.ex.id));
@@ -2345,6 +2538,8 @@ function pickExercises(count,goals,type,used=new Set()){
 
   const globalCounts=workoutBalanceCounts();
   if(type==='warmup')return pickBalancedWarmup(ranked,count,goals,globalCounts);
+  if(plannerConcept==='hyrox')return pickHyroxExercises(ranked,count,goals,globalCounts);
+  if(plannerConcept==='hiit')return pickHIITExercises(ranked,count,goals,globalCounts);
   return pickBalancedGeneral(ranked,count,goals,type,globalCounts);
 }
 function suggestedWeight(ex,adult=false){
@@ -2510,6 +2705,9 @@ function generateSingleSectionFromPlanner(){
 }
 
 function generateSmartWorkout(){
+  if(plannerConcept==='trx'&&!plannerEquipment.has('TRX')){
+    return alert('TRX-sporet kræver en TRX Suspension Trainer. Markér TRX under Tilgængeligt udstyr først.');
+  }
   const duration=Math.max(20,+$('#plannerDuration').value||60);
   const participants=Math.max(1,+$('#plannerParticipants').value||20);
   const goals=goalValues();
@@ -2535,6 +2733,10 @@ function generateSmartWorkout(){
 
   const warm=buildSectionSuggestion('Opvarmning',warmMinutes,'puls og bevægelseskvalitet','');
   warm.name='Pulsopvarmning';warm.format='Fælles flow';warm.organization='Fælles';warm.control='Samlet tid';
+  if(plannerConcept==='hiit'){
+    warm.description='Gradvis pulsopvarmning og rehearsal af de bevægelser, der senere skal udføres hurtigt.';
+    warm.coachTips='Start moderat. Øg tempoet gradvist og øv teknik før de hårde arbejdsintervaller.';
+  }
   sections.push(warm);
 
   if(includeGame)sections.push(buildGameSuggestion(gameMinutes,goals.join(', '),theme));
@@ -2544,8 +2746,8 @@ function generateSmartWorkout(){
     family:['YGIG','Stationer','AMRAP'],
     adult:['Styrke','AMRAP','YGIG'],
     trx:['Stationer','YGIG','EMOM'],
-    hyrox:['Chipper','YGIG','Stationer'],
-    hiit:['EMOM','Stationer','AMRAP']
+    hyrox:['Chipper','Stationer','YGIG'],
+    hiit:['Stationer','Stationer','Stationer']
   };
   const choices=patterns[plannerConcept]||patterns.junior;
   for(let i=0;i<mainCount;i++){
@@ -3781,37 +3983,37 @@ function musicIntensityProfile(rawSection,index){
     };
   }else if(purpose==='Opvarmning'){
     profile={
-      level:2,label:'Let stigende',bpmMin:95,bpmMax:120,
+      level:2,label:'Let stigende',bpmMin:105,bpmMax:128,
       mood:'positiv og let energisk med tydelig rytme, men stadig kontrolleret',
       avoid:'ingen maksimal intensitet eller hård klublyd'
     };
   }else if(purpose==='Teknik'){
     profile={
-      level:2,label:'Fokuseret',bpmMin:85,bpmMax:115,
+      level:2,label:'Fokuseret',bpmMin:100,bpmMax:122,
       mood:'rolig, fokuseret og rytmisk uden at stjæle opmærksomheden fra instruktionen',
       avoid:'ingen hektiske drops, voldsom bas eller meget aggressiv musik'
     };
   }else if(purpose==='Leg'){
     profile={
-      level:4,label:'Legende',bpmMin:110,bpmMax:140,
+      level:4,label:'Legende',bpmMin:120,bpmMax:148,
       mood:'sjov, genkendelig, energisk og legende',
       avoid:'undgå mørk eller aggressiv stemning'
     };
   }else if(purpose==='Teamchallenge'){
     profile={
-      level:5,label:'Høj',bpmMin:125,bpmMax:155,
+      level:5,label:'Høj',bpmMin:132,bpmMax:160,
       mood:'stor energi, fællesskab, drive og tydeligt beat',
       avoid:'undgå langsomme eller flade numre'
     };
   }else if(purpose==='Finisher'){
     profile={
-      level:5,label:'Finale',bpmMin:125,bpmMax:160,
+      level:5,label:'Finale',bpmMin:135,bpmMax:165,
       mood:'finale, energi, overskud og et tydeligt afsluttende løft',
       avoid:'undgå langsom eller anonym musik'
     };
   }else if(/hiit|amrap|emom|interval|for time|hyrox/.test(format)||/hiit|hyrox|kondition/.test(style)){
     profile={
-      level:4,label:'Høj',bpmMin:120,bpmMax:150,
+      level:4,label:'Høj',bpmMin:128,bpmMax:158,
       mood:'drivende, energisk og motiverende med stabil pulsfornemmelse',
       avoid:'undgå lange stille introer og store energidyk'
     };
@@ -3919,7 +4121,11 @@ function musicPrompt(){
   }).join('\n');
 
   return `Du er musikansvarlig for en funktionel træning. Lav en konkret playliste med REELLE eksisterende musiknumre til ${service}.
-Du har ikke adgang til web-søgning i dette kald. Vælg derfor primært velkendte, officielt udgivne numre og undgå obskure eller usikre titler. Opfind aldrig sangtitler eller kunstnere. Hvis du er usikker på et nummer, vælg et mere kendt alternativ. Brugeren skal ende med en konkret playliste med titel og kunstner, ikke en løs inspirationsliste.
+Du har ikke adgang til web-søgning i dette kald. Vælg derfor kun velkendte, officielt udgivne numre, hvor du er meget sikker på både titel og kunstner. Opfind aldrig sangtitler eller kunstnere.
+MUSIKSTIL ER EN HÅRD REGEL: Vælg aldrig klassisk musik, orkestermusik, soundtrack/film score, ambient, meditation, karaoke, tribute/cover-albums eller instrumental-albums. Alle foreslåede tracks skal have tydelig vokal.
+Musikken skal generelt have mere energi og drive end en almindelig baggrundsplayliste. Bortset fra ledopvarmningen skal numrene føles træningsegnede og have tydeligt beat.
+Prioritér nyere musik: som standard skal mindst 80 % af numrene være udgivet fra 2018 og frem, og vælg helst 2020'erne. Brug ikke numre før 2010, medmindre brugeren udtrykkeligt har bedt om ældre musik.
+Til TIDAL skal du prioritere mainstream-numre, som med høj sandsynlighed findes i TIDALs internationale katalog. Brugeren skal ende med en konkret playliste med titel og kunstner, ikke en løs inspirationsliste.
 Målgruppe: ${audience}.
 Valgte genrer: ${genreText}. Hold dig primært til disse genrer. Hvis en valgt genre ikke passer til en rolig sektion, vælg en roligere variant inden for en anden valgt genre frem for at ignorere intensitetsreglerne.
 Musikønsker: gerne ${prefer}. Undgå: ${avoid}. Sprog: ${language}. Kendskab: ${familiarity}.
@@ -3938,6 +4144,10 @@ VIGTIGE PROGRAMMERINGSREGLER:
 9. Returnér kun de sektioner, der står nedenfor, og brug præcis deres sectionIndex.
 10. BPM må gerne være et kvalificeret estimat, men sangtitel og kunstner skal være korrekte.
 11. Prioritér numre, der med høj sandsynlighed findes i de store streamingkataloger. Spotify verificerer bagefter titel/kunstner mod sit eget katalog; TIDAL matches senere via TuneMyMusic.
+12. Ingen instrumentale eller klassiske tracks/albums. Ingen soundtrack/score/ambient/meditation/tribute/karaoke.
+13. Sæt releaseYear til det faktiske udgivelsesår. Mindst 80 % af playlisten skal som standard være fra 2018 eller senere.
+14. Sæt energy fra 1-10. Ledopvarmning må være 3-5; opvarmning/teknik mindst 5; hovedblokke mindst 7; teamchallenge/finisher mindst 8.
+15. hasVocals skal være true for alle tracks.
 
 SEKTIONER:
 ${sectionText}
@@ -3968,10 +4178,13 @@ function musicResponseSchema(){
                   artist:{type:'string'},
                   album:{type:'string'},
                   bpm:{type:'integer'},
+                  releaseYear:{type:'integer'},
+                  energy:{type:'integer'},
+                  hasVocals:{type:'boolean'},
                   reason:{type:'string'},
                   clean:{type:'boolean'}
                 },
-                required:['title','artist','album','bpm','reason','clean']
+                required:['title','artist','album','bpm','releaseYear','energy','hasVocals','reason','clean']
               }
             }
           },
@@ -4000,6 +4213,29 @@ function parseMusicJson(text){
   const cleaned=String(text||'').trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');
   return JSON.parse(cleaned);
 }
+
+function olderMusicExplicitlyRequested(){
+  const text=normalizeText(`${byId('musicPrefer')?.value||''} ${byId('musicAvoid')?.value||''}`);
+  return /\b(60|70|80|90|00)(erne|s)?\b|oldies|retro|klassikere|ældre musik|gammel musik|classic hits/.test(text);
+}
+function minimumMusicEnergyForSection(index){
+  const profile=musicIntensityProfile(sections[index]||{},index);
+  if(profile.purpose==='Ledopvarmning')return 3;
+  if(['Opvarmning','Teknik'].includes(profile.purpose))return 5;
+  if(['Teamchallenge','Finisher'].includes(profile.purpose))return 8;
+  return 7;
+}
+function filterMusicTracksForSection(tracks,index){
+  const minYear=olderMusicExplicitlyRequested()?1960:2018;
+  const minEnergy=minimumMusicEnergyForSection(index);
+  return tracks.filter(track=>
+    track.hasVocals
+    &&track.releaseYear>=minYear
+    &&track.energy>=minEnergy
+    &&!/classical|klassisk|instrumental|orchestra|orchestral|soundtrack|film score|ambient|meditation|karaoke|tribute/i.test(`${track.title} ${track.artist} ${track.album}`)
+  );
+}
+
 function normalizeMusicPlanResult(result){
   const allowed=new Set(currentMusicSectionIndexes());
   const sectionsOut=(result.sections||[])
@@ -4014,14 +4250,19 @@ function normalizeMusicPlanResult(result){
         intensity:profile.label,
         bpmRange:section.bpmRange||`${profile.bpmMin}-${profile.bpmMax} BPM`,
         mood:section.mood||profile.mood,
-        tracks:(section.tracks||[]).filter(track=>track?.title&&track?.artist).map(track=>({
-          title:String(track.title).trim(),
-          artist:String(track.artist).trim(),
-          album:String(track.album||'').trim(),
-          bpm:Math.max(0,+track.bpm||0),
-          reason:String(track.reason||'').trim(),
-          clean:track.clean!==false
-        }))
+        tracks:filterMusicTracksForSection((section.tracks||[])
+          .filter(track=>track?.title&&track?.artist)
+          .map(track=>({
+            title:String(track.title).trim(),
+            artist:String(track.artist).trim(),
+            album:String(track.album||'').trim(),
+            bpm:Math.max(0,+track.bpm||0),
+            releaseYear:Math.max(0,+track.releaseYear||0),
+            energy:Math.max(1,Math.min(10,+track.energy||7)),
+            hasVocals:track.hasVocals!==false,
+            reason:String(track.reason||'').trim(),
+            clean:track.clean!==false
+          })),index)
       };
     })
     .sort((a,b)=>a.sectionIndex-b.sectionIndex);
@@ -4247,6 +4488,23 @@ async function generateMusicPlan(){
     button.textContent='✨ Planlæg musik med AI';
   }
 }
+
+function deleteCurrentPlaylist(){
+  const hasTracks=musicTrackCount()>0;
+  const hasLinked=!!linkedPlaylist?.url;
+  if(!hasTracks&&!hasLinked)return;
+  const label=hasTracks&&musicPlan?.source==='ai'?'playlistforslaget':'playlisten';
+  if(!confirm(`Vil du slette ${label} fra den aktuelle træning?`))return;
+  musicPlan=[];
+  linkedPlaylist=null;
+  if(byId('spotifyPlaylistUrl'))byId('spotifyPlaylistUrl').value='';
+  if(byId('tidalPlaylistUrl'))byId('tidalPlaylistUrl').value='';
+  if(byId('telmorePlaylistUrl'))byId('telmorePlaylistUrl').value='';
+  renderMusicPlan();
+  renderLinkedPlaylistSummary();
+  updateReview();
+}
+
 function musicTrackCount(){
   return musicPlan?.sections?.reduce((sum,section)=>sum+(section.tracks?.length||0),0)||0;
 }
@@ -4265,7 +4523,8 @@ function renderMusicPlan(){
   if(linkedPlaylist?.url)parts.push(`Tilknyttet ${(MUSIC_IMPORTERS[linkedPlaylist.service]||{}).label||linkedPlaylist.service}`);
   byId('musicPlanSummary').textContent=parts.join(' · ');
   const host=byId('musicPlanSections');
-  host.innerHTML=(musicPlan?.sections||[]).map((section,sectionPlanIndex)=>{
+  host.innerHTML=(musicPlan?.sections||[]).filter(section=>section.tracks?.length).map(section=>{
+    const sectionPlanIndex=(musicPlan?.sections||[]).indexOf(section);
     const profile=musicIntensityProfile(sections[section.sectionIndex]||{},section.sectionIndex);
     return `<article class="music-section-plan">
       <div class="music-section-plan-head">
@@ -4281,7 +4540,7 @@ function renderMusicPlan(){
           <a class="music-track-main music-track-link" href="${esc(musicServiceTrackUrl(track))}" target="_blank" rel="noopener" title="Find ${esc(track.title)} i ${esc((MUSIC_IMPORTERS[musicService]||MUSIC_IMPORTERS.spotify).label)}">
             <strong>${esc(track.title)}</strong>
             <span>${esc(track.artist)}${track.album?` · ${esc(track.album)}`:''}</span>
-            <small>${track.spotifyVerified===true?'✓ Spotify-verificeret · ':track.spotifyVerified===false?'⚠ Ikke matchet i Spotify · ':''}${track.bpm?`${track.bpm} BPM · `:''}${esc(track.reason||'')}</small>
+            <small>${track.spotifyVerified===true?'✓ Spotify-verificeret · ':track.spotifyVerified===false?'⚠ Ikke matchet i Spotify · ':''}${track.releaseYear?`${track.releaseYear} · `:''}${track.bpm?`${track.bpm} BPM · `:''}${track.energy?`Energi ${track.energy}/10 · `:''}${esc(track.reason||'')}</small>
           </a>
           <div class="music-track-actions">
             <a class="ghost compact-btn" href="${esc(musicServiceTrackUrl(track))}" target="_blank" rel="noopener">Find</a>
@@ -4418,6 +4677,20 @@ function updateReview(){
 
 function trainingTypeLabel(type){return ({junior:'FunkFit Junior',family:'Familietræning',adult:'Funktionel voksen',trx:'TRX',hiit:'HIIT',hyrox:'Hyrox'})[type]||'FunkFit-træning'}
 function trainingTypeClass(type){return `saved-type-${String(type||'other').replace(/[^a-z0-9-]/gi,'')}`}
+
+function workoutPlaylistLink(workout){
+  const linked=workout?.music?.linkedPlaylist;
+  if(linked?.url)return {url:linked.url,service:linked.service||workout?.music?.service||'spotify'};
+  const service=workout?.music?.service||'spotify';
+  const value=service==='tidal'?workout?.music?.tidal:service==='telmore'?workout?.music?.telmore:workout?.music?.spotify;
+  return value?{url:value,service}:null;
+}
+function workoutHasLinkedPlaylist(workout){return !!workoutPlaylistLink(workout)?.url}
+function openWorkoutMusic(workout){
+  editWorkout(workout);
+  setTimeout(()=>{showStep(3);window.scrollTo({top:0,behavior:'smooth'})},50);
+}
+
 function renderSaved(){
   const all=workouts();
   $('#savedWorkouts').innerHTML=all.length?all.map(w=>`<article class="saved-card">
@@ -4425,6 +4698,9 @@ function renderSaved(){
     <h3>${esc(w.name)}</h3>
     <p class="meta">${w.date||'Ingen dato'} · ${w.sections.length} sektioner · ${w.sections.reduce((n,s)=>n+(+s.minutes||0),0)} min</p>
     <p class="saved-at">Senest gemt: ${w.savedAt?new Date(w.savedAt).toLocaleString('da-DK'):'Tidspunkt ikke registreret'}</p>
+    ${workoutHasLinkedPlaylist(w)
+      ?`<button class="saved-playlist-status linked" data-open-workout-playlist="${w.id}">🎵 Playliste tilknyttet</button>`
+      :`<button class="saved-playlist-status missing" data-create-workout-playlist="${w.id}">○ Playliste ikke tilknyttet</button>`}
     <div class="saved-card-actions">
       <button data-edit="${w.id}">Åbn i Finpuds</button>
       <button class="secondary" data-play="${w.id}">Afspil</button>
@@ -4433,6 +4709,12 @@ function renderSaved(){
       <button class="ghost" data-delete="${w.id}">Slet</button>
     </div>
   </article>`).join(''):'<div class="empty">Ingen gemte træninger endnu.</div>';
+  $('#savedWorkouts').querySelectorAll('[data-open-workout-playlist]').forEach(b=>b.onclick=()=>{
+    const w=all.find(x=>x.id===b.dataset.openWorkoutPlaylist);const link=workoutPlaylistLink(w);if(link)window.open(link.url,'_blank','noopener');
+  });
+  $('#savedWorkouts').querySelectorAll('[data-create-workout-playlist]').forEach(b=>b.onclick=()=>{
+    const w=all.find(x=>x.id===b.dataset.createWorkoutPlaylist);if(w)openWorkoutMusic(w);
+  });
   $('#savedWorkouts').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editWorkout(all.find(x=>x.id===b.dataset.edit)));
   $('#savedWorkouts').querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>startPlayer(all.find(x=>x.id===b.dataset.play)));
   $('#savedWorkouts').querySelectorAll('[data-participant]').forEach(b=>b.onclick=()=>printWorkout(all.find(x=>x.id===b.dataset.participant),'participant'));
@@ -4725,28 +5007,95 @@ function printWorkout(w,mode){
   $('#printView').innerHTML=heading+equipmentHtml+w.sections.map(section=>sectionHtml(section,mode==='participant')).join('');
   window.print();
 }
+
+function playerAdultPrescription(it,ex,section,trainingType){
+  const m=it?.metrics||{};
+  const context=exerciseFieldContext(ex,section,trainingType);
+  const parts=[];
+  if(trainingType==='trx'){
+    if(m.bodyAngle)parts.push(`Kropsvinkel: ${m.bodyAngle}`);
+    const quantity=m.repsOrTime||m.reps||it?.adultReps;
+    if(context.quantity!=='none'&&quantity)parts.push(quantity);
+    if(context.showTempo&&m.tempo)parts.push(`Tempo: ${m.tempo}`);
+    if(context.unilateral&&m.laterality)parts.push(m.laterality);
+  }else if(trainingType==='hyrox'){
+    const weight=m.weight||it?.adultKg;
+    if(context.weighted&&weight)parts.push(String(weight).includes('kg')?weight:`${weight} kg`);
+    if(context.ergometer&&(m.ergMeters||m.reps))parts.push(`${m.ergMeters||m.reps} m`);
+    else if(context.quantity==='distance'&&(m.distance||m.reps||it?.adultReps))parts.push(m.distance||m.reps||it.adultReps);
+    else if(context.quantity!=='none'&&(m.reps||it?.adultReps))parts.push(m.reps||it.adultReps);
+  }else if(trainingType==='hiit'){
+    const weight=m.weight||it?.adultKg;
+    if(context.weighted&&weight)parts.push(String(weight).includes('kg')?weight:`${weight} kg`);
+    if(context.quantity!=='none'&&(m.reps||it?.adultReps))parts.push(m.reps||it.adultReps);
+    if(m.intensity)parts.push(`Intensitet: ${m.intensity}`);
+  }else if(trainingType==='adult'){
+    const weight=m.weight||it?.adultKg;
+    if(context.weighted&&weight)parts.push(String(weight).includes('kg')?weight:`${weight} kg`);
+    if(context.quantity!=='none'&&(m.reps||it?.adultReps))parts.push(m.reps||it.adultReps);
+    if(context.showSets&&m.sets)parts.push(`${m.sets} sæt`);
+    if(context.showTempo&&m.tempo)parts.push(`Tempo: ${m.tempo}`);
+    if(context.showPause&&m.pause)parts.push(`Pause: ${m.pause}`);
+  }
+  if(parts.length)return parts.join(' · ');
+  return [it?.adultReps,it?.adultKg?`${it.adultKg} kg`:null].filter(Boolean).join(' · ')||ex?.adult||'-';
+}
+function configurePlayerMusic(workout){
+  const buttons={
+    spotify:byId('playerSpotifyBtn'),
+    tidal:byId('playerTidalBtn'),
+    telmore:byId('playerTelmoreBtn')
+  };
+  Object.values(buttons).forEach(button=>button?.classList.add('hidden'));
+  const linked=workoutPlaylistLink(workout);
+  if(!linked)return;
+  const button=buttons[linked.service];
+  if(button){
+    button.classList.remove('hidden');
+    button.dataset.playerPlaylistUrl=linked.url;
+  }
+}
 function startPlayer(w){
   const map=new Map(exercises.map(x=>[x.id,x]));
   playerItems=[];
+  playerTrainingType=w.trainingType|| (w.familyMode?'family':'junior');
   for(const raw of w.sections){
     const s=normalizeSection(raw);
     if(s.type==='Finisher'){
       if(s.finisherMode==='song'){
-        playerItems.push({kind:'song',section:s.name,format:'Finisher · Sang',style:s.style,minutes:s.songMinutes||s.minutes,exercise:s.songTitle?`🎵 ${s.songTitle}`:'🎵 Vælg sang',junior:s.songArtist||s.description||'Sangbaseret finisher',juniorNote:s.rules||'',adultExercise:'',adult:'',adultNote:'',familyMode:false,timing:sectionTimingText(s)});
+        const songText=s.songArtist||s.description||'Sangbaseret finisher';
+        playerItems.push({kind:'song',section:s.name,format:'Finisher · Sang',style:s.style,minutes:s.songMinutes||s.minutes,exercise:s.songTitle?`🎵 ${s.songTitle}`:'🎵 Vælg sang',junior:songText,juniorNote:s.rules||'',adultExercise:'',adult:songText,adultNote:s.rules||'',familyMode:false,timing:sectionTimingText(s)});
       }else if((s.exercises||[]).length){
         for(const it of s.exercises||[]){
-          if(it.kind==='run')playerItems.push({kind:'run',section:s.name,format:`Finisher · ${s.format}`,style:s.style,minutes:s.minutes,exercise:`🏃 ${it.runType}`,junior:`${it.value} ${it.unit} · ${it.intensity}`,juniorNote:[s.description,it.route,it.note].filter(Boolean).join(' · '),adultExercise:'',adult:'',adultNote:'',familyMode:false,timing:sectionTimingText(s)});
-          else{const ex=map.get(it.exerciseId),aex=map.get(it.adultExerciseId||it.exerciseId);playerItems.push({kind:'exercise',section:s.name,format:`Finisher · ${s.format}`,style:s.style,minutes:s.minutes,exercise:ex?.name||'Finisher-opgave',junior:it.juniorReps||ex?.junior||s.description,juniorNote:[s.rules,it.juniorNote].filter(Boolean).join(' · '),adultExercise:aex?.name||'',adult:it.adultReps||aex?.adult||'',adultNote:it.adultNote||'',familyMode:w.familyMode,timing:sectionTimingText(s)});}
+          if(it.kind==='run'){
+            const runText=`${it.value} ${it.unit} · ${it.intensity}`;
+            playerItems.push({kind:'run',section:s.name,format:`Finisher · ${s.format}`,style:s.style,minutes:s.minutes,exercise:`🏃 ${it.runType}`,junior:runText,juniorNote:[s.description,it.route,it.note].filter(Boolean).join(' · '),adultExercise:`🏃 ${it.runType}`,adult:runText,adultNote:[s.description,it.route,it.note].filter(Boolean).join(' · '),familyMode:false,timing:sectionTimingText(s)});
+          }else{
+            const ex=map.get(it.exerciseId),aex=map.get(it.adultExerciseId||it.exerciseId);
+            playerItems.push({
+              kind:'exercise',section:s.name,format:`Finisher · ${s.format}`,style:s.style,minutes:s.minutes,
+              exercise:ex?.name||'Finisher-opgave',
+              junior:[it.juniorReps,it.juniorKg?`${it.juniorKg} kg`:null].filter(Boolean).join(' · ')||ex?.junior||s.description,
+              juniorNote:[s.rules,it.juniorNote].filter(Boolean).join(' · '),
+              adultExercise:aex?.name||ex?.name||'Finisher-opgave',
+              adult:playerAdultPrescription(it,aex||ex,s,playerTrainingType)||s.description,
+              adultNote:[s.rules,it.adultNote].filter(Boolean).join(' · '),
+              familyMode:w.familyMode,timing:sectionTimingText(s)
+            });
+          }
         }
-      }else playerItems.push({kind:'exercise',section:s.name,format:`Finisher · ${s.format}`,style:s.style,minutes:s.minutes,exercise:`🏁 ${s.name}`,junior:s.description,juniorNote:s.rules,adultExercise:'',adult:'',adultNote:'',familyMode:false,timing:sectionTimingText(s)});
+      }else{
+        playerItems.push({kind:'exercise',section:s.name,format:`Finisher · ${s.format}`,style:s.style,minutes:s.minutes,exercise:`🏁 ${s.name}`,junior:s.description,juniorNote:s.rules,adultExercise:`🏁 ${s.name}`,adult:s.description,adultNote:s.rules,familyMode:false,timing:sectionTimingText(s)});
+      }
       continue;
     }
     for(const it of s.exercises||[]){
       if(it.kind==='run'){
+        const runText=`${it.value} ${it.unit} · ${it.intensity}`;
         playerItems.push({
           kind:'run',section:s.name,format:s.format,style:s.style,minutes:s.minutes,
-          exercise:`🏃 ${it.runType}`,junior:`${it.value} ${it.unit} · ${it.intensity}`,
-          juniorNote:[it.route,it.note].filter(Boolean).join(' · '),adultExercise:'',adult:'',adultNote:'',
+          exercise:`🏃 ${it.runType}`,junior:runText,
+          juniorNote:[it.route,it.note].filter(Boolean).join(' · '),adultExercise:`🏃 ${it.runType}`,adult:runText,adultNote:[it.route,it.note].filter(Boolean).join(' · '),
           familyMode:false,timing:sectionTimingText(s)
         });
         continue;
@@ -4756,32 +5105,36 @@ function startPlayer(w){
         kind:'exercise',section:s.name,format:s.format,style:s.style,minutes:s.minutes,
         exercise:ex?.name||'Ukendt',
         junior:[it.juniorReps,it.juniorKg?`${it.juniorKg} kg`:null].filter(Boolean).join(' · ')||ex?.junior||'-',
-        juniorNote:it.juniorNote||'',adultExercise:aex?.name||ex?.name||'Ukendt',
-        adult:[it.adultReps,it.adultKg?`${it.adultKg} kg`:null].filter(Boolean).join(' · ')||aex?.adult||'-',
+        juniorNote:it.juniorNote||'',
+        adultExercise:aex?.name||ex?.name||'Ukendt',
+        adult:playerAdultPrescription(it,aex||ex,s,playerTrainingType),
         adultNote:it.adultNote||'',familyMode:w.familyMode,timing:sectionTimingText(s)
       });
     }
   }
   if(!playerItems.length)return alert('Træningen har ingen aktiviteter.');
   playerIndex=0;
-  $('#spotifyPlaylistUrl').value=w.music?.spotify||'';
-  $('#tidalPlaylistUrl').value=w.music?.tidal||'';
-  $('#telmorePlaylistUrl').value=w.music?.telmore||'';
+  configurePlayerMusic(w);
   $('#playerWorkoutName').textContent=w.name;renderPlayer();$('#workoutPlayer').showModal();
 }
 function renderPlayer(){
   const i=playerItems[playerIndex];
+  const adultOnly=['adult','trx','hiit','hyrox'].includes(playerTrainingType);
+  const family=playerTrainingType==='family';
   $('#playerCounter').textContent=`${playerIndex+1} / ${playerItems.length}`;
   $('#playerProgressBar').style.width=`${((playerIndex+1)/playerItems.length)*100}%`;
   $('#playerSection').textContent=i.section;
   $('#playerFormat').textContent=`${i.format} · ${i.style}`;
   $('#playerTiming').textContent=i.timing||`${i.minutes} min`;
-  $('#playerExercise').textContent=i.exercise;
-  $('#playerJunior').textContent=i.junior;
-  $('#playerJuniorNote').textContent=i.juniorNote;
-  $('#playerAdultCard').classList.toggle('hidden',!i.familyMode);
-  $('#playerAdult').textContent=i.adultExercise===i.exercise?i.adult:`${i.adultExercise}${i.adult?' · '+i.adult:''}`;
-  $('#playerAdultNote').textContent=i.adultNote;
+  $('#playerExercise').textContent=adultOnly?(i.adultExercise||i.exercise):i.exercise;
+  $('#playerPrimaryLabel').textContent=adultOnly?'VOKSEN':'JUNIOR';
+  $('#playerJunior').textContent=adultOnly?(i.adult||i.junior):i.junior;
+  $('#playerJuniorNote').textContent=adultOnly?(i.adultNote||i.juniorNote):i.juniorNote;
+  $('#playerAdultCard').classList.toggle('hidden',!family);
+  if(family){
+    $('#playerAdult').textContent=i.adultExercise===i.exercise?i.adult:`${i.adultExercise}${i.adult?' · '+i.adult:''}`;
+    $('#playerAdultNote').textContent=i.adultNote;
+  }
   $('#playerNextBtn').textContent=playerIndex===playerItems.length-1?'Afslut ✓':'Næste →';
 }
 

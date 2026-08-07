@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.7.4-alpha.29",
-  "short_name": "FunkFit 0.7.4a29",
+  "name": "FunkFit Builder v0.7.4-alpha.30",
+  "short_name": "FunkFit 0.7.4a30",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "Musik v2: AI eller byg selv, genrer, gemte playlister og skift nummer"
+  "description": "Samlet gennemgang: musik/player + HYROX/HIIT/TRX"
 }

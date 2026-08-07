@@ -398,3 +398,180 @@ Brugeren kan:
 - beholde resten af playlisten urørt
 
 Spotify-matchning kræver nu både titel- og kunstnermatch med en minimumsscore. Et nummer med korrekt titel men forkert kunstner accepteres derfor ikke længere som et sikkert match.
+
+
+# Udviklingsopdatering – august 2026
+
+Dette afsnit samler de vigtigste rettelser og udviklingsbeslutninger fra de seneste versioner. Manualen er den gældende beskrivelse af appens adfærd.
+
+## Versioner alpha.19–alpha.30
+
+### alpha.19 – mobil og tekst
+- Bred mobil-overflowgennemgang.
+- Udstyrsgrid, gemte kort, formularfelter og lange tekster blev gjort responsive.
+- Teksten blev ændret til **Prioritér elementer i Mit bibliotek**.
+- Legereglen blev ændret fra et fast “INCOMING!”-råb til det generelle **På instruktørens signal**.
+
+### alpha.20 – kontekstafhængige felter
+- “Funktionel voksen” vises kun som særskilt overskrift i Familietræning.
+- Voksen-, HIIT-, HYROX- og TRX-spor viser kun relevante træningsfelter.
+- Mobilregler gælder både Android og iPhone.
+
+### alpha.21 – React Lights
+- React Lights blev oprettet som udstyr/modalitet til Junior og Familie.
+- Der blev tilføjet reaktions-, agility-, squat-, lunge-, core-, makker- og holdøvelser.
+- React Lights regnes som fælles sæt udstyr, ikke ét sæt pr. deltager.
+
+### alpha.22–alpha.28 – musikfundament
+- Musikplanlægning blev gjort sektionsbaseret.
+- Brugeren kan vælge alle eller udvalgte sektioner.
+- Gemini blev koblet på med API-nøgletest og præcise fejl for 401/403/429/modeladgang.
+- Musikresultatet blev ændret fra “CSV som produkt” til en reel playlistemodel i FunkFit.
+- Spotify fik OAuth/PKCE-spor til direkte playlist-oprettelse.
+- TIDAL fik CSV → TuneMyMusic-flow.
+- Google Search-grounding blev fjernet for at holde AI-sporet enklere og billigere.
+
+### alpha.29 – AI eller byg selv
+Musik starter med et valg:
+1. **Brug AI til at lave min playliste**
+2. **Jeg vil selv bygge playlisten**
+
+AI-sporet har genrevalg. Det manuelle spor kan enten bygge sang for sang eller gemme et eksisterende playlist-link. Alle numre kan skiftes individuelt.
+
+### alpha.30 – samlet gennemgang
+- Playlistens resultatkort vises kun, hvis der faktisk findes tracks eller et tilknyttet playlist-link.
+- Playlisten kan slettes/fjernes fra træningen.
+- AI-musik må ikke bruge klassisk, instrumental, soundtrack/score, ambient, meditation, karaoke eller tribute/cover-albums.
+- AI-musik prioriterer nyere, energiske tracks. Som standard skal mindst 80 % være fra 2018 eller senere, og tracks før 2010 fravælges.
+- TIDAL-forespørgsler prioriterer mainstream-tracks, der sandsynligvis findes i TIDAL-kataloget.
+- Afspil viser voksenordinationer ved Funktionel voksen, HIIT, HYROX og TRX; Junior-visning bruges ikke i voksenspor.
+- Afspil viser kun knappen til den musiktjeneste, der faktisk er tilknyttet træningen.
+- Gemte træninger viser **Playliste tilknyttet** eller **Playliste ikke tilknyttet**. Tilknyttet åbner playlisten; ikke tilknyttet åbner Musik-trinnet.
+
+# HYROX – gældende principper
+
+## HYROX-kerne
+Når SkiErg og romaskine ikke er til rådighed, er de primære officielle HYROX-stationer i FunkFit:
+- Sled push
+- Sled pull
+- Burpee broad jumps
+- Farmers carry
+- Sandbag walking lunges
+- Wall balls
+- Løb mellem arbejdsstationerne
+
+Disse øvelser har højeste AI-prioritet i HYROX-sporet.
+
+## Hyrox-inspirerede støtteøvelser
+Når der er behov for variation, eller udstyret begrænser de officielle stationer, kan AI sekundært bruge:
+- KB swings
+- Goblet squats
+- Burpees
+- Hand release push-ups / push-ups
+- Sit-ups og V-ups
+- Squat jumps
+- Plank shoulder taps
+- Air squats
+- Reverse/walking lunges
+- Mountain climbers
+- Shuttle run
+- Devil press for øvede
+
+Appen skelner internt mellem **officiel HYROX** og **Hyrox-inspireret**.
+
+## Løb mellem hver øvelse
+HYROX-sektioner har nu strukturfunktionen **Løb mellem hver øvelse**.
+- Standarddistancer: 200, 300, 400, 500 og 1000 m.
+- Der kan vælges brugerdefineret distance.
+- **Start også med løb** giver klassisk: løb → station → løb → station.
+- Løbene indsættes automatisk og følger sektionen gennem player, PDF og redigering.
+- Man skal derfor ikke manuelt oprette det samme løb flere gange.
+
+AI-genererede HYROX-hovedblokke bruger som udgangspunkt løb mellem stationerne.
+
+# TRX – gældende principper
+
+TRX er nu et **TRX-first** spor. Hoveddelen af arbejdsøvelserne kræver fysisk en TRX Suspension Trainer.
+
+## Syv TRX-grundbevægelser
+Biblioteket organiseres efter:
+1. Plank
+2. Hinge
+3. Pull
+4. Squat
+5. Push
+6. Lunge
+7. Rotate
+
+Eksempler er low/mid/high row, chest press/fly, squat/single-leg squat, reverse/split/lateral lunge, hamstring curl/hip press, plank/body saw/knee tuck/pike/mountain climber, Y/T-fly, biceps/triceps, power pull og atomic push-up.
+
+## Programmeringsregel
+- Rene TRX-arbejdssektioner skal som udgangspunkt bestå af TRX-øvelser.
+- Ledopvarmning må være uden TRX.
+- En finisher eller en særskilt løbe-/konditionsopgave kan være uden TRX, hvis det er et bevidst valg.
+- Belastning skaleres primært med kropsvinkel, fodplacering, stabilitet og bevægeudslag.
+
+## Udstyrslogik
+Udstyrsfiltrering skelner nu mellem:
+- **Alternativt udstyr**: fx Kettlebell *eller* håndvægt.
+- **Alt kræves**: fx Wall ball = medicinbold + væg, sled pull = slæde + reb, TRX atomic push-up = TRX + måtte.
+
+En øvelse med flere nødvendige redskaber godkendes ikke længere, bare fordi ét af redskaberne findes.
+
+# HIIT – gældende principper
+
+HIIT er ikke en bestemt samling øvelser. Det er en intervalmetode med høj relativ intensitet og reel recovery.
+
+## Standardøvelser
+AI prioriterer teknisk enkle, hurtigt skalerbare bevægelser, fx:
+- Shuttle run
+- Burpee
+- Mountain climber
+- High knees
+- Jumping jack
+- Fast feet
+- Air squat / squat jump
+- Reverse/walking lunge
+- Skater jumps
+- Step-ups
+- Push-ups / hand release push-ups
+- Battle rope
+- Plank jack
+
+## Kræver erfaring
+Disse bruges ikke som automatiske standardvalg og kræver, at brugerens ønsker tydeligt peger på øvet/erfaren træning:
+- Kettlebell swing
+- Box jump
+- Wall ball
+- Dumbbell push press
+- Burpee broad jump
+- Devil press
+
+## Ikke standard i HIIT
+AI skal som udgangspunkt undgå:
+- Olympiske løft
+- tunge/maximale løft
+- teknisk komplekse barbell-løft
+- langsomme isolationsøvelser
+- ustabile balanceøvelser
+- øvelser hvor tidspres sandsynligvis ødelægger teknikken
+
+## Work:rest og intensitet
+AI-genererede HIIT-blokke bruger realistiske intervaller som:
+- 20/40 ved meget høj intensitet
+- 30/30 som hård standard
+- 40/20 ved kontrolleret HIIT
+
+Arbejdsperioderne styres omkring RPE 8–9/10. Recovery er en del af programmeringen. Lange næsten pauseløse circuits skal ikke kaldes HIIT, hvis deltagerne reelt falder ned i moderat intensitet.
+
+## Balance
+En HIIT-blok skal skifte bevægelsesmønster og kropsområde. AI undgår fx at lægge squat jump, wall ball, thruster og goblet squat efter hinanden som fire ben-dominante stationer. Der prioriteres mindst én reel engine-/pulsbevægelse.
+
+## Opvarmning
+HIIT skal have en gradvis warm-up og kort rehearsal af de bevægelser, der senere udføres hurtigt. Bevægelseskvalitet prioriteres over “all-out”.
+
+## Player – voksenspor og redigerede værdier
+Ved Funktionel voksen, HIIT, HYROX og TRX læser playeren nu de **redigerede sporfelter** først. Hvis brugeren fx har ændret kg, reps, distance, intensitet eller TRX-kropsvinkel i Finpuds, er det disse værdier der vises under afspilning. Juniorstandarder bruges kun som fallback i Junior/Familie, ikke som primær ordination i voksenspor.
+
+## Musik – automatisk kvalitetsfilter
+Hvis brugeren ikke specifikt beder om retro/ældre musik, filtrerer FunkFit nu AI-resultatet til **2018 eller nyere**. Hovedblokke kræver mindst energi 7/10, Teamchallenge/Finisher mindst 8/10, mens Ledopvarmning fortsat må ligge roligt på 3–5/10. Et udtrykkeligt ønske om fx 80'erne, 90'erne, oldies eller retro ophæver årstalsfilteret, men ikke forbuddet mod instrumental/klassisk/score/ambient.
