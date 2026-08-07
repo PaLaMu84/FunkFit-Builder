@@ -236,7 +236,7 @@ BPM er et styringsmål og ikke et absolut krav. Det vigtigste er musikalsk energ
 Indstillingen **Undgå explicit lyrics** er som standard aktiv for Junior og Familie. Instruktøren kan ændre den.
 
 ### Google Gemini
-Versionen bruger Google Gemini 2.5 Flash-Lite med Google Search til musikforslag. I den nuværende testversion indsætter brugeren sin egen API-nøgle. Nøglen gemmes kun i browserens session og indgår ikke i den gemte træning.
+Versionen bruger Google Gemini 3.5 Flash-Lite til musikforslag uden Google Search-grounding. I den nuværende testversion indsætter brugeren sin egen API-nøgle. Nøglen gemmes kun i browserens session og indgår ikke i den gemte træning.
 
 I en produktionsversion bør AI-kaldet gå gennem en server-side proxy, så API-nøglen ikke sendes direkte fra klientappen.
 
@@ -328,3 +328,73 @@ Når Spotify er forbundet:
 Numre, der ikke kan matches sikkert i Spotify, springes over og rapporteres til instruktøren.
 
 Spotify-metadata bruges kun til at matche og oprette playlisten efter AI-forslaget. Spotify-katalogdata sendes ikke tilbage til AI-modellen.
+
+## Musik-AI – gratis og robust modelstrategi
+Fra v0.7.4-alpha.27 bruger musikplanlægningen først **Gemini 3.5 Flash-Lite**. Hvis Google afviser modellen som utilgængelig for projektet, prøver appen automatisk **Gemini 3.1 Flash-Lite**.
+
+Begge modeller kan bruges på Gemini API's Free Tier til almindelig tekstgenerering. **Google Search-grounding er bevidst slået fra**, fordi Search-grounding på Gemini 3 ikke indgår i Free Tier.
+
+AI'ens opgave er derfor at vælge velkendte, eksisterende numre ud fra træningens sektioner og intensitet. Den endelige katalogkontrol sker tættere på musiktjenesten:
+
+- **Spotify:** Hvis Spotify er forbundet, verificerer FunkFit automatisk AI-forslagene mod Spotifys katalog og normaliserer titel, kunstner og album før playlisten oprettes.
+- **TIDAL:** TuneMyMusic matcher CSV-listen mod TIDAL-kataloget under importen.
+
+Det reducerer afhængigheden af Google Search og gør gratis-sporet mere stabilt.
+
+## Google API-diagnostik
+Fra v0.7.4-alpha.28 bruger musikplanlægningen Googles almindelige `generateContent`-endpoint i stedet for Interactions API. `generateContent` er fortsat fuldt understøttet af Gemini API og er tilstrækkeligt til FunkFits enkeltstående strukturerede musikforslag.
+
+Der er tilføjet **Test Google-nøgle**:
+
+- **Grøn / virker:** nøglen er accepteret af Google og mindst én af FunkFits modeller svarer.
+- **401:** nøglen er manglende, ugyldig, udløbet eller deaktiveret. Opret en ny Auth key i Google AI Studio.
+- **403:** nøglen findes, men projektet mangler adgang/tilladelse til Gemini API.
+- **429:** nøglen er accepteret, men kvoten er opbrugt.
+- **404/model:** nøglen virker, men den pågældende model er ikke tilgængelig.
+
+Nye nøgler oprettet i Google AI Studio er Auth keys. FunkFit bruger fortsat `x-goog-api-key`-headeren, som er Googles dokumenterede autentificeringsmetode til Gemini API.
+
+Google API-nøglen gemmes kun i `sessionStorage` og gemmes ikke sammen med træningen.
+
+## Musik v2 – AI eller byg selv
+Musiktrinnet starter nu med et tydeligt valg:
+
+### Brug AI til at lave min playliste
+Brugeren vælger genrer og øvrige musikønsker. AI'en skal primært holde sig til de valgte genrer, men intensitetsreglerne for den enkelte træningssektion har højeste prioritet.
+
+Valgbare genrer omfatter bl.a. pop, rock, hiphop, R&B, soul/funk, indie/alternative, dance/elektronisk, dansk pop/rock, latin, reggae, country og metal/punk.
+
+AI-playlisten gemmes som en struktureret del af træningen, inklusive:
+- playlistens navn
+- sektionstilknytning
+- sangtitel og kunstner
+- album
+- intensitets-/BPM-kontekst
+- Spotify-verifikation, når den findes
+- brugerens genrevalg
+
+### Jeg vil selv bygge playlisten
+Der er to manuelle arbejdsgange:
+
+**Byg sang for sang**
+- Nummeret tilknyttes direkte en træningssektion.
+- Titel, kunstner og eventuelt album gemmes i FunkFit.
+- Hvis Spotify er forbundet, kontrolleres titel/kunstner mod Spotify ved tilføjelse.
+- Den manuelle trackliste gemmes med træningen på samme måde som en AI-genereret liste.
+
+**Tilknyt eksisterende playliste**
+- Brugeren vælger Spotify, TIDAL eller Telmore.
+- Playlistens navn og URL gemmes direkte med træningen.
+- Det er den bedste løsning, når brugeren allerede har bygget playlisten i musiktjenesten.
+- Linket vises igen, når træningen åbnes.
+
+## Skift nummer
+Alle tracklister – både AI og manuelle – har en **Skift**-funktion.
+
+Brugeren kan:
+- rette sangtitel, kunstner og album manuelt
+- gemme det nye nummer på samme plads i den samme træningssektion
+- ved forbundet Spotify hente alternative, rigtige Spotify-numre fra de valgte genrer
+- beholde resten af playlisten urørt
+
+Spotify-matchning kræver nu både titel- og kunstnermatch med en minimumsscore. Et nummer med korrekt titel men forkert kunstner accepteres derfor ikke længere som et sikkert match.
