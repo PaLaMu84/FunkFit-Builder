@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.7.4-alpha.25",
-  "short_name": "FunkFit 0.7.4a25",
+  "name": "FunkFit Builder v0.7.4-alpha.26",
+  "short_name": "FunkFit 0.7.4a26",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "Gemini 2.5 Flash-Lite og playlist-first musikflow"
+  "description": "TIDAL via TuneMyMusic og direkte Spotify-playliste via PKCE"
 }

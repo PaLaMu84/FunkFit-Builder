@@ -292,3 +292,39 @@ CSV findes kun under **Avanceret eksport** som teknisk reservefunktion. Brugeren
 At oprette en rigtig bruger-playliste direkte i Spotify/TIDAL/Telmore kræver en understøttet login-/API-integration hos den pågældende tjeneste. Det kan ikke laves pålideligt ved blot at generere en fil eller et anonymt link.
 
 Spotify understøtter OAuth/PKCE og playlist-oprettelse, så en direkte Spotify-integration kan bygges som næste trin. TIDAL og Telmore skal vurderes særskilt ud fra deres aktuelle developer-vilkår og API-muligheder.
+
+## TIDAL via CSV og TuneMyMusic
+TIDAL-flowet er gjort så kort som browseren tillader:
+
+1. FunkFit genererer playlisten.
+2. Tryk **Hent CSV + åbn TuneMyMusic**.
+3. Browseren downloader CSV-filen og åbner TuneMyMusics side til CSV → TIDAL.
+4. Vælg den netop hentede CSV-fil.
+5. Log ind på TIDAL og gennemfør overførslen.
+
+TuneMyMusic matcher titel, kunstner, album og eventuelt ISRC mod TIDAL-kataloget og genopbygger playlisten.
+
+En almindelig webapp må af browserens sikkerhedsregler ikke automatisk indsætte en lokal downloadet fil i et andet websites `<input type=file>`. Derfor kan selve filvalget hos TuneMyMusic ikke automatiseres fra FunkFit uden en anden serverbaseret integrationsmodel.
+
+## Spotify direkte integration
+Spotify-sporet bruger **Authorization Code with PKCE**, som er Spotifys anbefalede OAuth-flow til JavaScript-webapps, hvor et client secret ikke kan gemmes sikkert.
+
+### Første opsætning
+- Opret en FunkFit-app i Spotify Developer Dashboard.
+- Kopiér Spotify Client ID ind i FunkFit Builder.
+- Tilføj den Redirect URI, som FunkFit viser, præcis i Spotify-dashboardet.
+- Tryk **Forbind Spotify** og godkend adgang til at oprette/redigere playlister.
+
+Client ID er ikke en hemmelighed og kan gemmes lokalt. Der gemmes intet Spotify client secret i appen.
+
+### Opret playliste
+Når Spotify er forbundet:
+1. AI genererer FunkFit-playlisten.
+2. FunkFit søger hvert foreslået nummer i Spotify-kataloget.
+3. FunkFit opretter en privat playliste via `POST /me/playlists`.
+4. De matchede Spotify-URI'er indsættes via `POST /playlists/{id}/items`.
+5. Den færdige Spotify-playliste åbnes og linket gemmes sammen med træningen.
+
+Numre, der ikke kan matches sikkert i Spotify, springes over og rapporteres til instruktøren.
+
+Spotify-metadata bruges kun til at matche og oprette playlisten efter AI-forslaget. Spotify-katalogdata sendes ikke tilbage til AI-modellen.

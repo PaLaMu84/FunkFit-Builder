@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.25</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a25">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a25">
+  <title>FunkFit Builder v0.7.4-alpha.26</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a26">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a26">
 </head>
 <body>
 <header class="topbar">
   <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
-    <p class="eyebrow">VERSION 0.7.4-ALPHA.25</p>
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.26</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </button>
@@ -415,10 +415,10 @@ Hovedtræning 20 min
           <h4>Hvilken musiktjeneste bruger du?</h4>
           <div id="musicServiceChoices" class="music-choice-grid">
             <button type="button" class="music-choice selected" data-music-service="spotify">
-              <strong>Spotify</strong><small>Playlistfil via TuneMyMusic</small>
+              <strong>Spotify</strong><small>Direkte playliste via Spotify-login</small>
             </button>
             <button type="button" class="music-choice" data-music-service="tidal">
-              <strong>TIDAL</strong><small>Playlistfil via TuneMyMusic</small>
+              <strong>TIDAL</strong><small>CSV → TuneMyMusic → TIDAL</small>
             </button>
             <button type="button" class="music-choice" data-music-service="telmore">
               <strong>Telmore Musik</strong><small>Playlistfil via Soundiiz</small>
@@ -521,6 +521,56 @@ Hovedtræning 20 min
         </div>
       </div>
       <div id="musicPlanSections" class="music-plan-sections"></div>
+
+      <section id="spotifyIntegrationCard" class="playlist-integration-card">
+        <div class="playlist-integration-head">
+          <div>
+            <p class="eyebrow">SPOTIFY DIREKTE</p>
+            <h4>Opret playlisten direkte i Spotify</h4>
+            <p>Første gang skal FunkFit forbindes til en Spotify Developer-app. Derefter kan playlisten oprettes direkte på din Spotify-konto.</p>
+          </div>
+          <span id="spotifyConnectionBadge" class="connection-badge">Ikke forbundet</span>
+        </div>
+
+        <details id="spotifySetupDetails" class="spotify-setup-details">
+          <summary>Spotify-opsætning – kun første gang</summary>
+          <div class="spotify-setup-grid">
+            <label>Spotify Client ID
+              <input id="spotifyClientId" autocomplete="off" placeholder="Client ID fra Spotify Developer Dashboard">
+            </label>
+            <label>Redirect URI
+              <div class="readonly-row">
+                <input id="spotifyRedirectUri" readonly>
+                <button id="copySpotifyRedirectBtn" type="button" class="ghost compact-btn">Kopiér</button>
+              </div>
+            </label>
+          </div>
+          <p class="field-help">Opret en app i Spotify Developer Dashboard og tilføj Redirect URI præcis som vist ovenfor. Client ID er ikke en hemmelig nøgle og gemmes lokalt på denne enhed.</p>
+          <div class="spotify-setup-actions">
+            <button id="openSpotifyDashboardBtn" type="button" class="ghost">Åbn Spotify Developer Dashboard</button>
+            <button id="saveSpotifyClientIdBtn" type="button" class="secondary">Gem Client ID</button>
+          </div>
+        </details>
+
+        <div class="spotify-direct-actions">
+          <button id="connectSpotifyBtn" type="button" class="spotify-btn">Forbind Spotify</button>
+          <button id="createSpotifyPlaylistBtn" type="button" class="spotify-btn">Opret playlist i Spotify</button>
+        </div>
+        <p id="spotifyIntegrationStatus" class="music-plan-status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="tidalIntegrationCard" class="playlist-integration-card hidden">
+        <div class="playlist-integration-head">
+          <div>
+            <p class="eyebrow">TIDAL</p>
+            <h4>Send playlisten videre via TuneMyMusic</h4>
+            <p>FunkFit henter CSV-filen og åbner TuneMyMusics TIDAL-importside. Vælg den netop hentede fil hos TuneMyMusic, log ind på TIDAL og gem playlisten.</p>
+          </div>
+        </div>
+        <button id="downloadAndOpenTidalBtn" type="button" class="tidal-btn playlist-primary-action">⬇ Hent CSV + åbn TuneMyMusic</button>
+        <p class="field-help">Browseren tillader ikke, at FunkFit automatisk vælger en lokal fil i TuneMyMusics uploadfelt. Derfor er filvalget det eneste manuelle trin.</p>
+      </section>
+
       <div class="music-import-card">
         <div>
           <strong id="musicImportTitle">Brug playlisten i din musiktjeneste</strong>
@@ -865,7 +915,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.25 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a25"></script>
+<footer>FunkFit Builder v0.7.4-alpha.26 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a26"></script>
 </body>
 </html>
