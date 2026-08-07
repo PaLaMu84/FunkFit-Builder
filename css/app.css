@@ -954,3 +954,336 @@ html,body{
     grid-template-columns:1fr;
   }
 }
+
+
+/* v0.7.4-alpha.19 – samlet mobil-audit mod vandret overflow */
+
+/* Alle centrale layoutcontainere må kunne krympe til viewportens bredde. */
+main,
+.app-view,
+.panel,
+.step-panel,
+.planner-block,
+.planner-content,
+.section-heading,
+.section-heading > *,
+.choice-grid,
+.choice-card,
+.equipment-grid,
+.equipment-option,
+.planner-toggles,
+.planner-toggle-card,
+.workout-identity-card,
+.workout-identity-fields,
+.manual-steps-grid,
+.manual-step-card,
+.manual-step-card > *,
+.saved-grid,
+.saved-card,
+.saved-card-actions,
+.filters,
+.picker-list,
+.picker-item,
+.framework-card,
+.framework-head,
+.framework-settings,
+.exercise-section,
+.section-card-header,
+.section-title-group,
+.section-title-text,
+.section-card-actions,
+.section-expanded-content,
+.exercise-list,
+.exercise-row,
+.exercise-main,
+.adult-settings,
+.adult-grid,
+.contextual-fields,
+.contextual-adult-grid,
+.section-guidance-card,
+.section-library-row,
+.finisher-editor,
+.finisher-choice-bar,
+.finisher-form-grid,
+.finisher-template-preview,
+.import-workout-panel,
+.import-options,
+.import-proposal,
+.review-card,
+.review-card-heading,
+.equipment-summary-card,
+.equipment-summary-list,
+.docs-model-grid,
+.docs-model-grid article,
+.docs-rules,
+.field-rule-grid,
+.field-rule-grid article,
+.actions,
+.equipment-profile-actions{
+  min-width:0;
+  max-width:100%;
+}
+
+/* Medier, formularfelter og lange tekster må aldrig presse siden bredere. */
+img,
+svg,
+canvas,
+video,
+iframe{
+  max-width:100%;
+  height:auto;
+}
+input,
+select,
+textarea{
+  min-width:0;
+  max-width:100%;
+}
+p,
+small,
+strong,
+h1,
+h2,
+h3,
+h4,
+label,
+.saved-card,
+.equipment-option,
+.choice-card,
+.planner-toggle-card,
+.section-guidance-card,
+.finisher-template-preview{
+  overflow-wrap:break-word;
+  word-break:normal;
+}
+a{
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+
+/* Tilgængeligt udstyr: ingen kolonne må bruge sit indholds min-content-bredde. */
+.equipment-grid{
+  width:100%;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+}
+.equipment-option{
+  width:100%;
+  min-width:0;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  line-height:1.25;
+}
+.equipment-option input{
+  flex:0 0 auto;
+  width:auto;
+  min-width:16px;
+  max-width:20px;
+  margin-top:0;
+}
+.equipment-profile-actions{
+  max-width:100%;
+}
+.equipment-profile-actions button{
+  min-width:0;
+  white-space:normal;
+}
+
+/* Grids med gamle faste minimumsbredder må ikke skabe overflow. */
+.saved-grid{
+  grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));
+}
+.player-prescriptions{
+  max-width:100%;
+}
+.inline-advanced-controls>div{
+  max-width:100%;
+}
+.single-section-config select{
+  max-width:100%;
+}
+
+/* Smalle skærme / mobil (Android og iPhone) */
+@media(max-width:900px){
+  .equipment-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:620px){
+  .equipment-grid,
+  .venue-grid,
+  .planner-fields{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .equipment-profile-actions{
+    width:100%;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .equipment-profile-actions button{
+    width:100%;
+  }
+  .saved-grid{
+    grid-template-columns:minmax(0,1fr);
+  }
+  .picker-item{
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .picker-item .actions,
+  .picker-item button{
+    width:100%;
+  }
+  .inline-advanced-controls,
+  .inline-advanced-controls>div{
+    min-width:0!important;
+    width:100%;
+  }
+  .single-section-config select{
+    min-width:0!important;
+    width:100%;
+  }
+}
+@media(max-width:520px){
+  .concept-grid,
+  .venue-grid,
+  .planner-fields,
+  .equipment-grid,
+  .manual-choice-grid,
+  .manual-choice-grid.two,
+  .section-type-grid{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .planner-block{
+    grid-template-columns:minmax(0,1fr);
+  }
+  .planner-number{
+    width:32px;
+    height:32px;
+  }
+  .section-heading,
+  .section-card-header{
+    width:100%;
+  }
+  .section-card-actions{
+    width:100%;
+    flex-wrap:wrap;
+  }
+  .section-card-actions button,
+  .section-library-row button,
+  .actions button{
+    max-width:100%;
+    white-space:normal;
+  }
+  .run-activity-head{
+    grid-template-columns:auto minmax(0,1fr);
+  }
+  .run-activity-head > :last-child{
+    grid-column:1/-1;
+    width:100%;
+  }
+}
+@media(max-width:390px){
+  main{
+    padding:.55rem;
+  }
+  .panel{
+    padding:.8rem;
+  }
+  .equipment-profile-actions{
+    grid-template-columns:minmax(0,1fr);
+  }
+}
+
+
+/* v0.7.4-alpha.20 – kompakte øvelsesfelter */
+.compact-metric-fields{
+  display:flex!important;
+  flex-wrap:wrap;
+  align-items:flex-end;
+  justify-content:flex-start;
+  gap:.55rem;
+  width:fit-content;
+  max-width:100%;
+  padding:.6rem .7rem;
+}
+.compact-metric-fields h4{
+  display:none!important;
+}
+.compact-metric-label{
+  display:grid;
+  gap:.28rem;
+  flex:0 1 auto;
+  width:max-content;
+  max-width:100%;
+  font-size:.78rem;
+}
+.compact-metric-control{
+  box-sizing:border-box;
+  width:auto;
+  min-width:4.6rem;
+  max-width:min(14rem,100%);
+  field-sizing:content;
+}
+.compact-metric-control[type="number"]{
+  width:5.5rem;
+  min-width:5.5rem;
+  max-width:5.5rem;
+}
+.compact-metric-label select.compact-metric-control{
+  width:auto;
+  min-width:5.5rem;
+  max-width:min(14rem,100%);
+}
+.family-adult-heading{
+  margin:.05rem 0 .65rem;
+  font-size:1rem;
+  color:#0f172a;
+}
+.adult-settings .contextual-adult-grid{
+  margin-top:0;
+}
+
+/* Mobilregler gælder viewport-bredde – samme layout på Android og iPhone. */
+@media(max-width:700px){
+  .compact-metric-fields{
+    width:100%;
+    max-width:100%;
+    display:flex!important;
+    flex-wrap:wrap;
+    gap:.5rem;
+  }
+  .compact-metric-label{
+    max-width:100%;
+  }
+  .compact-metric-control{
+    max-width:100%;
+  }
+}
+@media(max-width:420px){
+  .compact-metric-fields{
+    padding:.55rem;
+  }
+  .compact-metric-control[type="number"]{
+    width:5rem;
+    min-width:5rem;
+    max-width:5rem;
+  }
+}
+
+/* Touch-enheder: undgå platformsspecifik bredde-adfærd i formularfelter. */
+@media(hover:none) and (pointer:coarse){
+  input,
+  select,
+  textarea,
+  button{
+    box-sizing:border-box;
+  }
+  .equipment-grid,
+  .contextual-fields,
+  .contextual-adult-grid,
+  .exercise-main,
+  .adult-grid{
+    min-width:0;
+    max-width:100%;
+  }
+}
