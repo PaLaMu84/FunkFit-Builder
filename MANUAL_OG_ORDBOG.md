@@ -575,3 +575,104 @@ Ved Funktionel voksen, HIIT, HYROX og TRX læser playeren nu de **redigerede spo
 
 ## Musik – automatisk kvalitetsfilter
 Hvis brugeren ikke specifikt beder om retro/ældre musik, filtrerer FunkFit nu AI-resultatet til **2018 eller nyere**. Hovedblokke kræver mindst energi 7/10, Teamchallenge/Finisher mindst 8/10, mens Ledopvarmning fortsat må ligge roligt på 3–5/10. Et udtrykkeligt ønske om fx 80'erne, 90'erne, oldies eller retro ophæver årstalsfilteret, men ikke forbuddet mod instrumental/klassisk/score/ambient.
+
+
+# Lege-modul – alpha.31
+
+## Hvorfor lege er et selvstændigt modul
+Lege er ikke længere kun almindelige sektioner gemt i **Mit bibliotek**. FunkFit har nu et selvstændigt **Lege**-område med en tydelig skelnen mellem:
+
+1. **Grundleg / masterleg** – den centrale definition, som vedligeholdes i Indholdsadministration.
+2. **Træningsinstans** – en selvstændig kopi af grundlegen, når den bruges i en konkret træning.
+
+Det betyder, at en instruktør kan ændre, fjerne eller tilføje øvelser i den konkrete træning uden at overskrive grundlegen.
+
+## Legebibliotek
+Legebiblioteket viser aktive grundleg og kan filtreres på:
+- navn, emne og tags
+- emne/tema
+- aktuelt deltagerantal
+
+Hvert kort viser bl.a.:
+- navn og emne
+- minimum/maksimum deltagere
+- organisering og holdkrav
+- standardvarighed
+- målgruppe
+- udstyr og antal
+- standardøvelser
+
+En leg kan bruges som ny Leg-sektion eller vælges direkte fra en eksisterende Leg-sektion i Finpuds.
+
+## Byg en leg / Indholdsadministration
+En grundleg indeholder:
+- navn
+- emne/tema
+- beskrivelse
+- regler
+- trænertips
+- standardvarighed
+- status: Aktiv eller Kladde
+- målgruppe
+- tags
+- minimum antal deltagere
+- valgfrit maksimum
+- organisering: fælles, individuel, makker, hold eller stafet
+- om legen kræver hold
+- minimum antal hold
+- anbefalet deltagere pr. hold
+- nødvendigt udstyr og præcist antal af hvert redskab
+- standardøvelser valgt fra FunkFits øvelsesbibliotek
+
+Grundlegen kan redigeres, duplikeres eller slettes centralt. Redigering øger versionsnummeret på grundlegen.
+
+## Udstyr fra lege
+Udstyr angivet i en grundleg føres direkte ind i træningens **Du skal bruge**.
+
+Eksempel:
+- 12 kegler
+- 2 React Lights
+- 4 medicinbolde
+
+Disse tal behandles som krav til selve legen og må derfor ikke automatisk multipliceres med antal deltagere.
+
+## Deltagerkontrol
+Hvis en leg er bygget til fx minimum 10 deltagere, og den indsættes i en træning med 7 deltagere, advarer FunkFit før indsættelse. Brugeren kan stadig vælge at indsætte legen og selv skalere den.
+
+## Standardøvelser og træningskopier
+Grundlegen gemmer referencer til standardøvelser i FunkFits øvelsesbibliotek.
+
+Ved indsættelse i en træning oprettes normale træningsaktiviteter fra disse øvelser. Derefter kan instruktøren:
+- tilføje øvelser
+- fjerne øvelser
+- skifte øvelser
+- ændre reps, kg, tid og andre relevante felter
+
+Disse ændringer gælder kun træningen.
+
+## Admin- og backend-arkitektur
+Alpha.31 introducerer et lokalt **Indholdsadministration**-lag. Den nuværende GitHub Pages/PWA har ingen server-login eller central database, så rollen “Lokal administrator” er kun lokal på enheden.
+
+Datamodellen er forberedt med:
+- `ownerId`
+- `ownerRole`
+- `visibility`
+- `status`
+- versionsnummer
+- created/updated timestamps
+
+Når FunkFit senere får rigtig backend og login, kan dette udvides til roller som:
+- Instruktør
+- Legeansvarlig
+- Admin
+
+uden at ændre princippet om masterleg kontra træningsinstans.
+
+## Datasikkerhed
+Grundlege gemmes i:
+- `funkfit-games-v1`
+- backup: `funkfit-games-backup-v1`
+
+`reset-cache.html` rydder ikke disse data.
+
+Ved første opgradering forsøger FunkFit desuden at importere tidligere Leg-elementer fra **Mit bibliotek** som grundleg. De gamle elementer slettes ikke.
