@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.33';
+const APP_VERSION='0.7.4-alpha.35';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -186,7 +186,7 @@ const PROGRAMMING_PROFILES={
   hiit:{label:'HIIT',supportsTheme:false,defaultStructure:['Ledopvarmning','Opvarmning','HIIT blok','HIIT blok','Finisher']}
 };
 let creationMode='choice',structureChoice='auto',singleSectionTarget=null,activeRunPlan=null,clearUndoInterval=null,addSectionType='Hovedelement',sectionEditIndex=null,sectionEditMode='structure',sectionEditDraft=null;
-let gameModuleTab='library',gameTargetSection=null,gameSelectedExerciseIds=new Set(),gameEquipmentDraft=[];
+let gameModuleTab='library',gameTargetSection=null,gameInsertFromFinpuds=false,gameSelectedExerciseIds=new Set(),gameEquipmentDraft=[];
 
 
 
@@ -768,6 +768,50 @@ function migrateLegacyGames(){
   }
   localStorage.setItem(GAME_MIGRATION_KEY,'1');
 }
+
+function repairStoredGamesSchema(){
+  const raw=validGameList(read(GKEY,[]));
+  if(!raw.length)return;
+  let changed=false;
+  const repaired=raw.map(source=>{
+    const normalized=normalizeGame(source);
+    const needsTime=source.setupMinutes===undefined||source.activeMinutes===undefined;
+    const needsEquipment=(source.equipment||[]).some(item=>item&&item.selfSource===undefined);
+    if(needsTime||needsEquipment)changed=true;
+    return normalized;
+  });
+  if(changed)saveGames(repaired);
+}
+function setGameField(id,value){
+  const el=byId(id);
+  if(!el)return false;
+  if(el.type==='checkbox')el.checked=!!value;
+  else el.value=value??'';
+  return true;
+}
+function showGameModuleError(error){
+  console.error('Lege-modul:',error);
+  const host=byId('gameTargetBanner');
+  if(host){
+    host.classList.remove('hidden');
+    host.innerHTML='<div><strong>⚠ Lege-modulet kunne ikke indlæse alle data</strong><span>Resten af FunkFit kan fortsat bruges. Genindlæs siden efter opdatering til den nyeste version.</span></div>';
+  }
+}
+function initGameModuleSafely(){
+  try{
+    migrateLegacyGames();
+    repairStoredGamesSchema();
+    resetGameForm();
+    renderCustomGameEquipmentList();
+    renderGameLibrary();
+    renderGameAdminList();
+    return true;
+  }catch(error){
+    showGameModuleError(error);
+    return false;
+  }
+}
+
 function gameAudienceLabel(value){
   return ({all:'Alle',junior:'Junior',family:'Familie',adult:'Voksen','junior-family':'Junior + Familie'})[value]||'Alle';
 }
@@ -796,6 +840,11 @@ function gameExerciseNames(game){
   return (game.exerciseIds||[]).map(id=>exercises.find(ex=>ex.id===id)?.name).filter(Boolean);
 }
 function normalizeGame(game){
+  game=(game&&typeof game==='object')?game:{};
+  const legacyMinutes=Math.max(1,+game.minutes||8);
+  const hasSplitTime=game.setupMinutes!==undefined||game.activeMinutes!==undefined;
+  const setupMinutes=hasSplitTime?Math.max(0,+game.setupMinutes||0):0;
+  const activeMinutes=hasSplitTime?Math.max(1,+game.activeMinutes||legacyMinutes):legacyMinutes;
   return {
     ...game,
     gameId:game.gameId||crypto.randomUUID(),
@@ -804,9 +853,9 @@ function normalizeGame(game){
     description:String(game.description||'').trim(),
     rules:String(game.rules||'').trim(),
     coachTips:String(game.coachTips||'').trim(),
-    setupMinutes:Math.max(0,+game.setupMinutes||0),
-    activeMinutes:Math.max(1,+game.activeMinutes||+game.minutes||8),
-    minutes:Math.max(1,gameTotalMinutesValue(game.setupMinutes,+game.activeMinutes||+game.minutes||8)),
+    setupMinutes,
+    activeMinutes,
+    minutes:Math.max(1,gameTotalMinutesValue(setupMinutes,activeMinutes)),
     minParticipants:Math.max(1,+game.minParticipants||1),
     maxParticipants:Math.max(0,+game.maxParticipants||0),
     organization:game.organization||'Fælles',
@@ -884,16 +933,20 @@ function useGameInWorkout(gameId){
   if(Number.isInteger(gameTargetSection)&&sections[gameTargetSection]){
     sections[gameTargetSection]=instance;
   }else{
+    // Fra Finpuds indsættes grundlegen som en selvstændig ny Leg-sektion.
+    // Finisher skal fortsat ligge sidst.
     const finisherIndex=sections.findIndex(section=>normalizeSection(section).sectionPurpose==='Finisher');
     finisherIndex<0?sections.push(instance):sections.splice(finisherIndex,0,instance);
   }
   gameTargetSection=null;
+  gameInsertFromFinpuds=false;
   enforceWorkoutStructure();
   renderFramework();renderExerciseSections();updateReview();
   showView('designView');showStep(2);
 }
-function openGameLibraryForSection(index=null){
+function openGameLibraryForSection(index=null,insertFromFinpuds=false){
   gameTargetSection=Number.isInteger(index)?index:null;
+  gameInsertFromFinpuds=!!insertFromFinpuds;
   showView('gamesView');
   showGameModuleTab('library');
   renderGameLibrary();
@@ -901,6 +954,7 @@ function openGameLibraryForSection(index=null){
 }
 function clearGameTarget(){
   gameTargetSection=null;
+  gameInsertFromFinpuds=false;
   renderGameTargetBanner();
 }
 function renderGameTargetBanner(){
@@ -910,6 +964,14 @@ function renderGameTargetBanner(){
     host.classList.remove('hidden');
     host.innerHTML=`<div><strong>Vælg en grundleg til sektionen “${esc(sections[gameTargetSection].name)}”</strong><span>Den valgte leg erstatter denne sektion som en kopi.</span></div><button type="button" class="ghost" data-clear-game-target>Fortryd</button>`;
     host.querySelector('[data-clear-game-target]').onclick=clearGameTarget;
+  }else if(gameInsertFromFinpuds){
+    host.classList.remove('hidden');
+    host.innerHTML=`<div><strong>🎲 Indsæt leg i Finpuds</strong><span>Vælg en leg nedenfor. Den indsættes som en ny selvstændig Leg-sektion i træningen${sections.some(section=>normalizeSection(section).sectionPurpose==='Finisher')?' før Finisheren':''}.</span></div><button type="button" class="ghost" data-clear-game-target>Fortryd</button>`;
+    host.querySelector('[data-clear-game-target]').onclick=()=>{
+      clearGameTarget();
+      showView('designView');
+      showStep(2);
+    };
   }else{
     host.classList.add('hidden');
     host.innerHTML='';
@@ -920,10 +982,11 @@ function showGameModuleTab(tab='library'){
   document.querySelectorAll('[data-game-module-tab]').forEach(button=>button.classList.toggle('selected',button.dataset.gameModuleTab===gameModuleTab));
   byId('gameLibraryPanel')?.classList.toggle('hidden',gameModuleTab!=='library');
   byId('gameAdminPanel')?.classList.toggle('hidden',gameModuleTab!=='admin');
-  if(gameModuleTab==='library')renderGameLibrary();
-  else{
-    renderGameAdminList();
-    if(!byId('gameMasterId')?.value)resetGameForm();
+  try{
+    if(gameModuleTab==='library')renderGameLibrary();
+    else renderGameAdminList();
+  }catch(error){
+    showGameModuleError(error);
   }
 }
 function renderGameTopicOptions(){
@@ -967,7 +1030,7 @@ function renderGameLibrary(){
       ${gameSelfSourceEquipment(game).length?`<div class="game-self-source-warning">${esc(gameSelfSourceWarning(game))}</div>`:''}
       <div class="game-card-detail"><strong>Standardøvelser:</strong> ${exNames.length?esc(exNames.join(' · ')):'Ingen faste øvelser'}</div>
       <div class="game-card-actions">
-        <button type="button" data-use-game="${game.gameId}">${Number.isInteger(gameTargetSection)?'Brug i denne sektion':'Brug i træning'}</button>
+        <button type="button" data-use-game="${game.gameId}">${Number.isInteger(gameTargetSection)?'Brug i denne sektion':gameInsertFromFinpuds?'Indsæt som ny sektion':'Brug i træning'}</button>
         <button type="button" class="secondary" data-edit-game="${game.gameId}">Redigér grundlegen</button>
       </div>
     </article>`;
@@ -997,18 +1060,18 @@ function renderGameAdminList(){
 function resetGameForm(){
   const form=byId('gameMasterForm');if(!form)return;
   form.reset();
-  byId('gameMasterId').value='';
-  byId('gameMasterFormTitle').textContent='Ny grundleg';
-  byId('gameSetupMinutes').value=2;
-  byId('gameActiveMinutes').value=6;
+  setGameField('gameMasterId','');
+  if(byId('gameMasterFormTitle'))byId('gameMasterFormTitle').textContent='Ny grundleg';
+  setGameField('gameSetupMinutes',2);
+  setGameField('gameActiveMinutes',6);
   updateGameDurationTotal();
-  byId('gameStatus').value='active';
-  byId('gameAudience').value='all';
-  byId('gameMinParticipants').value=4;
-  byId('gameMaxParticipants').value=0;
-  byId('gameOrganization').value='Fælles';
-  byId('gameMinTeams').value=2;
-  byId('gameTeamSize').value=4;
+  setGameField('gameStatus','active');
+  setGameField('gameAudience','all');
+  setGameField('gameMinParticipants',4);
+  setGameField('gameMaxParticipants',0);
+  setGameField('gameOrganization','Fælles');
+  setGameField('gameMinTeams',2);
+  setGameField('gameTeamSize',4);
   byId('cancelGameEditBtn')?.classList.add('hidden');
   gameSelectedExerciseIds=new Set();
   gameEquipmentDraft=[];
@@ -1024,35 +1087,53 @@ function startNewGameMaster(){
   setTimeout(()=>byId('gameName')?.focus(),40);
 }
 function editGameMaster(gameId){
-  const game=games().map(normalizeGame).find(item=>item.gameId===gameId);if(!game)return;
-  showView('gamesView');showGameModuleTab('admin');
-  byId('gameMasterId').value=game.gameId;
-  byId('gameMasterFormTitle').textContent=`Redigér: ${game.name}`;
-  byId('gameName').value=game.name;
-  byId('gameTopic').value=game.topic;
-  byId('gameSetupMinutes').value=game.setupMinutes;
-  byId('gameActiveMinutes').value=game.activeMinutes;
-  updateGameDurationTotal();
-  byId('gameStatus').value=game.status;
-  byId('gameAudience').value=game.audience;
-  byId('gameTags').value=(game.tags||[]).join(', ');
-  byId('gameDescription').value=game.description;
-  byId('gameRules').value=game.rules;
-  byId('gameCoachTips').value=game.coachTips;
-  byId('gameMinParticipants').value=game.minParticipants;
-  byId('gameMaxParticipants').value=game.maxParticipants||0;
-  byId('gameOrganization').value=game.organization;
-  byId('gameRequiresTeams').checked=game.requiresTeams;
-  byId('gameMinTeams').value=game.minTeams||2;
-  byId('gameTeamSize').value=game.teamSize||4;
-  byId('cancelGameEditBtn').classList.remove('hidden');
-  gameSelectedExerciseIds=new Set(game.exerciseIds||[]);
-  gameEquipmentDraft=structuredClone(game.equipment||[]);
-  updateGameTeamFields();
-  renderGameEquipmentRows();
-  renderCustomGameEquipmentList();
-  renderGameExercisePicker();
-  window.scrollTo({top:byId('gameMasterForm')?.offsetTop||0,behavior:'smooth'});
+  try{
+    const raw=games().find(item=>item.gameId===gameId);
+    if(!raw)return alert('Grundlegen kunne ikke findes.');
+    const game=normalizeGame(raw);
+
+    // Sæt ID før faneskift, så formularen aldrig kan blive nulstillet som "ny leg".
+    setGameField('gameMasterId',game.gameId);
+    showView('gamesView');
+    showGameModuleTab('admin');
+
+    setGameField('gameMasterId',game.gameId);
+    if(byId('gameMasterFormTitle'))byId('gameMasterFormTitle').textContent=`Redigér: ${game.name}`;
+    setGameField('gameName',game.name);
+    setGameField('gameTopic',game.topic);
+    setGameField('gameSetupMinutes',game.setupMinutes);
+    setGameField('gameActiveMinutes',game.activeMinutes);
+    updateGameDurationTotal();
+    setGameField('gameStatus',game.status);
+    setGameField('gameAudience',game.audience);
+    setGameField('gameTags',(game.tags||[]).join(', '));
+    setGameField('gameDescription',game.description);
+    setGameField('gameRules',game.rules);
+    setGameField('gameCoachTips',game.coachTips);
+    setGameField('gameMinParticipants',game.minParticipants);
+    setGameField('gameMaxParticipants',game.maxParticipants||0);
+    setGameField('gameOrganization',game.organization);
+    setGameField('gameRequiresTeams',game.requiresTeams);
+    setGameField('gameMinTeams',game.minTeams||2);
+    setGameField('gameTeamSize',game.teamSize||4);
+
+    byId('cancelGameEditBtn')?.classList.remove('hidden');
+    gameSelectedExerciseIds=new Set(game.exerciseIds||[]);
+    gameEquipmentDraft=structuredClone(game.equipment||[]);
+    updateGameTeamFields();
+    renderGameEquipmentRows();
+    renderCustomGameEquipmentList();
+    renderGameExercisePicker();
+
+    // Kontrol: redigering må aldrig ende i en tom standardformular.
+    if(byId('gameName') && byId('gameName').value!==game.name){
+      throw new Error('Grundlegens navn kunne ikke indlæses i formularen.');
+    }
+    window.scrollTo({top:byId('gameMasterForm')?.offsetTop||0,behavior:'smooth'});
+  }catch(error){
+    console.error('Kunne ikke redigere grundleg:',error);
+    alert('Grundlegen kunne ikke åbnes korrekt. Dine gemte data er ikke slettet. Genindlæs siden og prøv igen.');
+  }
 }
 function duplicateGameMaster(gameId){
   const source=games().map(normalizeGame).find(item=>item.gameId===gameId);if(!source)return;
@@ -1492,12 +1573,11 @@ async function init(){
   const base=await fetch('data/exercises.json').then(r=>r.json());
   templates=await fetch('data/workoutTemplates.json').then(r=>r.json());
   exercises=[...customs(),...base];
-  migrateLegacyGames();
   renderAdultExerciseOptions();
   $('#templateSelect').innerHTML=templates.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   $('#workoutDate').value=new Date().toISOString().slice(0,10);
   sections=prepareTemplateSections(templates[0].sections);
-  populatePickerFilters();bind();syncManualChoiceButtons();setCreationMode('choice');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();renderGameLibrary();renderGameAdminList();resetGameForm();renderCustomGameEquipmentList();updateReview();renderMusicPlanner();
+  populatePickerFilters();bind();syncManualChoiceButtons();setCreationMode('choice');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();renderMusicPlanner();initGameModuleSafely();
   await handleSpotifyOAuthCallback();
   updateSpotifyIntegrationUI();
 }
@@ -1741,7 +1821,12 @@ function deleteSectionWithConfirm(index){
 }
 
 function bind(){
-  document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{showView(b.dataset.view);if(b.dataset.view==='gamesView'){renderGameLibrary();renderGameAdminList()}});
+  document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{
+    showView(b.dataset.view);
+    if(b.dataset.view==='gamesView'){
+      try{renderGameLibrary();renderGameAdminList()}catch(error){showGameModuleError(error)}
+    }
+  });
   document.querySelectorAll('[data-game-module-tab]').forEach(button=>button.onclick=()=>showGameModuleTab(button.dataset.gameModuleTab));
   document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>goToStep(+b.dataset.step));
   document.querySelectorAll('[data-next-step]').forEach(b=>b.onclick=()=>goToStep(+b.dataset.nextStep));
@@ -1900,6 +1985,7 @@ function bind(){
   bindPlanner();
 
   on('aiBuildSectionBtn','click',()=>startSingleSectionPlanner(null));
+  on('insertGameFromLibraryBtn','click',()=>openGameLibraryForSection(null,true));
   on('aiBuildGameBtn','click',()=>startSingleSectionPlanner(null,'Leg'));
   on('runPreset','change',e=>fillRunPreset(e.target.value));
   if($('#runForm'))$('#runForm').onsubmit=submitRun;
@@ -2001,7 +2087,7 @@ function setCreationMode(mode){
 function selectedTrainingType(){return plannerConcept||'junior'}
 
 function verifyInteractiveControls(){
-  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue','resetEquipmentProfileBtn','singleFundamentalChoices','adultExerciseOptions','addFinisherBtn','homeBrandBtn','aiSectionContext','inlineFundamentalChoices','inlineFinisherWrap','singleFinisherMode','singleFinisherCatalog','singleFinisherSuggestBtn','inlineFinisherMode','inlineFinisherCatalog','inlineFinisherSuggestBtn','sectionEditDialog','sectionEditForm','sectionEditStructureFields','sectionEditGuidanceFields'];
+  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','insertGameFromLibraryBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue','resetEquipmentProfileBtn','singleFundamentalChoices','adultExerciseOptions','addFinisherBtn','homeBrandBtn','aiSectionContext','inlineFundamentalChoices','inlineFinisherWrap','singleFinisherMode','singleFinisherCatalog','singleFinisherSuggestBtn','inlineFinisherMode','inlineFinisherCatalog','inlineFinisherSuggestBtn','sectionEditDialog','sectionEditForm','sectionEditStructureFields','sectionEditGuidanceFields'];
   const missing=required.filter(id=>!byId(id));
   if(missing.length)console.error('Manglende interaktive elementer:',missing);
   else console.info('FunkFit interaktive kontroller: OK');
@@ -5704,4 +5790,8 @@ async function toggleFullscreen(){try{if(!document.fullscreenElement)await $('#w
 function openPlaylist(url,name){if(!url.trim())return alert(`Indsæt først et link til ${name}.`);window.open(url,'_blank','noopener')}
 
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./service-worker.js');
-init().catch(e=>{console.error(e);alert('Appen kunne ikke starte. Genindlæs siden.')});
+init().catch(e=>{
+  console.error('FunkFit startup error:',e);
+  const message=e?.message?`\n\nFejl: ${e.message}`:'';
+  alert(`Appen kunne ikke starte korrekt. Genindlæs siden.${message}`);
+});
