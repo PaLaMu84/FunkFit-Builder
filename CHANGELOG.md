@@ -1,53 +1,54 @@
-# FunkFit Builder v0.7.4-alpha.30
+# FunkFit Builder v0.7.4-alpha.31
 
-## Samlet gennemgang
-Denne version samler de ventende rettelser til musik/player/gemte træninger og en faglig opgradering af HYROX, HIIT og TRX.
+## Nyt: Lege-modul
+- Nyt hovedområde “Lege”.
+- Legebibliotek og separat Indholdsadministration.
+- Grundlege/masterlege gemmes centralt.
+- Når en leg bruges i en træning, indsættes en kopi/instans.
+- Træningsændringer påvirker ikke grundlegen.
 
-## Musik
-- PLAYLISTE vises kun ved reelt indhold eller tilknyttet link.
-- Ny “Slet playlisten”.
-- AI må ikke vælge klassisk, instrumental, soundtrack/score, ambient, meditation, karaoke eller tribute/cover-albums.
-- Højere energi i alle sektioner bortset fra den rolige ledopvarmning.
-- Nyere musik prioriteres: 80 % fra 2018+, ingen pre-2010 som standard.
-- Track-schema indeholder releaseYear, energy og hasVocals.
-- TIDAL får særlig mainstream/katalogregel.
+## Grundleg
+Kan gemme:
+- navn
+- emne/tema
+- beskrivelse
+- regler
+- trænertips
+- standardvarighed
+- status
+- målgruppe
+- tags
+- min./maks. deltagere
+- organisering
+- holdkrav, antal hold og holdstørrelse
+- præcist udstyr + antal
+- standardøvelser fra øvelsesbiblioteket
 
-## Player
-- Funktionel voksen, HIIT, HYROX og TRX viser voksenordination/vægt som primær visning.
-- Familie viser fortsat Junior + Voksen.
-- Junior viser kun Junior.
-- Kun den faktisk tilknyttede musiktjeneste vises.
+## Legebibliotek
+- Søgning og emnefilter.
+- Deltagerantal viser om legen passer.
+- “Brug i træning”.
+- Eksisterende Leg-sektion har “Vælg fra Legebibliotek”.
+- Hvis deltagerantallet ligger uden for grundlegens ramme, vises advarsel.
 
-## Gemte træninger
-- “Playliste tilknyttet” åbner playlisten.
-- “Playliste ikke tilknyttet” åbner træningen direkte på Musik-trinnet.
+## Træningsinstans
+- Gemmer reference til grundlegen og versionen, men er en selvstændig kopi.
+- Øvelser kan redigeres, fjernes og tilføjes i Finpuds.
+- Ændringer går ikke tilbage til grundlegen.
 
-## HYROX
-- Officielle stationer uden SkiErg/romaskine prioriteres: sled push/pull, burpee broad jumps, farmer carry, sandbag lunges, wall balls.
-- Hyrox-inspirerede støtteøvelser bruges sekundært.
-- “Løb mellem hver øvelse” med 200/300/400/500/1000 m eller brugerdefineret.
-- “Start også med løb” giver klassisk løb → station struktur.
-- AI-HYROX bruger automatisk løb mellem stationerne.
-- Romaskine/SkiErg fjernes fra standardudstyrsprofilen i denne installation.
+## Udstyr
+- Grundlegens præcise udstyrstal fødes ind i “Du skal bruge”.
+- Udstyrstal fra legen multipliceres ikke automatisk med antal deltagere.
 
-## TRX
-- TRX-first: hovedarbejdet filtreres til øvelser, der faktisk kræver TRX.
-- Bibliotek udvidet med low row, mid row, chest fly, single-leg squat og atomic push-up.
-- TRX-øvelser tagges efter de 7 grundbevægelser.
-- Udstyrsfiltrering understøtter “alle redskaber kræves”.
+## Administration
+- Grundlege kan oprettes, redigeres, duplikeres og slettes.
+- Aktiv/Kladde-status.
+- Admin-klar metadata: ownerId, ownerRole, visibility, version og timestamps.
+- Ingen falsk server-backend: data er fortsat lokale i denne PWA.
 
-## HIIT
-- AI bruger intervalstruktur frem for AMRAP forklædt som HIIT.
-- Standardprofiler: 30/30, 40/20 og 20/40.
-- Primær pulje er enkel og skalerbar.
-- Teknisk krævende øvelser kræver øvet/erfaren intention.
-- Tunge/komplekse/isolationsprægede standardvalg filtreres fra.
-- Mindst én engine-bevægelse prioriteres.
-- Hård lokal muskeludtrætning straffes ekstra i balancealgoritmen.
-
-## Manual
-- Udviklingen fra alpha.19 til alpha.30 er samlet.
-- HYROX-, HIIT-, TRX-, musik- og player-regler er dokumenteret.
-
-## Data
-- Gemte træninger bruger fortsat `funkfit-workouts-v074a`.
+## Migrering og backup
+- Nye keys:
+  - `funkfit-games-v1`
+  - `funkfit-games-backup-v1`
+- Tidligere Leg-elementer i Mit bibliotek importeres én gang som grundleg uden at blive slettet.
+- Workout-storage er fortsat `funkfit-workouts-v074a`.

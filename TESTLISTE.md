@@ -1,59 +1,68 @@
-# Gentest – v0.7.4-alpha.30
+# Gentest – v0.7.4-alpha.31
 
-## Musik
-1. Gå til Musik uden at generere/tilknytte noget: PLAYLISTE må ikke vises.
-2. Generér AI-playliste: PLAYLISTE skal vises.
-3. Klik “Slet playlisten”: resultatkortet skal forsvinde.
-4. Kontroller at AI-prompt/schema kræver vokal, nyere tracks og højere energi.
-5. Kontroller at klassisk/instrumental/soundtrack filtreres fra.
-6. Vælg TIDAL og generér en liste.
+## Lege – navigation
+1. Hovednavigationen viser Lege.
+2. Lege åbner Legebibliotek som standard.
+3. Skift mellem Legebibliotek og Administration.
+4. Mobilnavigation må ikke give vandret overflow.
 
-## Player
-7. Afspil Junior: primær label = JUNIOR.
-8. Afspil Familie: JUNIOR + VOKSEN.
-9. Afspil Funktionel voksen: primær label = VOKSEN og voksen kg/reps.
-10. Gentag for HIIT/HYROX/TRX.
-11. Tilknyt kun TIDAL: kun TIDAL-knappen må vises i player.
-12. Uden playlist-link: ingen musiktjenesteknapper.
+## Byg en grundleg
+5. Opret en leg med navn og emne.
+6. Gem beskrivelse, regler og trænertips.
+7. Sæt standardvarighed.
+8. Sæt min. deltagere.
+9. Sæt maksimum deltagere og kontroller validation.
+10. Vælg organisering Hold og kontroller at holdfelter vises.
+11. Sæt min. antal hold og anbefalet holdstørrelse.
+12. Tilføj 2-3 redskaber med præcise antal.
+13. Tilknyt 3 standardøvelser.
+14. Gem som Aktiv.
+15. Opret en anden som Kladde: den må ikke vises i Legebibliotek.
 
-## Gemte træninger
-13. Træning uden link: “Playliste ikke tilknyttet”.
-14. Klik den: Musik-trinnet åbnes.
-15. Træning med link: “Playliste tilknyttet”.
-16. Klik den: playlisten åbnes.
+## Administration
+16. Redigér en bestehende grundleg.
+17. Kontroller at versionsnummeret stiger.
+18. Duplikér en leg: kopi skal være Kladde.
+19. Slet en grundleg og kontroller bekræftelse.
 
-## HYROX
-17. Generér HYROX med relevant udstyr: officielle stationer skal dominere.
-18. Ingen SkiErg/romaskine i standardudstyr.
-19. Kontroller “Løb mellem hver øvelse”.
-20. Test 200/300/400/500/1000 m.
-21. Test brugerdefineret distance.
-22. Test “Start også med løb”.
-23. Slå funktionen fra: auto-løb skal fjernes uden at fjerne arbejdsøvelser.
-24. Player/PDF skal følge auto-løbene.
+## Legebibliotek
+20. Søg på navn.
+21. Søg på emne/tag.
+22. Filtrér på emne.
+23. Skift deltagerantal og kontroller “Passer/Tjek deltagerantal”.
+24. Brug en leg i træningen.
 
-## TRX
-25. Generér TRX: alle hovedøvelser skal kræve TRX.
-26. Kontroller variation mellem plank/hinge/pull/squat/push/lunge/rotate.
-27. Kontroller de fem nye TRX-øvelser.
-28. Fjern TRX fra udstyr: AI må ikke kunne bygge en normal TRX-hovedblok med falske kropsvægtsalternativer.
-29. TRX + måtte-øvelse må ikke vælges, hvis måtten mangler.
+## Instans i træning
+25. Indsat leg viser “Fra legebiblioteket”.
+26. Tilføj en øvelse i Finpuds.
+27. Fjern/skift en standardøvelse.
+28. Åbn grundlegen igen: den må ikke være ændret.
+29. Redigér grundlegen centralt: en allerede gemt træningsinstans må ikke ændres.
 
-## HIIT
-30. Generér HIIT: hovedblokke skal være intervaller.
-31. Kontroller 30/30, 40/20 eller 20/40.
-32. Mindst én engine-bevægelse pr. blok.
-33. Ingen curls/deadlifts/balanceøvelser som standard.
-34. KB swing/box jump/wall ball/devil press må kun komme ved øvet/erfaren intention.
-35. Kontroller at samme kropsområde ikke dominerer alle stationer.
-36. Warm-up skal nævne bevægelsesrehearsal.
+## Eksisterende Leg-sektion
+30. Opret/åbn en Leg-sektion.
+31. Tryk “Vælg fra Legebibliotek”.
+32. Vælg en leg: sektionen skal erstattes af en kopi.
+
+## Deltagere
+33. Sæt træningen til færre deltagere end grundlegens minimum.
+34. Brug legen: appen skal advare, men tillade brugerens bevidste valg.
+
+## Udstyr
+35. Opret leg med 12 kegler + 2 React Lights.
+36. Indsæt i træning.
+37. “Du skal bruge” skal mindst vise 12 kegler og 2 React Lights.
+38. Tallene må ikke multipliceres med antal deltagere.
+
+## Storage/migrering
+39. Grundlege overlever reload.
+40. `funkfit-games-backup-v1` opdateres sammen med hovedkey.
+41. Eksisterende `funkfit-workouts-v074a` er uændret.
+42. reset-cache må ikke rydde localStorage.
+43. Tidligere gemte Leg-elementer fra Mit bibliotek importeres kun én gang.
 
 ## Regression
-37. JavaScript starter uden fejl.
-38. Ingen dublerede HTML-id'er.
-39. Gemte træninger fra tidligere version findes stadig.
-40. reset-cache.html må ikke rydde localStorage.
-
-41. Redigér kg/reps i en Funktionel voksen-øvelse og afspil: player skal vise de redigerede metrics.
-42. Redigér HYROX-distance/reps og TRX-kropsvinkel: player skal vise de redigerede sporfelter.
-43. Fjern TRX fra udstyr og prøv at AI-generere TRX: appen skal stoppe med en tydelig fejl.
+44. JavaScript syntax OK.
+45. Ingen dublerede HTML-id'er.
+46. Øvelsesbibliotek og Mit bibliotek virker fortsat.
+47. Musik/Player/HYROX/HIIT/TRX fra alpha.30 virker fortsat.
