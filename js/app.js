@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.31';
+const APP_VERSION='0.7.4-alpha.33';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -107,7 +107,7 @@ function updateAddressVersion(){
 }
 const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a',EQKEY='funkfit-equipment-profiles-v074a';
 const WBACKUPKEY='funkfit-workouts-backup-v1';
-const GKEY='funkfit-games-v1',GBACKUPKEY='funkfit-games-backup-v1',GAME_MIGRATION_KEY='funkfit-games-migrated-v1';
+const GKEY='funkfit-games-v1',GBACKUPKEY='funkfit-games-backup-v1',GAME_MIGRATION_KEY='funkfit-games-migrated-v1',GCUSTOMEQKEY='funkfit-game-custom-equipment-v1';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0,playerTrainingType='junior';
 let musicPlan=[],musicService='spotify',musicScope='all',selectedMusicSections=new Set();
 let musicBuildMode='ai',manualMusicMode='tracks',linkedPlaylist=null,musicReplaceTarget=null;
@@ -662,10 +662,57 @@ function finisherFromForm(prefix){
   });
 }
 
+function customGameEquipment(){
+  const value=read(GCUSTOMEQKEY,[]);
+  return Array.isArray(value)?value.filter(name=>typeof name==='string'&&name.trim()).map(name=>name.trim()):[];
+}
+function saveCustomGameEquipment(values){
+  const safe=[...new Set((values||[]).map(name=>String(name||'').trim()).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b,'da'));
+  localStorage.setItem(GCUSTOMEQKEY,JSON.stringify(safe));
+}
 function gameEquipmentCatalog(){
-  const base=['Kegler','Måtte','Kettlebell','Håndvægt','Boks','Bænk','Medicinbold','Væg','Sjippetov','Elastik','TRX','Sandsæk','Battle rope','Traktordæk','Slæde','Reb','React Lights','Vægtskive','Pull-up stativ'];
+  const base=['Kegler','Måtte','Kettlebell','Håndvægt','Boks','Bænk','Medicinbold','Væg','Sjippetov','Elastik','TRX','Sandsæk','Battle rope','Traktordæk','Slæde','Reb','React Lights','Vægtskive','Pull-up stativ','Ringe'];
   const fromExercises=exercises.flatMap(ex=>ex.equipment||[]).filter(name=>name&&name!=='Kropsvægt');
-  return [...new Set([...base,...fromExercises])].sort((a,b)=>a.localeCompare(b,'da'));
+  return [...new Set([...base,...customGameEquipment(),...fromExercises])].sort((a,b)=>a.localeCompare(b,'da'));
+}
+function gameTotalMinutesValue(setup,active){
+  return Math.max(0,+setup||0)+Math.max(0,+active||0);
+}
+function updateGameDurationTotal(){
+  const setup=Math.max(0,+byId('gameSetupMinutes')?.value||0);
+  const active=Math.max(0,+byId('gameActiveMinutes')?.value||0);
+  if(byId('gameTotalMinutes'))byId('gameTotalMinutes').value=gameTotalMinutesValue(setup,active);
+}
+function renderCustomGameEquipmentList(){
+  const host=byId('customGameEquipmentList');if(!host)return;
+  const items=customGameEquipment();
+  host.innerHTML=items.length?items.map(name=>`<span class="custom-equipment-chip">${esc(name)} <button type="button" data-remove-custom-game-equipment="${esc(name)}" aria-label="Fjern ${esc(name)}">×</button></span>`).join(''):'<small>Ingen egne redskaber endnu.</small>';
+  host.querySelectorAll('[data-remove-custom-game-equipment]').forEach(button=>button.onclick=()=>{
+    const name=button.dataset.removeCustomGameEquipment;
+    if(gameEquipmentDraft.some(item=>item.name===name)){
+      if(!confirm(`“${name}” bruges i den leg, du redigerer nu. Vil du fjerne redskabet fra din faste liste alligevel?`))return;
+    }
+    saveCustomGameEquipment(customGameEquipment().filter(item=>item!==name));
+    renderCustomGameEquipmentList();
+    renderGameEquipmentRows();
+  });
+}
+function addCustomGameEquipment(){
+  const input=byId('customGameEquipmentName');
+  const name=String(input?.value||'').trim();
+  if(!name)return;
+  const all=gameEquipmentCatalog();
+  const existing=all.find(item=>normalizeText(item)===normalizeText(name));
+  if(existing){
+    if(input)input.value='';
+    alert(`“${existing}” findes allerede på listen.`);
+    return;
+  }
+  saveCustomGameEquipment([...customGameEquipment(),name]);
+  if(input)input.value='';
+  renderCustomGameEquipmentList();
+  renderGameEquipmentRows();
 }
 function inferLegacyGameEquipment(section){
   const names=new Set(sectionDeclaredEquipment(section));
@@ -677,7 +724,7 @@ function inferLegacyGameEquipment(section){
     const ex=exercises.find(item=>item.id===activity.exerciseId);
     (ex?.equipment||[]).filter(name=>name!=='Kropsvægt').forEach(name=>names.add(name));
   });
-  return [...names].map(name=>({name,quantity:1,note:'Importeret fra tidligere gemt leg'}));
+  return [...names].map(name=>({name,quantity:1,note:'Importeret fra tidligere gemt leg',selfSource:false}));
 }
 function migrateLegacyGames(){
   if(localStorage.getItem(GAME_MIGRATION_KEY))return;
@@ -694,6 +741,8 @@ function migrateLegacyGames(){
         description:section.description||'',
         rules:section.rules||'',
         coachTips:section.coachTips||'',
+        setupMinutes:0,
+        activeMinutes:+section.minutes||8,
         minutes:+section.minutes||8,
         minParticipants:4,
         maxParticipants:0,
@@ -733,7 +782,15 @@ function gameTeamText(game){
 }
 function gameEquipmentText(game){
   const items=(game.equipment||[]).filter(item=>item?.name&&+item.quantity>0);
-  return items.length?items.map(item=>`${item.quantity} × ${item.name}`).join(' · '):'Intet særligt udstyr';
+  return items.length?items.map(item=>`${item.quantity} × ${item.name}${item.selfSource?' ⚠ selv skaffes':''}`).join(' · '):'Intet særligt udstyr';
+}
+function gameSelfSourceEquipment(game){
+  return (game.equipment||[]).filter(item=>item?.name&&+item.quantity>0&&item.selfSource);
+}
+function gameSelfSourceWarning(game){
+  const items=gameSelfSourceEquipment(game);
+  if(!items.length)return '';
+  return `⚠ OBS – skal selv skaffes: ${items.map(item=>`${item.quantity} × ${item.name}`).join(' · ')}`;
 }
 function gameExerciseNames(game){
   return (game.exerciseIds||[]).map(id=>exercises.find(ex=>ex.id===id)?.name).filter(Boolean);
@@ -747,14 +804,21 @@ function normalizeGame(game){
     description:String(game.description||'').trim(),
     rules:String(game.rules||'').trim(),
     coachTips:String(game.coachTips||'').trim(),
-    minutes:Math.max(1,+game.minutes||8),
+    setupMinutes:Math.max(0,+game.setupMinutes||0),
+    activeMinutes:Math.max(1,+game.activeMinutes||+game.minutes||8),
+    minutes:Math.max(1,gameTotalMinutesValue(game.setupMinutes,+game.activeMinutes||+game.minutes||8)),
     minParticipants:Math.max(1,+game.minParticipants||1),
     maxParticipants:Math.max(0,+game.maxParticipants||0),
     organization:game.organization||'Fælles',
     requiresTeams:!!game.requiresTeams,
     minTeams:Math.max(2,+game.minTeams||2),
     teamSize:Math.max(1,+game.teamSize||4),
-    equipment:(game.equipment||[]).filter(item=>item?.name&&+item.quantity>0).map(item=>({name:item.name,quantity:Math.max(1,+item.quantity||1),note:String(item.note||'')})),
+    equipment:(game.equipment||[]).filter(item=>item?.name&&+item.quantity>0).map(item=>({
+      name:item.name,
+      quantity:Math.max(1,+item.quantity||1),
+      note:String(item.note||''),
+      selfSource:!!item.selfSource
+    })),
     exerciseIds:[...new Set((game.exerciseIds||[]).filter(id=>exercises.some(ex=>ex.id===id)))],
     tags:Array.isArray(game.tags)?game.tags.filter(Boolean):String(game.tags||'').split(',').map(x=>x.trim()).filter(Boolean),
     audience:game.audience||'all',
@@ -772,6 +836,8 @@ function gameToSection(rawGame){
   const section=defaultSection('Leg');
   section.name=game.name;
   section.minutes=game.minutes;
+  section.gameSetupMinutes=game.setupMinutes;
+  section.gameActiveMinutes=game.activeMinutes;
   section.organization=game.organization;
   section.description=game.description;
   section.rules=game.rules;
@@ -797,8 +863,12 @@ function gameInstanceInfo(section){
   if(!section?.gameSourceId)return '';
   const master=games().find(game=>game.gameId===section.gameSourceId);
   const sourceName=master?.name||section.name;
+  const setup=Math.max(0,+section.gameSetupMinutes||0),active=Math.max(0,+section.gameActiveMinutes||0);
+  const selfSource=(section.gameEquipment||[]).filter(item=>item?.selfSource);
   return `<section class="game-instance-card">
     <div><span>🎲 Fra legebiblioteket</span><strong>${esc(sourceName)}</strong></div>
+    ${setup||active?`<p><strong>Tid:</strong> ${setup} min forklaring/forberedelse + ${active} min aktiv leg = ${setup+active} min samlet.</p>`:''}
+    ${selfSource.length?`<p class="game-instance-warning">⚠ <strong>OBS – skal selv skaffes:</strong> ${esc(selfSource.map(item=>`${item.quantity} × ${item.name}`).join(' · '))}</p>`:''}
     <p>Denne træning bruger en selvstændig kopi. Du kan ændre eller tilføje øvelser her uden at ændre grundlegen.</p>
   </section>`;
 }
@@ -889,10 +959,12 @@ function renderGameLibrary(){
       <div class="game-card-meta">
         <span>👥 Min. ${game.minParticipants}${game.maxParticipants?` · maks. ${game.maxParticipants}`:''}</span>
         <span>🏁 ${esc(gameTeamText(game))}</span>
-        <span>⏱️ ${game.minutes} min</span>
+        <span>⏱️ ${game.minutes} min (${game.setupMinutes}+${game.activeMinutes})</span>
         <span>🎯 ${esc(gameAudienceLabel(game.audience))}</span>
       </div>
+      <div class="game-card-detail"><strong>Tid:</strong> ${game.setupMinutes} min forklaring/forberedelse · ${game.activeMinutes} min aktiv leg</div>
       <div class="game-card-detail"><strong>Udstyr:</strong> ${esc(gameEquipmentText(game))}</div>
+      ${gameSelfSourceEquipment(game).length?`<div class="game-self-source-warning">${esc(gameSelfSourceWarning(game))}</div>`:''}
       <div class="game-card-detail"><strong>Standardøvelser:</strong> ${exNames.length?esc(exNames.join(' · ')):'Ingen faste øvelser'}</div>
       <div class="game-card-actions">
         <button type="button" data-use-game="${game.gameId}">${Number.isInteger(gameTargetSection)?'Brug i denne sektion':'Brug i træning'}</button>
@@ -910,7 +982,7 @@ function renderGameAdminList(){
     <div>
       <span class="game-status-pill ${game.status}">${esc(gameStatusLabel(game.status))}</span>
       <strong>${esc(game.name)}</strong>
-      <small>${esc(game.topic)} · v${game.version} · opdateret ${new Date(game.updatedAt).toLocaleDateString('da-DK')}</small>
+      <small>${esc(game.topic)} · v${game.version} · opdateret ${new Date(game.updatedAt).toLocaleDateString('da-DK')}${gameSelfSourceEquipment(game).length?' · ⚠ eget skaffeudstyr':''}</small>
     </div>
     <div class="game-admin-actions">
       <button type="button" class="secondary" data-admin-edit-game="${game.gameId}">Redigér</button>
@@ -927,7 +999,9 @@ function resetGameForm(){
   form.reset();
   byId('gameMasterId').value='';
   byId('gameMasterFormTitle').textContent='Ny grundleg';
-  byId('gameMinutes').value=8;
+  byId('gameSetupMinutes').value=2;
+  byId('gameActiveMinutes').value=6;
+  updateGameDurationTotal();
   byId('gameStatus').value='active';
   byId('gameAudience').value='all';
   byId('gameMinParticipants').value=4;
@@ -940,6 +1014,7 @@ function resetGameForm(){
   gameEquipmentDraft=[];
   updateGameTeamFields();
   renderGameEquipmentRows();
+  renderCustomGameEquipmentList();
   renderGameExercisePicker();
 }
 function startNewGameMaster(){
@@ -955,7 +1030,9 @@ function editGameMaster(gameId){
   byId('gameMasterFormTitle').textContent=`Redigér: ${game.name}`;
   byId('gameName').value=game.name;
   byId('gameTopic').value=game.topic;
-  byId('gameMinutes').value=game.minutes;
+  byId('gameSetupMinutes').value=game.setupMinutes;
+  byId('gameActiveMinutes').value=game.activeMinutes;
+  updateGameDurationTotal();
   byId('gameStatus').value=game.status;
   byId('gameAudience').value=game.audience;
   byId('gameTags').value=(game.tags||[]).join(', ');
@@ -973,6 +1050,7 @@ function editGameMaster(gameId){
   gameEquipmentDraft=structuredClone(game.equipment||[]);
   updateGameTeamFields();
   renderGameEquipmentRows();
+  renderCustomGameEquipmentList();
   renderGameExercisePicker();
   window.scrollTo({top:byId('gameMasterForm')?.offsetTop||0,behavior:'smooth'});
 }
@@ -1003,11 +1081,16 @@ function renderGameEquipmentRows(){
     <label>Redskab<select data-game-equipment-name="${index}">${catalog.map(name=>`<option value="${esc(name)}" ${name===item.name?'selected':''}>${esc(name)}</option>`).join('')}</select></label>
     <label>Antal<input data-game-equipment-qty="${index}" type="number" min="1" value="${Math.max(1,+item.quantity||1)}"></label>
     <label>Note<input data-game-equipment-note="${index}" value="${esc(item.note||'')}" placeholder="Fx ét sæt pr. bane"></label>
+    <label class="game-equipment-observe">
+      <input data-game-equipment-self-source="${index}" type="checkbox" ${item.selfSource?'checked':''}>
+      <span><strong>OBS</strong><small>Skal selv skaffes</small></span>
+    </label>
     <button type="button" class="ghost" data-remove-game-equipment="${index}">Fjern</button>
   </div>`).join(''):'<div class="empty compact-empty">Ingen særlige redskaber angivet.</div>';
   host.querySelectorAll('[data-game-equipment-name]').forEach(select=>select.onchange=()=>{gameEquipmentDraft[+select.dataset.gameEquipmentName].name=select.value});
   host.querySelectorAll('[data-game-equipment-qty]').forEach(input=>input.oninput=()=>{gameEquipmentDraft[+input.dataset.gameEquipmentQty].quantity=Math.max(1,+input.value||1)});
   host.querySelectorAll('[data-game-equipment-note]').forEach(input=>input.oninput=()=>{gameEquipmentDraft[+input.dataset.gameEquipmentNote].note=input.value});
+  host.querySelectorAll('[data-game-equipment-self-source]').forEach(input=>input.onchange=()=>{gameEquipmentDraft[+input.dataset.gameEquipmentSelfSource].selfSource=input.checked});
   host.querySelectorAll('[data-remove-game-equipment]').forEach(button=>button.onclick=()=>{
     gameEquipmentDraft.splice(+button.dataset.removeGameEquipment,1);renderGameEquipmentRows();
   });
@@ -1016,7 +1099,7 @@ function addGameEquipment(){
   const catalog=gameEquipmentCatalog();
   const used=new Set(gameEquipmentDraft.map(item=>item.name));
   const next=catalog.find(name=>!used.has(name))||catalog[0]||'Kegler';
-  gameEquipmentDraft.push({name:next,quantity:1,note:''});
+  gameEquipmentDraft.push({name:next,quantity:1,note:'',selfSource:false});
   renderGameEquipmentRows();
 }
 function renderGameExercisePicker(){
@@ -1053,7 +1136,8 @@ function submitGameMaster(event){
     gameId:id,
     name:byId('gameName').value,
     topic:byId('gameTopic').value,
-    minutes:+byId('gameMinutes').value||8,
+    setupMinutes:Math.max(0,+byId('gameSetupMinutes').value||0),
+    activeMinutes:Math.max(1,+byId('gameActiveMinutes').value||1),
     status:byId('gameStatus').value,
     audience:byId('gameAudience').value,
     tags:byId('gameTags').value.split(',').map(x=>x.trim()).filter(Boolean),
@@ -1413,7 +1497,7 @@ async function init(){
   $('#templateSelect').innerHTML=templates.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   $('#workoutDate').value=new Date().toISOString().slice(0,10);
   sections=prepareTemplateSections(templates[0].sections);
-  populatePickerFilters();bind();syncManualChoiceButtons();setCreationMode('choice');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();renderGameLibrary();renderGameAdminList();resetGameForm();updateReview();renderMusicPlanner();
+  populatePickerFilters();bind();syncManualChoiceButtons();setCreationMode('choice');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();renderGameLibrary();renderGameAdminList();resetGameForm();renderCustomGameEquipmentList();updateReview();renderMusicPlanner();
   await handleSpotifyOAuthCallback();
   updateSpotifyIntegrationUI();
 }
@@ -1677,6 +1761,12 @@ function bind(){
   on('newGameMasterBtn','click',startNewGameMaster);
   on('cancelGameEditBtn','click',resetGameForm);
   on('addGameEquipmentBtn','click',addGameEquipment);
+  on('addCustomGameEquipmentBtn','click',addCustomGameEquipment);
+  on('customGameEquipmentName','keydown',event=>{
+    if(event.key==='Enter'){event.preventDefault();addCustomGameEquipment()}
+  });
+  on('gameSetupMinutes','input',updateGameDurationTotal);
+  on('gameActiveMinutes','input',updateGameDurationTotal);
   on('gameOrganization','change',updateGameTeamFields);
   on('gameRequiresTeams','change',updateGameTeamFields);
   on('gameExerciseSearch','input',renderGameExercisePicker);
@@ -3685,7 +3775,9 @@ function sectionEquipmentRequirements(rawSection,participants){
 
   (section.gameEquipment||[]).forEach(item=>{
     if(!item?.name||item.name==='Kropsvægt'||+item.quantity<=0)return;
-    addRequirement(result,item.name,Math.max(1,+item.quantity||1),item.note||'Krav fra grundlegen','max');
+    const obs=item.selfSource?'OBS – skal selv skaffes':'Krav fra grundlegen';
+    const note=[obs,item.note].filter(Boolean).join(' · ');
+    addRequirement(result,item.name,Math.max(1,+item.quantity||1),note,'max');
   });
 
   const declared=sectionDeclaredEquipment(section);
