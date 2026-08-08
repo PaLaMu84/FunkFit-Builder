@@ -737,3 +737,48 @@ OBS-markeringen vises:
 - i **Du skal bruge**, hvor noten indeholder “OBS – skal selv skaffes”
 
 Det gør det muligt at skelne mellem almindeligt træningsudstyr og små rekvisitter, som instruktøren selv skal huske at medbringe.
+
+
+# Lege-modul – alpha.34
+
+## Rettelse: redigering af eksisterende grundleg
+Redigeringsflowet er gjort robust for grundleg, der er oprettet i alpha.31, alpha.32 og alpha.33.
+
+Tidligere kunne Lege-modulet i særlige tilfælde nulstille formularen som **Ny grundleg** under skiftet fra Legebibliotek til Administration. Hvis der samtidig opstod en fejl under game-initialisering, kunne hele FunkFit vise den generelle besked “Appen kunne ikke starte”.
+
+Fra alpha.34 gælder:
+- Den valgte `gameId` låses før faneskift.
+- Formularen nulstilles kun ved et bevidst valg af **Ny leg** / annullering.
+- Alle formularfelter udfyldes defensivt fra den gemte master.
+- Ældre grundleg får automatisk den nye tidsmodel:
+  - mangler `setupMinutes` → 0 min
+  - tidligere `minutes` → aktiv legetid
+- Ældre udstyrsdata får automatisk `selfSource: false`.
+- Game-data repareres til den aktuelle schema-version ved opstart.
+- En fejl i Lege-modulet må ikke længere afbryde hele FunkFit Builder.
+- Hvis den overordnede app stadig får en startup-fejl, vises den konkrete fejltekst i dialogen for lettere fejlfinding.
+
+Ingen grundleg eller træninger slettes af schema-reparationen.
+
+
+# Lege-modul – alpha.35
+
+## Indsæt en leg direkte fra Finpuds
+Finpuds har nu den selvstændige handling:
+
+**🎲 Indsæt leg fra Legebibliotek**
+
+Når den bruges:
+1. FunkFit åbner Legebiblioteket i en særlig indsæt-tilstand.
+2. Den ønskede grundleg vælges med **Indsæt som ny sektion**.
+3. Grundlegen kopieres til træningen som en ny **Leg-sektion**.
+4. FunkFit vender automatisk tilbage til Finpuds.
+
+Den nye leg **erstatter ikke** en eksisterende sektion. Hvis træningen allerede har en Finisher, placeres legen umiddelbart før Finisheren, så Finisher fortsat ligger sidst.
+
+Den indsatte leg er en selvstændig træningsinstans og kan tilpasses i Finpuds uden at ændre grundlegen.
+
+### Tre forskellige legehandlinger
+- **Indsæt leg fra Legebibliotek** → indsætter en eksisterende grundleg som ny sektion.
+- **Byg en leg med AI** → bygger et nyt legforslag til træningen.
+- **Vælg fra Legebibliotek** inde i en eksisterende Leg-sektion → erstatter netop den sektion med en kopi af en grundleg.

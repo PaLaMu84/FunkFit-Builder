@@ -1,14 +1,13 @@
-# FunkFit Builder v0.7.4-alpha.33
+# FunkFit Builder v0.7.4-alpha.35
 
-## Lege – OBS på redskaber
-- Hvert redskab kan markeres “OBS – skal selv skaffes”.
-- Markeringen er individuel pr. redskab.
-- Typisk brug: kortspil, terninger, balloner, papir, præmier og særlige rekvisitter.
-- OBS vises i Legebibliotek, Finpuds-instans, Administration og “Du skal bruge”.
-- Eksisterende redskaber uden markering behandles som almindeligt FunkFit-udstyr.
-- Nye redskaber starter med OBS slået fra.
+## Finpuds
+- Ny knap: “🎲 Indsæt leg fra Legebibliotek”.
+- Legebibliotek åbnes i indsæt-tilstand.
+- Valgt leg indsættes som en NY Leg-sektion.
+- Andre sektioner erstattes ikke.
+- Findes en Finisher, indsættes legen før Finisheren.
+- Appen vender tilbage til Finpuds efter valg.
+- AI-knappen er omdøbt til “✨ Byg en leg med AI” for at skelne de to flows.
 
-## Data
-- Game equipment items har nyt boolean-felt `selfSource`.
-- Eksisterende grundleg er bagudkompatible.
-- Workout/game storage keys er uændrede.
+## Eksisterende Leg-sektion
+- “Vælg fra Legebibliotek” fungerer fortsat som erstatning af den konkrete Leg-sektion.
