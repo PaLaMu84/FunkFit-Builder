@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.31</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a31">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a31">
+  <title>FunkFit Builder v0.7.4-alpha.33</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a33">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a33">
 </head>
 <body>
 <header class="topbar">
   <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
-    <p class="eyebrow">VERSION 0.7.4-ALPHA.31</p>
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.33</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </button>
@@ -831,8 +831,14 @@ Hovedtræning 20 min
           <label>Emne / tema *
             <input id="gameTopic" required maxlength="70" placeholder="Fx Reaktion, samarbejde, stafet">
           </label>
-          <label>Standard varighed
-            <div class="input-with-unit"><input id="gameMinutes" type="number" min="1" max="45" value="8"><span>min</span></div>
+          <label>Forklaring + forberedelse
+            <div class="input-with-unit"><input id="gameSetupMinutes" type="number" min="0" max="30" value="2"><span>min</span></div>
+          </label>
+          <label>Aktiv leg
+            <div class="input-with-unit"><input id="gameActiveMinutes" type="number" min="1" max="60" value="6"><span>min</span></div>
+          </label>
+          <label>Samlet varighed
+            <div class="input-with-unit calculated-duration"><input id="gameTotalMinutes" type="number" value="8" readonly tabindex="-1"><span>min</span></div>
           </label>
           <label>Status
             <select id="gameStatus"><option value="active">Aktiv</option><option value="draft">Kladde</option></select>
@@ -898,9 +904,20 @@ Hovedtræning 20 min
             <div>
               <p class="eyebrow">UDSTYR</p>
               <h4>Hvilke redskaber kræver legen?</h4>
-              <p>Angiv det faktiske antal til selve legen. Det bliver ført direkte ind i træningens “Du skal bruge”.</p>
+              <p>Angiv det faktiske antal til selve legen. Det bliver ført direkte ind i træningens “Du skal bruge”. Markér OBS på ting, instruktøren selv skal skaffe, fx kortspil eller terninger.</p>
             </div>
             <button id="addGameEquipmentBtn" type="button" class="secondary">+ Redskab</button>
+          </div>
+          <div class="custom-game-equipment">
+            <div>
+              <strong>Mangler redskabet på listen?</strong>
+              <small>Tilføj dit eget redskab én gang – så kan det genbruges i alle grundleg.</small>
+            </div>
+            <div class="custom-game-equipment-add">
+              <input id="customGameEquipmentName" placeholder="Fx Ringe">
+              <button id="addCustomGameEquipmentBtn" type="button" class="secondary">Tilføj eget redskab</button>
+            </div>
+            <div id="customGameEquipmentList" class="custom-game-equipment-list"></div>
           </div>
           <div id="gameEquipmentRows" class="game-equipment-rows"></div>
         </section>
@@ -1219,7 +1236,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.31 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a31"></script>
+<footer>FunkFit Builder v0.7.4-alpha.33 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a33"></script>
 </body>
 </html>

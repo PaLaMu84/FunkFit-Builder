@@ -676,3 +676,64 @@ Grundlege gemmes i:
 `reset-cache.html` rydder ikke disse data.
 
 Ved første opgradering forsøger FunkFit desuden at importere tidligere Leg-elementer fra **Mit bibliotek** som grundleg. De gamle elementer slettes ikke.
+
+
+# Lege-modul – alpha.32
+
+## Egne redskaber
+Legemodulet har nu et lokalt redskabskatalog, som brugeren selv kan udvide.
+
+Hvis et redskab ikke findes på standardlisten, kan brugeren skrive navnet – fx **Ringe** – og vælge **Tilføj eget redskab**. Redskabet gemmes derefter og kan vælges igen i andre grundleg.
+
+Egne redskaber gemmes i:
+- `funkfit-game-custom-equipment-v1`
+
+Det påvirker ikke øvelsesbibliotekets faste udstyrstyper. Det er et fleksibelt katalog til grundlegenes konkrete udstyrsbehov.
+
+**Ringe** er samtidig tilføjet til standardlisten.
+
+## Tid i en leg
+En grundleg har ikke længere kun ét samlet tidsfelt. Tiden opdeles i:
+
+1. **Forklaring + forberedelse** – tid til at forklare regler, dele hold, stille redskaber op og gøre deltagerne klar.
+2. **Aktiv leg** – den tid deltagerne faktisk leger.
+3. **Samlet varighed** – beregnes automatisk som forklaring/forberedelse + aktiv leg.
+
+Eksempel: 3 min forklaring/forberedelse + 8 min aktiv leg = 11 min samlet.
+
+Det er den **samlede varighed**, der føres ind som sektionens tid, når legen indsættes i en træning. Legebiblioteket og træningsinstansen viser også tidsfordelingen.
+
+## Bagudkompatibilitet
+Ældre grundleg, der kun har et samlet `minutes`-felt, behandles som 0 min forklaring/forberedelse og hele den tidligere tid som aktiv leg. Dermed mister tidligere gemte lege ikke deres varighed.
+
+
+# Lege-modul – alpha.33
+
+## OBS – redskab skal selv skaffes
+Hvert redskab i en grundleg kan nu markeres med:
+
+**OBS – skal selv skaffes**
+
+Det bruges til ting, som ikke nødvendigvis findes i FunkFits normale udstyrslager, fx:
+- kortspil
+- terninger
+- balloner
+- papir/kort
+- små præmier
+- særlige rekvisitter
+
+Markeringen ligger på det enkelte redskab – ikke på hele legen. En leg kan derfor fx kræve:
+- 12 kegler
+- 2 React Lights
+- 1 kortspil **⚠ skal selv skaffes**
+
+Markeringen gemmes i grundlegen og følger med træningsinstansen.
+
+## Visning
+OBS-markeringen vises:
+- i Legebiblioteket
+- i den indsatte leg i Finpuds
+- i administrationsoversigten
+- i **Du skal bruge**, hvor noten indeholder “OBS – skal selv skaffes”
+
+Det gør det muligt at skelne mellem almindeligt træningsudstyr og små rekvisitter, som instruktøren selv skal huske at medbringe.

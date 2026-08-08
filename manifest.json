@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.7.4-alpha.31",
-  "short_name": "FunkFit 0.7.4a31",
+  "name": "FunkFit Builder v0.7.4-alpha.33",
+  "short_name": "FunkFit 0.7.4a33",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "Lege-modul med legebibliotek, masterlege og lokal indholdsadministration"
+  "description": "Lege: OBS-markering for redskaber instruktøren selv skal skaffe"
 }
