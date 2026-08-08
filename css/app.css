@@ -2159,3 +2159,77 @@ a{
   .game-card-actions button{width:100%;min-width:0}
   .game-admin-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+
+
+/* v0.7.4-alpha.32 – egne redskaber + delt legetid */
+.calculated-duration input{background:#eef2f7;color:#0f172a;font-weight:900;cursor:default}
+.custom-game-equipment{display:grid;gap:.55rem;padding:.75rem;border:1px dashed #cbd5e1;border-radius:13px;background:#fff}
+.custom-game-equipment>div:first-child{display:grid;gap:.1rem}
+.custom-game-equipment small{color:#64748b}
+.custom-game-equipment-add{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.5rem}
+.custom-game-equipment-list{display:flex;flex-wrap:wrap;gap:.4rem;min-width:0}
+.custom-equipment-chip{display:inline-flex;align-items:center;gap:.28rem;max-width:100%;padding:.3rem .35rem .3rem .55rem;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:.82rem;font-weight:800}
+.custom-equipment-chip button{width:24px;height:24px;min-height:0;padding:0;border:0;border-radius:50%;background:transparent;color:#6366f1;font-size:1rem;line-height:1}
+.custom-equipment-chip button:hover{background:#e0e7ff}
+@media(max-width:650px){.custom-game-equipment-add{grid-template-columns:minmax(0,1fr)}}
+
+
+/* v0.7.4-alpha.33 – OBS: redskab skal selv skaffes */
+.game-equipment-row{
+  grid-template-columns:1.15fr .42fr 1.25fr .75fr auto;
+}
+.game-equipment-observe{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center;
+  gap:.5rem;
+  min-height:44px;
+  padding:.45rem .55rem;
+  border:1px solid #f59e0b;
+  border-radius:10px;
+  background:#fffbeb;
+}
+.game-equipment-observe input{
+  width:auto!important;
+  min-width:auto!important;
+}
+.game-equipment-observe span{
+  display:grid;
+  gap:.05rem;
+}
+.game-equipment-observe strong{
+  color:#92400e;
+  font-size:.78rem;
+}
+.game-equipment-observe small{
+  color:#78350f;
+  white-space:nowrap;
+}
+.game-self-source-warning,
+.game-instance-warning{
+  padding:.55rem .65rem;
+  border:1px solid #fbbf24;
+  border-radius:10px;
+  background:#fffbeb;
+  color:#78350f!important;
+  font-weight:750;
+}
+@media(max-width:1050px){
+  .game-equipment-row{
+    grid-template-columns:1fr .45fr 1fr;
+  }
+  .game-equipment-observe{
+    grid-column:span 2;
+  }
+}
+@media(max-width:650px){
+  .game-equipment-row{
+    grid-template-columns:minmax(0,1fr);
+  }
+  .game-equipment-observe{
+    grid-column:auto;
+  }
+  .game-equipment-observe small{
+    white-space:normal;
+  }
+}
