@@ -901,3 +901,22 @@ Gemte træninger bruger nu præcis samme målgruppefarver som Trin 1.1:
 - 🟡 TRX
 - 🔴 Hyrox
 - 🟣 HIIT
+
+
+# Fælles Legebibliotek – alpha.38
+
+Det fælles Legebibliotek er udvidet fra 8 til **13 grundleg**.
+
+Følgende brugeroprettede lege fra eksporten 9. august 2026 er nu en del af selve appens `data/sharedGames.json`:
+
+- Superfly Superman Snap challenge
+- Flip kegler
+- Double stafet
+- 3 på stribe
+- Saml keglerne
+
+De originale `gameId`-værdier er bevaret. Det er vigtigt, fordi en bruger, der allerede har samme leg lokalt, ikke får en ny dublet. Den lokale version fungerer som override af den fælles version.
+
+Indholdet fra eksporten er publiceret uden at omskrive regler, beskrivelser, øvelsesvalg, tider eller udstyr. Kun ejerskabsmetadata er ændret fra lokal til fælles.
+
+Udstyrskataloget medtager nu også alle redskabsnavne, der bruges af fælles lege. Det betyder fx, at **Stige** bliver et gyldigt valg i leg-editoren på alle enheder, selv om redskabet oprindeligt var oprettet som lokalt brugerudstyr.

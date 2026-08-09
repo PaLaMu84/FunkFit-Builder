@@ -353,5 +353,220 @@
     "createdAt": "2026-08-09T18:00:00.000Z",
     "updatedAt": "2026-08-09T18:00:00.000Z",
     "source": "shared"
+  },
+  {
+    "gameId": "c80a29fe-a503-4600-a065-25e0a96b4f10",
+    "name": "Superfly Superman Snap challenge",
+    "topic": "Reaktion, core",
+    "setupMinutes": 3,
+    "activeMinutes": 5,
+    "status": "active",
+    "audience": "all",
+    "tags": [
+      "Core",
+      "hurtighed",
+      "konkurrence",
+      "fuld body",
+      "burpee"
+    ],
+    "description": "Lig i superman mode. Gør som instruktøren siger. Fx \"arme til sider\", \"arme frem\", \"arme bagud\", \"brystsvømning\" osv. Når musikken stoppe grib keglen.\n2. pladsen (deltager uden keglen) tager 2 ❤️ - hurtigt.",
+    "rules": "Lig overfor hinanden med en kegle i mellem jer. Én armslængde fra keglen. 2 armslængder til sidemanden.",
+    "coachTips": "1:1. 1 kegle til hvert hold.",
+    "minParticipants": 6,
+    "maxParticipants": 0,
+    "organization": "Makker sammen",
+    "requiresTeams": false,
+    "minTeams": 2,
+    "teamSize": 4,
+    "equipment": [],
+    "exerciseIds": [
+      "burpee"
+    ],
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 2,
+    "createdAt": "2026-08-08T20:29:26.456Z",
+    "updatedAt": "2026-08-08T21:34:23.306Z",
+    "source": "shared",
+    "minutes": 8
+  },
+  {
+    "gameId": "02a77c49-2283-4278-9336-80de65d36789",
+    "name": "Flip kegler",
+    "topic": "Stafet, løb, hurtighed, held",
+    "setupMinutes": 3,
+    "activeMinutes": 7,
+    "status": "active",
+    "audience": "all",
+    "tags": [
+      "Stafet",
+      "konkurrence",
+      "held"
+    ],
+    "description": "2 hold.\nFlip hurtigst 3 kegler som hold.",
+    "rules": "1 fra hvert hold spurter ned og \"flipper\" en kegle (som bottleflip). Keglen skal stå i ringen for at blive godkendt. Fortsættes indtil et hold har flippet 3 kegler, der står \"rigtigt\" i ringen. \nVinder af 2. præmien får 8 ♥️ .",
+    "coachTips": "Kegler ligger fra start ned i ringen.",
+    "minParticipants": 2,
+    "maxParticipants": 0,
+    "organization": "Stafet",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 4,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 6,
+        "note": "3 til hvert hold",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "burpee"
+    ],
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 2,
+    "createdAt": "2026-08-08T20:44:47.205Z",
+    "updatedAt": "2026-08-08T21:33:36.273Z",
+    "source": "shared",
+    "minutes": 10
+  },
+  {
+    "gameId": "d6276f2c-744a-47f9-84d1-0b140121ec7a",
+    "name": "Double stafet",
+    "topic": "Stafet, løb, core, overblik",
+    "setupMinutes": 3,
+    "activeMinutes": 7,
+    "status": "active",
+    "audience": "all",
+    "tags": [
+      "Stafet",
+      "overblik",
+      "reaktion",
+      "Double",
+      "løb",
+      "core",
+      "agility"
+    ],
+    "description": "Løb hurtigt til modsatte ende af hallen. Stå i høj planke.\nInstruktør vender 2 Dooblekort. \nFind hurtigt en figur, der er på begge. Løb sprællemand tilbage gennem stigen.",
+    "rules": "Ingen regler.",
+    "coachTips": "Kan fx krydres med GTOH, burpees, pushup eller lignende før man ser kortet.\nOBS: kræver kortspillet Double.",
+    "minParticipants": 2,
+    "maxParticipants": 0,
+    "organization": "Stafet",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 4,
+    "equipment": [
+      {
+        "name": "Stige",
+        "quantity": 1,
+        "note": "",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "plank"
+    ],
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 2,
+    "createdAt": "2026-08-08T20:56:31.442Z",
+    "updatedAt": "2026-08-08T21:32:52.065Z",
+    "source": "shared",
+    "minutes": 10
+  },
+  {
+    "gameId": "3a9863a2-1e65-466c-9c4a-298f8a20ec73",
+    "name": "3 på stribe",
+    "topic": "Løb, stafet",
+    "setupMinutes": 5,
+    "activeMinutes": 10,
+    "status": "active",
+    "audience": "all",
+    "tags": [
+      "Løb",
+      "tænk",
+      "samarbejde",
+      "hold",
+      "stafet"
+    ],
+    "description": "2 hold. 1 mod 1.\nSpurt ned til spillepladen og placér en kegle. Første med 3 på stribe vinder.",
+    "rules": "Én løber af gangen / hold. Holdet må ikke guide løberen.",
+    "coachTips": "Twist: Man må fjerne 1 kegle fra modstanderholdet, men det koster at man tager 4 ♥️",
+    "minParticipants": 2,
+    "maxParticipants": 0,
+    "organization": "Stafet",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 3,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 6,
+        "note": "3 per bane",
+        "selfSource": false
+      },
+      {
+        "name": "Ringe",
+        "quantity": 9,
+        "note": "",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [],
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 4,
+    "createdAt": "2026-08-08T20:22:45.861Z",
+    "updatedAt": "2026-08-08T21:31:07.779Z",
+    "source": "shared",
+    "minutes": 15
+  },
+  {
+    "gameId": "10694861-ae3c-423f-88e1-bca7d9875b65",
+    "name": "Saml keglerne",
+    "topic": "Importeret fra Mit bibliotek",
+    "description": "En aktiv holdleg med korte bevægelsesopgaver, samarbejde og mulighed for at samle point.",
+    "rules": "Del deltagerne i 2-4 hold. Én deltager fra hvert hold løser en opgave og henter en kegle eller markør. Derefter sendes den næste afsted. Ingen elimineres. Flest markører ved tidens udløb vinder.",
+    "coachTips": "Vis én prøverunde. Hold banen kort, så alle ofte kommer i aktion. Flyt startlinjen eller ændr bevægelsen, hvis der opstår kø. Planlagt til 20 deltagere udendørs. Organisér sektionen, så ventetid og kø undgås.",
+    "minutes": 12,
+    "minParticipants": 4,
+    "maxParticipants": 0,
+    "organization": "Hold",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 4,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 1,
+        "note": "Importeret fra tidligere gemt leg",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "shuttle-run",
+      "bear-crawl",
+      "mirror-drill"
+    ],
+    "tags": [
+      "importeret"
+    ],
+    "audience": "all",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-08-02T18:41:06.424Z",
+    "updatedAt": "2026-08-08T13:43:58.633Z",
+    "source": "shared",
+    "setupMinutes": 0,
+    "activeMinutes": 12
   }
 ]

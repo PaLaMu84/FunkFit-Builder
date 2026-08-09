@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.37';
+const APP_VERSION='0.7.4-alpha.38';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -692,7 +692,8 @@ function saveCustomGameEquipment(values){
 function gameEquipmentCatalog(){
   const base=['Kegler','Måtte','Kettlebell','Håndvægt','Boks','Bænk','Medicinbold','Væg','Sjippetov','Elastik','TRX','Sandsæk','Battle rope','Traktordæk','Slæde','Reb','React Lights','Vægtskive','Pull-up stativ','Ringe','Kortspil','Terninger'];
   const fromExercises=exercises.flatMap(ex=>ex.equipment||[]).filter(name=>name&&name!=='Kropsvægt');
-  return [...new Set([...base,...customGameEquipment(),...fromExercises])].sort((a,b)=>a.localeCompare(b,'da'));
+  const fromSharedGames=sharedGames().flatMap(game=>(game.equipment||[]).map(item=>item?.name)).filter(Boolean);
+  return [...new Set([...base,...customGameEquipment(),...fromExercises,...fromSharedGames])].sort((a,b)=>a.localeCompare(b,'da'));
 }
 function gameTotalMinutesValue(setup,active){
   return Math.max(0,+setup||0)+Math.max(0,+active||0);
