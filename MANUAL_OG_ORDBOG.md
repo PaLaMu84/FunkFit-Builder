@@ -920,3 +920,17 @@ De originale `gameId`-værdier er bevaret. Det er vigtigt, fordi en bruger, der 
 Indholdet fra eksporten er publiceret uden at omskrive regler, beskrivelser, øvelsesvalg, tider eller udstyr. Kun ejerskabsmetadata er ændret fra lokal til fælles.
 
 Udstyrskataloget medtager nu også alle redskabsnavne, der bruges af fælles lege. Det betyder fx, at **Stige** bliver et gyldigt valg i leg-editoren på alle enheder, selv om redskabet oprindeligt var oprettet som lokalt brugerudstyr.
+
+
+# Fælles Legebibliotek – alpha.39
+
+Alpha.38 kunne vise “13 fælles lege”, mens browseren stadig anvendte en cachet alpha.37-version af `sharedGames.json` med 8 lege.
+
+Alpha.39 gør den fælles datafil versionskritisk:
+- appen kalder `sharedGames.json?v=<APP_VERSION>`
+- browser-fetch bruger `cache: no-store`
+- service worker bruger network-first for netop `sharedGames.json`
+- cache bruges kun som offline-fallback
+- Administration viser den faktiske indlæsning, fx **✓ 13/13 indlæst**
+
+Hvis tallet ikke er 13/13, er den fælles datafil ikke opdateret korrekt på enheden.

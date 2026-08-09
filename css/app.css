@@ -2310,3 +2310,8 @@ a{
 @media(max-width:650px){
   .game-filter-bar{grid-template-columns:minmax(0,1fr)}
 }
+
+/* v0.7.4-alpha.39 – datastatus for fælles Legebibliotek */
+.shared-game-load-status{display:inline-flex;margin-left:.25rem;padding:.15rem .4rem;border-radius:999px;font-size:.78rem;font-weight:850}
+.shared-game-load-status.ok{background:#dcfce7;color:#166534}
+.shared-game-load-status.warn{background:#fef3c7;color:#92400e}
