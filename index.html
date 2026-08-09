@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.30</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a30">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a30">
+  <title>FunkFit Builder v0.7.4-alpha.37</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a37">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a37">
 </head>
 <body>
 <header class="topbar">
   <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
-    <p class="eyebrow">VERSION 0.7.4-ALPHA.30</p>
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.37</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </button>
@@ -21,6 +21,7 @@
   <button class="nav-tab active" data-view="designView">Design træning</button>
   <button class="nav-tab" data-view="savedView">Gemte træninger</button>
   <button class="nav-tab" data-view="libraryView">Mit bibliotek</button>
+  <button class="nav-tab" data-view="gamesView">Lege</button>
   <button class="nav-tab" data-view="docsView">Manual og ordbog</button>
 </nav>
 
@@ -368,7 +369,8 @@ Hovedtræning 20 min
       </div>
       <div class="actions">
         <button id="aiBuildSectionBtn" type="button">Byg en sektion</button>
-        <button id="aiBuildGameBtn" type="button" class="secondary">🎲 Byg en leg</button>
+        <button id="insertGameFromLibraryBtn" type="button" class="secondary">🎲 Indsæt leg fra Legebibliotek</button>
+        <button id="aiBuildGameBtn" type="button" class="secondary">✨ Byg en leg med AI</button>
         <button id="addFinisherBtn" type="button" class="ghost">🏁 Tilføj finisher</button>
       </div>
     </div>
@@ -761,9 +763,205 @@ Hovedtræning 20 min
 <section id="libraryView" class="app-view">
   <section class="panel">
     <div class="section-heading">
-      <div><p class="eyebrow">MIT BIBLIOTEK</p><h2>Mine gemte lege og træningselementer</h2><p>Gem et element fra editoren og genbrug det i en ny træning.</p></div>
+      <div><p class="eyebrow">MIT BIBLIOTEK</p><h2>Mine gemte træningselementer</h2><p>Gem sektioner fra editoren og genbrug dem i en ny træning. Grundlege administreres nu separat under Lege.</p></div>
     </div>
     <div id="elementLibrary" class="saved-grid"></div>
+  </section>
+</section>
+
+
+<section id="gamesView" class="app-view">
+  <section class="panel games-panel">
+    <div class="section-heading game-main-heading">
+      <div>
+        <p class="eyebrow">LEGEMODUL</p>
+        <h2>Lege</h2>
+        <p>Grundlege oprettes og vedligeholdes ét sted. Når en leg bruges i en træning, indsættes en selvstændig kopi, som kan tilpasses uden at ændre grundlegen.</p>
+      </div>
+      <button id="newGameMasterBtn" type="button">+ Byg en leg</button>
+    </div>
+
+    <div class="game-module-tabs" role="tablist">
+      <button type="button" class="game-module-tab selected" data-game-module-tab="library">🎲 Legebibliotek</button>
+      <button type="button" class="game-module-tab" data-game-module-tab="admin">⚙️ Administration</button>
+    </div>
+
+    <section id="gameLibraryPanel" class="game-module-panel">
+      <div id="gameTargetBanner" class="game-target-banner hidden"></div>
+      <div class="game-filter-bar">
+        <label>Søg
+          <input id="gameLibrarySearch" type="search" placeholder="Navn, emne eller tag">
+        </label>
+        <label>Emne
+          <select id="gameLibraryTopic"><option value="">Alle emner</option></select>
+        </label>
+        <label>Deltagere
+          <input id="gameLibraryParticipants" type="number" min="1" value="20">
+        </label>
+        <label>Bibliotek
+          <select id="gameLibrarySource">
+            <option value="">Alle lege</option>
+            <option value="shared">Fælles i appen</option>
+            <option value="mine">Mine lege</option>
+          </select>
+        </label>
+      </div>
+      <div id="gameLibraryCards" class="game-library-grid"></div>
+    </section>
+
+    <section id="gameAdminPanel" class="game-module-panel hidden">
+      <div class="game-admin-intro">
+        <div>
+          <p class="eyebrow">INDHOLDSADMINISTRATION</p>
+          <h3>Grundlege</h3>
+          <p><strong>Fælles grundlege</strong> ligger nu direkte i FunkFit og er tilgængelige for alle brugere på alle enheder. Lege du selv opretter eller lokale tilpasninger ligger fortsat på din enhed, indtil de optages i en ny fælles app-version. Eksport/import bruges til at flytte dine egne lege mellem enheder.</p>
+        </div>
+        <div class="game-admin-toolbar">
+          <span class="game-admin-role">Lokal administrator</span>
+          <button id="exportGamesBtn" type="button" class="secondary">⬇️ Eksportér mine lege</button>
+          <button id="importGamesBtn" type="button" class="secondary">⬆️ Importér mine lege</button>
+          <input id="importGamesFile" type="file" accept=".json,application/json" class="hidden">
+        </div>
+      </div>
+
+      <form id="gameMasterForm" class="game-master-form">
+        <input id="gameMasterId" type="hidden">
+        <div class="game-form-heading">
+          <div>
+            <p class="eyebrow">BYG EN LEG</p>
+            <h3 id="gameMasterFormTitle">Ny grundleg</h3>
+          </div>
+          <div class="game-form-status-actions">
+            <button id="cancelGameEditBtn" type="button" class="ghost hidden">Annullér redigering</button>
+            <button type="submit">Gem grundleg</button>
+          </div>
+        </div>
+
+        <div class="game-form-grid">
+          <label>Navn *
+            <input id="gameName" required maxlength="90" placeholder="Fx Stjæl keglen">
+          </label>
+          <label>Emne / tema *
+            <input id="gameTopic" required maxlength="70" placeholder="Fx Reaktion, samarbejde, stafet">
+          </label>
+          <label>Forklaring + forberedelse
+            <div class="input-with-unit"><input id="gameSetupMinutes" type="number" min="0" max="30" value="2"><span>min</span></div>
+          </label>
+          <label>Aktiv leg
+            <div class="input-with-unit"><input id="gameActiveMinutes" type="number" min="1" max="60" value="6"><span>min</span></div>
+          </label>
+          <label>Samlet varighed
+            <div class="input-with-unit calculated-duration"><input id="gameTotalMinutes" type="number" value="8" readonly tabindex="-1"><span>min</span></div>
+          </label>
+          <label>Status
+            <select id="gameStatus"><option value="active">Aktiv</option><option value="draft">Kladde</option></select>
+          </label>
+          <label>Målgruppe
+            <select id="gameAudience">
+              <option value="all">Alle</option>
+              <option value="junior">Junior</option>
+              <option value="family">Familie</option>
+              <option value="adult">Voksen</option>
+              <option value="junior-family">Junior + Familie</option>
+            </select>
+          </label>
+          <label>Tags
+            <input id="gameTags" placeholder="Fx high five, konkurrence, ude">
+          </label>
+          <label class="span-2">Beskrivelse / idé *
+            <textarea id="gameDescription" required rows="3" placeholder="Hvad går legen ud på?"></textarea>
+          </label>
+          <label class="span-2">Regler *
+            <textarea id="gameRules" required rows="5" placeholder="Skriv reglerne i den rækkefølge instruktøren skal bruge dem."></textarea>
+          </label>
+          <label class="span-2">Trænertips
+            <textarea id="gameCoachTips" rows="3" placeholder="Opstilling, sikkerhed, skalering og tips til flow."></textarea>
+          </label>
+        </div>
+
+        <section class="game-builder-block">
+          <div class="game-builder-block-heading">
+            <div><p class="eyebrow">DELTAGERE OG ORGANISERING</p><h4>Hvor mange og hvordan?</h4></div>
+          </div>
+          <div class="game-form-grid">
+            <label>Minimum deltagere *
+              <input id="gameMinParticipants" type="number" min="1" value="4" required>
+            </label>
+            <label>Maksimum deltagere
+              <input id="gameMaxParticipants" type="number" min="0" value="0" placeholder="0 = intet maksimum">
+            </label>
+            <label>Organisering *
+              <select id="gameOrganization">
+                <option value="Fælles">Fælles</option>
+                <option value="Individuelt">Individuelt</option>
+                <option value="Makker sammen">Makker</option>
+                <option value="Hold">Hold</option>
+                <option value="Stafet">Stafet / hold</option>
+              </select>
+            </label>
+            <label class="game-check-card">
+              <input id="gameRequiresTeams" type="checkbox">
+              <span><strong>Kræver hold</strong><small>Markér når legen ikke giver mening uden holdinddeling.</small></span>
+            </label>
+            <label id="gameTeamCountLabel" class="hidden">Minimum antal hold
+              <input id="gameMinTeams" type="number" min="2" value="2">
+            </label>
+            <label id="gameTeamSizeLabel" class="hidden">Anbefalet deltagere pr. hold
+              <input id="gameTeamSize" type="number" min="1" value="4">
+            </label>
+          </div>
+        </section>
+
+        <section class="game-builder-block">
+          <div class="game-builder-block-heading">
+            <div>
+              <p class="eyebrow">UDSTYR</p>
+              <h4>Hvilke redskaber kræver legen?</h4>
+              <p>Angiv det faktiske antal til selve legen. Det bliver ført direkte ind i træningens “Du skal bruge”. Markér OBS på ting, instruktøren selv skal skaffe, fx kortspil eller terninger.</p>
+            </div>
+            <button id="addGameEquipmentBtn" type="button" class="secondary">+ Redskab</button>
+          </div>
+          <div class="custom-game-equipment">
+            <div>
+              <strong>Mangler redskabet på listen?</strong>
+              <small>Tilføj dit eget redskab én gang – så kan det genbruges i alle grundleg.</small>
+            </div>
+            <div class="custom-game-equipment-add">
+              <input id="customGameEquipmentName" placeholder="Fx Ringe">
+              <button id="addCustomGameEquipmentBtn" type="button" class="secondary">Tilføj eget redskab</button>
+            </div>
+            <div id="customGameEquipmentList" class="custom-game-equipment-list"></div>
+          </div>
+          <div id="gameEquipmentRows" class="game-equipment-rows"></div>
+        </section>
+
+        <section class="game-builder-block">
+          <div class="game-builder-block-heading">
+            <div>
+              <p class="eyebrow">STANDARDØVELSER</p>
+              <h4>Tilknyt øvelser fra FunkFit-biblioteket</h4>
+              <p>De er udgangspunktet for legen. Når legen indsættes i en træning, kan øvelserne tilføjes, fjernes eller udskiftes uden at ændre grundlegen.</p>
+            </div>
+            <span id="gameExerciseCount" class="game-exercise-count">0 valgt</span>
+          </div>
+          <label>Søg i øvelser
+            <input id="gameExerciseSearch" type="search" placeholder="Fx burpee, squat, React Lights">
+          </label>
+          <div id="gameExercisePicker" class="game-exercise-picker"></div>
+        </section>
+
+        <div class="game-form-footer">
+          <button type="submit">Gem grundleg</button>
+        </div>
+      </form>
+
+      <section class="game-admin-list-section">
+        <div class="section-heading">
+          <div><p class="eyebrow">ADMINISTRATION</p><h3>Alle grundlegene</h3></div>
+        </div>
+        <div id="gameAdminList" class="game-admin-list"></div>
+      </section>
+    </section>
   </section>
 </section>
 
@@ -983,6 +1181,13 @@ Hovedtræning 20 min
       <div id="inlineFundamentalWrap" class="span-2 single-fundamental-wrap hidden">
         <strong>FunkFit Fundamentals</strong><small>Vælg én eller flere.</small><div id="inlineFundamentalChoices" class="single-fundamental-choices"></div>
       </div>
+      <div id="aiSectionGameLibraryChoice" class="span-2 ai-section-game-library hidden">
+        <div>
+          <strong>🎲 Skal sektionen være en af dine gemte lege?</strong>
+          <small>Vælg en grundleg fra Legebiblioteket i stedet for at lade AI bygge sektionen. Grundlegen indsættes som en kopi og kan tilpasses bagefter.</small>
+        </div>
+        <button id="aiSectionGameLibraryBtn" type="button" class="secondary">Indsæt leg fra Legebibliotek</button>
+      </div>
       <div id="inlineFinisherWrap" class="span-2 single-finisher-wrap hidden">
         <strong>Finisher</strong>
         <p class="field-help">Vælg sang eller et andet afslutningsformat. AI kan vælge fra kataloget.</p>
@@ -1051,7 +1256,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.30 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a30"></script>
+<footer>FunkFit Builder v0.7.4-alpha.37 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a37"></script>
 </body>
 </html>

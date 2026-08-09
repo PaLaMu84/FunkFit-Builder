@@ -575,3 +575,329 @@ Ved Funktionel voksen, HIIT, HYROX og TRX læser playeren nu de **redigerede spo
 
 ## Musik – automatisk kvalitetsfilter
 Hvis brugeren ikke specifikt beder om retro/ældre musik, filtrerer FunkFit nu AI-resultatet til **2018 eller nyere**. Hovedblokke kræver mindst energi 7/10, Teamchallenge/Finisher mindst 8/10, mens Ledopvarmning fortsat må ligge roligt på 3–5/10. Et udtrykkeligt ønske om fx 80'erne, 90'erne, oldies eller retro ophæver årstalsfilteret, men ikke forbuddet mod instrumental/klassisk/score/ambient.
+
+
+# Lege-modul – alpha.31
+
+## Hvorfor lege er et selvstændigt modul
+Lege er ikke længere kun almindelige sektioner gemt i **Mit bibliotek**. FunkFit har nu et selvstændigt **Lege**-område med en tydelig skelnen mellem:
+
+1. **Grundleg / masterleg** – den centrale definition, som vedligeholdes i Indholdsadministration.
+2. **Træningsinstans** – en selvstændig kopi af grundlegen, når den bruges i en konkret træning.
+
+Det betyder, at en instruktør kan ændre, fjerne eller tilføje øvelser i den konkrete træning uden at overskrive grundlegen.
+
+## Legebibliotek
+Legebiblioteket viser aktive grundleg og kan filtreres på:
+- navn, emne og tags
+- emne/tema
+- aktuelt deltagerantal
+
+Hvert kort viser bl.a.:
+- navn og emne
+- minimum/maksimum deltagere
+- organisering og holdkrav
+- standardvarighed
+- målgruppe
+- udstyr og antal
+- standardøvelser
+
+En leg kan bruges som ny Leg-sektion eller vælges direkte fra en eksisterende Leg-sektion i Finpuds.
+
+## Byg en leg / Indholdsadministration
+En grundleg indeholder:
+- navn
+- emne/tema
+- beskrivelse
+- regler
+- trænertips
+- standardvarighed
+- status: Aktiv eller Kladde
+- målgruppe
+- tags
+- minimum antal deltagere
+- valgfrit maksimum
+- organisering: fælles, individuel, makker, hold eller stafet
+- om legen kræver hold
+- minimum antal hold
+- anbefalet deltagere pr. hold
+- nødvendigt udstyr og præcist antal af hvert redskab
+- standardøvelser valgt fra FunkFits øvelsesbibliotek
+
+Grundlegen kan redigeres, duplikeres eller slettes centralt. Redigering øger versionsnummeret på grundlegen.
+
+## Udstyr fra lege
+Udstyr angivet i en grundleg føres direkte ind i træningens **Du skal bruge**.
+
+Eksempel:
+- 12 kegler
+- 2 React Lights
+- 4 medicinbolde
+
+Disse tal behandles som krav til selve legen og må derfor ikke automatisk multipliceres med antal deltagere.
+
+## Deltagerkontrol
+Hvis en leg er bygget til fx minimum 10 deltagere, og den indsættes i en træning med 7 deltagere, advarer FunkFit før indsættelse. Brugeren kan stadig vælge at indsætte legen og selv skalere den.
+
+## Standardøvelser og træningskopier
+Grundlegen gemmer referencer til standardøvelser i FunkFits øvelsesbibliotek.
+
+Ved indsættelse i en træning oprettes normale træningsaktiviteter fra disse øvelser. Derefter kan instruktøren:
+- tilføje øvelser
+- fjerne øvelser
+- skifte øvelser
+- ændre reps, kg, tid og andre relevante felter
+
+Disse ændringer gælder kun træningen.
+
+## Admin- og backend-arkitektur
+Alpha.31 introducerer et lokalt **Indholdsadministration**-lag. Den nuværende GitHub Pages/PWA har ingen server-login eller central database, så rollen “Lokal administrator” er kun lokal på enheden.
+
+Datamodellen er forberedt med:
+- `ownerId`
+- `ownerRole`
+- `visibility`
+- `status`
+- versionsnummer
+- created/updated timestamps
+
+Når FunkFit senere får rigtig backend og login, kan dette udvides til roller som:
+- Instruktør
+- Legeansvarlig
+- Admin
+
+uden at ændre princippet om masterleg kontra træningsinstans.
+
+## Datasikkerhed
+Grundlege gemmes i:
+- `funkfit-games-v1`
+- backup: `funkfit-games-backup-v1`
+
+`reset-cache.html` rydder ikke disse data.
+
+Ved første opgradering forsøger FunkFit desuden at importere tidligere Leg-elementer fra **Mit bibliotek** som grundleg. De gamle elementer slettes ikke.
+
+
+# Lege-modul – alpha.32
+
+## Egne redskaber
+Legemodulet har nu et lokalt redskabskatalog, som brugeren selv kan udvide.
+
+Hvis et redskab ikke findes på standardlisten, kan brugeren skrive navnet – fx **Ringe** – og vælge **Tilføj eget redskab**. Redskabet gemmes derefter og kan vælges igen i andre grundleg.
+
+Egne redskaber gemmes i:
+- `funkfit-game-custom-equipment-v1`
+
+Det påvirker ikke øvelsesbibliotekets faste udstyrstyper. Det er et fleksibelt katalog til grundlegenes konkrete udstyrsbehov.
+
+**Ringe** er samtidig tilføjet til standardlisten.
+
+## Tid i en leg
+En grundleg har ikke længere kun ét samlet tidsfelt. Tiden opdeles i:
+
+1. **Forklaring + forberedelse** – tid til at forklare regler, dele hold, stille redskaber op og gøre deltagerne klar.
+2. **Aktiv leg** – den tid deltagerne faktisk leger.
+3. **Samlet varighed** – beregnes automatisk som forklaring/forberedelse + aktiv leg.
+
+Eksempel: 3 min forklaring/forberedelse + 8 min aktiv leg = 11 min samlet.
+
+Det er den **samlede varighed**, der føres ind som sektionens tid, når legen indsættes i en træning. Legebiblioteket og træningsinstansen viser også tidsfordelingen.
+
+## Bagudkompatibilitet
+Ældre grundleg, der kun har et samlet `minutes`-felt, behandles som 0 min forklaring/forberedelse og hele den tidligere tid som aktiv leg. Dermed mister tidligere gemte lege ikke deres varighed.
+
+
+# Lege-modul – alpha.33
+
+## OBS – redskab skal selv skaffes
+Hvert redskab i en grundleg kan nu markeres med:
+
+**OBS – skal selv skaffes**
+
+Det bruges til ting, som ikke nødvendigvis findes i FunkFits normale udstyrslager, fx:
+- kortspil
+- terninger
+- balloner
+- papir/kort
+- små præmier
+- særlige rekvisitter
+
+Markeringen ligger på det enkelte redskab – ikke på hele legen. En leg kan derfor fx kræve:
+- 12 kegler
+- 2 React Lights
+- 1 kortspil **⚠ skal selv skaffes**
+
+Markeringen gemmes i grundlegen og følger med træningsinstansen.
+
+## Visning
+OBS-markeringen vises:
+- i Legebiblioteket
+- i den indsatte leg i Finpuds
+- i administrationsoversigten
+- i **Du skal bruge**, hvor noten indeholder “OBS – skal selv skaffes”
+
+Det gør det muligt at skelne mellem almindeligt træningsudstyr og små rekvisitter, som instruktøren selv skal huske at medbringe.
+
+
+# Lege-modul – alpha.34
+
+## Rettelse: redigering af eksisterende grundleg
+Redigeringsflowet er gjort robust for grundleg, der er oprettet i alpha.31, alpha.32 og alpha.33.
+
+Tidligere kunne Lege-modulet i særlige tilfælde nulstille formularen som **Ny grundleg** under skiftet fra Legebibliotek til Administration. Hvis der samtidig opstod en fejl under game-initialisering, kunne hele FunkFit vise den generelle besked “Appen kunne ikke starte”.
+
+Fra alpha.34 gælder:
+- Den valgte `gameId` låses før faneskift.
+- Formularen nulstilles kun ved et bevidst valg af **Ny leg** / annullering.
+- Alle formularfelter udfyldes defensivt fra den gemte master.
+- Ældre grundleg får automatisk den nye tidsmodel:
+  - mangler `setupMinutes` → 0 min
+  - tidligere `minutes` → aktiv legetid
+- Ældre udstyrsdata får automatisk `selfSource: false`.
+- Game-data repareres til den aktuelle schema-version ved opstart.
+- En fejl i Lege-modulet må ikke længere afbryde hele FunkFit Builder.
+- Hvis den overordnede app stadig får en startup-fejl, vises den konkrete fejltekst i dialogen for lettere fejlfinding.
+
+Ingen grundleg eller træninger slettes af schema-reparationen.
+
+
+# Lege-modul – alpha.35
+
+## Indsæt en leg direkte fra Finpuds
+Finpuds har nu den selvstændige handling:
+
+**🎲 Indsæt leg fra Legebibliotek**
+
+Når den bruges:
+1. FunkFit åbner Legebiblioteket i en særlig indsæt-tilstand.
+2. Den ønskede grundleg vælges med **Indsæt som ny sektion**.
+3. Grundlegen kopieres til træningen som en ny **Leg-sektion**.
+4. FunkFit vender automatisk tilbage til Finpuds.
+
+Den nye leg **erstatter ikke** en eksisterende sektion. Hvis træningen allerede har en Finisher, placeres legen umiddelbart før Finisheren, så Finisher fortsat ligger sidst.
+
+Den indsatte leg er en selvstændig træningsinstans og kan tilpasses i Finpuds uden at ændre grundlegen.
+
+### Tre forskellige legehandlinger
+- **Indsæt leg fra Legebibliotek** → indsætter en eksisterende grundleg som ny sektion.
+- **Byg en leg med AI** → bygger et nyt legforslag til træningen.
+- **Vælg fra Legebibliotek** inde i en eksisterende Leg-sektion → erstatter netop den sektion med en kopi af en grundleg.
+
+
+# FunkFit Junior og Legebibliotek – alpha.36
+
+## Teknik er igen fast i AI-genereret FunkFit Junior
+En hel AI-genereret **FunkFit Junior**-træning indeholder igen en selvstændig **Teknik – FunkFit Fundamentals**-sektion.
+
+Tidsmodellen reserverer 10 minutter til Teknik, så sektionen ikke bare lægges oven i den planlagte træningstid. Teknik placeres efter Pulsopvarmning og før leg/hovedarbejde.
+
+FunkFit vælger relevante Fundamentals ud fra træningens fokus. Hvis der ikke er et tydeligt fokus, anvendes et grundlæggende Fundamentals-valg.
+
+Teknik tvinges kun ind i FunkFit Junior – ikke i Funktionel voksen, HIIT, HYROX eller TRX.
+
+## Tilpas sektionen med AI – Legebibliotek som alternativ
+Når **Tilpas sektionen med AI** åbnes på en eksisterende sektion, vises nu også:
+
+**🎲 Indsæt leg fra Legebibliotek**
+
+Det betyder, at instruktøren kan vælge mellem:
+- at lade AI bygge/tilpasse sektionen
+- at erstatte sektionen med en bereits gemt grundleg fra Legebiblioteket
+
+Den valgte leg indsættes som en kopi. Grundlegen ændres ikke.
+
+Den separate Finpuds-knap **Indsæt leg fra Legebibliotek** indsætter fortsat en NY Leg-sektion.
+
+## Hvor ligger Legebiblioteket?
+Den nuværende FunkFit Builder er en statisk PWA. `localStorage` er lokalt for den konkrete browser/enhed.
+
+Derfor synkroniseres lege ikke automatisk mellem telefon og PC.
+
+Alpha.36 tilføjer en praktisk løsning:
+
+### Eksportér lege
+**Lege → Administration → Eksportér lege**
+
+Der downloades én JSON-fil med:
+- hele Legebiblioteket
+- regler og beskrivelser
+- tider
+- deltager-/holddata
+- udstyr og antal
+- OBS “skal selv skaffes”
+- standardøvelser
+- egne redskaber
+- versions-/adminmetadata
+
+### Importér lege
+På den anden enhed vælges:
+
+**Lege → Administration → Importér lege**
+
+Eksportfilen vælges. FunkFit fletter den ind i det lokale bibliotek.
+
+Hvis samme `gameId` allerede findes, beholdes den udgave, der har den seneste `updatedAt`. Import laver derfor ikke automatisk dubletter af de samme grundleg.
+
+Dette er manuel synkronisering. Den langsigtede løsning er en rigtig backend/login, så telefon og PC bruger samme centrale Legebibliotek automatisk.
+
+
+# Fælles Legebibliotek – alpha.37
+
+## To lag: Fælles i appen + Mine lege
+Legebiblioteket er nu delt arkitektonisk i to lag:
+
+### Fælles i appen
+Disse grundleg ligger i `data/sharedGames.json` og er en del af selve FunkFit Builder.
+
+Konsekvensen er:
+- de findes på telefon, PC og nye enheder
+- alle brugere af samme app-version kan bruge dem
+- de virker også efter rydning af lokal browserdata
+- de caches sammen med resten af PWA'en
+
+Alpha.37 starter med et fælles grundbibliotek med bl.a.:
+- Kegletyven
+- Kortspils-stafet
+- Terninge-challenge
+- Fire hjørner – FunkFit
+- React Lights – farvejagt
+- Saml skatten
+- Sten-saks-papir-stafet
+- Makkerjagt
+
+### Mine lege
+Lege, som en bruger selv opretter, gemmes fortsat lokalt. De ligger oven på det fælles bibliotek.
+
+Legebiblioteket viser tydeligt:
+- **Fælles i appen**
+- **Min leg**
+- **Min version af fælles**
+
+Der kan filtreres mellem Fælles og Mine.
+
+## Tilpasning af fælles lege
+En fælles leg kan ikke slettes fra appens grundbibliotek.
+
+Hvis brugeren vælger **Tilpas lokalt**, oprettes en lokal override med samme `gameId`. Den lokale version vises derefter i stedet for den fælles på netop den enhed.
+
+**Nulstil fælles** fjerner den lokale override og viser igen versionen, der følger med appen.
+
+## Hvordan egne lege bliver fælles for alle
+En statisk GitHub Pages-app kan ikke lade browseren skrive direkte tilbage til appens filer.
+
+Derfor er publiceringsflowet indtil en rigtig backend:
+1. Opret/redigér lege lokalt.
+2. Eksportér **Mine lege**.
+3. De ønskede lege optages i `sharedGames.json` i en ny FunkFit-version.
+4. Når versionen publiceres, får alle brugere dem automatisk.
+
+På sigt bør en rigtig backend/login lade en legeansvarlig publicere trựcete til det fælles bibliotek uden en ny app-release.
+
+## Farvekoder i Gemte træninger
+Gemte træninger bruger nu præcis samme målgruppefarver som Trin 1.1:
+- 🟠 FunkFit Junior
+- 🔵 Familietræning
+- 🟢 Funktionel voksen
+- 🟡 TRX
+- 🔴 Hyrox
+- 🟣 HIIT

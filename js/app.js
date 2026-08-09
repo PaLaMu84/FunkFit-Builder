@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.30';
+const APP_VERSION='0.7.4-alpha.37';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -107,6 +107,7 @@ function updateAddressVersion(){
 }
 const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a',EQKEY='funkfit-equipment-profiles-v074a';
 const WBACKUPKEY='funkfit-workouts-backup-v1';
+const GKEY='funkfit-games-v1',GBACKUPKEY='funkfit-games-backup-v1',GAME_MIGRATION_KEY='funkfit-games-migrated-v1',GCUSTOMEQKEY='funkfit-game-custom-equipment-v1';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0,playerTrainingType='junior';
 let musicPlan=[],musicService='spotify',musicScope='all',selectedMusicSections=new Set();
 let musicBuildMode='ai',manualMusicMode='tracks',linkedPlaylist=null,musicReplaceTarget=null;
@@ -185,6 +186,7 @@ const PROGRAMMING_PROFILES={
   hiit:{label:'HIIT',supportsTheme:false,defaultStructure:['Ledopvarmning','Opvarmning','HIIT blok','HIIT blok','Finisher']}
 };
 let creationMode='choice',structureChoice='auto',singleSectionTarget=null,activeRunPlan=null,clearUndoInterval=null,addSectionType='Hovedelement',sectionEditIndex=null,sectionEditMode='structure',sectionEditDraft=null;
+let gameModuleTab='library',gameTargetSection=null,gameInsertFromFinpuds=false,gameSelectedExerciseIds=new Set(),gameEquipmentDraft=[],sharedGameLibrary=[];
 
 
 
@@ -216,6 +218,46 @@ const customs=()=>read(CKEY,[]);
 const favorites=()=>new Set(read(FKEY,[]));
 const elementLibrary=()=>read(EKEY,[]);
 const saveElementLibrary=x=>localStorage.setItem(EKEY,JSON.stringify(x));
+function validGameList(value){
+  return Array.isArray(value)?value.filter(game=>game&&typeof game==='object'&&game.gameId):[];
+}
+function saveGames(value){
+  const safe=validGameList(value);
+  const payload=JSON.stringify(safe);
+  localStorage.setItem(GKEY,payload);
+  localStorage.setItem(GBACKUPKEY,payload);
+}
+function localGames(){
+  const current=validGameList(read(GKEY,[]));
+  const backup=validGameList(read(GBACKUPKEY,[]));
+  if(current.length){
+    if(JSON.stringify(current)!==JSON.stringify(backup))localStorage.setItem(GBACKUPKEY,JSON.stringify(current));
+    return current;
+  }
+  if(backup.length){
+    localStorage.setItem(GKEY,JSON.stringify(backup));
+    return backup;
+  }
+  return [];
+}
+function sharedGames(){
+  return validGameList(sharedGameLibrary).map(game=>({...game,source:'shared',visibility:'shared',ownerRole:'shared-library'}));
+}
+function isSharedGameId(gameId){return sharedGames().some(game=>game.gameId===gameId)}
+function hasLocalGameOverride(gameId){return localGames().some(game=>game.gameId===gameId)}
+function gameLibraryOrigin(game){
+  if(isSharedGameId(game.gameId)&&hasLocalGameOverride(game.gameId))return 'override';
+  if(isSharedGameId(game.gameId))return 'shared';
+  return 'mine';
+}
+function gameLibraryOriginLabel(game){
+  return ({shared:'Fælles i appen',override:'Min version af fælles',mine:'Min leg'})[gameLibraryOrigin(game)]||'Min leg';
+}
+function games(){
+  const map=new Map(sharedGames().map(game=>[game.gameId,game]));
+  localGames().forEach(game=>map.set(game.gameId,game));
+  return [...map.values()];
+}
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 
 const collapsedSections=new Set();
@@ -637,6 +679,684 @@ function finisherFromForm(prefix){
     songMinutes:+byId(`${prefix}FinisherMinutes`)?.value||4,songUrl:byId(`${prefix}FinisherUrl`)?.value.trim()||''
   });
 }
+
+function customGameEquipment(){
+  const value=read(GCUSTOMEQKEY,[]);
+  return Array.isArray(value)?value.filter(name=>typeof name==='string'&&name.trim()).map(name=>name.trim()):[];
+}
+function saveCustomGameEquipment(values){
+  const safe=[...new Set((values||[]).map(name=>String(name||'').trim()).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b,'da'));
+  localStorage.setItem(GCUSTOMEQKEY,JSON.stringify(safe));
+}
+function gameEquipmentCatalog(){
+  const base=['Kegler','Måtte','Kettlebell','Håndvægt','Boks','Bænk','Medicinbold','Væg','Sjippetov','Elastik','TRX','Sandsæk','Battle rope','Traktordæk','Slæde','Reb','React Lights','Vægtskive','Pull-up stativ','Ringe','Kortspil','Terninger'];
+  const fromExercises=exercises.flatMap(ex=>ex.equipment||[]).filter(name=>name&&name!=='Kropsvægt');
+  return [...new Set([...base,...customGameEquipment(),...fromExercises])].sort((a,b)=>a.localeCompare(b,'da'));
+}
+function gameTotalMinutesValue(setup,active){
+  return Math.max(0,+setup||0)+Math.max(0,+active||0);
+}
+function updateGameDurationTotal(){
+  const setup=Math.max(0,+byId('gameSetupMinutes')?.value||0);
+  const active=Math.max(0,+byId('gameActiveMinutes')?.value||0);
+  if(byId('gameTotalMinutes'))byId('gameTotalMinutes').value=gameTotalMinutesValue(setup,active);
+}
+function renderCustomGameEquipmentList(){
+  const host=byId('customGameEquipmentList');if(!host)return;
+  const items=customGameEquipment();
+  host.innerHTML=items.length?items.map(name=>`<span class="custom-equipment-chip">${esc(name)} <button type="button" data-remove-custom-game-equipment="${esc(name)}" aria-label="Fjern ${esc(name)}">×</button></span>`).join(''):'<small>Ingen egne redskaber endnu.</small>';
+  host.querySelectorAll('[data-remove-custom-game-equipment]').forEach(button=>button.onclick=()=>{
+    const name=button.dataset.removeCustomGameEquipment;
+    if(gameEquipmentDraft.some(item=>item.name===name)){
+      if(!confirm(`“${name}” bruges i den leg, du redigerer nu. Vil du fjerne redskabet fra din faste liste alligevel?`))return;
+    }
+    saveCustomGameEquipment(customGameEquipment().filter(item=>item!==name));
+    renderCustomGameEquipmentList();
+    renderGameEquipmentRows();
+  });
+}
+function addCustomGameEquipment(){
+  const input=byId('customGameEquipmentName');
+  const name=String(input?.value||'').trim();
+  if(!name)return;
+  const all=gameEquipmentCatalog();
+  const existing=all.find(item=>normalizeText(item)===normalizeText(name));
+  if(existing){
+    if(input)input.value='';
+    alert(`“${existing}” findes allerede på listen.`);
+    return;
+  }
+  saveCustomGameEquipment([...customGameEquipment(),name]);
+  if(input)input.value='';
+  renderCustomGameEquipmentList();
+  renderGameEquipmentRows();
+}
+function inferLegacyGameEquipment(section){
+  const names=new Set(sectionDeclaredEquipment(section));
+  (section.exercises||[]).forEach(activity=>{
+    if(activity.kind==='run'){
+      if(/shuttle|kegle|stafet|sprint/i.test(`${activity.runType||''} ${activity.route||''}`))names.add('Kegler');
+      return;
+    }
+    const ex=exercises.find(item=>item.id===activity.exerciseId);
+    (ex?.equipment||[]).filter(name=>name!=='Kropsvægt').forEach(name=>names.add(name));
+  });
+  return [...names].map(name=>({name,quantity:1,note:'Importeret fra tidligere gemt leg',selfSource:false}));
+}
+function migrateLegacyGames(){
+  if(localStorage.getItem(GAME_MIGRATION_KEY))return;
+  const legacy=elementLibrary().filter(item=>normalizeSection(structuredClone(item)).sectionPurpose==='Leg');
+  if(legacy.length){
+    const existing=localGames();
+    const knownNames=new Set(games().map(game=>normalizeText(game.name)));
+    legacy.forEach(section=>{
+      if(knownNames.has(normalizeText(section.name)))return;
+      existing.push({
+        gameId:crypto.randomUUID(),
+        name:section.name||'Importeret leg',
+        topic:'Importeret fra Mit bibliotek',
+        description:section.description||'',
+        rules:section.rules||'',
+        coachTips:section.coachTips||'',
+        setupMinutes:0,
+        activeMinutes:+section.minutes||8,
+        minutes:+section.minutes||8,
+        minParticipants:4,
+        maxParticipants:0,
+        organization:section.organization||'Hold',
+        requiresTeams:['Hold','Stafet'].includes(section.organization),
+        minTeams:2,
+        teamSize:4,
+        equipment:inferLegacyGameEquipment(section),
+        exerciseIds:(section.exercises||[]).filter(item=>item.kind!=='run'&&item.exerciseId).map(item=>item.exerciseId),
+        tags:['importeret'],
+        audience:'all',
+        status:'active',
+        ownerId:userProfile().id,
+        ownerRole:'local-admin',
+        visibility:'local',
+        version:1,
+        createdAt:section.savedAt||new Date().toISOString(),
+        updatedAt:new Date().toISOString(),
+        source:'legacy-library'
+      });
+    });
+    saveGames(existing);
+  }
+  localStorage.setItem(GAME_MIGRATION_KEY,'1');
+}
+
+function repairStoredGamesSchema(){
+  const raw=validGameList(read(GKEY,[]));
+  if(!raw.length)return;
+  let changed=false;
+  const repaired=raw.map(source=>{
+    const normalized=normalizeGame(source);
+    const needsTime=source.setupMinutes===undefined||source.activeMinutes===undefined;
+    const needsEquipment=(source.equipment||[]).some(item=>item&&item.selfSource===undefined);
+    if(needsTime||needsEquipment)changed=true;
+    return normalized;
+  });
+  if(changed)saveGames(repaired);
+}
+function setGameField(id,value){
+  const el=byId(id);
+  if(!el)return false;
+  if(el.type==='checkbox')el.checked=!!value;
+  else el.value=value??'';
+  return true;
+}
+function showGameModuleError(error){
+  console.error('Lege-modul:',error);
+  const host=byId('gameTargetBanner');
+  if(host){
+    host.classList.remove('hidden');
+    host.innerHTML='<div><strong>⚠ Lege-modulet kunne ikke indlæse alle data</strong><span>Resten af FunkFit kan fortsat bruges. Genindlæs siden efter opdatering til den nyeste version.</span></div>';
+  }
+}
+function initGameModuleSafely(){
+  try{
+    migrateLegacyGames();
+    repairStoredGamesSchema();
+    resetGameForm();
+    renderCustomGameEquipmentList();
+    renderGameLibrary();
+    renderGameAdminList();
+    return true;
+  }catch(error){
+    showGameModuleError(error);
+    return false;
+  }
+}
+
+function gameAudienceLabel(value){
+  return ({all:'Alle',junior:'Junior',family:'Familie',adult:'Voksen','junior-family':'Junior + Familie'})[value]||'Alle';
+}
+function gameStatusLabel(value){return value==='draft'?'Kladde':'Aktiv'}
+function gameIsEligible(game,participants){
+  const p=Math.max(1,+participants||1);
+  return p>=Math.max(1,+game.minParticipants||1)&&(!game.maxParticipants||p<=+game.maxParticipants);
+}
+function gameTeamText(game){
+  if(!game.requiresTeams)return game.organization||'Fælles';
+  return `${game.organization||'Hold'} · min. ${Math.max(2,+game.minTeams||2)} hold${game.teamSize?` · ca. ${game.teamSize}/hold`:''}`;
+}
+function gameEquipmentText(game){
+  const items=(game.equipment||[]).filter(item=>item?.name&&+item.quantity>0);
+  return items.length?items.map(item=>`${item.quantity} × ${item.name}${item.selfSource?' ⚠ selv skaffes':''}`).join(' · '):'Intet særligt udstyr';
+}
+function gameSelfSourceEquipment(game){
+  return (game.equipment||[]).filter(item=>item?.name&&+item.quantity>0&&item.selfSource);
+}
+function gameSelfSourceWarning(game){
+  const items=gameSelfSourceEquipment(game);
+  if(!items.length)return '';
+  return `⚠ OBS – skal selv skaffes: ${items.map(item=>`${item.quantity} × ${item.name}`).join(' · ')}`;
+}
+function gameExerciseNames(game){
+  return (game.exerciseIds||[]).map(id=>exercises.find(ex=>ex.id===id)?.name).filter(Boolean);
+}
+function normalizeGame(game){
+  game=(game&&typeof game==='object')?game:{};
+  const legacyMinutes=Math.max(1,+game.minutes||8);
+  const hasSplitTime=game.setupMinutes!==undefined||game.activeMinutes!==undefined;
+  const setupMinutes=hasSplitTime?Math.max(0,+game.setupMinutes||0):0;
+  const activeMinutes=hasSplitTime?Math.max(1,+game.activeMinutes||legacyMinutes):legacyMinutes;
+  return {
+    ...game,
+    gameId:game.gameId||crypto.randomUUID(),
+    name:String(game.name||'Ny leg').trim(),
+    topic:String(game.topic||'Andet').trim(),
+    description:String(game.description||'').trim(),
+    rules:String(game.rules||'').trim(),
+    coachTips:String(game.coachTips||'').trim(),
+    setupMinutes,
+    activeMinutes,
+    minutes:Math.max(1,gameTotalMinutesValue(setupMinutes,activeMinutes)),
+    minParticipants:Math.max(1,+game.minParticipants||1),
+    maxParticipants:Math.max(0,+game.maxParticipants||0),
+    organization:game.organization||'Fælles',
+    requiresTeams:!!game.requiresTeams,
+    minTeams:Math.max(2,+game.minTeams||2),
+    teamSize:Math.max(1,+game.teamSize||4),
+    equipment:(game.equipment||[]).filter(item=>item?.name&&+item.quantity>0).map(item=>({
+      name:item.name,
+      quantity:Math.max(1,+item.quantity||1),
+      note:String(item.note||''),
+      selfSource:!!item.selfSource
+    })),
+    exerciseIds:[...new Set((game.exerciseIds||[]).filter(id=>exercises.some(ex=>ex.id===id)))],
+    tags:Array.isArray(game.tags)?game.tags.filter(Boolean):String(game.tags||'').split(',').map(x=>x.trim()).filter(Boolean),
+    audience:game.audience||'all',
+    status:game.status==='draft'?'draft':'active',
+    ownerId:game.ownerId||userProfile().id,
+    ownerRole:game.ownerRole||'local-admin',
+    visibility:game.visibility||'local',
+    version:Math.max(1,+game.version||1),
+    createdAt:game.createdAt||new Date().toISOString(),
+    updatedAt:game.updatedAt||new Date().toISOString()
+  };
+}
+function gameToSection(rawGame){
+  const game=normalizeGame(rawGame);
+  const section=defaultSection('Leg');
+  section.name=game.name;
+  section.minutes=game.minutes;
+  section.gameSetupMinutes=game.setupMinutes;
+  section.gameActiveMinutes=game.activeMinutes;
+  section.organization=game.organization;
+  section.description=game.description;
+  section.rules=game.rules;
+  section.coachTips=game.coachTips;
+  section.gameSourceId=game.gameId;
+  section.gameSourceVersion=game.version;
+  section.gameInstanceId=crypto.randomUUID();
+  section.gameTopic=game.topic;
+  section.gameParticipantMin=game.minParticipants;
+  section.gameParticipantMax=game.maxParticipants;
+  section.gameRequiresTeams=game.requiresTeams;
+  section.gameMinTeams=game.minTeams;
+  section.gameTeamSize=game.teamSize;
+  section.gameEquipment=structuredClone(game.equipment||[]);
+  section.equipment=(game.equipment||[]).map(item=>item.name);
+  section.exercises=(game.exerciseIds||[]).map(id=>{
+    const ex=exercises.find(item=>item.id===id);
+    return ex?makeItem(ex):null;
+  }).filter(Boolean);
+  return normalizeSection(section);
+}
+function gameInstanceInfo(section){
+  if(!section?.gameSourceId)return '';
+  const master=games().find(game=>game.gameId===section.gameSourceId);
+  const sourceName=master?.name||section.name;
+  const setup=Math.max(0,+section.gameSetupMinutes||0),active=Math.max(0,+section.gameActiveMinutes||0);
+  const selfSource=(section.gameEquipment||[]).filter(item=>item?.selfSource);
+  return `<section class="game-instance-card">
+    <div><span>🎲 Fra legebiblioteket</span><strong>${esc(sourceName)}</strong></div>
+    ${setup||active?`<p><strong>Tid:</strong> ${setup} min forklaring/forberedelse + ${active} min aktiv leg = ${setup+active} min samlet.</p>`:''}
+    ${selfSource.length?`<p class="game-instance-warning">⚠ <strong>OBS – skal selv skaffes:</strong> ${esc(selfSource.map(item=>`${item.quantity} × ${item.name}`).join(' · '))}</p>`:''}
+    <p>Denne træning bruger en selvstændig kopi. Du kan ændre eller tilføje øvelser her uden at ændre grundlegen.</p>
+  </section>`;
+}
+function useGameInWorkout(gameId){
+  const game=games().find(item=>item.gameId===gameId);
+  if(!game)return;
+  const participants=Math.max(1,+byId('participantCount')?.value||+byId('plannerParticipants')?.value||20);
+  if(!gameIsEligible(game,participants)){
+    const maxText=game.maxParticipants?` og maks. ${game.maxParticipants}`:'';
+    if(!confirm(`“${game.name}” er bygget til min. ${game.minParticipants}${maxText} deltagere. Du har ${participants}. Vil du indsætte den alligevel?`))return;
+  }
+  const instance=gameToSection(game);
+  if(Number.isInteger(gameTargetSection)&&sections[gameTargetSection]){
+    sections[gameTargetSection]=instance;
+  }else{
+    // Fra Finpuds indsættes grundlegen som en selvstændig ny Leg-sektion.
+    // Finisher skal fortsat ligge sidst.
+    const finisherIndex=sections.findIndex(section=>normalizeSection(section).sectionPurpose==='Finisher');
+    finisherIndex<0?sections.push(instance):sections.splice(finisherIndex,0,instance);
+  }
+  gameTargetSection=null;
+  gameInsertFromFinpuds=false;
+  enforceWorkoutStructure();
+  renderFramework();renderExerciseSections();updateReview();
+  showView('designView');showStep(2);
+}
+function openGameLibraryForSection(index=null,insertFromFinpuds=false){
+  gameTargetSection=Number.isInteger(index)?index:null;
+  gameInsertFromFinpuds=!!insertFromFinpuds;
+  showView('gamesView');
+  showGameModuleTab('library');
+  renderGameLibrary();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function clearGameTarget(){
+  gameTargetSection=null;
+  gameInsertFromFinpuds=false;
+  renderGameTargetBanner();
+}
+function renderGameTargetBanner(){
+  const host=byId('gameTargetBanner');
+  if(!host)return;
+  if(Number.isInteger(gameTargetSection)&&sections[gameTargetSection]){
+    host.classList.remove('hidden');
+    host.innerHTML=`<div><strong>Vælg en grundleg til sektionen “${esc(sections[gameTargetSection].name)}”</strong><span>Den valgte leg erstatter denne sektion som en kopi.</span></div><button type="button" class="ghost" data-clear-game-target>Fortryd</button>`;
+    host.querySelector('[data-clear-game-target]').onclick=clearGameTarget;
+  }else if(gameInsertFromFinpuds){
+    host.classList.remove('hidden');
+    host.innerHTML=`<div><strong>🎲 Indsæt leg i Finpuds</strong><span>Vælg en leg nedenfor. Den indsættes som en ny selvstændig Leg-sektion i træningen${sections.some(section=>normalizeSection(section).sectionPurpose==='Finisher')?' før Finisheren':''}.</span></div><button type="button" class="ghost" data-clear-game-target>Fortryd</button>`;
+    host.querySelector('[data-clear-game-target]').onclick=()=>{
+      clearGameTarget();
+      showView('designView');
+      showStep(2);
+    };
+  }else{
+    host.classList.add('hidden');
+    host.innerHTML='';
+  }
+}
+function showGameModuleTab(tab='library'){
+  gameModuleTab=tab==='admin'?'admin':'library';
+  document.querySelectorAll('[data-game-module-tab]').forEach(button=>button.classList.toggle('selected',button.dataset.gameModuleTab===gameModuleTab));
+  byId('gameLibraryPanel')?.classList.toggle('hidden',gameModuleTab!=='library');
+  byId('gameAdminPanel')?.classList.toggle('hidden',gameModuleTab!=='admin');
+  try{
+    if(gameModuleTab==='library')renderGameLibrary();
+    else renderGameAdminList();
+  }catch(error){
+    showGameModuleError(error);
+  }
+}
+function renderGameTopicOptions(){
+  const select=byId('gameLibraryTopic');
+  if(!select)return;
+  const current=select.value;
+  const topics=[...new Set(games().filter(game=>game.status!=='draft').map(game=>game.topic).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'da'));
+  select.innerHTML='<option value="">Alle emner</option>'+topics.map(topic=>`<option value="${esc(topic)}">${esc(topic)}</option>`).join('');
+  if(topics.includes(current))select.value=current;
+}
+function renderGameLibrary(){
+  const host=byId('gameLibraryCards');if(!host)return;
+  renderGameTargetBanner();renderGameTopicOptions();
+  const query=normalizeText(byId('gameLibrarySearch')?.value||'');
+  const topic=byId('gameLibraryTopic')?.value||'';
+  const sourceFilter=byId('gameLibrarySource')?.value||'';
+  const participants=Math.max(1,+byId('gameLibraryParticipants')?.value||+byId('participantCount')?.value||20);
+  const all=games()
+    .map(normalizeGame)
+    .filter(game=>game.status==='active')
+    .filter(game=>!sourceFilter||(sourceFilter==='shared'?gameLibraryOrigin(game)==='shared':gameLibraryOrigin(game)!=='shared'))
+    .filter(game=>!topic||game.topic===topic)
+    .filter(game=>!query||normalizeText(`${game.name} ${game.topic} ${(game.tags||[]).join(' ')} ${game.description}`).includes(query))
+    .sort((a,b)=>a.name.localeCompare(b.name,'da'));
+  host.innerHTML=all.length?all.map(game=>{
+    const eligible=gameIsEligible(game,participants);
+    const exNames=gameExerciseNames(game);
+    return `<article class="game-library-card">
+      <div class="game-card-topline">
+        <div class="game-card-origin-row">
+          <span class="game-topic-pill">${esc(game.topic)}</span>
+          <span class="game-origin-pill ${gameLibraryOrigin(game)}">${esc(gameLibraryOriginLabel(game))}</span>
+        </div>
+        <span class="game-eligibility ${eligible?'ok':'warn'}">${eligible?'✓ Passer til deltagerantal':'⚠ Tjek deltagerantal'}</span>
+      </div>
+      <h3>${esc(game.name)}</h3>
+      <p class="game-card-description">${esc(game.description||'Ingen beskrivelse')}</p>
+      <div class="game-card-meta">
+        <span>👥 Min. ${game.minParticipants}${game.maxParticipants?` · maks. ${game.maxParticipants}`:''}</span>
+        <span>🏁 ${esc(gameTeamText(game))}</span>
+        <span>⏱️ ${game.minutes} min (${game.setupMinutes}+${game.activeMinutes})</span>
+        <span>🎯 ${esc(gameAudienceLabel(game.audience))}</span>
+      </div>
+      <div class="game-card-detail"><strong>Tid:</strong> ${game.setupMinutes} min forklaring/forberedelse · ${game.activeMinutes} min aktiv leg</div>
+      <div class="game-card-detail"><strong>Udstyr:</strong> ${esc(gameEquipmentText(game))}</div>
+      ${gameSelfSourceEquipment(game).length?`<div class="game-self-source-warning">${esc(gameSelfSourceWarning(game))}</div>`:''}
+      <div class="game-card-detail"><strong>Standardøvelser:</strong> ${exNames.length?esc(exNames.join(' · ')):'Ingen faste øvelser'}</div>
+      <div class="game-card-actions">
+        <button type="button" data-use-game="${game.gameId}">${Number.isInteger(gameTargetSection)?'Brug i denne sektion':gameInsertFromFinpuds?'Indsæt som ny sektion':'Brug i træning'}</button>
+        <button type="button" class="secondary" data-edit-game="${game.gameId}">${gameLibraryOrigin(game)==='shared'?'Tilpas lokalt':'Redigér grundlegen'}</button>
+      </div>
+    </article>`;
+  }).join(''):'<div class="empty">Ingen lege matcher filtrene. Opret en grundleg under Administration.</div>';
+  host.querySelectorAll('[data-use-game]').forEach(button=>button.onclick=()=>useGameInWorkout(button.dataset.useGame));
+  host.querySelectorAll('[data-edit-game]').forEach(button=>button.onclick=()=>editGameMaster(button.dataset.editGame));
+}
+
+function gameExportPayload(){
+  return {
+    format:'funkfit-games-export',
+    version:1,
+    exportedAt:new Date().toISOString(),
+    appVersion:APP_VERSION,
+    games:localGames().map(normalizeGame),
+    customEquipment:customGameEquipment()
+  };
+}
+function exportGames(){
+  const payload=gameExportPayload();
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+  link.href=url;
+  link.download=`FunkFit-Legebibliotek-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function mergeImportedGames(current,incoming){
+  const map=new Map(current.map(game=>[game.gameId,normalizeGame(game)]));
+  incoming.map(normalizeGame).forEach(game=>{
+    const existing=map.get(game.gameId);
+    if(!existing){
+      map.set(game.gameId,game);
+      return;
+    }
+    const existingTime=new Date(existing.updatedAt||0).getTime();
+    const incomingTime=new Date(game.updatedAt||0).getTime();
+    map.set(game.gameId,incomingTime>=existingTime?game:existing);
+  });
+  return [...map.values()];
+}
+async function importGamesFile(file){
+  if(!file)return;
+  try{
+    const payload=JSON.parse(await file.text());
+    if(payload?.format!=='funkfit-games-export'||!Array.isArray(payload.games)){
+      return alert('Filen er ikke en gyldig FunkFit Legebibliotek-eksport.');
+    }
+    const before=localGames();
+    const merged=mergeImportedGames(before,payload.games);
+    saveGames(merged);
+    saveCustomGameEquipment([
+      ...customGameEquipment(),
+      ...(Array.isArray(payload.customEquipment)?payload.customEquipment:[])
+    ]);
+    repairStoredGamesSchema();
+    renderCustomGameEquipmentList();
+    renderGameLibrary();
+    renderGameAdminList();
+    const newCount=merged.filter(game=>!before.some(old=>old.gameId===game.gameId)).length;
+    alert(`Legebibliotek importeret: ${merged.length} grundleg i alt${newCount?` · ${newCount} nye`:''}.`);
+  }catch(error){
+    console.error('Import af Legebibliotek fejlede:',error);
+    alert('Legebiblioteket kunne ikke importeres. Vælg en JSON-fil, der er eksporteret fra FunkFit.');
+  }finally{
+    if(byId('importGamesFile'))byId('importGamesFile').value='';
+  }
+}
+
+function renderGameAdminList(){
+  const host=byId('gameAdminList');if(!host)return;
+  const all=games().map(normalizeGame).sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt));
+  host.innerHTML=all.length?all.map(game=>`<article class="game-admin-row">
+    <div>
+      <div class="game-admin-badges">
+        <span class="game-status-pill ${game.status}">${esc(gameStatusLabel(game.status))}</span>
+        <span class="game-origin-pill ${gameLibraryOrigin(game)}">${esc(gameLibraryOriginLabel(game))}</span>
+      </div>
+      <strong>${esc(game.name)}</strong>
+      <small>${esc(game.topic)} · v${game.version} · opdateret ${new Date(game.updatedAt).toLocaleDateString('da-DK')}${gameSelfSourceEquipment(game).length?' · ⚠ eget skaffeudstyr':''}</small>
+    </div>
+    <div class="game-admin-actions">
+      <button type="button" class="secondary" data-admin-edit-game="${game.gameId}">${gameLibraryOrigin(game)==='shared'?'Tilpas lokalt':'Redigér'}</button>
+      <button type="button" class="secondary" data-admin-duplicate-game="${game.gameId}">Duplikér</button>
+      ${gameLibraryOrigin(game)==='shared'
+        ?'<button type="button" class="ghost" disabled>Fælles</button>'
+        :gameLibraryOrigin(game)==='override'
+          ?`<button type="button" class="ghost" data-admin-reset-shared-game="${game.gameId}">Nulstil fælles</button>`
+          :`<button type="button" class="ghost" data-admin-delete-game="${game.gameId}">Slet</button>`}
+    </div>
+  </article>`).join(''):'<div class="empty">Ingen grundleg endnu.</div>';
+  host.querySelectorAll('[data-admin-edit-game]').forEach(button=>button.onclick=()=>editGameMaster(button.dataset.adminEditGame));
+  host.querySelectorAll('[data-admin-duplicate-game]').forEach(button=>button.onclick=()=>duplicateGameMaster(button.dataset.adminDuplicateGame));
+  host.querySelectorAll('[data-admin-reset-shared-game]').forEach(button=>button.onclick=()=>resetSharedGameOverride(button.dataset.adminResetSharedGame));
+  host.querySelectorAll('[data-admin-delete-game]').forEach(button=>button.onclick=()=>deleteGameMaster(button.dataset.adminDeleteGame));
+}
+function resetGameForm(){
+  const form=byId('gameMasterForm');if(!form)return;
+  form.reset();
+  setGameField('gameMasterId','');
+  if(byId('gameMasterFormTitle'))byId('gameMasterFormTitle').textContent='Ny grundleg';
+  setGameField('gameSetupMinutes',2);
+  setGameField('gameActiveMinutes',6);
+  updateGameDurationTotal();
+  setGameField('gameStatus','active');
+  setGameField('gameAudience','all');
+  setGameField('gameMinParticipants',4);
+  setGameField('gameMaxParticipants',0);
+  setGameField('gameOrganization','Fælles');
+  setGameField('gameMinTeams',2);
+  setGameField('gameTeamSize',4);
+  byId('cancelGameEditBtn')?.classList.add('hidden');
+  gameSelectedExerciseIds=new Set();
+  gameEquipmentDraft=[];
+  updateGameTeamFields();
+  renderGameEquipmentRows();
+  renderCustomGameEquipmentList();
+  renderGameExercisePicker();
+}
+function startNewGameMaster(){
+  showView('gamesView');
+  showGameModuleTab('admin');
+  resetGameForm();
+  setTimeout(()=>byId('gameName')?.focus(),40);
+}
+function editGameMaster(gameId){
+  try{
+    const raw=games().find(item=>item.gameId===gameId);
+    if(!raw)return alert('Grundlegen kunne ikke findes.');
+    const game=normalizeGame(raw);
+
+    // Sæt ID før faneskift, så formularen aldrig kan blive nulstillet som "ny leg".
+    setGameField('gameMasterId',game.gameId);
+    showView('gamesView');
+    showGameModuleTab('admin');
+
+    setGameField('gameMasterId',game.gameId);
+    if(byId('gameMasterFormTitle'))byId('gameMasterFormTitle').textContent=isSharedGameId(game.gameId)&&!hasLocalGameOverride(game.gameId)?`Tilpas fælles leg lokalt: ${game.name}`:`Redigér: ${game.name}`;
+    setGameField('gameName',game.name);
+    setGameField('gameTopic',game.topic);
+    setGameField('gameSetupMinutes',game.setupMinutes);
+    setGameField('gameActiveMinutes',game.activeMinutes);
+    updateGameDurationTotal();
+    setGameField('gameStatus',game.status);
+    setGameField('gameAudience',game.audience);
+    setGameField('gameTags',(game.tags||[]).join(', '));
+    setGameField('gameDescription',game.description);
+    setGameField('gameRules',game.rules);
+    setGameField('gameCoachTips',game.coachTips);
+    setGameField('gameMinParticipants',game.minParticipants);
+    setGameField('gameMaxParticipants',game.maxParticipants||0);
+    setGameField('gameOrganization',game.organization);
+    setGameField('gameRequiresTeams',game.requiresTeams);
+    setGameField('gameMinTeams',game.minTeams||2);
+    setGameField('gameTeamSize',game.teamSize||4);
+
+    byId('cancelGameEditBtn')?.classList.remove('hidden');
+    gameSelectedExerciseIds=new Set(game.exerciseIds||[]);
+    gameEquipmentDraft=structuredClone(game.equipment||[]);
+    updateGameTeamFields();
+    renderGameEquipmentRows();
+    renderCustomGameEquipmentList();
+    renderGameExercisePicker();
+
+    // Kontrol: redigering må aldrig ende i en tom standardformular.
+    if(byId('gameName') && byId('gameName').value!==game.name){
+      throw new Error('Grundlegens navn kunne ikke indlæses i formularen.');
+    }
+    window.scrollTo({top:byId('gameMasterForm')?.offsetTop||0,behavior:'smooth'});
+  }catch(error){
+    console.error('Kunne ikke redigere grundleg:',error);
+    alert('Grundlegen kunne ikke åbnes korrekt. Dine gemte data er ikke slettet. Genindlæs siden og prøv igen.');
+  }
+}
+function duplicateGameMaster(gameId){
+  const source=games().map(normalizeGame).find(item=>item.gameId===gameId);if(!source)return;
+  const copy={...structuredClone(source),gameId:crypto.randomUUID(),name:`${source.name} – kopi`,status:'draft',version:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+  const all=localGames();all.unshift({...copy,source:'game-admin',visibility:'local',ownerRole:'local-admin'});saveGames(all);renderGameAdminList();renderGameLibrary();
+}
+function resetSharedGameOverride(gameId){
+  if(!isSharedGameId(gameId)||!hasLocalGameOverride(gameId))return;
+  const base=sharedGames().find(game=>game.gameId===gameId);
+  if(!confirm(`Vil du nulstille “${base?.name||'grundlegen'}” til den fælles version, der følger med appen? Din lokale tilpasning fjernes.`))return;
+  saveGames(localGames().filter(item=>item.gameId!==gameId));
+  if(byId('gameMasterId')?.value===gameId)resetGameForm();
+  renderGameAdminList();renderGameLibrary();
+}
+function deleteGameMaster(gameId){
+  const game=games().find(item=>item.gameId===gameId);if(!game)return;
+  if(isSharedGameId(gameId)){
+    if(hasLocalGameOverride(gameId))return resetSharedGameOverride(gameId);
+    return alert('Denne grundleg er en del af FunkFits fælles Legebibliotek og kan ikke slettes fra appen. Du kan duplikere den og lave din egen version.');
+  }
+  if(!confirm(`Vil du slette grundlegen “${game.name}”? Eksisterende træninger, der allerede bruger en kopi af legen, påvirkes ikke.`))return;
+  saveGames(localGames().filter(item=>item.gameId!==gameId));
+  if(byId('gameMasterId')?.value===gameId)resetGameForm();
+  renderGameAdminList();renderGameLibrary();
+}
+function updateGameTeamFields(){
+  const org=byId('gameOrganization')?.value||'Fælles';
+  const explicit=!!byId('gameRequiresTeams')?.checked;
+  const requires=explicit||['Hold','Stafet'].includes(org);
+  if(['Hold','Stafet'].includes(org)&&byId('gameRequiresTeams'))byId('gameRequiresTeams').checked=true;
+  byId('gameTeamCountLabel')?.classList.toggle('hidden',!requires);
+  byId('gameTeamSizeLabel')?.classList.toggle('hidden',!requires);
+}
+function renderGameEquipmentRows(){
+  const host=byId('gameEquipmentRows');if(!host)return;
+  const catalog=gameEquipmentCatalog();
+  host.innerHTML=gameEquipmentDraft.length?gameEquipmentDraft.map((item,index)=>`<div class="game-equipment-row">
+    <label>Redskab<select data-game-equipment-name="${index}">${catalog.map(name=>`<option value="${esc(name)}" ${name===item.name?'selected':''}>${esc(name)}</option>`).join('')}</select></label>
+    <label>Antal<input data-game-equipment-qty="${index}" type="number" min="1" value="${Math.max(1,+item.quantity||1)}"></label>
+    <label>Note<input data-game-equipment-note="${index}" value="${esc(item.note||'')}" placeholder="Fx ét sæt pr. bane"></label>
+    <label class="game-equipment-observe">
+      <input data-game-equipment-self-source="${index}" type="checkbox" ${item.selfSource?'checked':''}>
+      <span><strong>OBS</strong><small>Skal selv skaffes</small></span>
+    </label>
+    <button type="button" class="ghost" data-remove-game-equipment="${index}">Fjern</button>
+  </div>`).join(''):'<div class="empty compact-empty">Ingen særlige redskaber angivet.</div>';
+  host.querySelectorAll('[data-game-equipment-name]').forEach(select=>select.onchange=()=>{gameEquipmentDraft[+select.dataset.gameEquipmentName].name=select.value});
+  host.querySelectorAll('[data-game-equipment-qty]').forEach(input=>input.oninput=()=>{gameEquipmentDraft[+input.dataset.gameEquipmentQty].quantity=Math.max(1,+input.value||1)});
+  host.querySelectorAll('[data-game-equipment-note]').forEach(input=>input.oninput=()=>{gameEquipmentDraft[+input.dataset.gameEquipmentNote].note=input.value});
+  host.querySelectorAll('[data-game-equipment-self-source]').forEach(input=>input.onchange=()=>{gameEquipmentDraft[+input.dataset.gameEquipmentSelfSource].selfSource=input.checked});
+  host.querySelectorAll('[data-remove-game-equipment]').forEach(button=>button.onclick=()=>{
+    gameEquipmentDraft.splice(+button.dataset.removeGameEquipment,1);renderGameEquipmentRows();
+  });
+}
+function addGameEquipment(){
+  const catalog=gameEquipmentCatalog();
+  const used=new Set(gameEquipmentDraft.map(item=>item.name));
+  const next=catalog.find(name=>!used.has(name))||catalog[0]||'Kegler';
+  gameEquipmentDraft.push({name:next,quantity:1,note:'',selfSource:false});
+  renderGameEquipmentRows();
+}
+function renderGameExercisePicker(){
+  const host=byId('gameExercisePicker');if(!host)return;
+  const query=normalizeText(byId('gameExerciseSearch')?.value||'');
+  const filtered=exercises
+    .filter(ex=>!query||normalizeText(`${ex.name} ${ex.category||''} ${(ex.focus||[]).join(' ')} ${(ex.equipment||[]).join(' ')}`).includes(query))
+    .sort((a,b)=>{
+      const aSel=gameSelectedExerciseIds.has(a.id)?0:1,bSel=gameSelectedExerciseIds.has(b.id)?0:1;
+      return aSel-bSel||a.name.localeCompare(b.name,'da');
+    });
+  host.innerHTML=filtered.slice(0,90).map(ex=>`<label class="game-exercise-option ${gameSelectedExerciseIds.has(ex.id)?'selected':''}">
+    <input type="checkbox" data-game-exercise-id="${ex.id}" ${gameSelectedExerciseIds.has(ex.id)?'checked':''}>
+    <span><strong>${esc(ex.name)}</strong><small>${esc(ex.category||'')} · ${esc((ex.equipment||['Kropsvægt']).join(', '))}</small></span>
+  </label>`).join('')||'<div class="empty">Ingen øvelser matcher søgningen.</div>';
+  host.querySelectorAll('[data-game-exercise-id]').forEach(input=>input.onchange=()=>{
+    input.checked?gameSelectedExerciseIds.add(input.dataset.gameExerciseId):gameSelectedExerciseIds.delete(input.dataset.gameExerciseId);
+    renderGameExercisePicker();
+  });
+  if(byId('gameExerciseCount'))byId('gameExerciseCount').textContent=`${gameSelectedExerciseIds.size} valgt`;
+}
+function submitGameMaster(event){
+  event.preventDefault();
+  const id=byId('gameMasterId').value||crypto.randomUUID();
+  const all=localGames();
+  const previous=games().find(game=>game.gameId===id);
+  const org=byId('gameOrganization').value;
+  const requiresTeams=!!byId('gameRequiresTeams').checked||['Hold','Stafet'].includes(org);
+  const minParticipants=Math.max(1,+byId('gameMinParticipants').value||1);
+  const maxParticipants=Math.max(0,+byId('gameMaxParticipants').value||0);
+  if(maxParticipants&&maxParticipants<minParticipants)return alert('Maksimum deltagere kan ikke være lavere end minimum.');
+  if(requiresTeams&&+byId('gameMinTeams').value<2)return alert('En holdleg skal kræve mindst 2 hold.');
+  const game=normalizeGame({
+    gameId:id,
+    name:byId('gameName').value,
+    topic:byId('gameTopic').value,
+    setupMinutes:Math.max(0,+byId('gameSetupMinutes').value||0),
+    activeMinutes:Math.max(1,+byId('gameActiveMinutes').value||1),
+    status:byId('gameStatus').value,
+    audience:byId('gameAudience').value,
+    tags:byId('gameTags').value.split(',').map(x=>x.trim()).filter(Boolean),
+    description:byId('gameDescription').value,
+    rules:byId('gameRules').value,
+    coachTips:byId('gameCoachTips').value,
+    minParticipants,
+    maxParticipants,
+    organization:org,
+    requiresTeams,
+    minTeams:+byId('gameMinTeams').value||2,
+    teamSize:+byId('gameTeamSize').value||4,
+    equipment:structuredClone(gameEquipmentDraft),
+    exerciseIds:[...gameSelectedExerciseIds],
+    ownerId:userProfile().id,
+    ownerRole:'local-admin',
+    visibility:'local',
+    version:previous?(+previous.version||1)+1:1,
+    createdAt:previous?.createdAt||new Date().toISOString(),
+    updatedAt:new Date().toISOString(),
+    source:isSharedGameId(id)?'shared-override':'game-admin'
+  });
+  const safe=all.filter(item=>item.gameId!==id);
+  safe.unshift(game);
+  saveGames(safe);
+  alert(`Grundlegen “${game.name}” er gemt.`);
+  resetGameForm();
+  renderGameAdminList();renderGameLibrary();
+}
+
 function renderFinisherEditor(s,si,fam){
   const mode=s.finisherMode||'song';const template=finisherTemplateById(s.finisherTemplateId);
   const song=mode==='song';
@@ -960,12 +1680,21 @@ async function init(){
   migrateEquipmentProfilesA30();
   const base=await fetch('data/exercises.json').then(r=>r.json());
   templates=await fetch('data/workoutTemplates.json').then(r=>r.json());
+  try{
+    sharedGameLibrary=validGameList(await fetch('data/sharedGames.json').then(r=>{
+      if(!r.ok)throw new Error(`sharedGames ${r.status}`);
+      return r.json();
+    }));
+  }catch(error){
+    console.error('Fælles Legebibliotek kunne ikke indlæses:',error);
+    sharedGameLibrary=[];
+  }
   exercises=[...customs(),...base];
   renderAdultExerciseOptions();
   $('#templateSelect').innerHTML=templates.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   $('#workoutDate').value=new Date().toISOString().slice(0,10);
   sections=prepareTemplateSections(templates[0].sections);
-  populatePickerFilters();bind();syncManualChoiceButtons();setCreationMode('choice');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();renderMusicPlanner();
+  populatePickerFilters();bind();syncManualChoiceButtons();setCreationMode('choice');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();renderMusicPlanner();initGameModuleSafely();
   await handleSpotifyOAuthCallback();
   updateSpotifyIntegrationUI();
 }
@@ -1209,7 +1938,13 @@ function deleteSectionWithConfirm(index){
 }
 
 function bind(){
-  document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>showView(b.dataset.view));
+  document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{
+    showView(b.dataset.view);
+    if(b.dataset.view==='gamesView'){
+      try{renderGameLibrary();renderGameAdminList()}catch(error){showGameModuleError(error)}
+    }
+  });
+  document.querySelectorAll('[data-game-module-tab]').forEach(button=>button.onclick=()=>showGameModuleTab(button.dataset.gameModuleTab));
   document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>goToStep(+b.dataset.step));
   document.querySelectorAll('[data-next-step]').forEach(b=>b.onclick=()=>goToStep(+b.dataset.nextStep));
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).close());
@@ -1225,6 +1960,26 @@ function bind(){
     $('#manualVenue').value=button.dataset.manualVenue;syncManualSetup();
   });
   on('addFinisherBtn','click',addFinisher);
+  on('newGameMasterBtn','click',startNewGameMaster);
+  on('exportGamesBtn','click',exportGames);
+  on('importGamesBtn','click',()=>byId('importGamesFile')?.click());
+  on('importGamesFile','change',event=>importGamesFile(event.target.files?.[0]));
+  on('cancelGameEditBtn','click',resetGameForm);
+  on('addGameEquipmentBtn','click',addGameEquipment);
+  on('addCustomGameEquipmentBtn','click',addCustomGameEquipment);
+  on('customGameEquipmentName','keydown',event=>{
+    if(event.key==='Enter'){event.preventDefault();addCustomGameEquipment()}
+  });
+  on('gameSetupMinutes','input',updateGameDurationTotal);
+  on('gameActiveMinutes','input',updateGameDurationTotal);
+  on('gameOrganization','change',updateGameTeamFields);
+  on('gameRequiresTeams','change',updateGameTeamFields);
+  on('gameExerciseSearch','input',renderGameExercisePicker);
+  on('gameLibrarySearch','input',renderGameLibrary);
+  on('gameLibraryTopic','change',renderGameLibrary);
+  on('gameLibraryParticipants','input',renderGameLibrary);
+  on('gameLibrarySource','change',renderGameLibrary);
+  if(byId('gameMasterForm'))byId('gameMasterForm').onsubmit=submitGameMaster;
 
   $('#familyMode').onchange=()=>{
     $('#adultCountLabel').classList.toggle('hidden',!$('#familyMode').checked);
@@ -1351,10 +2106,16 @@ function bind(){
   bindPlanner();
 
   on('aiBuildSectionBtn','click',()=>startSingleSectionPlanner(null));
+  on('insertGameFromLibraryBtn','click',()=>openGameLibraryForSection(null,true));
   on('aiBuildGameBtn','click',()=>startSingleSectionPlanner(null,'Leg'));
   on('runPreset','change',e=>fillRunPreset(e.target.value));
   if($('#runForm'))$('#runForm').onsubmit=submitRun;
   if($('#aiSectionForm'))$('#aiSectionForm').onsubmit=submitAISection;
+  on('aiSectionGameLibraryBtn','click',()=>{
+    const target=aiTargetSection;
+    $('#aiSectionDialog')?.close();
+    if(Number.isInteger(target))openGameLibraryForSection(target,false);
+  });
   if($('#aiSectionType'))$('#aiSectionType').onchange=updateInlineAIFields;
   on('singleFinisherMode','change',()=>refreshFinisherForm('single'));
   on('singleFinisherCatalog','change',()=>{const preview=byId('singleFinisherPreview');if(preview)preview.innerHTML=finisherTemplatePreview(finisherTemplateById(byId('singleFinisherCatalog').value))});
@@ -1452,7 +2213,7 @@ function setCreationMode(mode){
 function selectedTrainingType(){return plannerConcept||'junior'}
 
 function verifyInteractiveControls(){
-  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue','resetEquipmentProfileBtn','singleFundamentalChoices','adultExerciseOptions','addFinisherBtn','homeBrandBtn','aiSectionContext','inlineFundamentalChoices','inlineFinisherWrap','singleFinisherMode','singleFinisherCatalog','singleFinisherSuggestBtn','inlineFinisherMode','inlineFinisherCatalog','inlineFinisherSuggestBtn','sectionEditDialog','sectionEditForm','sectionEditStructureFields','sectionEditGuidanceFields'];
+  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','insertGameFromLibraryBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','aiSectionGameLibraryChoice','aiSectionGameLibraryBtn','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue','resetEquipmentProfileBtn','singleFundamentalChoices','adultExerciseOptions','addFinisherBtn','homeBrandBtn','aiSectionContext','inlineFundamentalChoices','inlineFinisherWrap','singleFinisherMode','singleFinisherCatalog','singleFinisherSuggestBtn','inlineFinisherMode','inlineFinisherCatalog','inlineFinisherSuggestBtn','sectionEditDialog','sectionEditForm','sectionEditStructureFields','sectionEditGuidanceFields','exportGamesBtn','importGamesBtn','importGamesFile'];
   const missing=required.filter(id=>!byId(id));
   if(missing.length)console.error('Manglende interaktive elementer:',missing);
   else console.info('FunkFit interaktive kontroller: OK');
@@ -1737,11 +2498,13 @@ function renderExerciseSections(){
       </div>
       <div class="section-expanded-content">
         ${finisher?renderFinisherEditor(s,si,fam):`
+          ${s.sectionPurpose==='Leg'?gameInstanceInfo(s):''}
           <div class="exercise-list exercise-list-primary">${s.exercises?.length?s.exercises.map((it,ai)=>activityRow(it,si,ai,fam)).join(''):'<div class="empty">Ingen aktiviteter endnu.</div>'}</div>
           ${s.sectionPurpose==='Teknik'?renderFundamentalsPicker(s,si,true):''}
           ${s.rules?`<section class="section-guidance-card rules-card"><div class="guidance-icon">📋</div><div><h4>Regler</h4><p>${esc(s.rules)}</p></div></section>`:''}
           ${s.coachTips?`<section class="section-guidance-card coach-card"><div class="guidance-icon">💡</div><div><h4>Trænertips</h4><p>${esc(s.coachTips)}</p></div></section>`:''}
           <div class="section-add-row">
+            ${s.sectionPurpose==='Leg'?`<button class="secondary" data-pick-game="${si}">🎲 Vælg fra Legebibliotek</button>`:''}
             <button data-add-ex="${si}">+ Tilføj øvelse</button>
             <button class="secondary" data-add-run="${si}">🏃 Tilføj løb</button>
           </div>`}
@@ -1766,6 +2529,7 @@ function renderExerciseSections(){
     const[a,c]=b.dataset.delActivity.split('-').map(Number);
     sections[a].exercises.splice(c,1);renderExerciseSections();renderFramework();updateReview();
   });
+  host.querySelectorAll('[data-pick-game]').forEach(b=>b.onclick=()=>openGameLibraryForSection(+b.dataset.pickGame));
   host.querySelectorAll('[data-save-exercise-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveExerciseElement));
   host.querySelectorAll('[data-ai-exercise-section]').forEach(b=>b.onclick=()=>{closeSectionMenuFrom(b);openAISectionDialog('section',+b.dataset.aiExerciseSection)});
   host.querySelectorAll('[data-suggest-one]').forEach(b=>b.onclick=()=>suggestOneExercise(+b.dataset.suggestOne));
@@ -2146,7 +2910,10 @@ function openAISectionDialog(mode='section',target=null){
   renderInlineFundamentalChoices(current?.fundamentalKeys?.length?current.fundamentalKeys:['squat']);
   if(current?.type==='Finisher')refreshFinisherForm('inline',current);
   else{byId('inlineFinisherMode').value='song';refreshFinisherForm('inline');$('#inlineFinisherTitle').value='';$('#inlineFinisherArtist').value='';$('#inlineFinisherMinutes').value=4;$('#inlineFinisherUrl').value='';}
-  $('#aiSectionDialog').dataset.mode=isGame?'game':'section';updateInlineAIFields();$('#aiSectionDialog').showModal();
+  $('#aiSectionDialog').dataset.mode=isGame?'game':'section';
+  $('#aiSectionGameLibraryChoice')?.classList.toggle('hidden',isGame||aiTargetSection===null);
+  updateInlineAIFields();
+  $('#aiSectionDialog').showModal();
 }
 
 function submitAISection(e){
@@ -2721,9 +3488,10 @@ function generateSmartWorkout(){
 
   const jointMinutes=includeJoint?5:0;
   const warmMinutes=Math.max(7,Math.round(duration*.13));
+  const techniqueMinutes=plannerConcept==='junior'?10:0;
   const gameMinutes=includeGame?Math.max(7,Math.round(duration*.13)):0;
   const finisherMinutes=includeFinisher?Number(suggestedFinisher?.minutes||4):0;
-  const available=Math.max(12,duration-jointMinutes-warmMinutes-gameMinutes-finisherMinutes);
+  const available=Math.max(12,duration-jointMinutes-warmMinutes-techniqueMinutes-gameMinutes-finisherMinutes);
   let mainCount=structureChoice==='one'?1:structureChoice==='two'?2:structureChoice==='three'?3:(available>=28?2:1);
   if(['hiit','hyrox','trx'].includes(plannerConcept))mainCount=Math.max(2,mainCount);
   const mainMinutes=Array.from({length:mainCount},(_,i)=>Math.floor(available/mainCount)+(i<available%mainCount?1:0));
@@ -2738,6 +3506,15 @@ function generateSmartWorkout(){
     warm.coachTips='Start moderat. Øg tempoet gradvist og øv teknik før de hårde arbejdsintervaller.';
   }
   sections.push(warm);
+
+  if(plannerConcept==='junior'){
+    const requestedFundamentals=fundamentalsFromFocus([...goals,plannerBrief].filter(Boolean).join(', '));
+    const technique=buildFundamentalSection(requestedFundamentals.slice(0,2),techniqueMinutes);
+    technique.name='Teknik – FunkFit Fundamentals';
+    technique.sectionPurpose='Teknik';
+    technique.type='Teknik';
+    sections.push(technique);
+  }
 
   if(includeGame)sections.push(buildGameSuggestion(gameMinutes,goals.join(', '),theme));
 
@@ -3221,10 +3998,18 @@ function sectionEquipmentRequirements(rawSection,participants){
     mergeActivityMaps(result,activityEquipmentMap(activity,section,participants,activityCount,active),mergeMode);
   });
 
+  (section.gameEquipment||[]).forEach(item=>{
+    if(!item?.name||item.name==='Kropsvægt'||+item.quantity<=0)return;
+    const obs=item.selfSource?'OBS – skal selv skaffes':'Krav fra grundlegen';
+    const note=[obs,item.note].filter(Boolean).join(' · ');
+    addRequirement(result,item.name,Math.max(1,+item.quantity||1),note,'max');
+  });
+
   const declared=sectionDeclaredEquipment(section);
   const active=activeCountForSection(section,participants,Math.max(1,activities.length));
+  const exactGameEquipmentNames=new Set((section.gameEquipment||[]).map(item=>item.name));
   declared.forEach(name=>{
-    if(!name||name==='Kropsvægt')return;
+    if(!name||name==='Kropsvægt'||exactGameEquipmentNames.has(name))return;
     if(isFacilityEquipment(name)){
       addRequirement(result,name,1,'Adgang under træningen');
       return;
@@ -4694,7 +5479,7 @@ function openWorkoutMusic(workout){
 function renderSaved(){
   const all=workouts();
   $('#savedWorkouts').innerHTML=all.length?all.map(w=>`<article class="saved-card">
-    <span class="saved-training-type ${trainingTypeClass(w.trainingType)}">${esc(trainingTypeLabel(w.trainingType))}</span>
+    <span class="saved-training-type ${trainingTypeClass(w.trainingType)}">${({junior:'🟠',family:'🔵',adult:'🟢',trx:'🟡',hyrox:'🔴',hiit:'🟣'})[w.trainingType]||'⚪'} ${esc(trainingTypeLabel(w.trainingType))}</span>
     <h3>${esc(w.name)}</h3>
     <p class="meta">${w.date||'Ingen dato'} · ${w.sections.length} sektioner · ${w.sections.reduce((n,s)=>n+(+s.minutes||0),0)} min</p>
     <p class="saved-at">Senest gemt: ${w.savedAt?new Date(w.savedAt).toLocaleString('da-DK'):'Tidspunkt ikke registreret'}</p>
@@ -5144,4 +5929,8 @@ async function toggleFullscreen(){try{if(!document.fullscreenElement)await $('#w
 function openPlaylist(url,name){if(!url.trim())return alert(`Indsæt først et link til ${name}.`);window.open(url,'_blank','noopener')}
 
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./service-worker.js');
-init().catch(e=>{console.error(e);alert('Appen kunne ikke starte. Genindlæs siden.')});
+init().catch(e=>{
+  console.error('FunkFit startup error:',e);
+  const message=e?.message?`\n\nFejl: ${e.message}`:'';
+  alert(`Appen kunne ikke starte korrekt. Genindlæs siden.${message}`);
+});

@@ -1,59 +1,38 @@
-# Gentest – v0.7.4-alpha.30
+# Gentest – v0.7.4-alpha.37
 
-## Musik
-1. Gå til Musik uden at generere/tilknytte noget: PLAYLISTE må ikke vises.
-2. Generér AI-playliste: PLAYLISTE skal vises.
-3. Klik “Slet playlisten”: resultatkortet skal forsvinde.
-4. Kontroller at AI-prompt/schema kræver vokal, nyere tracks og højere energi.
-5. Kontroller at klassisk/instrumental/soundtrack filtreres fra.
-6. Vælg TIDAL og generér en liste.
+## Fælles Legebibliotek
+1. Åbn appen i en browser uden tidligere FunkFit-data.
+2. Legebiblioteket skal stadig indeholde de fælles lege.
+3. Kontroller mindst Kegletyven, Kortspils-stafet og Terninge-challenge.
+4. Filtrér “Fælles i appen”.
+5. Filtrér “Mine lege”.
+6. Opret en ny lokal leg: den skal vises som “Min leg”.
+7. Tilpas en fælles leg lokalt: den skal vises som “Min version af fælles”.
+8. Nulstil fælles: appens grundversion skal komme tilbage.
+9. En ren fælles leg må ikke kunne slettes.
+10. En lokal leg skal kunne slettes normalt.
+11. Fælles lege skal kunne indsættes som sektioner.
+12. Udstyr/tider/standardøvelser skal følge med.
 
-## Player
-7. Afspil Junior: primær label = JUNIOR.
-8. Afspil Familie: JUNIOR + VOKSEN.
-9. Afspil Funktionel voksen: primær label = VOKSEN og voksen kg/reps.
-10. Gentag for HIIT/HYROX/TRX.
-11. Tilknyt kun TIDAL: kun TIDAL-knappen må vises i player.
-12. Uden playlist-link: ingen musiktjenesteknapper.
+## Eksport/import
+13. Eksportér mine lege: fælles bundled lege behøver ikke være i filen.
+14. Importér på en anden enhed: lokale lege skal lægge sig oven på fællesbiblioteket.
+15. Egne redskaber skal følge med.
 
 ## Gemte træninger
-13. Træning uden link: “Playliste ikke tilknyttet”.
-14. Klik den: Musik-trinnet åbnes.
-15. Træning med link: “Playliste tilknyttet”.
-16. Klik den: playlisten åbnes.
+16. Junior-label = orange.
+17. Familie-label = blå.
+18. Funktionel voksen = grøn.
+19. TRX = gul.
+20. Hyrox = rød.
+21. HIIT = lilla.
+22. Labels skal også vise samme farvede emoji som Trin 1.1.
 
-## HYROX
-17. Generér HYROX med relevant udstyr: officielle stationer skal dominere.
-18. Ingen SkiErg/romaskine i standardudstyr.
-19. Kontroller “Løb mellem hver øvelse”.
-20. Test 200/300/400/500/1000 m.
-21. Test brugerdefineret distance.
-22. Test “Start også med løb”.
-23. Slå funktionen fra: auto-løb skal fjernes uden at fjerne arbejdsøvelser.
-24. Player/PDF skal følge auto-løbene.
-
-## TRX
-25. Generér TRX: alle hovedøvelser skal kræve TRX.
-26. Kontroller variation mellem plank/hinge/pull/squat/push/lunge/rotate.
-27. Kontroller de fem nye TRX-øvelser.
-28. Fjern TRX fra udstyr: AI må ikke kunne bygge en normal TRX-hovedblok med falske kropsvægtsalternativer.
-29. TRX + måtte-øvelse må ikke vælges, hvis måtten mangler.
-
-## HIIT
-30. Generér HIIT: hovedblokke skal være intervaller.
-31. Kontroller 30/30, 40/20 eller 20/40.
-32. Mindst én engine-bevægelse pr. blok.
-33. Ingen curls/deadlifts/balanceøvelser som standard.
-34. KB swing/box jump/wall ball/devil press må kun komme ved øvet/erfaren intention.
-35. Kontroller at samme kropsområde ikke dominerer alle stationer.
-36. Warm-up skal nævne bevægelsesrehearsal.
-
-## Regression
-37. JavaScript starter uden fejl.
-38. Ingen dublerede HTML-id'er.
-39. Gemte træninger fra tidligere version findes stadig.
-40. reset-cache.html må ikke rydde localStorage.
-
-41. Redigér kg/reps i en Funktionel voksen-øvelse og afspil: player skal vise de redigerede metrics.
-42. Redigér HYROX-distance/reps og TRX-kropsvinkel: player skal vise de redigerede sporfelter.
-43. Fjern TRX fra udstyr og prøv at AI-generere TRX: appen skal stoppe med en tydelig fejl.
+## PWA/regression
+23. `data/sharedGames.json` findes og er gyldig JSON.
+24. Service worker cacher `sharedGames.json`.
+25. JavaScript syntax OK.
+26. Ingen dublerede HTML-id'er.
+27. `funkfit-workouts-v074a` uændret.
+28. `funkfit-games-v1` uændret.
+29. reset-cache må ikke rydde localStorage.
