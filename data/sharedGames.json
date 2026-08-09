@@ -1,0 +1,357 @@
+[
+  {
+    "gameId": "shared-kegletyven-v1",
+    "name": "Kegletyven",
+    "topic": "Konkurrence / reaktion",
+    "description": "Holdene forsøger at hente kegler fra midten og bringe dem sikkert hjem til egen base. Korte bevægelsesopgaver kan bruges som adgangsbillet til næste løb.",
+    "rules": "1. Del deltagerne i 2-4 hold med hver sin base.\n2. Placér kegler i midten.\n3. Én deltager fra hvert hold må løbe ad gangen.\n4. Deltageren gennemfører den aftalte øvelse, henter én kegle og vender tilbage.\n5. Når midten er tom, må holdene stjæle én kegle ad gangen fra andre baser.\n6. Flest kegler ved tidens udløb vinder.",
+    "coachTips": "Hold afstandene korte, lav flere løberetninger og sørg for god afstand mellem holdene. Skift øvelsen undervejs for variation.",
+    "setupMinutes": 3,
+    "activeMinutes": 8,
+    "minParticipants": 8,
+    "maxParticipants": 32,
+    "organization": "Hold",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 5,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 16,
+        "note": "Kegler/markører til midten og baser",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "shuttle-run",
+      "air-squat",
+      "burpee"
+    ],
+    "tags": [
+      "konkurrence",
+      "reaktion",
+      "løb",
+      "hold"
+    ],
+    "audience": "junior-family",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-08-09T18:00:00.000Z",
+    "updatedAt": "2026-08-09T18:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-kortspilsstafet-v1",
+    "name": "Kortspils-stafet",
+    "topic": "Stafet / tilfældighed",
+    "description": "Deltagerne trækker spillekort, hvor kulør og værdi bestemmer bevægelsesopgaven. Holdet samler point ved at løse kortene.",
+    "rules": "1. Del deltagerne i hold og læg et kortspil i den modsatte ende.\n2. Én deltager løber ud og trækker ét kort.\n3. Kuløren bestemmer øvelsen. Kortets værdi bestemmer antal gentagelser.\n4. Deltageren udfører opgaven og vender tilbage.\n5. Næste deltager fortsætter.\n6. Flest gennemførte kort eller point ved tidens udløb vinder.",
+    "coachTips": "Sæt et loft på reps for billedkort og esser, fx 10. Brug simple øvelser, så legen har flow.",
+    "setupMinutes": 4,
+    "activeMinutes": 10,
+    "minParticipants": 6,
+    "maxParticipants": 36,
+    "organization": "Stafet",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 5,
+    "equipment": [
+      {
+        "name": "Kortspil",
+        "quantity": 1,
+        "note": "Almindeligt sæt spillekort",
+        "selfSource": true
+      },
+      {
+        "name": "Kegler",
+        "quantity": 6,
+        "note": "Holdbaser og vendepunkt",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "air-squat",
+      "burpee",
+      "push-up",
+      "reverse-lunge"
+    ],
+    "tags": [
+      "kort",
+      "stafet",
+      "tilfældighed",
+      "hold"
+    ],
+    "audience": "all",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-08-09T18:00:00.000Z",
+    "updatedAt": "2026-08-09T18:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-terningechallenge-v1",
+    "name": "Terninge-challenge",
+    "topic": "Tilfældighed / hold",
+    "description": "Holdene slår med terninger og lader øjnene bestemme næste bevægelsesopgave eller antal gentagelser.",
+    "rules": "1. Del deltagerne i 2-4 hold.\n2. Ét holdmedlem slår terningen.\n3. Tallet kobles til en øvelse fra instruktørens liste.\n4. Hele holdet eller den aktive deltager udfører opgaven.\n5. Nyt kast starter næste runde.\n6. Spil på antal gennemførte runder eller fælles point.",
+    "coachTips": "Lav seks tydelige og teknisk enkle opgaver. Til yngre deltagere kan 5 og 6 være samarbejdsopgaver i stedet for flere reps.",
+    "setupMinutes": 3,
+    "activeMinutes": 9,
+    "minParticipants": 4,
+    "maxParticipants": 30,
+    "organization": "Hold",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 5,
+    "equipment": [
+      {
+        "name": "Terninger",
+        "quantity": 2,
+        "note": "Store terninger er ekstra nemme at se",
+        "selfSource": true
+      }
+    ],
+    "exerciseIds": [
+      "jumping-jack",
+      "mountain-climber",
+      "air-squat",
+      "high-knees"
+    ],
+    "tags": [
+      "terninger",
+      "tilfældighed",
+      "samarbejde"
+    ],
+    "audience": "junior-family",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-08-09T18:00:00.000Z",
+    "updatedAt": "2026-08-09T18:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-fire-hjoerner-v1",
+    "name": "Fire hjørner – FunkFit",
+    "topic": "Reaktion / bevægelse",
+    "description": "Fire hjørner repræsenterer hver sin bevægelsesopgave. Instruktørens signal bestemmer, hvor deltagerne skal hen.",
+    "rules": "1. Markér fire hjørner i salen.\n2. Hvert hjørne får en øvelse.\n3. Deltagerne bevæger sig frit i midten.\n4. På signal kalder instruktøren et hjørne, en farve eller en øvelse.\n5. Deltagerne bevæger sig hurtigt til hjørnet og udfører opgaven.\n6. Ingen elimineres.",
+    "coachTips": "Undgå at alle skal gennem samme smalle passage. Brug farver, tal eller retninger som signaler.",
+    "setupMinutes": 3,
+    "activeMinutes": 8,
+    "minParticipants": 6,
+    "maxParticipants": 40,
+    "organization": "Fælles",
+    "requiresTeams": false,
+    "minTeams": 2,
+    "teamSize": 4,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 8,
+        "note": "To markører pr. hjørne",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "air-squat",
+      "jumping-jack",
+      "plank-shoulder-tap",
+      "high-knees"
+    ],
+    "tags": [
+      "reaktion",
+      "fælles",
+      "hjørner"
+    ],
+    "audience": "junior-family",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-08-09T18:00:00.000Z",
+    "updatedAt": "2026-08-09T18:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-react-farvejagt-v1",
+    "name": "React Lights – farvejagt",
+    "topic": "Reaktion / agility",
+    "description": "Deltagerne reagerer på lys, farver og placeringer og samler point individuelt eller for holdet.",
+    "rules": "1. Placér React Lights med god afstand.\n2. Del evt. deltagerne i små hold.\n3. På startsignal aktiveres lysene.\n4. Deltagerne rammer korrekt lys så hurtigt som muligt.\n5. Efter hver tur roteres der, så alle er aktive.\n6. Spil på point, tid eller fælles rekord.",
+    "coachTips": "Lav parallelle baner ved mange deltagere. Hold løbedistancerne korte og brug tydelige sikkerhedszoner.",
+    "setupMinutes": 4,
+    "activeMinutes": 9,
+    "minParticipants": 4,
+    "maxParticipants": 24,
+    "organization": "Hold",
+    "requiresTeams": false,
+    "minTeams": 2,
+    "teamSize": 4,
+    "equipment": [
+      {
+        "name": "React Lights",
+        "quantity": 1,
+        "note": "Ét sæt",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "react-lights-color-chase",
+      "react-lights-sprint",
+      "react-lights-team-relay"
+    ],
+    "tags": [
+      "react lights",
+      "reaktion",
+      "agility"
+    ],
+    "audience": "all",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-08-09T18:00:00.000Z",
+    "updatedAt": "2026-08-09T18:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-saml-skatten-v1",
+    "name": "Saml skatten",
+    "topic": "Mission / samarbejde",
+    "description": "Holdene skal hente 'skatte' fra banen og løse bevægelsesopgaver på vej ud eller hjem.",
+    "rules": "1. Del deltagerne i hold med hver sin base.\n2. Spred kegler eller små markører som skatte.\n3. Én deltager eller et makkerpar må hente én skat ad gangen.\n4. Før eller efter hentningen udføres den aftalte opgave.\n5. Skatten lægges i holdets base.\n6. Spil mod tid eller mod en fælles målsætning.",
+    "coachTips": "Giv forskellige skatte forskellig værdi, eller lad bestemte farver udløse bestemte øvelser.",
+    "setupMinutes": 4,
+    "activeMinutes": 10,
+    "minParticipants": 8,
+    "maxParticipants": 36,
+    "organization": "Hold",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 5,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 20,
+        "note": "Brug forskellige farver hvis muligt",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "shuttle-run",
+      "bear-crawl",
+      "farmer-carry"
+    ],
+    "tags": [
+      "mission",
+      "samarbejde",
+      "hold",
+      "løb"
+    ],
+    "audience": "junior-family",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-08-09T18:00:00.000Z",
+    "updatedAt": "2026-08-09T18:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-sten-saks-papir-v1",
+    "name": "Sten-saks-papir-stafet",
+    "topic": "Duel / stafet",
+    "description": "To hold sender deltagere mod hinanden. Når de mødes, afgør sten-saks-papir, hvem der fortsætter mod modstanderens base.",
+    "rules": "1. Lav en bane mellem to holdbaser.\n2. Første deltager fra hvert hold løber mod hinanden.\n3. Når de mødes, spiller de sten-saks-papir.\n4. Vinderen fortsætter fremad. Taberen løber hjem, og næste holdkammerat starter straks.\n5. Når en deltager når modstanderens base, scorer holdet ét point.\n6. Start en ny runde.",
+    "coachTips": "Lav banen bred og tydelig. Ved store hold kan der køres to parallelle baner.",
+    "setupMinutes": 3,
+    "activeMinutes": 8,
+    "minParticipants": 8,
+    "maxParticipants": 32,
+    "organization": "Stafet",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 5,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 8,
+        "note": "Banemarkering og baser",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "shuttle-run",
+      "squat-jump"
+    ],
+    "tags": [
+      "duel",
+      "stafet",
+      "sten saks papir"
+    ],
+    "audience": "junior-family",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-08-09T18:00:00.000Z",
+    "updatedAt": "2026-08-09T18:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-makkerjagt-v1",
+    "name": "Makkerjagt",
+    "topic": "Makker / reaktion",
+    "description": "Makkerpar skifter mellem en kort bevægelsesopgave og en jagt-/reaktionsdel, hvor rollerne hele tiden byttes.",
+    "rules": "1. Deltagerne går sammen to og to.\n2. Makker A udfører en kort opgave, mens B er klar.\n3. På signal forsøger A at nå en markeret linje, før B fanger eller rører A.\n4. Byt roller.\n5. Skift startposition eller øvelse mellem runderne.\n6. Ingen elimineres.",
+    "coachTips": "Hold jagtdistancen kort, og undgå fysisk blokering. Brug skulder-/håndtouch som sikker fangstregel.",
+    "setupMinutes": 3,
+    "activeMinutes": 8,
+    "minParticipants": 4,
+    "maxParticipants": 30,
+    "organization": "Makker sammen",
+    "requiresTeams": false,
+    "minTeams": 2,
+    "teamSize": 2,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 8,
+        "note": "Start- og mållinjer",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "air-squat",
+      "mountain-climber",
+      "shuttle-run"
+    ],
+    "tags": [
+      "makker",
+      "jagt",
+      "reaktion"
+    ],
+    "audience": "junior-family",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-08-09T18:00:00.000Z",
+    "updatedAt": "2026-08-09T18:00:00.000Z",
+    "source": "shared"
+  }
+]

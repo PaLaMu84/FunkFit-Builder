@@ -664,7 +664,7 @@ dialog{width:min(860px,calc(100% - 1rem));max-height:90vh;overflow:auto;border:0
 .docs-model-grid h3{margin:.65rem 0 .3rem}.docs-model-grid p{margin:0;color:#475569;line-height:1.45}
 .docs-rules{margin-top:1rem;padding:1rem;border-radius:16px;background:#f8fafc;border:1px solid #cbd5e1}.docs-rules p{line-height:1.5}
 .saved-training-type{display:inline-flex;padding:.3rem .58rem;border-radius:999px;background:#e2e8f0;color:#334155;font-size:.76rem;font-weight:900;margin-bottom:.45rem}
-.saved-type-junior{background:#dcfce7;color:#166534}.saved-type-family{background:#fef3c7;color:#92400e}.saved-type-adult{background:#dbeafe;color:#1e40af}.saved-type-trx{background:#ede9fe;color:#5b21b6}.saved-type-hiit{background:#fee2e2;color:#991b1b}.saved-type-hyrox{background:#cffafe;color:#155e75}
+.saved-type-junior{background:#ffedd5;color:#9a3412}.saved-type-family{background:#dbeafe;color:#1e40af}.saved-type-adult{background:#dcfce7;color:#166534}.saved-type-trx{background:#fef3c7;color:#92400e}.saved-type-hyrox{background:#fee2e2;color:#991b1b}.saved-type-hiit{background:#ede9fe;color:#5b21b6}
 @media(max-width:900px){.docs-model-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){
   .section-card-menu[open] .section-menu-popover{position:fixed;left:.75rem;right:.75rem;top:auto;bottom:.75rem;width:auto;min-width:0;max-height:72vh;overflow:auto;z-index:10000;padding:.7rem;border-radius:18px;box-shadow:0 24px 80px rgba(15,23,42,.35)}
@@ -2237,4 +2237,76 @@ a{
 /* v0.7.4-alpha.34 – robust redigering af grundleg */
 #gameMasterFormTitle{
   overflow-wrap:anywhere;
+}
+
+
+/* v0.7.4-alpha.36 – Junior Teknik + lege på tværs af enheder */
+.ai-section-game-library{
+  display:flex;
+  justify-content:space-between;
+  gap:.8rem;
+  align-items:center;
+  padding:.8rem;
+  border:1px solid #c7d2fe;
+  border-radius:13px;
+  background:#eef2ff;
+}
+.ai-section-game-library.hidden{display:none!important}
+.ai-section-game-library>div{display:grid;gap:.15rem}
+.ai-section-game-library small{color:#475569}
+.ai-section-game-library button{flex:0 0 auto}
+.game-admin-toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  align-items:center;
+  gap:.45rem;
+}
+@media(max-width:700px){
+  .ai-section-game-library{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+  }
+  .ai-section-game-library button{width:100%}
+  .game-admin-toolbar{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    width:100%;
+  }
+  .game-admin-toolbar button{width:100%}
+}
+
+
+/* v0.7.4-alpha.37 – fælles Legebibliotek + farvekoder */
+.game-filter-bar{
+  grid-template-columns:1.7fr 1fr .7fr 1fr;
+}
+.game-card-origin-row,.game-admin-badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.35rem;
+  align-items:center;
+}
+.game-origin-pill{
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  max-width:100%;
+  padding:.3rem .55rem;
+  border-radius:999px;
+  font-size:.75rem;
+  font-weight:900;
+}
+.game-origin-pill.shared{background:#dcfce7;color:#166534}
+.game-origin-pill.mine{background:#dbeafe;color:#1e40af}
+.game-origin-pill.override{background:#fef3c7;color:#92400e}
+.game-admin-actions button:disabled{
+  opacity:.65;
+  cursor:default;
+}
+@media(max-width:900px){
+  .game-filter-bar{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:650px){
+  .game-filter-bar{grid-template-columns:minmax(0,1fr)}
 }

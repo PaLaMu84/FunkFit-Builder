@@ -782,3 +782,122 @@ Den indsatte leg er en selvstændig træningsinstans og kan tilpasses i Finpuds 
 - **Indsæt leg fra Legebibliotek** → indsætter en eksisterende grundleg som ny sektion.
 - **Byg en leg med AI** → bygger et nyt legforslag til træningen.
 - **Vælg fra Legebibliotek** inde i en eksisterende Leg-sektion → erstatter netop den sektion med en kopi af en grundleg.
+
+
+# FunkFit Junior og Legebibliotek – alpha.36
+
+## Teknik er igen fast i AI-genereret FunkFit Junior
+En hel AI-genereret **FunkFit Junior**-træning indeholder igen en selvstændig **Teknik – FunkFit Fundamentals**-sektion.
+
+Tidsmodellen reserverer 10 minutter til Teknik, så sektionen ikke bare lægges oven i den planlagte træningstid. Teknik placeres efter Pulsopvarmning og før leg/hovedarbejde.
+
+FunkFit vælger relevante Fundamentals ud fra træningens fokus. Hvis der ikke er et tydeligt fokus, anvendes et grundlæggende Fundamentals-valg.
+
+Teknik tvinges kun ind i FunkFit Junior – ikke i Funktionel voksen, HIIT, HYROX eller TRX.
+
+## Tilpas sektionen med AI – Legebibliotek som alternativ
+Når **Tilpas sektionen med AI** åbnes på en eksisterende sektion, vises nu også:
+
+**🎲 Indsæt leg fra Legebibliotek**
+
+Det betyder, at instruktøren kan vælge mellem:
+- at lade AI bygge/tilpasse sektionen
+- at erstatte sektionen med en bereits gemt grundleg fra Legebiblioteket
+
+Den valgte leg indsættes som en kopi. Grundlegen ændres ikke.
+
+Den separate Finpuds-knap **Indsæt leg fra Legebibliotek** indsætter fortsat en NY Leg-sektion.
+
+## Hvor ligger Legebiblioteket?
+Den nuværende FunkFit Builder er en statisk PWA. `localStorage` er lokalt for den konkrete browser/enhed.
+
+Derfor synkroniseres lege ikke automatisk mellem telefon og PC.
+
+Alpha.36 tilføjer en praktisk løsning:
+
+### Eksportér lege
+**Lege → Administration → Eksportér lege**
+
+Der downloades én JSON-fil med:
+- hele Legebiblioteket
+- regler og beskrivelser
+- tider
+- deltager-/holddata
+- udstyr og antal
+- OBS “skal selv skaffes”
+- standardøvelser
+- egne redskaber
+- versions-/adminmetadata
+
+### Importér lege
+På den anden enhed vælges:
+
+**Lege → Administration → Importér lege**
+
+Eksportfilen vælges. FunkFit fletter den ind i det lokale bibliotek.
+
+Hvis samme `gameId` allerede findes, beholdes den udgave, der har den seneste `updatedAt`. Import laver derfor ikke automatisk dubletter af de samme grundleg.
+
+Dette er manuel synkronisering. Den langsigtede løsning er en rigtig backend/login, så telefon og PC bruger samme centrale Legebibliotek automatisk.
+
+
+# Fælles Legebibliotek – alpha.37
+
+## To lag: Fælles i appen + Mine lege
+Legebiblioteket er nu delt arkitektonisk i to lag:
+
+### Fælles i appen
+Disse grundleg ligger i `data/sharedGames.json` og er en del af selve FunkFit Builder.
+
+Konsekvensen er:
+- de findes på telefon, PC og nye enheder
+- alle brugere af samme app-version kan bruge dem
+- de virker også efter rydning af lokal browserdata
+- de caches sammen med resten af PWA'en
+
+Alpha.37 starter med et fælles grundbibliotek med bl.a.:
+- Kegletyven
+- Kortspils-stafet
+- Terninge-challenge
+- Fire hjørner – FunkFit
+- React Lights – farvejagt
+- Saml skatten
+- Sten-saks-papir-stafet
+- Makkerjagt
+
+### Mine lege
+Lege, som en bruger selv opretter, gemmes fortsat lokalt. De ligger oven på det fælles bibliotek.
+
+Legebiblioteket viser tydeligt:
+- **Fælles i appen**
+- **Min leg**
+- **Min version af fælles**
+
+Der kan filtreres mellem Fælles og Mine.
+
+## Tilpasning af fælles lege
+En fælles leg kan ikke slettes fra appens grundbibliotek.
+
+Hvis brugeren vælger **Tilpas lokalt**, oprettes en lokal override med samme `gameId`. Den lokale version vises derefter i stedet for den fælles på netop den enhed.
+
+**Nulstil fælles** fjerner den lokale override og viser igen versionen, der følger med appen.
+
+## Hvordan egne lege bliver fælles for alle
+En statisk GitHub Pages-app kan ikke lade browseren skrive direkte tilbage til appens filer.
+
+Derfor er publiceringsflowet indtil en rigtig backend:
+1. Opret/redigér lege lokalt.
+2. Eksportér **Mine lege**.
+3. De ønskede lege optages i `sharedGames.json` i en ny FunkFit-version.
+4. Når versionen publiceres, får alle brugere dem automatisk.
+
+På sigt bør en rigtig backend/login lade en legeansvarlig publicere trựcete til det fælles bibliotek uden en ny app-release.
+
+## Farvekoder i Gemte træninger
+Gemte træninger bruger nu præcis samme målgruppefarver som Trin 1.1:
+- 🟠 FunkFit Junior
+- 🔵 Familietræning
+- 🟢 Funktionel voksen
+- 🟡 TRX
+- 🔴 Hyrox
+- 🟣 HIIT
