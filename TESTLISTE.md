@@ -1,31 +1,20 @@
-# Gentest – v0.7.4-alpha.38
+# Gentest – v0.7.4-alpha.39
 
-## Uploadede lege er fælles
-1. Åbn Legebibliotek på en ren browser/enhed.
-2. Kontroller at “Superfly Superman Snap challenge” findes.
-3. Kontroller at “Flip kegler” findes.
-4. Kontroller at “Double stafet” findes.
-5. Kontroller at “3 på stribe” findes.
-6. Kontroller at “Saml keglerne” findes.
-7. Biblioteket skal indeholde 13 fælles lege i alt.
-
-## Identitet / dubletter
-8. På en enhed der allerede har de fem lege lokalt, må de ikke fremstå som ekstra dubletter.
-9. De skal fremstå som lokal override / “Min version af fælles”.
-10. Nulstil fælles på én af dem: den bundlende app-version skal vises.
-
-## Indhold
-11. Tider skal matche eksporten.
-12. Hold/minimum-deltagere skal matche eksporten.
-13. Udstyr og antal skal matche eksporten.
-14. Standardøvelser skal matche eksporten.
-15. “Stige” skal kunne vælges i udstyrseditoren.
-
-## Regression
-16. De oprindelige 8 fælles starterlege skal stadig findes.
-17. Indsæt fælles leg som sektion fra Finpuds.
-18. JavaScript syntax OK.
-19. sharedGames.json gyldig JSON.
-20. Ingen dublerede HTML-id'er.
-21. `funkfit-workouts-v074a` og `funkfit-games-v1` uændrede.
-22. reset-cache må ikke rydde localStorage.
+1. Upload alpha.39.
+2. Åbn reset-cache.html én gang.
+3. Genindlæs appen.
+4. Lege → Administration skal vise “✓ 13/13 indlæst”.
+5. Kontroller de 8 starterlege.
+6. Kontroller også:
+   - Superfly Superman Snap challenge
+   - Flip kegler
+   - Double stafet
+   - 3 på stribe
+   - Saml keglerne
+7. Test både PC og telefon.
+8. JavaScript syntax OK.
+9. sharedGames.json har 13 entries.
+10. Service worker bruger no-store/network-first for sharedGames.
+11. Ingen dublerede HTML-id'er.
+12. Storage keys uændrede.
+13. reset-cache må ikke rydde localStorage.

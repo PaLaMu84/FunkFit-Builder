@@ -1,22 +1,14 @@
-# FunkFit Builder v0.7.4-alpha.38
+# FunkFit Builder v0.7.4-alpha.39
 
-## Fælles Legebibliotek
-- Brugerens eksporterede legebibliotek fra 9. august 2026 er optaget i selve appen.
-- 5 eksisterende brugerlege er tilføjet som fælles grundleg:
-- Superfly Superman Snap challenge
-- Flip kegler
-- Double stafet
-- 3 på stribe
-- Saml keglerne
-- Fælles bibliotek indeholder nu 13 lege i alt.
-- Originale gameId'er er bevaret, så eksisterende lokale versioner ikke giver dubletter.
-- Beskrivelser, regler, trænertips, tider, udstyr og øvelsesreferencer er bevaret fra eksporten.
-- Kun owner/source/visibility er ændret til fælles app-data.
+## Kritisk cache-fix
+- Rettet mismatch hvor UI viste 13 fælles lege, men browseren stadig hentede de 8 fra alpha.37.
+- `sharedGames.json` bruger nu versionsparameter fra APP_VERSION.
+- Fetch bruger `cache: no-store`.
+- Service worker bruger network-first for sharedGames.
+- Administration viser faktisk status: fx “✓ 13/13 indlæst”.
 
-## Udstyr
-- Udstyrskataloget læser nu også redskabsnavne fra de fælles grundleg.
-- Fx bliver “Stige” automatisk tilgængelig i leg-editoren på alle enheder.
+## Fælles lege
+De 5 publicerede brugerlege fra alpha.38 er fortsat bundlet. sharedGames.json indeholder 13 lege i alt.
 
 ## Data
-- `data/sharedGames.json` er opdateret og caches fortsat af PWA'en.
-- Lokale game/workout storage keys er uændrede.
+Workout/game storage keys er uændrede.

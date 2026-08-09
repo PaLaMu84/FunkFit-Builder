@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.38';
+const APP_VERSION='0.7.4-alpha.39';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -240,6 +240,15 @@ function localGames(){
   }
   return [];
 }
+const EXPECTED_SHARED_GAME_COUNT=13;
+function sharedGameLibraryHealth(){
+  return {
+    expected:EXPECTED_SHARED_GAME_COUNT,
+    loaded:sharedGameLibrary.length,
+    ok:sharedGameLibrary.length===EXPECTED_SHARED_GAME_COUNT
+  };
+}
+
 function sharedGames(){
   return validGameList(sharedGameLibrary).map(game=>({...game,source:'shared',visibility:'shared',ownerRole:'shared-library'}));
 }
@@ -1129,6 +1138,13 @@ async function importGamesFile(file){
 
 function renderGameAdminList(){
   const host=byId('gameAdminList');if(!host)return;
+  const health=sharedGameLibraryHealth();
+  const status=byId('sharedGameLoadStatus');
+  if(status){
+    status.className=`shared-game-load-status ${health.ok?'ok':'warn'}`;
+    status.textContent=health.ok?`✓ ${health.loaded}/${health.expected} indlæst`:`⚠ ${health.loaded}/${health.expected} indlæst – opdatér app-cache`;
+  }
+  if(!health.ok)console.warn('Fælles Legebibliotek er ikke fuldt indlæst',health);
   const all=games().map(normalizeGame).sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt));
   host.innerHTML=all.length?all.map(game=>`<article class="game-admin-row">
     <div>
@@ -1682,7 +1698,8 @@ async function init(){
   const base=await fetch('data/exercises.json').then(r=>r.json());
   templates=await fetch('data/workoutTemplates.json').then(r=>r.json());
   try{
-    sharedGameLibrary=validGameList(await fetch('data/sharedGames.json').then(r=>{
+    const sharedGamesUrl=`data/sharedGames.json?v=${encodeURIComponent(APP_VERSION)}`;
+    sharedGameLibrary=validGameList(await fetch(sharedGamesUrl,{cache:'no-store'}).then(r=>{
       if(!r.ok)throw new Error(`sharedGames ${r.status}`);
       return r.json();
     }));
