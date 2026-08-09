@@ -1,38 +1,31 @@
-# Gentest – v0.7.4-alpha.37
+# Gentest – v0.7.4-alpha.38
 
-## Fælles Legebibliotek
-1. Åbn appen i en browser uden tidligere FunkFit-data.
-2. Legebiblioteket skal stadig indeholde de fælles lege.
-3. Kontroller mindst Kegletyven, Kortspils-stafet og Terninge-challenge.
-4. Filtrér “Fælles i appen”.
-5. Filtrér “Mine lege”.
-6. Opret en ny lokal leg: den skal vises som “Min leg”.
-7. Tilpas en fælles leg lokalt: den skal vises som “Min version af fælles”.
-8. Nulstil fælles: appens grundversion skal komme tilbage.
-9. En ren fælles leg må ikke kunne slettes.
-10. En lokal leg skal kunne slettes normalt.
-11. Fælles lege skal kunne indsættes som sektioner.
-12. Udstyr/tider/standardøvelser skal følge med.
+## Uploadede lege er fælles
+1. Åbn Legebibliotek på en ren browser/enhed.
+2. Kontroller at “Superfly Superman Snap challenge” findes.
+3. Kontroller at “Flip kegler” findes.
+4. Kontroller at “Double stafet” findes.
+5. Kontroller at “3 på stribe” findes.
+6. Kontroller at “Saml keglerne” findes.
+7. Biblioteket skal indeholde 13 fælles lege i alt.
 
-## Eksport/import
-13. Eksportér mine lege: fælles bundled lege behøver ikke være i filen.
-14. Importér på en anden enhed: lokale lege skal lægge sig oven på fællesbiblioteket.
-15. Egne redskaber skal følge med.
+## Identitet / dubletter
+8. På en enhed der allerede har de fem lege lokalt, må de ikke fremstå som ekstra dubletter.
+9. De skal fremstå som lokal override / “Min version af fælles”.
+10. Nulstil fælles på én af dem: den bundlende app-version skal vises.
 
-## Gemte træninger
-16. Junior-label = orange.
-17. Familie-label = blå.
-18. Funktionel voksen = grøn.
-19. TRX = gul.
-20. Hyrox = rød.
-21. HIIT = lilla.
-22. Labels skal også vise samme farvede emoji som Trin 1.1.
+## Indhold
+11. Tider skal matche eksporten.
+12. Hold/minimum-deltagere skal matche eksporten.
+13. Udstyr og antal skal matche eksporten.
+14. Standardøvelser skal matche eksporten.
+15. “Stige” skal kunne vælges i udstyrseditoren.
 
-## PWA/regression
-23. `data/sharedGames.json` findes og er gyldig JSON.
-24. Service worker cacher `sharedGames.json`.
-25. JavaScript syntax OK.
-26. Ingen dublerede HTML-id'er.
-27. `funkfit-workouts-v074a` uændret.
-28. `funkfit-games-v1` uændret.
-29. reset-cache må ikke rydde localStorage.
+## Regression
+16. De oprindelige 8 fælles starterlege skal stadig findes.
+17. Indsæt fælles leg som sektion fra Finpuds.
+18. JavaScript syntax OK.
+19. sharedGames.json gyldig JSON.
+20. Ingen dublerede HTML-id'er.
+21. `funkfit-workouts-v074a` og `funkfit-games-v1` uændrede.
+22. reset-cache må ikke rydde localStorage.
