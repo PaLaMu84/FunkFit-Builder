@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.39';
+const APP_VERSION='0.7.4-alpha.40';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -108,6 +108,7 @@ function updateAddressVersion(){
 const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a',EQKEY='funkfit-equipment-profiles-v074a';
 const WBACKUPKEY='funkfit-workouts-backup-v1';
 const GKEY='funkfit-games-v1',GBACKUPKEY='funkfit-games-backup-v1',GAME_MIGRATION_KEY='funkfit-games-migrated-v1',GCUSTOMEQKEY='funkfit-game-custom-equipment-v1';
+const INVKEY='funkfit-equipment-inventory-v1',INVBACKUPKEY='funkfit-equipment-inventory-backup-v1';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0,playerTrainingType='junior';
 let musicPlan=[],musicService='spotify',musicScope='all',selectedMusicSections=new Set();
 let musicBuildMode='ai',manualMusicMode='tracks',linkedPlaylist=null,musicReplaceTarget=null;
@@ -187,6 +188,7 @@ const PROGRAMMING_PROFILES={
 };
 let creationMode='choice',structureChoice='auto',singleSectionTarget=null,activeRunPlan=null,clearUndoInterval=null,addSectionType='Hovedelement',sectionEditIndex=null,sectionEditMode='structure',sectionEditDraft=null;
 let gameModuleTab='library',gameTargetSection=null,gameInsertFromFinpuds=false,gameSelectedExerciseIds=new Set(),gameEquipmentDraft=[],sharedGameLibrary=[];
+let inventoryLocation='indoor';
 
 
 
@@ -689,6 +691,317 @@ function finisherFromForm(prefix){
   });
 }
 
+
+const EQUIPMENT_INVENTORY_DEFAULTS=[
+  ['indoor','Kettlebell','','','Flere vægte: duplikér linjen pr. kg'],
+  ['indoor','Håndvægt','','','Flere vægte: duplikér linjen pr. kg'],
+  ['indoor','Vægtstang','','',''],
+  ['indoor','Vægtskive','','',''],
+  ['indoor','Medicinbold','','',''],
+  ['indoor','Wall ball','','',''],
+  ['indoor','Slam ball','','',''],
+  ['indoor','Boks','','','Plyobox / stepboks'],
+  ['indoor','Bænk','','',''],
+  ['indoor','Måtte','','',''],
+  ['indoor','TRX','','','Suspension trainer'],
+  ['indoor','Ringe','','','Gymnastikringe'],
+  ['indoor','Elastik','','Farve – udfyld','Lang træningselastik; farver er mærkeafhængige'],
+  ['indoor','Miniband','','Farve – udfyld','Duplikér ved flere farver/modstande'],
+  ['indoor','Powerband','','Farve – udfyld','Duplikér ved flere farver/modstande'],
+  ['indoor','Sjippetov','','',''],
+  ['indoor','Kegler','','',''],
+  ['indoor','Stige','','','Agilitystige'],
+  ['indoor','Hække','','','Lave agilityhække'],
+  ['indoor','Parallettes','','',''],
+  ['indoor','Pull-up stativ','','',''],
+  ['indoor','React Lights','','','Sæt'],
+  ['indoor','Foam roller','','','Mobilitet/recovery'],
+
+  ['outdoor','Kettlebell','','','Flere vægte: duplikér linjen pr. kg'],
+  ['outdoor','Håndvægt','','','Flere vægte: duplikér linjen pr. kg'],
+  ['outdoor','Vægtskive','','',''],
+  ['outdoor','Medicinbold','','',''],
+  ['outdoor','Wall ball','','',''],
+  ['outdoor','Sandsæk','','','Flere vægte: duplikér linjen pr. kg'],
+  ['outdoor','Slæde','','',''],
+  ['outdoor','Reb','','','Fx slædereb'],
+  ['outdoor','Battle rope','','',''],
+  ['outdoor','Traktordæk','','',''],
+  ['outdoor','Hammer','','','Til dæk / funktionel træning'],
+  ['outdoor','Boks','','','Plyobox'],
+  ['outdoor','Kegler','','',''],
+  ['outdoor','Stige','','','Agilitystige'],
+  ['outdoor','Hække','','','Lave agilityhække'],
+  ['outdoor','Sjippetov','','',''],
+  ['outdoor','Elastik','','Farve – udfyld','Lang træningselastik; farver er mærkeafhængige'],
+  ['outdoor','Miniband','','Farve – udfyld',''],
+  ['outdoor','Powerband','','Farve – udfyld',''],
+  ['outdoor','Pull-up stativ','','',''],
+  ['outdoor','React Lights','','','Sæt'],
+  ['outdoor','Farmer carry-håndtag','','',''],
+  ['outdoor','Ringe','','','Hvis ophæng findes']
+];
+function inventoryDefaultRows(){
+  return EQUIPMENT_INVENTORY_DEFAULTS.map(([location,name,kg,variant,note])=>({
+    inventoryId:crypto.randomUUID(),
+    location,
+    name,
+    quantity:0,
+    kg,
+    variant,
+    note,
+    createdAt:new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  }));
+}
+function validInventoryRows(value){
+  return Array.isArray(value)?value.filter(item=>item&&typeof item==='object'&&item.inventoryId):[];
+}
+function saveEquipmentInventory(rows){
+  const safe=validInventoryRows(rows).map(row=>({
+    inventoryId:row.inventoryId||crypto.randomUUID(),
+    location:row.location==='outdoor'?'outdoor':'indoor',
+    name:String(row.name||'').trim(),
+    quantity:Math.max(0,+row.quantity||0),
+    kg:String(row.kg??'').trim(),
+    variant:String(row.variant||'').trim(),
+    note:String(row.note||'').trim(),
+    createdAt:row.createdAt||new Date().toISOString(),
+    updatedAt:row.updatedAt||new Date().toISOString()
+  }));
+  const payload=JSON.stringify(safe);
+  localStorage.setItem(INVKEY,payload);
+  localStorage.setItem(INVBACKUPKEY,payload);
+}
+function equipmentInventory(){
+  const current=validInventoryRows(read(INVKEY,[]));
+  if(current.length)return current;
+  const backup=validInventoryRows(read(INVBACKUPKEY,[]));
+  if(backup.length){
+    localStorage.setItem(INVKEY,JSON.stringify(backup));
+    return backup;
+  }
+  return [];
+}
+function initializeEquipmentInventory(){
+  if(equipmentInventory().length)return;
+  saveEquipmentInventory(inventoryDefaultRows());
+}
+function inventoryLocationLabel(location){
+  return location==='outdoor'?'Containeren · ude':'Gymnastiksalen · inde';
+}
+function inventoryPlannerType(name){
+  const n=normalizeText(name);
+  const map=[
+    [/^wall ball$/, 'Medicinbold'],
+    [/^slam ball$/, 'Medicinbold'],
+    [/plyo|^boks$/, 'Boks'],
+    [/miniband|powerband|elastik/, 'Elastik'],
+    [/slædereb|^reb$/, 'Reb'],
+    [/agilitystige|^stige$/, 'Stige'],
+    [/vægtskive/, 'Vægtskive'],
+    [/håndvægt/, 'Håndvægt'],
+    [/kettlebell/, 'Kettlebell'],
+    [/medicinbold/, 'Medicinbold'],
+    [/sandsæk/, 'Sandsæk'],
+    [/battle rope/, 'Battle rope'],
+    [/traktordæk/, 'Traktordæk'],
+    [/slæde/, 'Slæde'],
+    [/pull-up/, 'Pull-up stativ'],
+    [/react lights/, 'React Lights'],
+    [/sjippetov/, 'Sjippetov'],
+    [/kegle/, 'Kegler'],
+    [/måtte/, 'Måtte'],
+    [/trx/, 'TRX'],
+    [/ringe/, 'Ringe'],
+    [/bænk/, 'Bænk']
+  ];
+  return map.find(([pattern])=>pattern.test(n))?.[1]||String(name||'').trim();
+}
+function inventoryEquipmentNames(){
+  return [...new Set(equipmentInventory().map(row=>row.name).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'da'));
+}
+function inventoryAvailableEquipment(location){
+  const names=equipmentInventory()
+    .filter(row=>row.location===location&&+row.quantity>0&&row.name)
+    .map(row=>inventoryPlannerType(row.name))
+    .filter(Boolean);
+  const facilities=location==='indoor'?['Kropsvægt','Væg']:['Kropsvægt','Løbebane','Bakke'];
+  return [...new Set([...facilities,...names])];
+}
+function inventoryRowsForView(){
+  const query=normalizeText(byId('inventorySearch')?.value||'');
+  return equipmentInventory()
+    .filter(row=>inventoryLocation==='all'||row.location===inventoryLocation)
+    .filter(row=>!query||normalizeText(`${row.name} ${row.kg} ${row.variant} ${row.note}`).includes(query))
+    .sort((a,b)=>{
+      if(a.location!==b.location)return a.location.localeCompare(b.location);
+      const nameCmp=a.name.localeCompare(b.name,'da');
+      if(nameCmp)return nameCmp;
+      return (parseFloat(a.kg)||0)-(parseFloat(b.kg)||0);
+    });
+}
+function renderInventoryEquipmentNames(){
+  const host=byId('inventoryEquipmentNames');if(!host)return;
+  const names=[...new Set([
+    ...EQUIPMENT_INVENTORY_DEFAULTS.map(row=>row[1]),
+    ...exercises.flatMap(ex=>ex.equipment||[]).filter(name=>name!=='Kropsvægt'),
+    ...games().flatMap(game=>(game.equipment||[]).map(item=>item?.name)).filter(Boolean),
+    ...inventoryEquipmentNames()
+  ])].sort((a,b)=>a.localeCompare(b,'da'));
+  host.innerHTML=names.map(name=>`<option value="${esc(name)}"></option>`).join('');
+}
+function renderInventorySummary(){
+  const host=byId('inventorySummary');if(!host)return;
+  const rows=equipmentInventory().filter(row=>inventoryLocation==='all'||row.location===inventoryLocation);
+  const stocked=rows.filter(row=>+row.quantity>0);
+  const units=stocked.reduce((sum,row)=>sum+(+row.quantity||0),0);
+  const types=new Set(stocked.map(row=>row.name).filter(Boolean)).size;
+  const weightVariants=stocked.filter(row=>row.kg).length;
+  const empty=rows.filter(row=>!row.quantity).length;
+  host.innerHTML=`
+    <article><strong>${types}</strong><span>redskabstyper med lager</span></article>
+    <article><strong>${units}</strong><span>registrerede enheder</span></article>
+    <article><strong>${weightVariants}</strong><span>linjer med kg</span></article>
+    <article><strong>${empty}</strong><span>standardlinjer uden antal endnu</span></article>`;
+}
+function renderEquipmentInventory(){
+  const host=byId('inventoryRows');if(!host)return;
+  document.querySelectorAll('[data-inventory-location]').forEach(button=>button.classList.toggle('selected',button.dataset.inventoryLocation===inventoryLocation));
+  renderInventoryEquipmentNames();
+  renderInventorySummary();
+  const rows=inventoryRowsForView();
+  host.innerHTML=rows.length?rows.map(row=>`<article class="inventory-row" data-inventory-id="${row.inventoryId}">
+    <label class="inventory-location-field"><span>Sted</span><select data-inventory-field="location">
+      <option value="indoor" ${row.location==='indoor'?'selected':''}>🏠 Inde</option>
+      <option value="outdoor" ${row.location==='outdoor'?'selected':''}>📦 Ude</option>
+    </select></label>
+    <label><span>Redskab</span><input data-inventory-field="name" list="inventoryEquipmentNames" value="${esc(row.name)}" placeholder="Fx Kettlebell"></label>
+    <label><span>Antal</span><input data-inventory-field="quantity" type="number" min="0" step="1" value="${Math.max(0,+row.quantity||0)}"></label>
+    <label><span>Kg</span><input data-inventory-field="kg" type="number" min="0" step="0.25" value="${esc(row.kg)}" placeholder="–"></label>
+    <label><span>Variant/farve</span><input data-inventory-field="variant" value="${esc(row.variant)}" placeholder="Fx rød / medium"></label>
+    <label><span>Note</span><input data-inventory-field="note" value="${esc(row.note)}" placeholder="Fx slidt, nyt sæt, hylde 2"></label>
+    <div class="inventory-row-actions">
+      <button type="button" class="secondary" data-duplicate-inventory="${row.inventoryId}" title="Duplikér linje">Kopi</button>
+      <button type="button" class="ghost" data-delete-inventory="${row.inventoryId}" title="Slet linje">Slet</button>
+    </div>
+  </article>`).join(''):'<div class="empty">Ingen redskaber matcher dette filter.</div>';
+
+  host.querySelectorAll('.inventory-row').forEach(card=>{
+    const id=card.dataset.inventoryId;
+    card.querySelectorAll('[data-inventory-field]').forEach(input=>{
+      const eventName=input.tagName==='SELECT'?'change':'input';
+      input.addEventListener(eventName,()=>updateInventoryRow(id,input.dataset.inventoryField,input.value));
+    });
+  });
+  host.querySelectorAll('[data-duplicate-inventory]').forEach(button=>button.onclick=()=>duplicateInventoryRow(button.dataset.duplicateInventory));
+  host.querySelectorAll('[data-delete-inventory]').forEach(button=>button.onclick=()=>deleteInventoryRow(button.dataset.deleteInventory));
+}
+function updateInventoryRow(id,field,value){
+  const rows=equipmentInventory();
+  const row=rows.find(item=>item.inventoryId===id);if(!row)return;
+  if(field==='quantity')row[field]=Math.max(0,+value||0);
+  else if(field==='location')row[field]=value==='outdoor'?'outdoor':'indoor';
+  else row[field]=String(value||'');
+  row.updatedAt=new Date().toISOString();
+  saveEquipmentInventory(rows);
+  renderInventorySummary();
+  renderInventoryEquipmentNames();
+}
+function addInventoryRow(){
+  const rows=equipmentInventory();
+  const location=inventoryLocation==='outdoor'?'outdoor':'indoor';
+  const row={inventoryId:crypto.randomUUID(),location,name:'',quantity:0,kg:'',variant:'',note:'',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+  rows.push(row);saveEquipmentInventory(rows);renderEquipmentInventory();
+  setTimeout(()=>document.querySelector(`[data-inventory-id="${row.inventoryId}"] [data-inventory-field="name"]`)?.focus(),20);
+}
+function duplicateInventoryRow(id){
+  const rows=equipmentInventory();
+  const source=rows.find(item=>item.inventoryId===id);if(!source)return;
+  rows.push({...structuredClone(source),inventoryId:crypto.randomUUID(),quantity:0,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  saveEquipmentInventory(rows);renderEquipmentInventory();
+}
+function deleteInventoryRow(id){
+  const row=equipmentInventory().find(item=>item.inventoryId===id);if(!row)return;
+  if((+row.quantity>0||row.note||row.kg||row.variant)&&!confirm(`Vil du slette linjen “${row.name||'Nyt redskab'}”?`))return;
+  saveEquipmentInventory(equipmentInventory().filter(item=>item.inventoryId!==id));
+  renderEquipmentInventory();
+}
+function inventoryDefaultKey(row){
+  return `${row.location}|${normalizeText(row.name)}|${normalizeText(row.kg)}|${normalizeText(row.variant)}`;
+}
+function addMissingInventoryDefaults(){
+  const rows=equipmentInventory();
+  const existing=new Set(rows.map(inventoryDefaultKey));
+  const missing=inventoryDefaultRows().filter(row=>!existing.has(inventoryDefaultKey(row)));
+  if(!missing.length)return alert('Alle standardredskaber findes allerede i registeret.');
+  saveEquipmentInventory([...rows,...missing]);
+  renderEquipmentInventory();
+  alert(`${missing.length} manglende standardlinjer er tilføjet. Eksisterende antal og noter er ikke ændret.`);
+}
+function applyInventoryToPlanner(location){
+  const venue=location==='outdoor'?'outdoor':'indoor';
+  const items=inventoryAvailableEquipment(venue);
+  const stocked=equipmentInventory().some(row=>row.location===venue&&+row.quantity>0);
+  if(!stocked)return alert(`Der er endnu ikke registreret antal over 0 i ${inventoryLocationLabel(venue)}.`);
+  persistEquipmentProfile(venue,items);
+  if(plannerVenue===venue){
+    plannerEquipment=new Set(items);
+    renderEquipmentChoices();
+  }
+  alert(`${items.length} udstyrstyper fra ${inventoryLocationLabel(venue)} er nu brugt som tilgængeligt udstyr i Planlæg.`);
+}
+function useCurrentInventoryInPlanner(){
+  const venue=inventoryLocation==='outdoor'?'outdoor':'indoor';
+  applyInventoryToPlanner(venue);
+  plannerVenue=venue;
+  document.querySelectorAll('#venueChoices .choice-card').forEach(button=>button.classList.toggle('selected',button.dataset.value===venue));
+  showView('designView');
+  setCreationMode(creationMode==='choice'?'ai':creationMode);
+  showStep(1);
+}
+function openEquipmentInventory(location=plannerVenue){
+  inventoryLocation=location==='outdoor'?'outdoor':'indoor';
+  showView('equipmentInventoryView');
+  renderEquipmentInventory();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function inventoryExportPayload(){
+  return {format:'funkfit-equipment-inventory',version:1,exportedAt:new Date().toISOString(),appVersion:APP_VERSION,rows:equipmentInventory()};
+}
+function exportEquipmentInventory(){
+  const blob=new Blob([JSON.stringify(inventoryExportPayload(),null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+  link.href=url;
+  link.download=`FunkFit-Udstyrsregister-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+async function importEquipmentInventory(file){
+  if(!file)return;
+  try{
+    const payload=JSON.parse(await file.text());
+    if(payload?.format!=='funkfit-equipment-inventory'||!Array.isArray(payload.rows))return alert('Filen er ikke et FunkFit Udstyrsregister.');
+    const current=equipmentInventory();
+    const map=new Map(current.map(row=>[row.inventoryId,row]));
+    validInventoryRows(payload.rows).forEach(row=>{
+      const existing=map.get(row.inventoryId);
+      const newTime=new Date(row.updatedAt||0).getTime();
+      const oldTime=new Date(existing?.updatedAt||0).getTime();
+      if(!existing||newTime>=oldTime)map.set(row.inventoryId,row);
+    });
+    saveEquipmentInventory([...map.values()]);
+    renderEquipmentInventory();
+    alert(`Udstyrsregister importeret. ${map.size} linjer i alt.`);
+  }catch(error){
+    console.error('Import af udstyrsregister fejlede:',error);
+    alert('Udstyrsregisteret kunne ikke importeres. Vælg en JSON-fil eksporteret fra FunkFit.');
+  }finally{
+    if(byId('importInventoryFile'))byId('importInventoryFile').value='';
+  }
+}
+
 function customGameEquipment(){
   const value=read(GCUSTOMEQKEY,[]);
   return Array.isArray(value)?value.filter(name=>typeof name==='string'&&name.trim()).map(name=>name.trim()):[];
@@ -702,7 +1015,8 @@ function gameEquipmentCatalog(){
   const base=['Kegler','Måtte','Kettlebell','Håndvægt','Boks','Bænk','Medicinbold','Væg','Sjippetov','Elastik','TRX','Sandsæk','Battle rope','Traktordæk','Slæde','Reb','React Lights','Vægtskive','Pull-up stativ','Ringe','Kortspil','Terninger'];
   const fromExercises=exercises.flatMap(ex=>ex.equipment||[]).filter(name=>name&&name!=='Kropsvægt');
   const fromSharedGames=sharedGames().flatMap(game=>(game.equipment||[]).map(item=>item?.name)).filter(Boolean);
-  return [...new Set([...base,...customGameEquipment(),...fromExercises,...fromSharedGames])].sort((a,b)=>a.localeCompare(b,'da'));
+  const fromInventory=inventoryEquipmentNames();
+  return [...new Set([...base,...customGameEquipment(),...fromExercises,...fromSharedGames,...fromInventory])].sort((a,b)=>a.localeCompare(b,'da'));
 }
 function gameTotalMinutesValue(setup,active){
   return Math.max(0,+setup||0)+Math.max(0,+active||0);
@@ -1708,11 +2022,12 @@ async function init(){
     sharedGameLibrary=[];
   }
   exercises=[...customs(),...base];
+  initializeEquipmentInventory();
   renderAdultExerciseOptions();
   $('#templateSelect').innerHTML=templates.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   $('#workoutDate').value=new Date().toISOString().slice(0,10);
   sections=prepareTemplateSections(templates[0].sections);
-  populatePickerFilters();bind();syncManualChoiceButtons();setCreationMode('choice');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();updateReview();renderMusicPlanner();initGameModuleSafely();
+  populatePickerFilters();bind();syncManualChoiceButtons();setCreationMode('choice');verifyInteractiveControls();normalizeSections();enforceWorkoutStructure();renderFramework();renderExerciseSections();renderSaved();renderElementLibrary();renderEquipmentInventory();updateReview();renderMusicPlanner();initGameModuleSafely();
   await handleSpotifyOAuthCallback();
   updateSpotifyIntegrationUI();
 }
@@ -1961,6 +2276,7 @@ function bind(){
     if(b.dataset.view==='gamesView'){
       try{renderGameLibrary();renderGameAdminList()}catch(error){showGameModuleError(error)}
     }
+    if(b.dataset.view==='equipmentInventoryView')renderEquipmentInventory();
   });
   document.querySelectorAll('[data-game-module-tab]').forEach(button=>button.onclick=()=>showGameModuleTab(button.dataset.gameModuleTab));
   document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>goToStep(+b.dataset.step));
@@ -1998,6 +2314,20 @@ function bind(){
   on('gameLibraryParticipants','input',renderGameLibrary);
   on('gameLibrarySource','change',renderGameLibrary);
   if(byId('gameMasterForm'))byId('gameMasterForm').onsubmit=submitGameMaster;
+
+  document.querySelectorAll('[data-inventory-location]').forEach(button=>button.onclick=()=>{
+    inventoryLocation=button.dataset.inventoryLocation;
+    renderEquipmentInventory();
+  });
+  on('inventorySearch','input',renderEquipmentInventory);
+  on('addInventoryRowBtn','click',addInventoryRow);
+  on('addInventoryDefaultsBtn','click',addMissingInventoryDefaults);
+  on('useInventoryInPlannerBtn','click',useCurrentInventoryInPlanner);
+  on('exportInventoryBtn','click',exportEquipmentInventory);
+  on('importInventoryBtn','click',()=>byId('importInventoryFile')?.click());
+  on('importInventoryFile','change',event=>importEquipmentInventory(event.target.files?.[0]));
+  on('openEquipmentInventoryBtn','click',()=>openEquipmentInventory(plannerVenue));
+  on('loadEquipmentInventoryBtn','click',()=>applyInventoryToPlanner(plannerVenue));
 
   $('#familyMode').onchange=()=>{
     $('#adultCountLabel').classList.toggle('hidden',!$('#familyMode').checked);
@@ -2231,7 +2561,7 @@ function setCreationMode(mode){
 function selectedTrainingType(){return plannerConcept||'junior'}
 
 function verifyInteractiveControls(){
-  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','insertGameFromLibraryBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','aiSectionGameLibraryChoice','aiSectionGameLibraryBtn','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue','resetEquipmentProfileBtn','singleFundamentalChoices','adultExerciseOptions','addFinisherBtn','homeBrandBtn','aiSectionContext','inlineFundamentalChoices','inlineFinisherWrap','singleFinisherMode','singleFinisherCatalog','singleFinisherSuggestBtn','inlineFinisherMode','inlineFinisherCatalog','inlineFinisherSuggestBtn','sectionEditDialog','sectionEditForm','sectionEditStructureFields','sectionEditGuidanceFields','exportGamesBtn','importGamesBtn','importGamesFile'];
+  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','insertGameFromLibraryBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','aiSectionGameLibraryChoice','aiSectionGameLibraryBtn','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue','resetEquipmentProfileBtn','singleFundamentalChoices','adultExerciseOptions','addFinisherBtn','homeBrandBtn','aiSectionContext','inlineFundamentalChoices','inlineFinisherWrap','singleFinisherMode','singleFinisherCatalog','singleFinisherSuggestBtn','inlineFinisherMode','inlineFinisherCatalog','inlineFinisherSuggestBtn','sectionEditDialog','sectionEditForm','sectionEditStructureFields','sectionEditGuidanceFields','exportGamesBtn','importGamesBtn','importGamesFile','openEquipmentInventoryBtn','loadEquipmentInventoryBtn','inventoryRows','inventorySearch','addInventoryRowBtn','addInventoryDefaultsBtn','useInventoryInPlannerBtn','exportInventoryBtn','importInventoryBtn','importInventoryFile'];
   const missing=required.filter(id=>!byId(id));
   if(missing.length)console.error('Manglende interaktive elementer:',missing);
   else console.info('FunkFit interaktive kontroller: OK');
@@ -2999,7 +3329,8 @@ function renderEquipmentChoices(){
   if(!$('#equipmentChoices'))return;
   const standard=defaultEquipmentProfile(plannerVenue);
   const fromExercises=[...new Set(exercises.flatMap(x=>x.equipment||[]))];
-  const all=[...new Set([...standard,...plannerEquipment,...fromExercises])].sort((a,b)=>{
+  const fromInventory=inventoryEquipmentNames().map(inventoryPlannerType);
+  const all=[...new Set([...standard,...plannerEquipment,...fromExercises,...fromInventory])].sort((a,b)=>{
     const ai=standard.includes(a)?0:1,bi=standard.includes(b)?0:1;
     return ai-bi||a.localeCompare(b,'da');
   });
