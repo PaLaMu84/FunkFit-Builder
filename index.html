@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.39</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a39">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a39">
+  <title>FunkFit Builder v0.7.4-alpha.40</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a40">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a40">
 </head>
 <body>
 <header class="topbar">
   <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
-    <p class="eyebrow">VERSION 0.7.4-ALPHA.39</p>
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.40</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </button>
@@ -22,6 +22,7 @@
   <button class="nav-tab" data-view="savedView">Gemte træninger</button>
   <button class="nav-tab" data-view="libraryView">Mit bibliotek</button>
   <button class="nav-tab" data-view="gamesView">Lege</button>
+  <button class="nav-tab" data-view="equipmentInventoryView">Udstyr</button>
   <button class="nav-tab" data-view="docsView">Manual og ordbog</button>
 </nav>
 
@@ -191,6 +192,8 @@
             <small id="equipmentProfileStatus">Ændringer gemmes automatisk for dette sted.</small>
           </div>
           <div class="equipment-profile-actions">
+            <button id="openEquipmentInventoryBtn" type="button" class="ghost small-btn">📦 Udstyrsregister</button>
+            <button id="loadEquipmentInventoryBtn" type="button" class="ghost small-btn">↻ Hent fra register</button>
             <button id="selectAllEquipmentBtn" type="button" class="ghost small-btn">Vælg alt</button>
             <button id="resetEquipmentProfileBtn" type="button" class="ghost small-btn">Nulstil profil</button>
           </div>
@@ -965,6 +968,59 @@ Hovedtræning 20 min
   </section>
 </section>
 
+
+<section id="equipmentInventoryView" class="app-view">
+  <section class="panel inventory-panel">
+    <div class="section-heading inventory-heading">
+      <div>
+        <p class="eyebrow">UDSTYRSREGISTER</p>
+        <h2>Gymnastiksalen og Containeren</h2>
+        <p>Registrér hvad I faktisk har. Én linje kan være én vægt, størrelse eller farve, så fx kettlebells og elastikker kan registreres præcist.</p>
+      </div>
+      <div class="inventory-heading-actions">
+        <button id="addInventoryRowBtn" type="button">+ Nyt redskab</button>
+        <button id="addInventoryDefaultsBtn" type="button" class="secondary">+ Tilføj standardliste</button>
+      </div>
+    </div>
+
+    <div class="inventory-location-tabs">
+      <button type="button" class="inventory-location-tab selected" data-inventory-location="indoor">🏠 Gymnastiksalen <small>inde</small></button>
+      <button type="button" class="inventory-location-tab" data-inventory-location="outdoor">📦 Containeren <small>ude</small></button>
+      <button type="button" class="inventory-location-tab" data-inventory-location="all">Alle <small>inde + ude</small></button>
+    </div>
+
+    <div class="inventory-toolbar">
+      <label>Søg i registeret
+        <input id="inventorySearch" type="search" placeholder="Fx kettlebell, elastik, TRX">
+      </label>
+      <div class="inventory-sync-actions">
+        <button id="useInventoryInPlannerBtn" type="button" class="secondary">Brug dette sted i Planlæg</button>
+        <button id="exportInventoryBtn" type="button" class="ghost">⬇️ Eksportér</button>
+        <button id="importInventoryBtn" type="button" class="ghost">⬆️ Importér</button>
+        <input id="importInventoryFile" type="file" accept=".json,application/json" class="hidden">
+      </div>
+    </div>
+
+    <section id="inventorySummary" class="inventory-summary" aria-live="polite"></section>
+
+    <div class="inventory-help">
+      <strong>Sådan bruger du linjerne</strong>
+      <span>Har du fx 6 kettlebells på 12 kg og 4 på 16 kg, så brug to linjer. Har du elastikker i flere farver, duplikér linjen og skriv farven i <em>Variant/farve</em>. Elastikfarver er ikke standardiserede mellem mærker, så registrér jeres faktiske farver.</span>
+    </div>
+
+    <datalist id="inventoryEquipmentNames"></datalist>
+
+    <div class="inventory-table-wrap">
+      <div class="inventory-table-header" aria-hidden="true">
+        <span>Sted</span><span>Redskab</span><span>Antal</span><span>Kg</span><span>Variant/farve</span><span>Note</span><span></span>
+      </div>
+      <div id="inventoryRows" class="inventory-rows"></div>
+    </div>
+
+    <p class="inventory-save-note">Ændringer gemmes automatisk på denne enhed. Eksport/import kan bruges mellem telefon og PC, indtil FunkFit får fælles login/backend.</p>
+  </section>
+</section>
+
 <section id="docsView" class="app-view">
   <section class="panel docs-panel">
     <div class="section-heading">
@@ -1256,7 +1312,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.39 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a39"></script>
+<footer>FunkFit Builder v0.7.4-alpha.40 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a40"></script>
 </body>
 </html>

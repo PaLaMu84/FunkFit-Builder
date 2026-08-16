@@ -1,14 +1,25 @@
-# FunkFit Builder v0.7.4-alpha.39
+# FunkFit Builder v0.7.4-alpha.40
 
-## Kritisk cache-fix
-- Rettet mismatch hvor UI viste 13 fælles lege, men browseren stadig hentede de 8 fra alpha.37.
-- `sharedGames.json` bruger nu versionsparameter fra APP_VERSION.
-- Fetch bruger `cache: no-store`.
-- Service worker bruger network-first for sharedGames.
-- Administration viser faktisk status: fx “✓ 13/13 indlæst”.
+## Nyt: Udstyrsregister
+- Nyt hovedområde “Udstyr”.
+- Gymnastiksalen (inde) og Containeren (ude).
+- Hver linje: sted, redskab, antal, kg, variant/farve og note.
+- Kopiér/slet linjer.
+- Opret nye redskaber frit.
+- Autosave.
+- Standardliste med almindeligt funktionelt træningsudstyr.
+- Elastikker/minibands/powerbands har felt til faktisk farve/variant.
 
-## Fælles lege
-De 5 publicerede brugerlege fra alpha.38 er fortsat bundlet. sharedGames.json indeholder 13 lege i alt.
+## Planlæg
+- “📦 Udstyrsregister” åbner registeret.
+- “↻ Hent fra register” bruger kun redskaber med antal >0 som stedets tilgængelige udstyr.
+- Halvfærdig optælling overskriver ikke automatisk udstyrsprofilen.
 
-## Data
-Workout/game storage keys er uændrede.
+## Lege
+- Nye redskabsnavne fra Udstyrsregisteret bliver tilgængelige i Lege-editoren.
+
+## Flytning
+- Eksport/import af hele registeret som JSON.
+- Nye storage keys:
+  - `funkfit-equipment-inventory-v1`
+  - `funkfit-equipment-inventory-backup-v1`

@@ -934,3 +934,45 @@ Alpha.39 gør den fælles datafil versionskritisk:
 - Administration viser den faktiske indlæsning, fx **✓ 13/13 indlæst**
 
 Hvis tallet ikke er 13/13, er den fælles datafil ikke opdateret korrekt på enheden.
+
+
+# Udstyrsregister – alpha.40
+
+## Formål
+FunkFit har nu et særskilt **Udstyr**-modul til fysisk lageroptælling i:
+- **Gymnastiksalen – inde**
+- **Containeren – ude**
+
+Hver linje indeholder:
+- Sted
+- Redskab
+- Antal
+- Kg, hvis relevant
+- Variant/farve
+- Note
+
+Brug én linje pr. vægt eller variant. Fx 6 kettlebells på 12 kg og 4 kettlebells på 16 kg registreres som to linjer.
+
+## Standardliste
+Ved første brug oprettes en standardliste med almindeligt funktionelt træningsudstyr. Antallet er 0, indtil lageret er optalt.
+
+Listen omfatter bl.a. kettlebells, håndvægte, vægtstænger/skiver, medicinbolde, wall balls, slam balls, sandsække, bokse, bænke, måtter, TRX, ringe, elastikker, minibands, powerbands, sjippetov, kegler, agilitystige, hække, parallettes, pull-up stativ, React Lights, slæde, reb, battle rope, traktordæk, hammer, farmer carry-håndtag og foam roller.
+
+Elastikfarver er ikke standardiserede mellem producenter. Registrér derfor jeres faktiske farve i **Variant/farve**. Ved flere farver bruges **Kopi** til at lave flere linjer.
+
+## Nye redskaber
+**+ Nyt redskab** opretter en tom linje med frit redskabsnavn. Nye redskabsnavne fra registeret bliver også tilgængelige i Lege-modulets udstyrsfelt.
+
+## Sammenhæng med Planlæg
+Under **Tilgængeligt udstyr** findes:
+- **📦 Udstyrsregister**
+- **↻ Hent fra register**
+
+Hent fra register bruger de redskaber for stedet, hvor antal er større end 0, som tilgængeligt udstyr i Planlæg. Registeret overskriver ikke automatisk profilen mens optællingen er halvfærdig.
+
+## Lagring
+Registeret gemmes lokalt i:
+- `funkfit-equipment-inventory-v1`
+- `funkfit-equipment-inventory-backup-v1`
+
+Eksport/import kan bruges mellem telefon og PC. `reset-cache.html` rydder ikke registeret.
