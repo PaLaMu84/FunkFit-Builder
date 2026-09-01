@@ -2315,3 +2315,118 @@ a{
 .shared-game-load-status{display:inline-flex;margin-left:.25rem;padding:.15rem .4rem;border-radius:999px;font-size:.78rem;font-weight:850}
 .shared-game-load-status.ok{background:#dcfce7;color:#166534}
 .shared-game-load-status.warn{background:#fef3c7;color:#92400e}
+
+
+/* v0.7.4-alpha.40 – Udstyrsregister */
+@media(min-width:701px){
+  .main-nav{grid-template-columns:repeat(6,minmax(0,1fr))}
+}
+.inventory-panel{display:grid;gap:1rem}
+.inventory-heading{align-items:flex-start}
+.inventory-heading-actions,.inventory-sync-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+.inventory-location-tabs{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;padding:.35rem;
+  border-radius:14px;background:#f1f5f9
+}
+.inventory-location-tab{
+  display:grid;place-items:center;gap:.1rem;min-height:58px;background:transparent;
+  color:#475569;border:1px solid transparent
+}
+.inventory-location-tab small{font-size:.75rem;font-weight:700}
+.inventory-location-tab.selected{
+  background:#fff;color:#9a3412;border-color:#fed7aa;box-shadow:0 3px 10px rgba(15,23,42,.06)
+}
+.inventory-toolbar{
+  display:grid;grid-template-columns:minmax(240px,1fr) auto;align-items:end;gap:.8rem
+}
+.inventory-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem}
+.inventory-summary article{
+  display:grid;gap:.12rem;padding:.75rem;border:1px solid #e2e8f0;border-radius:14px;background:#f8fafc
+}
+.inventory-summary strong{font-size:1.35rem;color:#0f172a}
+.inventory-summary span{font-size:.82rem;color:#64748b}
+.inventory-help{
+  display:grid;gap:.2rem;padding:.8rem;border:1px solid #c7d2fe;border-radius:14px;background:#eef2ff;color:#334155
+}
+.inventory-help strong{color:#3730a3}
+.inventory-table-wrap{min-width:0;border:1px solid #dbe3ef;border-radius:16px;overflow:hidden;background:#fff}
+.inventory-table-header,.inventory-row{
+  display:grid;grid-template-columns:120px minmax(160px,1.15fr) 82px 82px minmax(150px,.9fr) minmax(190px,1.25fr) 124px;
+  gap:.5rem;align-items:end
+}
+.inventory-table-header{padding:.65rem .7rem;background:#0f172a;color:#fff;font-size:.77rem;font-weight:900}
+.inventory-row{padding:.65rem .7rem;border-top:1px solid #e2e8f0}
+.inventory-row:first-child{border-top:0}
+.inventory-row label{display:grid;gap:.2rem;min-width:0}
+.inventory-row label>span{display:none;font-size:.72rem;font-weight:850;color:#64748b}
+.inventory-row input,.inventory-row select{min-width:0;width:100%}
+.inventory-row-actions{display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
+.inventory-row-actions button{min-width:0;padding:.62rem .4rem}
+.inventory-save-note{margin:0;color:#64748b;font-size:.85rem}
+.equipment-profile-actions{flex-wrap:wrap}
+@media(max-width:1100px){
+  .inventory-table-header{display:none}
+  .inventory-rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;padding:.65rem;background:#f8fafc}
+  .inventory-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;border:1px solid #dbe3ef;border-radius:14px;background:#fff}
+  .inventory-row label>span{display:block}
+  .inventory-row label:nth-child(2),.inventory-row label:nth-child(6),.inventory-row-actions{grid-column:span 2}
+}
+@media(max-width:720px){
+  .inventory-toolbar{grid-template-columns:minmax(0,1fr)}
+  .inventory-sync-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .inventory-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .inventory-rows{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:520px){
+  .inventory-location-tabs{grid-template-columns:minmax(0,1fr)}
+  .inventory-row{grid-template-columns:minmax(0,1fr)}
+  .inventory-row label:nth-child(2),.inventory-row label:nth-child(6),.inventory-row-actions{grid-column:auto}
+  .inventory-row-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .inventory-sync-actions{grid-template-columns:minmax(0,1fr)}
+  .inventory-heading-actions{display:grid;grid-template-columns:minmax(0,1fr);width:100%}
+}
+
+
+/* v0.7.4-alpha.41 – faktisk inventar + kildeekstra */
+.inventory-source-extras{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.8rem;
+}
+.inventory-source-extras>article{
+  padding:.85rem;
+  border:1px solid #dbe3ef;
+  border-radius:14px;
+  background:#f8fafc;
+}
+.compact-heading{margin-bottom:.55rem}
+.inventory-chip-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+}
+.inventory-chip-list span{
+  display:inline-flex;
+  padding:.35rem .55rem;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid #dbe3ef;
+  font-size:.82rem;
+  font-weight:750;
+}
+.inventory-purchase-list{display:grid;gap:.4rem}
+.inventory-purchase-row{
+  display:grid;
+  grid-template-columns:minmax(130px,1fr) minmax(80px,.7fr) minmax(140px,1fr);
+  gap:.45rem;
+  align-items:center;
+  padding:.55rem .6rem;
+  border:1px solid #e2e8f0;
+  border-radius:10px;
+  background:#fff;
+}
+.inventory-purchase-row span,.inventory-purchase-row small{color:#64748b}
+@media(max-width:800px){
+  .inventory-source-extras{grid-template-columns:minmax(0,1fr)}
+  .inventory-purchase-row{grid-template-columns:minmax(0,1fr)}
+}
