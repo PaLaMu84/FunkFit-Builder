@@ -49,7 +49,10 @@
       "HIIT"
     ],
     "hyroxRole": "inspired",
-    "hiitTier": "primary"
+    "hiitTier": "primary",
+    "aliases": [
+      "Squats"
+    ]
   },
   {
     "id": "goblet-squat",
@@ -256,7 +259,10 @@
     ],
     "hyroxRole": "inspired",
     "hiitTier": "primary",
-    "equipmentMode": "any"
+    "equipmentMode": "any",
+    "aliases": [
+      "Push up"
+    ]
   },
   {
     "id": "db-row",
@@ -1185,7 +1191,10 @@
       "FunkFit Junior",
       "Funktionel"
     ],
-    "equipmentMode": "any"
+    "equipmentMode": "any",
+    "aliases": [
+      "Calf raises"
+    ]
   },
   {
     "id": "box-jump",
@@ -1554,7 +1563,10 @@
       "HIIT",
       "Hyrox"
     ],
-    "hyroxRole": "inspired"
+    "hyroxRole": "inspired",
+    "aliases": [
+      "Sit up"
+    ]
   },
   {
     "id": "russian-twist",
@@ -1646,6 +1658,9 @@
       "FunkFit Junior",
       "Funktionel",
       "HIIT"
+    ],
+    "aliases": [
+      "Plank hold"
     ]
   },
   {
@@ -3712,6 +3727,9 @@
       "FunkFit Junior",
       "Funktionel",
       "HIIT"
+    ],
+    "aliases": [
+      "Tuck Jumps"
     ]
   },
   {
@@ -5955,5 +5973,1612 @@
     ],
     "trxPattern": "plank",
     "equipmentMode": "all"
+  },
+  {
+    "id": "video-plank-flow",
+    "name": "Plank Flow",
+    "category": "Core",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "En sammenhængende plankeserie, der udfordrer core, skuldre, presstyrke og koordination uden pauser mellem deløvelserne. Sådan gør du: Start i høj planke med hænderne under skuldrene og kroppen i en lige linje. Lav 2 shoulder taps: rør modsatte skulder med hånden og skift side. Lav 2 up-down planks/commando planks: gå ned på underarme og tilbage til hænder. Lav 2 push-ups med samlet krop. Lav 2 Superman planks: løft modsatte arm og ben, skift side. Lav 2 cross-body knee drives: før knæet diagonalt mod modsatte albue. Gå direkte tilbage til starten og gentag flowet.",
+    "focus": [
+      "Corestabilitet",
+      "Skuldre",
+      "Bryst",
+      "Triceps",
+      "Hoftekontrol",
+      "Koordination."
+    ],
+    "easier": "Kør fra knæ ved behov, eller reducer hver del til 1 gentagelse.",
+    "harder": "Hold fødderne tættere sammen, arbejd langsommere, eller indsæt 1–2 sekunders pause i yderpositionerne.",
+    "junior": "Challenge: Hvor mange komplette, teknisk rene flows kan du lave på 30–45 sekunder? Kør 3–5 runder.",
+    "adult": "Challenge: Hvor mange komplette, teknisk rene flows kan du lave på 30–45 sekunder? Kør 3–5 runder.",
+    "mistakes": "Hofterne roterer kraftigt ved shoulder taps og Superman. Numsen løftes for højt eller hoften hænger. Push-ups bliver meget korte. Flowet bliver så hurtigt, at positionen mistes.",
+    "bodyAreas": [
+      "Core",
+      "Bryst",
+      "Arme",
+      "Hofter",
+      "Helkrop"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Spænd maven – kroppen er én lang planke. Rolige hofter. Hænder under skuldrene. Kontrol før fart.",
+    "sourceType": "Core / helkrop / styrke / koordination",
+    "sourceEquipment": "Intet"
+  },
+  {
+    "id": "video-slider-plank-walk-med-ball-squeeze",
+    "name": "Slider Plank Walk med Ball Squeeze",
+    "category": "Core",
+    "equipment": [
+      "Sliders",
+      "Medicinbold"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "At flytte kroppen frem med armene, mens fødderne glider og en bold holdes fast mellem lårene. Sådan gør du: Start i høj planke med en slider under hver fod. Klem en lille bold fast mellem lårene. Spænd mave og baller, så kroppen holdes samlet. Gå fremad med hænderne én ad gangen. Lad fødderne glide passivt efter kroppen. Hold konstant pres på bolden under hele distancen.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Bryst",
+      "Triceps",
+      "Adduktorer/inderside lår",
+      "Bækkenkontrol."
+    ],
+    "easier": "Kortere distance, uden bold eller med større/blødere bold.",
+    "harder": "Længere distance, langsommere tempo, mindre bold eller både frem- og baglæns.",
+    "junior": "5–8 meter ud og tilbage. Som stafet: næste deltager starter, når den første er retur. Tabes bolden, stoppes der, bolden sættes på plads, og man fortsætter.",
+    "adult": "5–8 meter ud og tilbage. Som stafet: næste deltager starter, når den første er retur. Tabes bolden, stoppes der, bolden sættes på plads, og man fortsætter.",
+    "mistakes": "Hoften hænger eller numsen løftes højt. Kroppen roterer fra side til side. Benene begynder at hjælpe aktivt. For lange håndskridt ødelægger kontrollen.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre",
+      "Bryst",
+      "Arme",
+      "Helkrop"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Klem bolden. Spænd maven. Små kontrollerede skridt med hænderne. Lad fødderne glide – ikke gå.",
+    "sourceType": "Core / skulderstabilitet / helkrop",
+    "sourceEquipment": "2 sliders + lille medicinbold eller blød bold"
+  },
+  {
+    "id": "video-planke-duel-hand-slap",
+    "name": "Planke-duel – Hand Slap",
+    "category": "Leg",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "En konkurrenceleg i plankeposition, hvor man både skal beskytte sine egne hænder og ramme modstanderens. Sådan gør du: To deltagere stiller sig over for hinanden i høj planke. Fødderne må stå lidt bredt for balance. Forsøg at røre/klappe modstanderens hånd med din frie hånd. Modstanderen må flytte hånden væk. Efter hvert forsøg sættes hånden tilbage i gulvet. Et rent touch på hånden giver 1 point.",
+    "focus": [
+      "Corestabilitet",
+      "Skuldre",
+      "Arme",
+      "Reaktion",
+      "Balance",
+      "Koordination."
+    ],
+    "easier": "Planke på knæ eller spil til 5 point.",
+    "harder": "Fødderne tættere sammen eller 1 point til modstanderen, hvis plankepositionen mistes.",
+    "junior": "1 mod 1 til 5 eller 10 point, eller korte turneringskampe på 20–30 sekunder. Kun touch på hænder – ingen skub eller slag.",
+    "adult": "1 mod 1 til 5 eller 10 point, eller korte turneringskampe på 20–30 sekunder. Kun touch på hænder – ingen skub eller slag.",
+    "mistakes": "Man slår i stedet for at touche. Man læner hele kroppen ind over modstanderen. Hoften roterer voldsomt. Man mister plankepositionen.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre",
+      "Arme"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Bred base med fødderne. Hurtig hånd – hurtigt tilbage. Kig på modstanderens hænder. Hold hoften så rolig som muligt.",
+    "sourceType": "Leg / core / skulderstabilitet / reaktion",
+    "sourceEquipment": "Intet"
+  },
+  {
+    "id": "video-ball-switches-for-time",
+    "name": "Ball Switches for Time",
+    "category": "Core",
+    "equipment": [
+      "Lille bold"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "At holde en stabil planke, mens bolden hurtigt skifter fra hånd til hånd. Sådan gør du: Start i høj planke med lidt bred fodstilling. Hold bolden i den ene hånd. Lav et lille kontrolleret kast over mod den anden hånd. Fang bolden og sæt den frie støttehånd i gulvet. Fortsæt skiftevis fra side til side.",
+    "focus": [
+      "Core",
+      "Skulderstabilitet",
+      "Balance",
+      "Hånd-øje-koordination",
+      "Reaktion."
+    ],
+    "easier": "Læg bolden fra hånd til hånd på gulvet i stedet for at kaste.",
+    "harder": "Fødderne tættere sammen eller mindre bold.",
+    "junior": "20–30 sekunder: flest rene skift vinder. Boldtab tæller ikke.",
+    "adult": "20–30 sekunder: flest rene skift vinder. Boldtab tæller ikke.",
+    "mistakes": "Bolden kastes for højt. Kroppen drejer med kastet. Støttehånden placeres for langt fremme.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Bred base. Hurtig fangst – rolig hofte. Kast lavt og kontrolleret.",
+    "sourceType": "Core / plank / hånd-øje-koordination",
+    "sourceEquipment": "Lille bold"
+  },
+  {
+    "id": "video-knee-drop-ball-balance-challenge",
+    "name": "Knee Drop Ball Balance Challenge",
+    "category": "Balance",
+    "equipment": [
+      "Lille bold"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "At kontrollere ben og hofte, mens en lille bold holdes fast/balanceres i knæhasen. Sådan gør du: Sid på gulvet med knæene bøjede. Placér en lille bold i knæhasen på det arbejdende ben. Klem benet let sammen om bolden. Før knæet kontrolleret ind/ud eller ned mod gulvet uden at tabe bolden. Vend tilbage og gentag.",
+    "focus": [
+      "Hoftekontrol",
+      "Kropsbevidsthed",
+      "Balance",
+      "Koordination."
+    ],
+    "easier": "Større/blødere bold og mindre bevægeudslag.",
+    "harder": "Mindre bold, hænderne fri af gulvet eller flere sammenhængende gentagelser.",
+    "junior": "Lav 5–8 kontrollerede bevægelser pr. side. Challenge: længste serie uden at tabe bolden.",
+    "adult": "Lav 5–8 kontrollerede bevægelser pr. side. Challenge: længste serie uden at tabe bolden.",
+    "mistakes": "Bolden presses med hånden. Bevægelsen bliver hurtig og ukontrolleret. Overkroppen vælter med.",
+    "bodyAreas": [
+      "Hofter"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Rolig bevægelse. Hold bolden fast uden at klemme voldsomt. Bevæg hoften – ikke hele overkroppen.",
+    "sourceType": "Balance / hoftekontrol / koordination",
+    "sourceEquipment": "Lille blød bold"
+  },
+  {
+    "id": "video-cone-toss",
+    "name": "Cone Toss",
+    "category": "Core",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "At kombinere plankestabilitet med et præcisionskast med én hånd. Sådan gør du: Start i høj planke med små markeringskegler inden for rækkevidde. Tag én lille kegle med den ene hånd. Kast den mod en større kegle eller markeret målzone. Sæt hånden tilbage i gulvet og tag næste. Skift gerne kastehånd undervejs.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Præcision",
+      "Hånd-øje-koordination."
+    ],
+    "easier": "Kortere afstand eller større mål.",
+    "harder": "Længere afstand, mindre mål eller skiftevis højre/venstre hånd.",
+    "junior": "30 sekunder: 1 point for hver kegle i målzonen. Kan bruges som makkerduel.",
+    "adult": "30 sekunder: 1 point for hver kegle i målzonen. Kan bruges som makkerduel.",
+    "mistakes": "Man rejser sig ud af planken for at kaste. Man kaster hårdt i stedet for præcist. Alle kast udføres kun med favoritarmen.",
+    "bodyAreas": [
+      "Core"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Hold hoften rolig. Små kontrollerede kast. Støttehånden under skulderen.",
+    "sourceType": "Plank / præcision / koordination",
+    "sourceEquipment": "Små markeringskegler + mål-kegle"
+  },
+  {
+    "id": "video-cone-switch-for-time",
+    "name": "Cone Switch for Time",
+    "category": "Core",
+    "equipment": [
+      "Kegler",
+      "Pind"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "At flytte en kegle hurtigt fra side til side med fødderne uden at bruge hænderne. Sådan gør du: Sid med hænderne i gulvet bag kroppen og knæene bøjede. Placér en kegle mellem fødderne på den ene side af en lav skillelinje. Grib keglen med fødderne. Løft den over skillelinjen og sæt den på den anden side. Skift tilbage så hurtigt som muligt med kontrol.",
+    "focus": [
+      "Core",
+      "Hoftebøjere",
+      "Fodkoordination",
+      "Balance."
+    ],
+    "easier": "Ingen skillelinje eller større kegle.",
+    "harder": "Højere skillelinje eller flere kegler.",
+    "junior": "20–30 sekunder: flest komplette side-til-side-skift vinder.",
+    "adult": "20–30 sekunder: flest komplette side-til-side-skift vinder.",
+    "mistakes": "Keglen sparkes i stedet for at flyttes. Man synker helt sammen i overkroppen. Skillelinjen er for høj til niveauet.",
+    "bodyAreas": [
+      "Core",
+      "Hofter"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Brug fødderne – ikke hænderne. Hold brystet løftet. Kontroller keglen hele vejen.",
+    "sourceType": "Core / hofte / fodkoordination",
+    "sourceEquipment": "Kegle + lav pind/streg som skillelinje"
+  },
+  {
+    "id": "video-crabbearcrab",
+    "name": "Crab–Bear–Crab",
+    "category": "Core",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "At skifte flydende mellem crab- og bear-position og dermed træne orientering, core og skulderkontrol. Sådan gør du: Start i crab-position med hænder og fødder i gulvet og maven opad. Løft hoften. Rotér kroppen gennem den ene side til bear-position med maven nedad. Hold knæene let løftet fra gulvet. Rotér tilbage til crab gennem den modsatte eller samme side. Fortsæt i et flydende mønster.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Hofter",
+      "Mobilitet",
+      "Kropskoordination."
+    ],
+    "easier": "Sæt knæ/numse kort i gulvet mellem skiftene.",
+    "harder": "Hurtigere flow eller bevæg samtidig fremad/sidelæns.",
+    "junior": "Brug som 20–30 sekunders animal-flow eller som del af en bane.",
+    "adult": "Brug som 20–30 sekunders animal-flow eller som del af en bane.",
+    "mistakes": "Man sætter hoften helt ned mellem skiftene. Hænderne flyttes ukontrolleret. Der drejes kun gennem samme side hele tiden.",
+    "bodyAreas": [
+      "Core",
+      "Hofter"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Hænderne stærke i gulvet. Hold hoften fri af gulvet. Rolig rotation.",
+    "sourceType": "Ground movement / core / mobilitet",
+    "sourceEquipment": "Intet"
+  },
+  {
+    "id": "video-cone-flip",
+    "name": "Cone Flip",
+    "category": "Core",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "At holde planken, mens en kegle vendes med én hånd. Sådan gør du: Start i høj planke med en kegle foran dig. Løft én hånd og flip keglen, så den skifter mellem stående og omvendt position. Sæt hånden tilbage i gulvet. Skift hånd eller fortsæt efter en fast rytme.",
+    "focus": [
+      "Core",
+      "Skulderstabilitet",
+      "Timing",
+      "Finmotorisk kontrol."
+    ],
+    "easier": "Større kegle eller brug samme hånd hele runden.",
+    "harder": "Skift hånd hver gang eller brug flere kegler.",
+    "junior": "Challenge: flest succesfulde flips på 20 sekunder.",
+    "adult": "Challenge: flest succesfulde flips på 20 sekunder.",
+    "mistakes": "Man læner hele kroppen over keglen. Keglen skubbes i stedet for at flips. Hoften åbner meget til siden.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Kort håndkontakt. Rolig hofte. Kig på keglen uden at hænge i nakken.",
+    "sourceType": "Plank / fingerfærdighed / core",
+    "sourceEquipment": "1–3 små kegler"
+  },
+  {
+    "id": "video-hang-catch",
+    "name": "Hang Catch",
+    "category": "Træk",
+    "equipment": [
+      "Pull-up stativ",
+      "Lille bold"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "At kombinere hængestyrke og benløft med kontrol af en lille bold. Sådan gør du: Hæng i en bar med sikkert greb. Løft benene frem, så underben/fødder danner en lille platform. Lad en makker forsigtigt slippe eller kaste en lille blød bold mod underben/fødder. Forsøg at fange og stabilisere bolden uden at slippe baren. Sænk benene kontrolleret mellem forsøg.",
+    "focus": [
+      "Grebsstyrke",
+      "Lats",
+      "Core",
+      "Hoftebøjere",
+      "Koordination."
+    ],
+    "easier": "Kortere hængetid eller støt fødderne let på en kasse.",
+    "harder": "Mindre bold eller flere catches i samme hæng.",
+    "junior": "Kun for deltagere med sikkert hæng. Brug blød bold og en instruktør/makker tæt på. 3–5 forsøg er rigeligt.",
+    "adult": "Kun for deltagere med sikkert hæng. Brug blød bold og en instruktør/makker tæt på. 3–5 forsøg er rigeligt.",
+    "mistakes": "For hårdt kast. Passivt hæng med skuldrene helt oppe ved ørerne. Benene svinges voldsomt.",
+    "bodyAreas": [
+      "Core",
+      "Hofter",
+      "Grebsstyrke"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Aktive skuldre. Løft benene med maven. Blød bold og kontrolleret aflevering.",
+    "sourceType": "Grip / core / koordination",
+    "sourceEquipment": "Pull-up bar + lille blød bold"
+  },
+  {
+    "id": "video-balloon-rotations",
+    "name": "Balloon Rotations",
+    "category": "Leg",
+    "equipment": [
+      "Ballon"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "At holde en ballon i luften, mens kroppen roterer mellem støttepositioner på gulvet. Sådan gør du: Start i en stabil støtteposition på hænder/fødder eller hænder/knæ. Slå ballonen let op i luften med den frie hånd. Rotér kroppen til en ny støtteposition, fx side-/crab-lignende position. Ram ballonen igen, før den rører gulvet. Fortsæt med at rotere og holde ballonen levende.",
+    "focus": [
+      "Core",
+      "Skulderstabilitet",
+      "Mobilitet",
+      "Reaktion",
+      "Rumlig orientering."
+    ],
+    "easier": "Bliv i samme støtteposition og hold bare ballonen i luften.",
+    "harder": "Krav om skift mellem crab og bear for hvert touch.",
+    "junior": "Super som legestation: 30 sekunder – hvor mange touches uden gulvkontakt?",
+    "adult": "Super som legestation: 30 sekunder – hvor mange touches uden gulvkontakt?",
+    "mistakes": "Ballonen slås for hårdt. Man mister kontrollen og falder ned på hoften. For svære rotationer vælges fra start.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Små slag på ballonen. Hold kontrollen i støtteskulderen. Rotér hele kroppen – ikke kun armen.",
+    "sourceType": "Core / skulderstabilitet / leg",
+    "sourceEquipment": "Ballon"
+  },
+  {
+    "id": "video-flamingo-walk",
+    "name": "Flamingo Walk",
+    "category": "Balance",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "At bevæge sig på ét ben, mens en let genstand balanceres på den løftede fod. Sådan gør du: Placér en let genstand oven på den løftede fod. Stå på det andet ben. Hop eller tag små kontrollerede bevægelser fremad på standbenet. Hold den løftede fod så rolig, at genstanden bliver liggende. Skift ben på næste tur.",
+    "focus": [
+      "Ankelstabilitet",
+      "Balance",
+      "Fokus",
+      "Benkontrol."
+    ],
+    "easier": "Stå stille på ét ben i stedet for at bevæge sig.",
+    "harder": "Længere bane, zigzag eller mindre genstand.",
+    "junior": "5–10 meter. Tabes genstanden, sættes den på plads dér, hvor den faldt, og man fortsætter.",
+    "adult": "5–10 meter. Tabes genstanden, sættes den på plads dér, hvor den faldt, og man fortsætter.",
+    "mistakes": "For store hop. Overkroppen flakser for meget. Genstanden placeres så fast, at balancekravet forsvinder.",
+    "bodyAreas": [
+      "Ben"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Blødt knæ på standbenet. Se frem. Små kontrollerede hop.",
+    "sourceType": "Balance / benkontrol / fokus",
+    "sourceEquipment": "Lille kegle, beanbag eller let genstand"
+  },
+  {
+    "id": "video-infinity-tag",
+    "name": "Infinity Tag",
+    "category": "Kondition",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "En jagtleg, hvor to spillere løber rundt om en cirkel og skifter mellem at være jæger og løber. Sådan gør du: Placér to kegler på modsatte sider af en markeret cirkel. To spillere starter ved hver sin kegle. På signal løber begge rundt på cirklen i samme retning. Den ene er jæger og forsøger at indhente den anden. Ved den modsatte kegle kan rollerne skifte efter den aftalte regel. Runden fortsætter, til jægeren får et touch eller løberen når den fastsatte afslutning.",
+    "focus": [
+      "Acceleration",
+      "Topfart",
+      "Kurveløb",
+      "Reaktion",
+      "Beslutningstagning."
+    ],
+    "easier": "Større startafstand eller kortere løbetid.",
+    "harder": "Flere rolle-skift eller retningsskift på signal.",
+    "junior": "Korte dueller på 10–20 sekunder. Byt modstander ofte, så sprintbelastningen holdes høj og pauserne naturlige.",
+    "adult": "Korte dueller på 10–20 sekunder. Byt modstander ofte, så sprintbelastningen holdes høj og pauserne naturlige.",
+    "mistakes": "Spillere skærer ind over cirklen. For lille afstand ved start. Jægeren tackler i stedet for at touche.",
+    "bodyAreas": [
+      "Kondition"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Hold linjen rundt om cirklen. Korte hurtige skridt i kurven. Touch – ikke skub.",
+    "sourceType": "Fangeleg / sprint / reaktion / retningsskift",
+    "sourceEquipment": "2 kegler + markeret cirkel/oval"
+  },
+  {
+    "id": "video-lbende-kryds-og-bolle-cooperative-tic-tac-toe",
+    "name": "Løbende kryds og bolle – Cooperative Tic-Tac-Toe",
+    "category": "Leg",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "At kombinere sprint med samarbejde og hurtig taktisk beslutning. Sådan gør du: Lav et 3×3 kryds-og-bolle-felt på gulvet. Del deltagerne i to hold med hver sin markørfarve. På signal løber første spiller/gruppe ud og placerer én markør i feltet. Løb tilbage og send næste afsted. Når alle markører er i spil, må holdet flytte en eksisterende markør i stedet for at lægge en ny. Første hold med tre på stribe vinder.",
+    "focus": [
+      "Sprint",
+      "Reaktion",
+      "Samarbejde",
+      "Taktik."
+    ],
+    "easier": "Kortere løbeafstand eller lad en voksen styre turene.",
+    "harder": "Længere afstand, flere deltagere pr. hold eller krav om en bestemt bevægelsesform ud til feltet.",
+    "junior": "Perfekt som opvarmningsstafet. Kør bedst-af-3 med nye hold.",
+    "adult": "Perfekt som opvarmningsstafet. Kør bedst-af-3 med nye hold.",
+    "mistakes": "Flere markører flyttes på samme tur. Spillere blokerer fysisk for modstanderen. Holdet glemmer at tænke og løber bare.",
+    "bodyAreas": [
+      "Kondition"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Én beslutning – én markør. Løb hele vejen tilbage før næste starter. Tal sammen på holdet.",
+    "sourceType": "Holdleg / sprint / taktik",
+    "sourceEquipment": "3×3 felt + markører i to farver"
+  },
+  {
+    "id": "video-bear-crawl-cone-battle",
+    "name": "Bear Crawl Cone Battle",
+    "category": "Leg",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "En eliminations- eller pointleg, hvor deltagerne bevæger sig i bear crawl og reagerer på et signal om at nå en markør. Sådan gør du: Placér deltagerne omkring et lille område i bear-position. Læg én eller flere markører i midten eller mellem deltagerne. Deltagerne bevæger sig i bear crawl efter trænerens anvisning. På et bestemt signal/farvekald forsøger alle at nå eller gribe den relevante markør. Sidste spiller uden markør får et minuspoint eller er ude af runden. Nulstil og gentag.",
+    "focus": [
+      "Skuldre",
+      "Core",
+      "Reaktion",
+      "Konkurrence",
+      "Rumlig orientering."
+    ],
+    "easier": "Flere markører end spillere eller kort afstand.",
+    "harder": "Færre markører, farvekald eller retningsskift før signalet.",
+    "junior": "Brug point frem for udskillelse, så alle er aktive: 1 point for hver vundet markør.",
+    "adult": "Brug point frem for udskillelse, så alle er aktive: 1 point for hver vundet markør.",
+    "mistakes": "Man rejser sig op og løber. Deltagere støder hoved/arme sammen. Området er for trangt.",
+    "bodyAreas": [
+      "Core"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Knæ lige over gulvet. Små hurtige skridt. Grib markøren – ikke modstanderen.",
+    "sourceType": "Leg / bear crawl / reaktion",
+    "sourceEquipment": "Flade kegler/markører"
+  },
+  {
+    "id": "video-plank-walk-med-boldbalance-gennem-ringe",
+    "name": "Plank Walk med boldbalance gennem ringe",
+    "category": "Core",
+    "equipment": [
+      "Lille bold",
+      "Ringe"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "At bevæge sig i plank/bear-position gennem en bane uden at tabe en bold, der balanceres på ryggen. Sådan gør du: Placér en let bold midt på øvre ryg. Start i høj planke eller bear-position. Bevæg hænder og fødder frem gennem en række gulvringe. Hold ryggen så stabil, at bolden bliver liggende. Hvis bolden falder, stop og læg den tilbage, før du fortsætter.",
+    "focus": [
+      "Corestabilitet",
+      "Skulderkontrol",
+      "Balance",
+      "Langsom bevægelseskoordination."
+    ],
+    "easier": "Kortere bane eller større/blødere bold.",
+    "harder": "Smallere ringbane, baglæns bevægelse eller tidtagning.",
+    "junior": "Gør det til en præcisionsstafet, hvor kun rene gennemførsler tæller.",
+    "adult": "Gør det til en præcisionsstafet, hvor kun rene gennemførsler tæller.",
+    "mistakes": "Bolden placeres for langt nede på ryggen. Hofterne vipper side til side. Deltageren skynder sig gennem ringene.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Flad ryg. Små skridt. Rolig hofte. Kontrol før fart.",
+    "sourceType": "Core / balance / koordination",
+    "sourceEquipment": "Let bold + gulvringe"
+  },
+  {
+    "id": "video-pvc-tennis-ball-plank-challenge",
+    "name": "PVC & Tennis Ball Plank Challenge",
+    "category": "Core",
+    "equipment": [
+      "PVC-rør",
+      "Tennisbold"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "At samarbejde i plankeposition med rytmiske afleveringer af en tennisbold og et let rør. Sådan gør du: To deltagere står over for hinanden i høj planke. Den ene holder tennisbolden i den frie hånd, den anden holder PVC-røret lodret med sin frie hånd. Bolden droppes/kastes kontrolleret over mod makkeren samtidig med, at rollerne omkring røret skifter. Begge skal hurtigt tilbage med støttehånden i gulvet. Fortsæt i et stabilt rytmisk flow.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Timing",
+      "Hånd-øje-koordination",
+      "Makkersamarbejde."
+    ],
+    "easier": "Udfør fra knæ eller uden PVC-rør først.",
+    "harder": "Fødderne tættere sammen eller hurtigere fast rytme.",
+    "junior": "Kør som makkerchallenge: flest sammenhængende succesfulde afleveringer uden boldtab eller væltet rør.",
+    "adult": "Kør som makkerchallenge: flest sammenhængende succesfulde afleveringer uden boldtab eller væltet rør.",
+    "mistakes": "Bolden kastes for højt/hårdt. Røret vælter ind mod makkeren. Begge løfter støttehånden samtidig uden kontrol.",
+    "bodyAreas": [
+      "Core"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Find rytmen. Drop og toss – små bevægelser. Hoften rolig. Støttehånden tilbage hurtigt.",
+    "sourceType": "Makker / plank / timing / koordination",
+    "sourceEquipment": "PVC-rør + tennisbold"
+  },
+  {
+    "id": "video-partner-reaction-mirror-drill",
+    "name": "Partner Reaction Mirror Drill",
+    "category": "Reaktion",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "At reagere på en makkers uforudsigelige bevægelser og spejle dem hurtigt. Sådan gør du: To deltagere står over for hinanden i atletisk position. Den ene er leder, den anden spejler. Lederen bevæger sig hurtigt sideværts, frem/tilbage eller skifter retning. Makkeren forsøger at matche bevægelsen uden at kende retningen på forhånd. Efter 10–20 sekunder skifter rollerne.",
+    "focus": [
+      "Reaktion",
+      "Acceleration",
+      "Lateral bevægelse",
+      "Fodarbejde",
+      "Beslutningstagning."
+    ],
+    "easier": "Kun bevægelse højre/venstre.",
+    "harder": "Tilføj sprint frem/tilbage, falske bevægelser eller touch-konkurrence.",
+    "junior": "10–15 sekunder pr. rolle. Gør det til en grinende “kan du snyde din makker?”-challenge.",
+    "adult": "10–15 sekunder pr. rolle. Gør det til en grinende “kan du snyde din makker?”-challenge.",
+    "mistakes": "Benene krydses ved sidebevægelse. Lederen løber for langt væk. For stor fart før teknikken er på plads.",
+    "bodyAreas": [
+      "Helkrop"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Lav tyngdepunkt. Små hurtige skridt. Kig på bryst/hofte – ikke fødderne.",
+    "sourceType": "Reaktion / agility / makkerleg",
+    "sourceEquipment": "Evt. kegler til område"
+  },
+  {
+    "id": "video-flyvende-tppe-hop-og-trk",
+    "name": "Flyvende tæppe – hop og træk",
+    "category": "Leg",
+    "equipment": [
+      "Måtte"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "Et hold flytter en deltager hen over gulvet ved at time små hop med, at makkere trækker måtten frem. Sådan gør du: Én deltager står på eller lige over en måtte. En eller to makkere holder i måttens kanter. På signal hopper deltageren lodret. Mens fødderne er fri af måtten, trækker makkere måtten et kort stykke frem. Deltageren lander igen på måtten. Gentag rytmen hop–træk–land, indtil målstregen nås.",
+    "focus": [
+      "Timing",
+      "Benkraft",
+      "Balance",
+      "Samarbejde."
+    ],
+    "easier": "Kortere distance og meget små træk.",
+    "harder": "Længere bane eller slalom med brede sving.",
+    "junior": "Brug kun skridsikker, robust måtte og jævnt gulv. Ingen hårde ryk. 5–10 meter pr. tur.",
+    "adult": "Brug kun skridsikker, robust måtte og jævnt gulv. Ingen hårde ryk. 5–10 meter pr. tur.",
+    "mistakes": "Måtten trækkes under landingen. For store hop. Makkere trækker skævt.",
+    "bodyAreas": [
+      "Ben"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Små lodrette hop. Træk kun, når fødderne er fri. Rolig landing midt på måtten.",
+    "sourceType": "Holdleg / plyometri / samarbejde",
+    "sourceEquipment": "Tyk gymnastikmåtte"
+  },
+  {
+    "id": "video-dumbbell-burpee",
+    "name": "Dumbbell Burpee",
+    "category": "Helkrop",
+    "equipment": [
+      "Håndvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Høj",
+    "format": [
+      "Intervaller",
+      "AMRAP",
+      "Station"
+    ],
+    "description": "En burpee-variant, hvor hænderne støttes på håndvægte og bevægelsen kombinerer planke/push-up med hurtig overgang til stående. Sådan gør du: Placér to håndvægte på gulvet cirka skulderbredt. Grib håndtagene og gå eller hop tilbage til planke. Lav en kontrolleret push-up eller sænk brystet mod gulvet efter niveau. Hop eller træd fødderne frem mod håndvægtene. Rejs dig kontrolleret til stående. Sæt håndvægtene sikkert i gulvet og gentag.",
+    "focus": [
+      "Bryst",
+      "Triceps",
+      "Skuldre",
+      "Core",
+      "Ben",
+      "Kondition."
+    ],
+    "easier": "Step-back/step-in og ingen push-up.",
+    "harder": "Tilføj push-up, højere tempo eller lette dumbbell cleans efter opspring, hvis teknikken er sikker.",
+    "junior": "Brug lette, stabile håndvægte med flade sider. 20–30 sekunder arbejde eller 5–8 gode reps.",
+    "adult": "Brug lette, stabile håndvægte med flade sider. 20–30 sekunder arbejde eller 5–8 gode reps.",
+    "mistakes": "Håndvægtene ruller/vipper. Ryggen hænger i planken. Fødderne lander meget smalt eller under ustabil balance.",
+    "bodyAreas": [
+      "Core",
+      "Bryst",
+      "Arme",
+      "Ben",
+      "Kondition",
+      "Helkrop"
+    ],
+    "styles": [
+      "HIIT",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie",
+      "HIIT",
+      "Funktionel"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Stabile håndvægte. Kroppen samlet i planken. Land blødt med fødderne. Kontrol før tempo.",
+    "sourceType": "Helkrop / HIIT / styrke",
+    "sourceEquipment": "2 håndvægte"
+  },
+  {
+    "id": "video-squat-teknik-lringsdrill",
+    "name": "Squat-teknik – læringsdrill",
+    "category": "Teknik",
+    "equipment": [
+      "Boks"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station"
+    ],
+    "description": "At lære squat gennem simple cues frem for at kræve “perfekt” teknik fra første forsøg. Sådan gør du: Start med almindelige squats i roligt tempo. Hvis tempoet er for højt, sænk tempoet og arbejd med pauser. Ved dårlig kropsposition gøres deltageren opmærksom på den med et enkelt cue. Ved meget foroverlænet squat kan armene strækkes frem som “zombie squat”. Ved manglende dybde bruges et tydeligt mål, fx let berøring af boks/stol. Gentag få gode reps og justér kun én ting ad gangen.",
+    "focus": [
+      "Squatmønster",
+      "Kropsbevidsthed",
+      "Knæ-/hoftekontrol",
+      "Læring."
+    ],
+    "easier": "Squat til høj boks/stol.",
+    "harder": "Pause squat, tempo squat eller let belastning.",
+    "junior": "Brug 2–3 minutter som teknikstation. Målet er bedre bevægelse, ikke at “bestå” en bestemt squat.",
+    "adult": "Brug 2–3 minutter som teknikstation. Målet er bedre bevægelse, ikke at “bestå” en bestemt squat.",
+    "mistakes": "For mange instruktioner på én gang. Dybde prioriteres over kontrol. Alle børn presses ind i præcis samme squat.",
+    "bodyAreas": [
+      "Hofter"
+    ],
+    "styles": [
+      "Teknik",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Roligt ned. Knæ følger tæerne. Hele foden i gulvet. Sæt dig mellem hælene.",
+    "sourceType": "Teknik / squat / motorisk læring",
+    "sourceEquipment": "Evt. stol/boks som mål"
+  },
+  {
+    "id": "video-memory-sequence-relay",
+    "name": "Memory Sequence Relay",
+    "category": "Leg",
+    "equipment": [
+      "Kegler",
+      "Boks"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "At huske en farverækkefølge eller placering og genskabe den efter en kort løbetur. Sådan gør du: Lav en skjult farve-/markørsekvens bag en kasse eller skærm. En spiller får kort lov til at se sekvensen. Spilleren løber tilbage til sit hold eller til et kopiområde. Sekvensen genskabes med tilsvarende farvede markører. Næste spiller må kontrollere/huske næste del afhængigt af variant. Første hold med korrekt sekvens vinder.",
+    "focus": [
+      "Hukommelse",
+      "Koncentration",
+      "Sprint",
+      "Samarbejde."
+    ],
+    "easier": "3–4 markører og kort afstand.",
+    "harder": "Flere markører, længere afstand eller kun 2 sekunders kiggetid.",
+    "junior": "Meget stærk opvarmningsleg: fysisk aktivitet + hovedet med. Kør flere korte runder.",
+    "adult": "Meget stærk opvarmningsleg: fysisk aktivitet + hovedet med. Kør flere korte runder.",
+    "mistakes": "Sekvensen er for lang fra start. Spillere bliver stående og kigge for længe. Farverne er for ens.",
+    "bodyAreas": [
+      "Kondition"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Se efter rækkefølge og placering. Én ting ad gangen. Tal sammen på holdet.",
+    "sourceType": "Hukommelse / sprint / holdleg",
+    "sourceEquipment": "Farvede kegler/markører + kasse/skærm"
+  },
+  {
+    "id": "video-bear-crawl-flow-med-bold-og-vgtskive",
+    "name": "Bear Crawl Flow med bold og vægtskive",
+    "category": "Core",
+    "equipment": [
+      "Lille bold",
+      "Vægtskive",
+      "Sliders"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Øvet",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker"
+    ],
+    "description": "At kombinere bear crawl med skub/rolling af genstande, så én arm ofte arbejder, mens den anden stabiliserer kroppen. Sådan gør du: Start i bear-position med knæene lige over gulvet. Før bolden frem eller til siden med én hånd, mens du følger efter i bear crawl. Skift hånd og fortsæt kontrolleret. I næste del placeres hænderne på/omkring en flad vægtskive eller slider. Skub skiven frem over gulvet og flyt kroppen med. Skift mellem bold- og skivevarianten efter den valgte bane.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Bryst",
+      "Hofter",
+      "Koordination",
+      "Unilateral stabilitet."
+    ],
+    "easier": "Kun bear crawl med bold.",
+    "harder": "Længere bane eller skift genstand hvert 2.–3. meter.",
+    "junior": "Brug let bold og en slider i stedet for tung skive. 5–8 meter ud og tilbage.",
+    "adult": "Brug let bold og en slider i stedet for tung skive. 5–8 meter ud og tilbage.",
+    "mistakes": "For tung vægtskive. Hofterne kommer meget højt op. Genstanden bruges på gulv, der kan tage skade.",
+    "bodyAreas": [
+      "Core",
+      "Skuldre",
+      "Bryst",
+      "Hofter"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Knæ tæt på gulvet. Små skridt. Skub genstanden – kast den ikke. Hold ryggen rolig.",
+    "sourceType": "Ground movement / core / skulderstyrke",
+    "sourceEquipment": "Lille/medium bold + flad vægtskive eller slider"
+  },
+  {
+    "id": "video-cone-transfer-relay",
+    "name": "Cone Transfer Relay",
+    "category": "Leg",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "At flytte kegler hurtigere end modstanderholdet, én ad gangen. Sådan gør du: Lav to hold og markér hver sin side/zone. Placér en række kegler mellem holdene. På signal løber første deltager frem og flytter én kegle til holdets egen side eller aftalte målzone. Løb tilbage og send næste spiller afsted. Kun én kegle må flyttes pr. tur. Første hold, der har flyttet det aftalte antal, vinder.",
+    "focus": [
+      "Sprint",
+      "Retningsskift",
+      "Lav arbejdsposition",
+      "Holdstrategi."
+    ],
+    "easier": "Kortere afstand eller færre kegler.",
+    "harder": "Længere afstand, shuttle-format eller krav om bestemt bevægelse til/fra keglerne.",
+    "junior": "Kør 2–4 korte heats. Skift startposition eller bevægelsesform mellem heats.",
+    "adult": "Kør 2–4 korte heats. Skift startposition eller bevægelsesform mellem heats.",
+    "mistakes": "Flere kegler tages på én gang. Spillere løber ind i hinandens baner. Kegler kastes.",
+    "bodyAreas": [
+      "Kondition"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Én kegle pr. tur. Vend hurtigt men kontrolleret. Hold din bane.",
+    "sourceType": "Holdstafet / sprint / agility",
+    "sourceEquipment": "Mange kegler i to farver eller zoner"
+  },
+  {
+    "id": "video-bear-crawl-relay",
+    "name": "Bear Crawl Relay",
+    "category": "Leg",
+    "equipment": [
+      "Kegler"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "En enkel stafet, hvor deltagerne bevæger sig i bear crawl til et vendepunkt og tilbage. Sådan gør du: Del deltagerne i hold og markér start samt vendekegle. Første deltager starter i bear-position. Crawl frem til keglen med knæene fri af gulvet. Vend kontrolleret og crawl tilbage. Giv næste deltager et high-five/touch ved startlinjen. Fortsæt, til alle har været igennem.",
+    "focus": [
+      "Skuldre",
+      "Core",
+      "Hofter",
+      "Koordination",
+      "Kondition."
+    ],
+    "easier": "Kortere bane eller crawl kun ud, løb tilbage.",
+    "harder": "Baglæns bear crawl på returen eller slalom.",
+    "junior": "Hold distancen kort, fx 5–8 meter, så det bliver en hurtig leg og ikke en lang skulderudmattelse.",
+    "adult": "Hold distancen kort, fx 5–8 meter, så det bliver en hurtig leg og ikke en lang skulderudmattelse.",
+    "mistakes": "Deltageren rejser sig og løber. Knæene slæber i gulvet. For lang distance giver dårlig teknik.",
+    "bodyAreas": [
+      "Core",
+      "Hofter",
+      "Kondition"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Knæ lige over gulvet. Modsatte hånd og fod arbejder sammen. Små hurtige skridt.",
+    "sourceType": "Holdstafet / animal movement / core",
+    "sourceEquipment": "Kegler til vendepunkt"
+  },
+  {
+    "id": "video-plate-burpee-team-relay",
+    "name": "Plate & Burpee Team Relay",
+    "category": "Leg",
+    "equipment": [
+      "Vægtskive"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "En holdkonkurrence, hvor en stak skiver skal flyttes, mens holdet arbejder med burpees mellem turene. Sådan gør du: Lav to hold med hver sin stak lette skiver. Deltagerne placeres i en række/bane. På signal flyttes én skive ad gangen frem mod holdets målzone eller videre gennem rækken. Mens man venter på sin tur, udføres den aftalte burpee-/gulvbevægelse. Efter en aflevering skifter næste deltager ind. Første hold, der får hele stakken til mål, vinder.",
+    "focus": [
+      "Helkropskondition",
+      "Samarbejde",
+      "Burpee-teknik",
+      "Konkurrence."
+    ],
+    "easier": "Step-back burpees eller kun squat-to-floor.",
+    "harder": "Længere bane eller et fast antal burpees før hver aflevering.",
+    "junior": "Brug meget lette plast-/træningsskiver eller andre flade genstande. Prioritér plads mellem deltagerne.",
+    "adult": "Brug meget lette plast-/træningsskiver eller andre flade genstande. Prioritér plads mellem deltagerne.",
+    "mistakes": "Tunge skiver kastes. Deltagere ligger for tæt og kolliderer under burpees. Uklare skifteregler giver kaos.",
+    "bodyAreas": [
+      "Kondition",
+      "Helkrop"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Én skive ad gangen. Lette skiver. Gode burpees før hurtigt tempo.",
+    "sourceType": "Holdchallenge / burpees / styrkeudholdenhed",
+    "sourceEquipment": "Lette vægtskiver eller flade skiver"
+  },
+  {
+    "id": "video-group-warm-up-passes",
+    "name": "Group Warm-Up Passes",
+    "category": "Opvarmning",
+    "equipment": [
+      "Medicinbold"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Intervaller",
+      "Teamchallenge"
+    ],
+    "description": "En simpel gruppeopvarmning, hvor bolden passes rundt, mens hele gruppen skifter arbejdsposition. Sådan gør du: Stå i en cirkel med én bold. Pass bolden hurtigt fra person til person i den valgte retning. Efter et fast interval skifter alle position/bevægelse, fx squat, knælende, plank eller siddende/V-sit. Fortsæt med at passe bolden uden at stoppe flowet. Kør 3–5 forskellige positioner.",
+    "focus": [
+      "Temperatur",
+      "Koordination",
+      "Core",
+      "Ben",
+      "Skuldre",
+      "Socialt samarbejde."
+    ],
+    "easier": "Let bold og stående/squat-positioner.",
+    "harder": "Plank-/V-sit-varianter eller skift retning på signal.",
+    "junior": "20 sekunder arbejde / 10 sekunder til positionsskift. 3–5 runder giver en hurtig, social opvarmning.",
+    "adult": "20 sekunder arbejde / 10 sekunder til positionsskift. 3–5 runder giver en hurtig, social opvarmning.",
+    "mistakes": "For tung bold. Bolden kastes hårdt på kort afstand. Positionerne er så svære, at passet går i stå.",
+    "bodyAreas": [
+      "Core",
+      "Ben",
+      "Helkrop"
+    ],
+    "styles": [
+      "Opvarmning",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Bløde præcise afleveringer. Kig på den, du afleverer til. Hold den aftalte position mellem afleveringer.",
+    "sourceType": "Gruppeopvarmning / bold / helkrop",
+    "sourceEquipment": "Medicinbold eller blød bold"
+  },
+  {
+    "id": "video-plank-air-hockey",
+    "name": "Plank Air Hockey",
+    "category": "Leg",
+    "equipment": [
+      "Kegler",
+      "Sliders"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "To spillere spiller “air hockey” fra plankeposition og forsøger at glide en puck forbi modstanderen. Sådan gør du: To deltagere står over for hinanden i høj planke. Markér et lille mål bag hver spiller. Placér en flad puck/markør mellem dem. Med én hånd ad gangen skubbes pucken langs gulvet mod modstanderens mål. Den anden spiller må blokere og sende den retur. Efter hvert slag sættes hånden hurtigt tilbage i gulvet.",
+    "focus": [
+      "Core",
+      "Skuldre",
+      "Reaktion",
+      "Timing",
+      "Hånd-øje-koordination."
+    ],
+    "easier": "Spil fra knæ eller med bredt mål.",
+    "harder": "Smallere mål, fødder tættere sammen eller bedst-af-5.",
+    "junior": "Meget velegnet som 1-mod-1 challenge. Korte kampe på 30–45 sekunder.",
+    "adult": "Meget velegnet som 1-mod-1 challenge. Korte kampe på 30–45 sekunder.",
+    "mistakes": "Pucken løftes/kastes. Spillere flytter sig for langt ind i hinanden. For lille spilleområde.",
+    "bodyAreas": [
+      "Core"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Skub – ikke slå hårdt. Hånd tilbage i gulvet. Hold hoften lav og rolig.",
+    "sourceType": "Leg / plank / reaktion / core",
+    "sourceEquipment": "Flad kegle, puck eller slider + 2 målmarkører"
+  },
+  {
+    "id": "video-hula-hoop-rope-relay",
+    "name": "Hula Hoop Rope Relay",
+    "category": "Leg",
+    "equipment": [
+      "Hula hoop",
+      "Reb",
+      "Kegler"
+    ],
+    "audience": [
+      "Junior"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Makker",
+      "Teamchallenge"
+    ],
+    "description": "Holdet skal flytte en hula hoop fra start til mål langs/omkring et reb, mens hvert medlem udfører en bestemt springopgave. Sådan gør du: Lav en bane med reb mellem start og mål. Holdet skal transportere hula hoop gennem banen uden at springe opgaven over. Én deltager ad gangen udfører den aftalte springtype i eller omkring ringen. Efter korrekt spring flyttes ringen videre til næste position/deltager. Fortsæt, til ringen når målet. Tidtag holdets samlede gennemførelse.",
+    "focus": [
+      "Springkoordination",
+      "Balance",
+      "Samarbejde",
+      "Problemløsning."
+    ],
+    "easier": "Enkle to-bens-hop og kort bane.",
+    "harder": "Forskellig springtype for hver deltager eller slalombane.",
+    "junior": "Gør det til en samarbejdschallenge frem for ren fart. Tiden tæller, men kun hvis alle spring udføres korrekt.",
+    "adult": "Gør det til en samarbejdschallenge frem for ren fart. Tiden tæller, men kun hvis alle spring udføres korrekt.",
+    "mistakes": "Deltagere skynder sig og træder på rebet. For svære spring vælges til yngre deltagere. Holdet flytter ringen uden at alle udfører opgaven.",
+    "bodyAreas": [
+      "Helkrop"
+    ],
+    "styles": [
+      "Leg",
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie"
+    ],
+    "source": "FunkFit Junior videomateriale",
+    "technicalCues": "Aftal rækkefølgen. Kontrollerede landinger. Ringen flyttes først efter godkendt spring.",
+    "sourceType": "Holdstafet / spring / samarbejde",
+    "sourceEquipment": "Hula hoop, reb og kegler/forhindringer"
+  },
+  {
+    "id": "oblique-hold",
+    "name": "Oblique hold",
+    "category": "Core",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "Intervaller"
+    ],
+    "description": "Hold en stabil side-/oblique-position med spændt core og kontrolleret bækken.",
+    "focus": [
+      "Core",
+      "Stabilitet"
+    ],
+    "easier": "Støt nederste knæ i gulvet.",
+    "harder": "Løft øverste ben eller forlæng holdet.",
+    "junior": "15-30 sek. pr. side.",
+    "adult": "30-45 sek. pr. side.",
+    "mistakes": "Hoften synker eller kroppen roterer.",
+    "bodyAreas": [
+      "Core"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie",
+      "Funktionel"
+    ],
+    "source": "Pandekageøvelser"
+  },
+  {
+    "id": "star-jump",
+    "name": "Star Jump",
+    "category": "Kondition",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Høj",
+    "format": [
+      "Station",
+      "Intervaller",
+      "AMRAP"
+    ],
+    "description": "Hop eksplosivt op og stræk arme og ben ud som en stjerne. Land blødt og kontrolleret.",
+    "focus": [
+      "Kondition",
+      "Power",
+      "Koordination"
+    ],
+    "easier": "Lav jumping jacks uden eksplosivt hop.",
+    "harder": "Højere hop eller hurtigere rytme.",
+    "junior": "5-10 gode reps eller 20 sek.",
+    "adult": "10-15 reps eller 30 sek.",
+    "mistakes": "Stiv landing eller tab af knækontrol.",
+    "bodyAreas": [
+      "Ben",
+      "Helkrop"
+    ],
+    "styles": [
+      "Funktionel",
+      "HIIT"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie",
+      "HIIT"
+    ],
+    "source": "Pandekageøvelser"
+  },
+  {
+    "id": "dips",
+    "name": "Dips",
+    "category": "Pres",
+    "equipment": [
+      "Bænk"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP"
+    ],
+    "description": "Støt hænderne på en stabil bænk eller boks, sænk kroppen kontrolleret og pres op igen.",
+    "focus": [
+      "Triceps",
+      "Skuldre"
+    ],
+    "easier": "Bøj knæene og hold fødderne tættere på.",
+    "harder": "Stræk benene længere frem.",
+    "junior": "5-10 kontrollerede reps.",
+    "adult": "8-15 reps.",
+    "mistakes": "Skuldrene falder frem eller bevægelsen bliver for dyb.",
+    "bodyAreas": [
+      "Arme",
+      "Skuldre"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie",
+      "Funktionel"
+    ],
+    "source": "Pandekageøvelser"
+  },
+  {
+    "id": "bicycle-crunches",
+    "name": "Bicycle Crunches",
+    "category": "Core",
+    "equipment": [
+      "Måtte"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "Intervaller"
+    ],
+    "description": "Før modsatte albue og knæ mod hinanden i en rolig skiftebevægelse, mens core holdes aktiv.",
+    "focus": [
+      "Core",
+      "Rotation"
+    ],
+    "easier": "Hold fødderne tættere på gulvet og sænk tempoet.",
+    "harder": "Stræk benet længere ud og arbejd langsommere.",
+    "junior": "8-16 skift.",
+    "adult": "16-30 skift.",
+    "mistakes": "Trækker i nakken eller cykler for hurtigt uden rotation.",
+    "bodyAreas": [
+      "Core"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie",
+      "Funktionel"
+    ],
+    "source": "Pandekageøvelser"
+  },
+  {
+    "id": "lunge-generic",
+    "name": "Lunge",
+    "category": "Lunge",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Middel",
+    "format": [
+      "Station",
+      "AMRAP",
+      "Makker"
+    ],
+    "description": "Tag et kontrolleret skridt i lunge, sænk kroppen med stabilt knæ og pres tilbage gennem hele foden.",
+    "focus": [
+      "Ben",
+      "Balder",
+      "Balance"
+    ],
+    "easier": "Kortere skridt og mindre dybde.",
+    "harder": "Walking lunge eller let belastning.",
+    "junior": "5-8 pr. ben.",
+    "adult": "8-12 pr. ben.",
+    "mistakes": "Knæ falder ind eller overkroppen mister kontrol.",
+    "bodyAreas": [
+      "Ben",
+      "Balder"
+    ],
+    "styles": [
+      "Funktionel"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie",
+      "Funktionel"
+    ],
+    "source": "Pandekageøvelser"
+  },
+  {
+    "id": "arm-circles",
+    "name": "Arm Circles",
+    "category": "Opvarmning",
+    "equipment": [
+      "Kropsvægt"
+    ],
+    "audience": [
+      "Junior",
+      "Voksen"
+    ],
+    "difficulty": "Begynder",
+    "intensity": "Lav",
+    "format": [
+      "Station",
+      "Intervaller"
+    ],
+    "description": "Lav kontrollerede cirkler med strakte eller let bøjede arme og skift retning efter et kort interval.",
+    "focus": [
+      "Skuldre",
+      "Mobilitet"
+    ],
+    "easier": "Mindre cirkler.",
+    "harder": "Større kontrollerede cirkler eller længere tid.",
+    "junior": "15-20 sek. hver vej.",
+    "adult": "20-30 sek. hver vej.",
+    "mistakes": "Spændte skuldre eller ukontrolleret fart.",
+    "bodyAreas": [
+      "Skuldre"
+    ],
+    "styles": [
+      "Opvarmning"
+    ],
+    "trainingForms": [
+      "FunkFit Junior",
+      "Familie",
+      "Funktionel"
+    ],
+    "source": "Pandekageøvelser"
   }
 ]
