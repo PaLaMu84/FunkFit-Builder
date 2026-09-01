@@ -1,13 +1,13 @@
-const CACHE='funkfit-v0.7.4-alpha.39';
+const CACHE='funkfit-v0.7.4-alpha.41';
 const ASSETS=[
   './',
   './index.html',
-  './manifest.json?v=0.7.4a39',
-  './css/app.css?v=0.7.4a39',
-  './js/app.js?v=0.7.4a39',
+  './manifest.json?v=0.7.4a41',
+  './css/app.css?v=0.7.4a41',
+  './js/app.js?v=0.7.4a41',
   './data/exercises.json',
   './data/workoutTemplates.json',
-  './data/sharedGames.json?v=0.7.4-alpha.39',
+  './data/sharedGames.json?v=0.7.4-alpha.41',
   './data/bodyColors.json'
 ];
 
@@ -45,7 +45,7 @@ self.addEventListener('fetch', event => {
         })
         .catch(async () =>
           (await caches.match(event.request)) ||
-          (await caches.match('./data/sharedGames.json?v=0.7.4-alpha.39'))
+          (await caches.match('./data/sharedGames.json?v=0.7.4-alpha.41'))
         )
     );
     return;

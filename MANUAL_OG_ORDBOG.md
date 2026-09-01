@@ -934,3 +934,121 @@ Alpha.39 gør den fælles datafil versionskritisk:
 - Administration viser den faktiske indlæsning, fx **✓ 13/13 indlæst**
 
 Hvis tallet ikke er 13/13, er den fælles datafil ikke opdateret korrekt på enheden.
+
+
+# Udstyrsregister – alpha.40
+
+## Formål
+FunkFit har nu et særskilt **Udstyr**-modul til fysisk lageroptælling i:
+- **Gymnastiksalen – inde**
+- **Containeren – ude**
+
+Hver linje indeholder:
+- Sted
+- Redskab
+- Antal
+- Kg, hvis relevant
+- Variant/farve
+- Note
+
+Brug én linje pr. vægt eller variant. Fx 6 kettlebells på 12 kg og 4 kettlebells på 16 kg registreres som to linjer.
+
+## Standardliste
+Ved første brug oprettes en standardliste med almindeligt funktionelt træningsudstyr. Antallet er 0, indtil lageret er optalt.
+
+Listen omfatter bl.a. kettlebells, håndvægte, vægtstænger/skiver, medicinbolde, wall balls, slam balls, sandsække, bokse, bænke, måtter, TRX, ringe, elastikker, minibands, powerbands, sjippetov, kegler, agilitystige, hække, parallettes, pull-up stativ, React Lights, slæde, reb, battle rope, traktordæk, hammer, farmer carry-håndtag og foam roller.
+
+Elastikfarver er ikke standardiserede mellem producenter. Registrér derfor jeres faktiske farve i **Variant/farve**. Ved flere farver bruges **Kopi** til at lave flere linjer.
+
+## Nye redskaber
+**+ Nyt redskab** opretter en tom linje med frit redskabsnavn. Nye redskabsnavne fra registeret bliver også tilgængelige i Lege-modulets udstyrsfelt.
+
+## Sammenhæng med Planlæg
+Under **Tilgængeligt udstyr** findes:
+- **📦 Udstyrsregister**
+- **↻ Hent fra register**
+
+Hent fra register bruger de redskaber for stedet, hvor antal er større end 0, som tilgængeligt udstyr i Planlæg. Registeret overskriver ikke automatisk profilen mens optællingen er halvfærdig.
+
+## Lagring
+Registeret gemmes lokalt i:
+- `funkfit-equipment-inventory-v1`
+- `funkfit-equipment-inventory-backup-v1`
+
+Eksport/import kan bruges mellem telefon og PC. `reset-cache.html` rydder ikke registeret.
+
+
+# Faktisk inventar + videomateriale – alpha.41
+
+## Faktisk inventar fra optællingsfilen
+Udstyrsregisteret er nu forudfyldt med den konkrete optælling fra:
+- Containeren: 47 lagerlinjer
+- Gymnastiksalen: 92 lagerlinjer
+
+Det betyder, at konkrete antal, vægte, farver/varianter og noter fra kilden nu er en del af appens startdata.
+
+Eksempler:
+- Dumbbells med de konkrete vægte og antal
+- Competition- og gamle kettlebells med konkrete vægte
+- Vægtstænger og vægtskiver
+- Bodybars
+- Bulgarian Bags
+- Bokseudstyr
+- Elastikker og powerbands med de faktiske farver
+- Bokse i konkrete højder
+- Måttetyper
+- Wall balls og medicine balls
+- Legematerialer som terninger, kortspil og Fit2-redskaber
+
+Usikre kildeangivelser bevares som note i stedet for at blive gættet.
+
+### Migration fra alpha.40
+Alpha.41 har en éngangsmigrering til det faktiske kildeinventar.
+Kildelinjerne erstatter alpha.40's generiske startlinjer, mens lokale ekstra redskaber, der ikke findes i kilden, bevares.
+
+## Indkøb
+Udstyrssiden viser også kildens indkøbsliste:
+- Dymo
+- høje/top-kegler
+- flade kegler/pandekager
+- isposer
+
+## Pandekageøvelser
+De 12 fysiske øvelsesmarkører vises under Udstyr:
+- Plank hold
+- Oblique hold
+- Star Jump
+- Calf raises
+- Dips
+- Bicycle Crunches
+- Sit up
+- Tuck Jumps
+- Lunge
+- Squats
+- Push up
+- Arm Circles
+
+Eksisterende øvelser har fået relevante aliaser, og manglende grundøvelser er tilføjet, så navnene fra pandekagerne kan søges i øvelsesbiblioteket.
+
+## 29 øvelser og lege fra FunkFit Junior-videomaterialet
+Alle 29 elementer fra dokumentet **FunkFit Junior – Øvelsesbeskrivelser** er nu lagt i øvelsesbiblioteket med kildebeskrivelse, lettere/sværere version, typiske fejl og Junior-anbefaling.
+
+Øvelsesinfo viser desuden dokumentets tekniske cues.
+
+De tydeligt leg-/stafetbaserede elementer er også publiceret som fælles grundleg i Legebiblioteket:
+- Planke-duel – Hand Slap
+- Balloon Rotations
+- Infinity Tag
+- Bear Crawl Cone Battle
+- Partner Reaction Mirror Drill
+- Flyvende tæppe – hop og træk
+- Memory Sequence Relay
+- Bear Crawl Relay
+- Plate & Burpee Team Relay
+- Plank Air Hockey
+- Hula Hoop Rope Relay
+
+Løbende kryds og bolle og Cone Transfer Relay findes fortsat som aktiviteter/øvelser, men oprettes ikke som nye grundleg, fordi Legebiblioteket allerede indeholder nært beslægtede fælles lege ("3 på stribe" og "Saml keglerne").
+
+## Fælles Legebibliotek
+Det fælles Legebibliotek indeholder nu **24 lege** i alt.
