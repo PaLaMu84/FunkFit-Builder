@@ -568,5 +568,487 @@
     "source": "shared",
     "setupMinutes": 0,
     "activeMinutes": 12
+  },
+  {
+    "gameId": "shared-video-planke-duel-hand-slap-v1",
+    "name": "Planke-duel – Hand Slap",
+    "topic": "Planke / duel",
+    "description": "En konkurrenceleg i plankeposition, hvor man både skal beskytte sine egne hænder og ramme modstanderens.",
+    "rules": "1. To deltagere stiller sig over for hinanden i høj planke.\n2. Fødderne må stå lidt bredt for balance.\n3. Forsøg at røre/klappe modstanderens hånd med din frie hånd.\n4. Modstanderen må flytte hånden væk.\n5. Efter hvert forsøg sættes hånden tilbage i gulvet.\n6. Et rent touch på hånden giver 1 point.",
+    "coachTips": "Tekniske cues: Bred base med fødderne. Hurtig hånd – hurtigt tilbage. Kig på modstanderens hænder. Hold hoften så rolig som muligt. 1 mod 1 til 5 eller 10 point, eller korte turneringskampe på 20–30 sekunder. Kun touch på hænder – ingen skub eller slag. Typiske fejl: Man slår i stedet for at touche. Man læner hele kroppen ind over modstanderen. Hoften roterer voldsomt. Man mister plankepositionen.",
+    "setupMinutes": 2,
+    "activeMinutes": 6,
+    "minutes": 8,
+    "minParticipants": 2,
+    "maxParticipants": 0,
+    "organization": "Makker sammen",
+    "requiresTeams": false,
+    "minTeams": 2,
+    "teamSize": 2,
+    "equipment": [],
+    "exerciseIds": [
+      "video-planke-duel-hand-slap"
+    ],
+    "tags": [
+      "leg",
+      "core",
+      "skulderstabilitet",
+      "reaktion"
+    ],
+    "audience": "junior",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-09-01T13:00:00.000Z",
+    "updatedAt": "2026-09-01T13:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-video-balloon-rotations-v1",
+    "name": "Balloon Rotations",
+    "topic": "Core / ballon / reaktion",
+    "description": "At holde en ballon i luften, mens kroppen roterer mellem støttepositioner på gulvet.",
+    "rules": "1. Start i en stabil støtteposition på hænder/fødder eller hænder/knæ.\n2. Slå ballonen let op i luften med den frie hånd.\n3. Rotér kroppen til en ny støtteposition, fx side-/crab-lignende position.\n4. Ram ballonen igen, før den rører gulvet.\n5. Fortsæt med at rotere og holde ballonen levende.",
+    "coachTips": "Tekniske cues: Små slag på ballonen. Hold kontrollen i støtteskulderen. Rotér hele kroppen – ikke kun armen. Super som legestation: 30 sekunder – hvor mange touches uden gulvkontakt? Typiske fejl: Ballonen slås for hårdt. Man mister kontrollen og falder ned på hoften. For svære rotationer vælges fra start.",
+    "setupMinutes": 2,
+    "activeMinutes": 6,
+    "minutes": 8,
+    "minParticipants": 1,
+    "maxParticipants": 0,
+    "organization": "Individuelt",
+    "requiresTeams": false,
+    "minTeams": 2,
+    "teamSize": 1,
+    "equipment": [
+      {
+        "name": "Ballon",
+        "quantity": 1,
+        "note": "Én pr. aktiv deltager/station",
+        "selfSource": true
+      }
+    ],
+    "exerciseIds": [
+      "video-balloon-rotations"
+    ],
+    "tags": [
+      "core",
+      "skulderstabilitet",
+      "leg"
+    ],
+    "audience": "junior",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-09-01T13:00:00.000Z",
+    "updatedAt": "2026-09-01T13:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-video-infinity-tag-v1",
+    "name": "Infinity Tag",
+    "topic": "Fangeleg / sprint",
+    "description": "En jagtleg, hvor to spillere løber rundt om en cirkel og skifter mellem at være jæger og løber.",
+    "rules": "1. Placér to kegler på modsatte sider af en markeret cirkel.\n2. To spillere starter ved hver sin kegle.\n3. På signal løber begge rundt på cirklen i samme retning.\n4. Den ene er jæger og forsøger at indhente den anden.\n5. Ved den modsatte kegle kan rollerne skifte efter den aftalte regel.\n6. Runden fortsætter, til jægeren får et touch eller løberen når den fastsatte afslutning.",
+    "coachTips": "Tekniske cues: Hold linjen rundt om cirklen. Korte hurtige skridt i kurven. Touch – ikke skub. Korte dueller på 10–20 sekunder. Byt modstander ofte, så sprintbelastningen holdes høj og pauserne naturlige. Typiske fejl: Spillere skærer ind over cirklen. For lille afstand ved start. Jægeren tackler i stedet for at touche.",
+    "setupMinutes": 2,
+    "activeMinutes": 8,
+    "minutes": 10,
+    "minParticipants": 2,
+    "maxParticipants": 0,
+    "organization": "Makker sammen",
+    "requiresTeams": false,
+    "minTeams": 2,
+    "teamSize": 2,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 2,
+        "note": "Modsatte sider af cirklen",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "video-infinity-tag"
+    ],
+    "tags": [
+      "fangeleg",
+      "sprint",
+      "reaktion",
+      "retningsskift"
+    ],
+    "audience": "junior",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-09-01T13:00:00.000Z",
+    "updatedAt": "2026-09-01T13:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-video-bear-crawl-cone-battle-v1",
+    "name": "Bear Crawl Cone Battle",
+    "topic": "Bear crawl / reaktion",
+    "description": "En eliminations- eller pointleg, hvor deltagerne bevæger sig i bear crawl og reagerer på et signal om at nå en markør.",
+    "rules": "1. Placér deltagerne omkring et lille område i bear-position.\n2. Læg én eller flere markører i midten eller mellem deltagerne.\n3. Deltagerne bevæger sig i bear crawl efter trænerens anvisning.\n4. På et bestemt signal/farvekald forsøger alle at nå eller gribe den relevante markør.\n5. Sidste spiller uden markør får et minuspoint eller er ude af runden.\n6. Nulstil og gentag.",
+    "coachTips": "Tekniske cues: Knæ lige over gulvet. Små hurtige skridt. Grib markøren – ikke modstanderen. Brug point frem for udskillelse, så alle er aktive: 1 point for hver vundet markør. Typiske fejl: Man rejser sig op og løber. Deltagere støder hoved/arme sammen. Området er for trangt.",
+    "setupMinutes": 2,
+    "activeMinutes": 7,
+    "minutes": 9,
+    "minParticipants": 3,
+    "maxParticipants": 0,
+    "organization": "Fælles",
+    "requiresTeams": false,
+    "minTeams": 2,
+    "teamSize": 3,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 3,
+        "note": "Flade markører; tilpas antal til gruppen",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "video-bear-crawl-cone-battle"
+    ],
+    "tags": [
+      "leg",
+      "bear crawl",
+      "reaktion"
+    ],
+    "audience": "junior",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-09-01T13:00:00.000Z",
+    "updatedAt": "2026-09-01T13:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-video-partner-reaction-mirror-drill-v1",
+    "name": "Partner Reaction Mirror Drill",
+    "topic": "Reaktion / makker",
+    "description": "At reagere på en makkers uforudsigelige bevægelser og spejle dem hurtigt.",
+    "rules": "1. To deltagere står over for hinanden i atletisk position.\n2. Den ene er leder, den anden spejler.\n3. Lederen bevæger sig hurtigt sideværts, frem/tilbage eller skifter retning.\n4. Makkeren forsøger at matche bevægelsen uden at kende retningen på forhånd.\n5. Efter 10–20 sekunder skifter rollerne.",
+    "coachTips": "Tekniske cues: Lav tyngdepunkt. Små hurtige skridt. Kig på bryst/hofte – ikke fødderne. 10–15 sekunder pr. rolle. Gør det til en grinende “kan du snyde din makker?”-challenge. Typiske fejl: Benene krydses ved sidebevægelse. Lederen løber for langt væk. For stor fart før teknikken er på plads.",
+    "setupMinutes": 2,
+    "activeMinutes": 7,
+    "minutes": 9,
+    "minParticipants": 2,
+    "maxParticipants": 0,
+    "organization": "Makker sammen",
+    "requiresTeams": false,
+    "minTeams": 2,
+    "teamSize": 2,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 4,
+        "note": "Valgfrit til afgrænsning af område",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "video-partner-reaction-mirror-drill"
+    ],
+    "tags": [
+      "reaktion",
+      "agility",
+      "makkerleg"
+    ],
+    "audience": "junior",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-09-01T13:00:00.000Z",
+    "updatedAt": "2026-09-01T13:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-video-flyvende-tppe-hop-og-trk-v1",
+    "name": "Flyvende tæppe – hop og træk",
+    "topic": "Samarbejde / plyometri",
+    "description": "Et hold flytter en deltager hen over gulvet ved at time små hop med, at makkere trækker måtten frem.",
+    "rules": "1. Én deltager står på eller lige over en måtte.\n2. En eller to makkere holder i måttens kanter.\n3. På signal hopper deltageren lodret.\n4. Mens fødderne er fri af måtten, trækker makkere måtten et kort stykke frem.\n5. Deltageren lander igen på måtten.\n6. Gentag rytmen hop–træk–land, indtil målstregen nås.",
+    "coachTips": "Tekniske cues: Små lodrette hop. Træk kun, når fødderne er fri. Rolig landing midt på måtten. Brug kun skridsikker, robust måtte og jævnt gulv. Ingen hårde ryk. 5–10 meter pr. tur. Typiske fejl: Måtten trækkes under landingen. For store hop. Makkere trækker skævt.",
+    "setupMinutes": 3,
+    "activeMinutes": 8,
+    "minutes": 11,
+    "minParticipants": 3,
+    "maxParticipants": 0,
+    "organization": "Hold",
+    "requiresTeams": true,
+    "minTeams": 1,
+    "teamSize": 3,
+    "equipment": [
+      {
+        "name": "Måtte",
+        "quantity": 1,
+        "note": "Tyk, robust og skridsikker pr. aktivt hold",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "video-flyvende-tppe-hop-og-trk"
+    ],
+    "tags": [
+      "holdleg",
+      "plyometri",
+      "samarbejde"
+    ],
+    "audience": "junior",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-09-01T13:00:00.000Z",
+    "updatedAt": "2026-09-01T13:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-video-memory-sequence-relay-v1",
+    "name": "Memory Sequence Relay",
+    "topic": "Hukommelse / sprint",
+    "description": "At huske en farverækkefølge eller placering og genskabe den efter en kort løbetur.",
+    "rules": "1. Lav en skjult farve-/markørsekvens bag en kasse eller skærm.\n2. En spiller får kort lov til at se sekvensen.\n3. Spilleren løber tilbage til sit hold eller til et kopiområde.\n4. Sekvensen genskabes med tilsvarende farvede markører.\n5. Næste spiller må kontrollere/huske næste del afhængigt af variant.\n6. Første hold med korrekt sekvens vinder.",
+    "coachTips": "Tekniske cues: Se efter rækkefølge og placering. Én ting ad gangen. Tal sammen på holdet. Meget stærk opvarmningsleg: fysisk aktivitet + hovedet med. Kør flere korte runder. Typiske fejl: Sekvensen er for lang fra start. Spillere bliver stående og kigge for længe. Farverne er for ens.",
+    "setupMinutes": 4,
+    "activeMinutes": 9,
+    "minutes": 13,
+    "minParticipants": 4,
+    "maxParticipants": 0,
+    "organization": "Hold",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 4,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 8,
+        "note": "Farvede markører; tilpas antal til sekvensen",
+        "selfSource": false
+      },
+      {
+        "name": "Boks",
+        "quantity": 1,
+        "note": "Som skjul/skærm eller brug anden afskærmning",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "video-memory-sequence-relay"
+    ],
+    "tags": [
+      "hukommelse",
+      "sprint",
+      "holdleg"
+    ],
+    "audience": "junior",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-09-01T13:00:00.000Z",
+    "updatedAt": "2026-09-01T13:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-video-bear-crawl-relay-v1",
+    "name": "Bear Crawl Relay",
+    "topic": "Bear crawl / stafet",
+    "description": "En enkel stafet, hvor deltagerne bevæger sig i bear crawl til et vendepunkt og tilbage.",
+    "rules": "1. Del deltagerne i hold og markér start samt vendekegle.\n2. Første deltager starter i bear-position.\n3. Crawl frem til keglen med knæene fri af gulvet.\n4. Vend kontrolleret og crawl tilbage.\n5. Giv næste deltager et high-five/touch ved startlinjen.\n6. Fortsæt, til alle har været igennem.",
+    "coachTips": "Tekniske cues: Knæ lige over gulvet. Modsatte hånd og fod arbejder sammen. Små hurtige skridt. Hold distancen kort, fx 5–8 meter, så det bliver en hurtig leg og ikke en lang skulderudmattelse. Typiske fejl: Deltageren rejser sig og løber. Knæene slæber i gulvet. For lang distance giver dårlig teknik.",
+    "setupMinutes": 2,
+    "activeMinutes": 8,
+    "minutes": 10,
+    "minParticipants": 4,
+    "maxParticipants": 0,
+    "organization": "Stafet",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 4,
+    "equipment": [
+      {
+        "name": "Kegler",
+        "quantity": 4,
+        "note": "Start og vendepunkter",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "video-bear-crawl-relay"
+    ],
+    "tags": [
+      "holdstafet",
+      "animal movement",
+      "core"
+    ],
+    "audience": "junior",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-09-01T13:00:00.000Z",
+    "updatedAt": "2026-09-01T13:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-video-plate-burpee-team-relay-v1",
+    "name": "Plate & Burpee Team Relay",
+    "topic": "Burpee / holdchallenge",
+    "description": "En holdkonkurrence, hvor en stak skiver skal flyttes, mens holdet arbejder med burpees mellem turene.",
+    "rules": "1. Lav to hold med hver sin stak lette skiver.\n2. Deltagerne placeres i en række/bane.\n3. På signal flyttes én skive ad gangen frem mod holdets målzone eller videre gennem rækken.\n4. Mens man venter på sin tur, udføres den aftalte burpee-/gulvbevægelse.\n5. Efter en aflevering skifter næste deltager ind.\n6. Første hold, der får hele stakken til mål, vinder.",
+    "coachTips": "Tekniske cues: Én skive ad gangen. Lette skiver. Gode burpees før hurtigt tempo. Brug meget lette plast-/træningsskiver eller andre flade genstande. Prioritér plads mellem deltagerne. Typiske fejl: Tunge skiver kastes. Deltagere ligger for tæt og kolliderer under burpees. Uklare skifteregler giver kaos.",
+    "setupMinutes": 3,
+    "activeMinutes": 8,
+    "minutes": 11,
+    "minParticipants": 6,
+    "maxParticipants": 0,
+    "organization": "Hold",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 3,
+    "equipment": [
+      {
+        "name": "Vægtskive",
+        "quantity": 6,
+        "note": "Lette skiver; tilpas antal til hold",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "video-plate-burpee-team-relay"
+    ],
+    "tags": [
+      "holdchallenge",
+      "burpees",
+      "styrkeudholdenhed"
+    ],
+    "audience": "junior",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-09-01T13:00:00.000Z",
+    "updatedAt": "2026-09-01T13:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-video-plank-air-hockey-v1",
+    "name": "Plank Air Hockey",
+    "topic": "Planke / duel",
+    "description": "To spillere spiller “air hockey” fra plankeposition og forsøger at glide en puck forbi modstanderen.",
+    "rules": "1. To deltagere står over for hinanden i høj planke.\n2. Markér et lille mål bag hver spiller.\n3. Placér en flad puck/markør mellem dem.\n4. Med én hånd ad gangen skubbes pucken langs gulvet mod modstanderens mål.\n5. Den anden spiller må blokere og sende den retur.\n6. Efter hvert slag sættes hånden hurtigt tilbage i gulvet.",
+    "coachTips": "Tekniske cues: Skub – ikke slå hårdt. Hånd tilbage i gulvet. Hold hoften lav og rolig. Meget velegnet som 1-mod-1 challenge. Korte kampe på 30–45 sekunder. Typiske fejl: Pucken løftes/kastes. Spillere flytter sig for langt ind i hinanden. For lille spilleområde.",
+    "setupMinutes": 2,
+    "activeMinutes": 7,
+    "minutes": 9,
+    "minParticipants": 2,
+    "maxParticipants": 0,
+    "organization": "Makker sammen",
+    "requiresTeams": false,
+    "minTeams": 2,
+    "teamSize": 2,
+    "equipment": [
+      {
+        "name": "Sliders",
+        "quantity": 1,
+        "note": "Flad kegle/puck/slider pr. bane",
+        "selfSource": false
+      },
+      {
+        "name": "Kegler",
+        "quantity": 4,
+        "note": "To målmarkører pr. spiller/bane",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "video-plank-air-hockey"
+    ],
+    "tags": [
+      "leg",
+      "plank",
+      "reaktion",
+      "core"
+    ],
+    "audience": "junior",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-09-01T13:00:00.000Z",
+    "updatedAt": "2026-09-01T13:00:00.000Z",
+    "source": "shared"
+  },
+  {
+    "gameId": "shared-video-hula-hoop-rope-relay-v1",
+    "name": "Hula Hoop Rope Relay",
+    "topic": "Stafet / samarbejde",
+    "description": "Holdet skal flytte en hula hoop fra start til mål langs/omkring et reb, mens hvert medlem udfører en bestemt springopgave.",
+    "rules": "1. Lav en bane med reb mellem start og mål.\n2. Holdet skal transportere hula hoop gennem banen uden at springe opgaven over.\n3. Én deltager ad gangen udfører den aftalte springtype i eller omkring ringen.\n4. Efter korrekt spring flyttes ringen videre til næste position/deltager.\n5. Fortsæt, til ringen når målet.\n6. Tidtag holdets samlede gennemførelse.",
+    "coachTips": "Tekniske cues: Aftal rækkefølgen. Kontrollerede landinger. Ringen flyttes først efter godkendt spring. Gør det til en samarbejdschallenge frem for ren fart. Tiden tæller, men kun hvis alle spring udføres korrekt. Typiske fejl: Deltagere skynder sig og træder på rebet. For svære spring vælges til yngre deltagere. Holdet flytter ringen uden at alle udfører opgaven.",
+    "setupMinutes": 4,
+    "activeMinutes": 9,
+    "minutes": 13,
+    "minParticipants": 4,
+    "maxParticipants": 0,
+    "organization": "Stafet",
+    "requiresTeams": true,
+    "minTeams": 2,
+    "teamSize": 4,
+    "equipment": [
+      {
+        "name": "Hula hoop",
+        "quantity": 1,
+        "note": "Pr. aktivt hold",
+        "selfSource": true
+      },
+      {
+        "name": "Reb",
+        "quantity": 1,
+        "note": "Banelayout",
+        "selfSource": false
+      },
+      {
+        "name": "Kegler",
+        "quantity": 4,
+        "note": "Banemarkering",
+        "selfSource": false
+      }
+    ],
+    "exerciseIds": [
+      "video-hula-hoop-rope-relay"
+    ],
+    "tags": [
+      "holdstafet",
+      "spring",
+      "samarbejde"
+    ],
+    "audience": "junior",
+    "status": "active",
+    "ownerId": "funkfit-shared",
+    "ownerRole": "shared-library",
+    "visibility": "shared",
+    "version": 1,
+    "createdAt": "2026-09-01T13:00:00.000Z",
+    "updatedAt": "2026-09-01T13:00:00.000Z",
+    "source": "shared"
   }
 ]

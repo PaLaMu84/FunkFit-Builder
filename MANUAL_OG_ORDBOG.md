@@ -976,3 +976,79 @@ Registeret gemmes lokalt i:
 - `funkfit-equipment-inventory-backup-v1`
 
 Eksport/import kan bruges mellem telefon og PC. `reset-cache.html` rydder ikke registeret.
+
+
+# Faktisk inventar + videomateriale – alpha.41
+
+## Faktisk inventar fra optællingsfilen
+Udstyrsregisteret er nu forudfyldt med den konkrete optælling fra:
+- Containeren: 47 lagerlinjer
+- Gymnastiksalen: 92 lagerlinjer
+
+Det betyder, at konkrete antal, vægte, farver/varianter og noter fra kilden nu er en del af appens startdata.
+
+Eksempler:
+- Dumbbells med de konkrete vægte og antal
+- Competition- og gamle kettlebells med konkrete vægte
+- Vægtstænger og vægtskiver
+- Bodybars
+- Bulgarian Bags
+- Bokseudstyr
+- Elastikker og powerbands med de faktiske farver
+- Bokse i konkrete højder
+- Måttetyper
+- Wall balls og medicine balls
+- Legematerialer som terninger, kortspil og Fit2-redskaber
+
+Usikre kildeangivelser bevares som note i stedet for at blive gættet.
+
+### Migration fra alpha.40
+Alpha.41 har en éngangsmigrering til det faktiske kildeinventar.
+Kildelinjerne erstatter alpha.40's generiske startlinjer, mens lokale ekstra redskaber, der ikke findes i kilden, bevares.
+
+## Indkøb
+Udstyrssiden viser også kildens indkøbsliste:
+- Dymo
+- høje/top-kegler
+- flade kegler/pandekager
+- isposer
+
+## Pandekageøvelser
+De 12 fysiske øvelsesmarkører vises under Udstyr:
+- Plank hold
+- Oblique hold
+- Star Jump
+- Calf raises
+- Dips
+- Bicycle Crunches
+- Sit up
+- Tuck Jumps
+- Lunge
+- Squats
+- Push up
+- Arm Circles
+
+Eksisterende øvelser har fået relevante aliaser, og manglende grundøvelser er tilføjet, så navnene fra pandekagerne kan søges i øvelsesbiblioteket.
+
+## 29 øvelser og lege fra FunkFit Junior-videomaterialet
+Alle 29 elementer fra dokumentet **FunkFit Junior – Øvelsesbeskrivelser** er nu lagt i øvelsesbiblioteket med kildebeskrivelse, lettere/sværere version, typiske fejl og Junior-anbefaling.
+
+Øvelsesinfo viser desuden dokumentets tekniske cues.
+
+De tydeligt leg-/stafetbaserede elementer er også publiceret som fælles grundleg i Legebiblioteket:
+- Planke-duel – Hand Slap
+- Balloon Rotations
+- Infinity Tag
+- Bear Crawl Cone Battle
+- Partner Reaction Mirror Drill
+- Flyvende tæppe – hop og træk
+- Memory Sequence Relay
+- Bear Crawl Relay
+- Plate & Burpee Team Relay
+- Plank Air Hockey
+- Hula Hoop Rope Relay
+
+Løbende kryds og bolle og Cone Transfer Relay findes fortsat som aktiviteter/øvelser, men oprettes ikke som nye grundleg, fordi Legebiblioteket allerede indeholder nært beslægtede fælles lege ("3 på stribe" og "Saml keglerne").
+
+## Fælles Legebibliotek
+Det fælles Legebibliotek indeholder nu **24 lege** i alt.
