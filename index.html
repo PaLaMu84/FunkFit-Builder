@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f97316">
-  <title>FunkFit Builder v0.7.4-alpha.41</title>
-  <link rel="manifest" href="manifest.json?v=0.7.4a41">
-  <link rel="stylesheet" href="css/app.css?v=0.7.4a41">
+  <title>FunkFit Builder v0.7.4-alpha.42</title>
+  <link rel="manifest" href="manifest.json?v=0.7.4a42">
+  <link rel="stylesheet" href="css/app.css?v=0.7.4a42">
 </head>
 <body>
 <header class="topbar">
   <button id="homeBrandBtn" type="button" class="topbar-home" aria-label="Gå til Planlæg">
-    <p class="eyebrow">VERSION 0.7.4-ALPHA.41</p>
+    <p class="eyebrow">VERSION 0.7.4-ALPHA.42</p>
     <h1>FunkFit Builder</h1>
     <p>Stærkere, hurtigere, sammen.</p>
   </button>
@@ -979,7 +979,6 @@ Hovedtræning 20 min
       </div>
       <div class="inventory-heading-actions">
         <button id="addInventoryRowBtn" type="button">+ Nyt redskab</button>
-        <button id="addInventoryDefaultsBtn" type="button" class="secondary">+ Gendan inventarlisten</button>
       </div>
     </div>
 
@@ -1017,22 +1016,8 @@ Hovedtræning 20 min
       <div id="inventoryRows" class="inventory-rows"></div>
     </div>
 
-    <p class="inventory-save-note">Inventaret er forudfyldt fra den konkrete optællingsfil for Gymnastiksalen og Containeren. Ændringer gemmes automatisk på denne enhed.</p>
+    <p class="inventory-save-note">Registeret viser kun det faktiske inventar fra Gymnastiksalen og Containeren samt redskaber, du selv opretter. Ændringer gemmes automatisk på denne enhed.</p>
 
-    <section class="inventory-source-extras">
-      <article>
-        <div class="section-heading compact-heading">
-          <div><p class="eyebrow">PANDEKAGER MED ØVELSER</p><h3>12 registrerede øvelsesmarkører</h3></div>
-        </div>
-        <div id="inventoryPancakeExercises" class="inventory-chip-list"></div>
-      </article>
-      <article>
-        <div class="section-heading compact-heading">
-          <div><p class="eyebrow">INDKØB</p><h3>Mangler fra inventararket</h3></div>
-        </div>
-        <div id="inventoryPurchases" class="inventory-purchase-list"></div>
-      </article>
-    </section>
   </section>
 </section>
 
@@ -1230,7 +1215,7 @@ Hovedtræning 20 min
   <form id="aiSectionForm">
     <p class="eyebrow">AI-HJÆLP · ALPHA</p>
     <h2 id="aiSectionDialogTitle">Byg en sektion</h2>
-    <p>Forslaget laves her i Finpuds og bruger træningens eksisterende rammer.</p>
+    <p>Vælg type, varighed og fokus. Forslaget erstatter kun denne sektion; resten af træningen ændres ikke.</p>
     <div id="aiSectionContext" class="ai-section-context"></div>
     <div class="form-grid">
       <label>Element
@@ -1327,7 +1312,7 @@ Hovedtræning 20 min
 </dialog>
 
 <section id="printView" class="print-view"></section>
-<footer>FunkFit Builder v0.7.4-alpha.41 · © Paw Lalicata Munk</footer>
-<script type="module" src="js/app.js?v=0.7.4a41"></script>
+<footer>FunkFit Builder v0.7.4-alpha.42 · © Paw Lalicata Munk</footer>
+<script type="module" src="js/app.js?v=0.7.4a42"></script>
 </body>
 </html>

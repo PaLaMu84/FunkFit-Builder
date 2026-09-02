@@ -1052,3 +1052,52 @@ Løbende kryds og bolle og Cone Transfer Relay findes fortsat som aktiviteter/ø
 
 ## Fælles Legebibliotek
 Det fælles Legebibliotek indeholder nu **24 lege** i alt.
+
+
+# Alpha.42 – Junior-variation, sektioner, legetid og rent Udstyrsregister
+
+## Junior: større variation i hovedarbejdet
+Junior-generatoren vælger ikke længere primært mellem AMRAP, YGIG og Chipper.
+
+Hovedblokke kan nu komme som:
+- Stationer
+- Chipper
+- EMOM
+- Ladder
+- For time
+- Holdblok
+- AMRAP
+- YGIG
+
+AMRAP og YGIG er fortsat legitime formater, men de har lavere grundvægt end de øvrige formater.
+
+Generatoren gemmer `mainTypes` i AI-historikken. De senest brugte Junior-formater får en tydelig straf ved næste generering, og den samme hovedtype bruges som udgangspunkt ikke to gange i samme træning. AMRAP og YGIG forsøges også holdt adskilt i samme træning, fordi de ofte opleves som beslægtede i flow.
+
+## Indsat leg: redigerbar tid
+En leg hentet fra Legebiblioteket viser nu to tidsfelter direkte i Finpuds:
+- Forklaring/opsætning
+- Aktiv leg
+
+Samlet sektionsvarighed beregnes automatisk som summen. Ændringen gælder kun kopien i den aktuelle træning og ændrer ikke grundlegen.
+
+## 3-dot-menu
+Menuen er reduceret til handlinger, der er nemme at forstå:
+- Redigér sektionen
+- Hjælp mig med sektionen
+- Vælg/udskift leg (kun Leg)
+- Flyt op
+- Flyt ned
+- Duplikér sektion
+- Slet sektion
+
+“Redigér sektionen” samler struktur, organisering, regler og trænertips i én dialog. De tidligere separate menupunkter “Redigér struktur”, “Redigér regler og trænertips”, “Lav et helt nyt forslag” og “Foreslå én øvelse” er fjernet fra 3-dot-menuen.
+
+## Udstyr: kun fysisk inventar
+Udstyrsregisteret viser nu kun:
+- faktiske kildelinjer fra Containeren
+- faktiske kildelinjer fra Gymnastiksalen
+- redskaber brugeren selv opretter med “+ Nyt redskab”
+
+Indkøbslisten vises ikke længere i Udstyr. De gamle generiske alpha.40-standardlinjer fjernes ved en alpha.42-migration, også på enheder hvor alpha.41-migrationen allerede er kørt.
+
+Autocomplete i selve Udstyrsregisteret bruger kun navne fra det faktiske inventar og brugerens egne registrerede redskaber. Øvelses- og Legebiblioteket fylder ikke længere forslag ind i den fysiske lagerliste.
