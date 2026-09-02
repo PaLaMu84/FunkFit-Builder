@@ -1101,3 +1101,15 @@ Udstyrsregisteret viser nu kun:
 Indkøbslisten vises ikke længere i Udstyr. De gamle generiske alpha.40-standardlinjer fjernes ved en alpha.42-migration, også på enheder hvor alpha.41-migrationen allerede er kørt.
 
 Autocomplete i selve Udstyrsregisteret bruger kun navne fra det faktiske inventar og brugerens egne registrerede redskaber. Øvelses- og Legebiblioteket fylder ikke længere forslag ind i den fysiske lagerliste.
+
+
+# Alpha.43 – stedsspecifikt udstyr
+
+- Gymnastiksalen viser kun indoor-inventar.
+- Containeren viser kun outdoor-inventar.
+- “Alle” viser begge.
+- Autocomplete følger valgt sted.
+- Planlæg bruger kun fysisk inventar fra det valgte sted.
+- Gamle gemte valg fra det andet sted filtreres væk, så de ikke påvirker AI'en skjult.
+- Vælg alt/Nulstil profil er stedsspecifikke.
+- Kropsvægt er fortsat altid tilgængelig som ikke-redskabsmodalitet.

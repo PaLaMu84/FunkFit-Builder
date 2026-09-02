@@ -1,9 +1,9 @@
 {
-  "name": "FunkFit Builder v0.7.4-alpha.42",
-  "short_name": "FunkFit 0.7.4a42",
+  "name": "FunkFit Builder v0.7.4-alpha.43",
+  "short_name": "FunkFit 0.7.4a43",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#f97316",
-  "description": "Mere Junior-variation, enklere sektionsmenu, redigerbar legetid og rent fysisk udstyrsregister"
+  "description": "Streng stedsspecifik filtrering af udstyr"
 }
