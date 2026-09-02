@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.41';
+const APP_VERSION='0.7.4-alpha.42';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -108,7 +108,7 @@ function updateAddressVersion(){
 const WKEY='funkfit-workouts-v074a',CKEY='funkfit-custom-v074a',FKEY='funkfit-favorites-v074a',EKEY='funkfit-library-v074a',HKEY='funkfit-ai-history-v074a',PKEY='funkfit-profile-v074a',EQKEY='funkfit-equipment-profiles-v074a';
 const WBACKUPKEY='funkfit-workouts-backup-v1';
 const GKEY='funkfit-games-v1',GBACKUPKEY='funkfit-games-backup-v1',GAME_MIGRATION_KEY='funkfit-games-migrated-v1',GCUSTOMEQKEY='funkfit-game-custom-equipment-v1';
-const INVKEY='funkfit-equipment-inventory-v1',INVBACKUPKEY='funkfit-equipment-inventory-backup-v1',INVSOURCEMIGRATIONKEY='funkfit-equipment-inventory-source-2026-08-v1';
+const INVKEY='funkfit-equipment-inventory-v1',INVBACKUPKEY='funkfit-equipment-inventory-backup-v1',INVSOURCEMIGRATIONKEY='funkfit-equipment-inventory-source-2026-08-v1',INV42CLEANUPKEY='funkfit-equipment-inventory-alpha42-clean-v1';
 let exercises=[],templates=[],sections=[],currentId=null,pickerSection=0,playerItems=[],playerIndex=0,playerTrainingType='junior';
 let musicPlan=[],musicService='spotify',musicScope='all',selectedMusicSections=new Set();
 let musicBuildMode='ai',manualMusicMode='tracks',linkedPlaylist=null,musicReplaceTarget=null;
@@ -693,8 +693,7 @@ function finisherFromForm(prefix){
 
 
 const EQUIPMENT_INVENTORY_DEFAULTS=[["outdoor", "Atlas sten", "", "", "", 3], ["outdoor", "Baby", "", "", "", 8], ["outdoor", "Battlerope", "", "", "Flyttet til fra gymnastiksal", 3], ["outdoor", "Dumbbell (DB)", "2.5", "", "", 2], ["outdoor", "Dumbbell (DB)", "5", "", "", 6], ["outdoor", "Dumbbell (DB)", "7.5", "", "", 8], ["outdoor", "Dumbbell (DB)", "10", "", "", 9], ["outdoor", "Dumbbell (DB)", "12.5", "", "", 7], ["outdoor", "Dumbbell (DB)", "15", "", "", 7], ["outdoor", "Dumbbell (DB)", "17.5", "", "", 4], ["outdoor", "Dumbbell (DB)", "20", "", "", 4], ["outdoor", "Dæk", "", "", "", 3], ["outdoor", "Farmer walk stænger", "", "", "", 6], ["outdoor", "Flag", "", "", "", 2], ["outdoor", "Hamre", "", "", "", 4], ["outdoor", "Kettlebells (KB) competition", "8", "", "", 6], ["outdoor", "Kettlebells (KB) competition", "10", "", "", 9], ["outdoor", "Kettlebells (KB) competition", "12", "", "", 9], ["outdoor", "Kettlebells (KB) competition", "14", "", "", 6], ["outdoor", "Kettlebells (KB) competition", "16", "", "", 9], ["outdoor", "Kettlebells (KB) competition", "18", "", "", 6], ["outdoor", "Kettlebells (KB) competition", "20", "", "", 9], ["outdoor", "Kettlebells (KB) competition", "24", "", "", 6], ["outdoor", "Kettlebells (KB) competition", "28", "", "", 6], ["outdoor", "Kettlebells (KB) competition", "32", "", "", 6], ["outdoor", "Kettlebells (KB) competition", "36", "", "", 2], ["outdoor", "Kettlebells (KB) gamle", "4", "", "", 3], ["outdoor", "Kettlebells (KB) gamle", "6", "", "", 8], ["outdoor", "Kettlebells (KB) gamle", "8", "", "", 3], ["outdoor", "Kettlebells (KB) gamle", "10", "", "", 3], ["outdoor", "Kettlebells (KB) gamle", "12", "", "", 6], ["outdoor", "Kettlebells (KB) gamle", "14", "", "", 1], ["outdoor", "Kettlebells (KB) gamle", "16", "", "", 8], ["outdoor", "Pinde", "", "", "", 16], ["outdoor", "Prowler", "", "", "", 1], ["outdoor", "Reb", "", "", "", 2], ["outdoor", "Stativ til vægtstang", "", "", "", 3], ["outdoor", "Stænger", "20", "", "", 7], ["outdoor", "Stænger", "15", "", "", 2], ["outdoor", "Stænger", "10", "", "", 5], ["outdoor", "Vægtskive", "2.5", "", "", 12], ["outdoor", "Vægtskive", "5", "", "", 12], ["outdoor", "Vægtskive", "10", "", "", 12], ["outdoor", "Vægtskive", "15", "", "", 12], ["outdoor", "Vægtskive", "20", "", "", 12], ["outdoor", "Wallballs", "", "", "Antal ikke angivet i kilden · Usikkert antal i kilden: ?", 0], ["outdoor", "Yoga blokke", "", "", "", 10], ["indoor", "100 Body Weight Workouts", "", "", "Kategori: Træningsmateriale", 1], ["indoor", "Agility stige (speed ladder)", "", "", "Usikkert antal 2-3", 3], ["indoor", "Bodybars", "10", "", "", 2], ["indoor", "Bodybars", "7", "", "", 4], ["indoor", "Bodybars", "4", "", "", 5], ["indoor", "Bodybars", "5", "", "", 7], ["indoor", "Bodybars", "8", "", "", 3], ["indoor", "Bodybars", "6", "", "", 2], ["indoor", "Bodybars", "9", "", "", 2], ["indoor", "Boksehandsker", "", "Sæt", "Kategori: Boksning", 3], ["indoor", "Boksehandsker (modtagerhandsker)", "", "Røde", "Kategori: Boksning", 10], ["indoor", "Boksepuder", "", "", "Kategori: Boksning", 2], ["indoor", "Bootybands", "", "Styrke 3", "", 4], ["indoor", "Bootybands", "", "Styrke 2", "", 5], ["indoor", "Bootybands", "", "Styrke 1", "", 5], ["indoor", "Box jumps, sorte", "", "60 cm", "", 4], ["indoor", "Box jumps, sorte", "", "45 cm", "", 4], ["indoor", "Box jumps, sorte", "", "30 cm", "", 4], ["indoor", "Box jumps, sorte", "", "15 cm", "", 4], ["indoor", "Box jumps, sorte", "", "7,5 cm", "", 4], ["indoor", "Bulgarian Bag", "5", "", "", 1], ["indoor", "Bulgarian Bag", "8", "", "", 3], ["indoor", "Bulgarian Bag", "10", "", "", 2], ["indoor", "Bulgarian Bag", "12", "", "", 3], ["indoor", "Bulgarian Bag", "15", "", "", 4], ["indoor", "Bulgarian Bag", "20", "", "", 2], ["indoor", "Dumbbell (DB)", "1.5", "", "", 1], ["indoor", "Dumbbell (DB)", "2.5", "", "", 12], ["indoor", "Dumbbell (DB)", "3", "", "", 10], ["indoor", "Dumbbell (DB)", "5", "", "", 10], ["indoor", "Dumbbell (DB)", "7.5", "", "", 14], ["indoor", "Dumbbell (DB)", "10", "", "", 10], ["indoor", "Dumbbell (DB)", "12.5", "", "", 9], ["indoor", "Dumbbell (DB)", "15", "", "", 8], ["indoor", "Dumbbell (DB)", "17.5", "", "", 8], ["indoor", "Dumbbell (DB)", "20", "", "", 8], ["indoor", "Dumbbell (DB)", "22.5", "", "", 2], ["indoor", "Dumbbell (DB)", "25", "", "", 2], ["indoor", "Dumbbell (DB)", "27.5", "", "", 2], ["indoor", "Dumbbell (DB)", "30", "", "", 2], ["indoor", "Dumbbell (DB)", "32.5", "", "", 2], ["indoor", "Dumbbell (DB)", "35", "", "", 2], ["indoor", "Dumbbell (DB)", "37.5", "", "", 2], ["indoor", "Dumbbell (DB)", "40", "", "", 2], ["indoor", "Elastikker", "", "Grå", "", 1], ["indoor", "Elastikker", "", "Sorte", "", 5], ["indoor", "Elastikker", "", "Blå", "", 3], ["indoor", "Elastikker", "", "Grønne", "", 3], ["indoor", "Elastikker", "", "Gul", "", 1], ["indoor", "Kasse med klude", "", "", "Kategori: Øvrigt", 0], ["indoor", "Kegler (almindelige)", "", "", "Usikkert antal i kilden: 3?", 3], ["indoor", "Kegler (flade/pandekager)", "", "", "", 24], ["indoor", "Kitte vasker", "", "", "Håndskrift usikker; noteret øverst på PDF side 2 · Kategori: Øvrigt", 0], ["indoor", "Lange lilla bånd", "", "Lilla", "", 6], ["indoor", "Leg - 12-sidede terninger", "", "ens", "Kategori: Terninger", 2], ["indoor", "Leg - Almindelige små skumterninger", "", "", "Kategori: Terninger", 6], ["indoor", "Leg - Fit2-frisbee", "", "", "Kategori: Træningsmateriale", 2], ["indoor", "Leg - Fit2-terninger med øvelser", "", "", "Kategori: Træningsmateriale", 1], ["indoor", "Leg - Mellemstore skumterninger", "", "", "Kategori: Terninger", 5], ["indoor", "Leg - Stort almindeligt kortspil", "", "", "Kategori: Spil", 1], ["indoor", "Mavehjul", "", "", "", 7], ["indoor", "Medball", "", "Stor", "", 1], ["indoor", "Medball", "", "Lille", "", 2], ["indoor", "Medicine ball", "3", "", "", 3], ["indoor", "Medicine ball", "4", "", "", 3], ["indoor", "Medicine ball", "5", "", "", 5], ["indoor", "Medicine ball", "6", "", "", 4], ["indoor", "Medicine ball", "7", "", "", 5], ["indoor", "Medicine ball", "8", "", "", 1], ["indoor", "Medicine ball", "9", "", "", 2], ["indoor", "Murerspande", "", "", "", 10], ["indoor", "Måtte", "", "Tykke, lilla", "", 14], ["indoor", "Måtte", "", "Tynde, røde", "", 8], ["indoor", "Måtte", "", "Tynde, sorte", "", 9], ["indoor", "Måtte", "", "Blå", "", 1], ["indoor", "OCR-greb", "", "", "", 5], ["indoor", "Pandekager med øvelser", "", "", "Se arket 'Pandekageøvelser' · Kategori: Træningsmateriale", 12], ["indoor", "Pinnies / overtræksveste", "", "Orange", "Kategori: Markering", 3], ["indoor", "Pinnies / overtræksveste", "", "Blå", "Kategori: Markering", 3], ["indoor", "Powerbands", "", "Sorte", "", 15], ["indoor", "Powerbands", "", "Blå", "", 11], ["indoor", "Powerbands", "", "Gule", "", 13], ["indoor", "Powerbands", "", "Grønne", "", 9], ["indoor", "Sjippetorv", "", "", "", 5], ["indoor", "Små måtter", "", "", "", 10], ["indoor", "Wall ball", "6", "", "", 5], ["indoor", "Wall ball", "14", "", "", 3], ["indoor", "Wall ball", "12", "", "", 3], ["indoor", "Wall ball", "9", "", "", 4], ["indoor", "Wall ball", "7", "", "", 1], ["indoor", "Wall ball", "5", "", "", 1], ["indoor", "Wall ball", "3", "", "", 3]];
-const EQUIPMENT_CATALOG_STANDARD_NAMES=["Kettlebell", "Håndvægt", "Vægtstang", "Vægtskive", "Medicinbold", "Wall ball", "Slam ball", "Sandsæk", "Boks", "Bænk", "Måtte", "TRX", "Ringe", "Elastik", "Miniband", "Powerband", "Sjippetov", "Kegler", "Stige", "Hække", "Parallettes", "Pull-up stativ", "React Lights", "Slæde", "Reb", "Battle rope", "Traktordæk", "Hammer", "Farmer carry-håndtag", "Foam roller", "Bodybar", "Bulgarian Bag", "Boksehandsker", "Boksepuder", "OCR-greb", "Mavehjul", "Yoga blokke", "Sliders", "Lille bold", "Ballon", "PVC-rør", "Tennisbold", "Hula hoop", "Pind", "Pinnies / overtræksveste", "Terninger", "Kortspil"];
-const INVENTORY_PURCHASES=[{"name": "Dymo", "variant": "", "note": "PDF side 1"}, {"name": "Kegler", "variant": "Høj/top", "note": "3 forskellige farver; PDF side 1"}, {"name": "Flade kegler (\"pandekage\")", "variant": "", "note": "4 forskellige farver; PDF side 1"}, {"name": "Isposer", "variant": "", "note": "PDF side 1"}];
+const LEGACY_ALPHA40_STANDARD_NAMES=["Kettlebell", "Håndvægt", "Vægtstang", "Vægtskive", "Medicinbold", "Wall ball", "Slam ball", "Sandsæk", "Boks", "Bænk", "Måtte", "TRX", "Ringe", "Elastik", "Miniband", "Powerband", "Sjippetov", "Kegler", "Stige", "Hække", "Parallettes", "Pull-up stativ", "React Lights", "Slæde", "Reb", "Battle rope", "Traktordæk", "Hammer", "Farmer carry-håndtag", "Foam roller", "Bodybar", "Bulgarian Bag", "Boksehandsker", "Boksepuder", "OCR-greb", "Mavehjul", "Yoga blokke", "Sliders", "Lille bold", "Ballon", "PVC-rør", "Tennisbold", "Hula hoop", "Pind", "Pinnies / overtræksveste", "Terninger", "Kortspil"];
 const PANCAKE_EXERCISES=["Plank hold", "Oblique hold", "Star Jump", "Calf raises", "Dips", "Bicycle Crunches", "Sit up", "Tuck Jumps", "Lunge", "Squats", "Push up", "Arm Circles"];
 function inventoryDefaultRows(){
   return EQUIPMENT_INVENTORY_DEFAULTS.map(([location,name,kg,variant,note,quantity],index)=>({
@@ -741,28 +740,54 @@ function equipmentInventory(){
 function initializeEquipmentInventory(){
   const sourceRows=inventoryDefaultRows();
   const current=equipmentInventory();
+
   if(!current.length){
     saveEquipmentInventory(sourceRows);
     localStorage.setItem(INVSOURCEMIGRATIONKEY,'1');
+    localStorage.setItem(INV42CLEANUPKEY,'1');
     return;
   }
-  if(localStorage.getItem(INVSOURCEMIGRATIONKEY))return;
 
-  // Alpha.41: den faktiske optælling fra inventararket bliver grundlaget.
-  // Bevar kun lokalt oprettede linjer, som ikke svarer til en kildelinje.
+  if(localStorage.getItem(INV42CLEANUPKEY))return;
+
+  // Alpha.42: Udstyr er et rent fysisk inventarregister.
+  // Bevar de konkrete kildelinjer (inkl. brugerens rettelser) og egne, manuelt
+  // oprettede redskaber. Fjern alpha.40's generiske forslag/standardlinjer.
+  const sourceById=new Map(sourceRows.map(row=>[row.inventoryId,row]));
   const sourceKey=row=>`${row.location}|${normalizeText(row.name)}|${normalizeText(row.kg)}|${normalizeText(row.variant)}`;
   const sourceKeys=new Set(sourceRows.map(sourceKey));
-  const standardNames=new Set(EQUIPMENT_CATALOG_STANDARD_NAMES.map(normalizeText));
-  const customRows=current.filter(row=>{
-    if(sourceKeys.has(sourceKey(row))||String(row.inventoryId||'').startsWith('source-2026-08-'))return false;
-    // Fjern urørte alpha.40-standardlinjer (antal 0), men bevar reelle lokale tilføjelser
-    // og standardredskaber som brugeren allerede har udfyldt.
-    const looksLikeUntouchedAlpha40=standardNames.has(normalizeText(row.name)) && !(+row.quantity>0) && !row.kg &&
-      (!row.variant||row.variant==='Farve – udfyld');
-    return !looksLikeUntouchedAlpha40;
+  const legacyNames=new Set(LEGACY_ALPHA40_STANDARD_NAMES.map(normalizeText));
+
+  const merged=[];
+  const seen=new Set();
+
+  current.forEach(row=>{
+    const id=String(row.inventoryId||'');
+    if(sourceById.has(id)){
+      merged.push(row);seen.add(id);return;
+    }
+    if(sourceKeys.has(sourceKey(row))){
+      // Ældre import af en faktisk kildelinje uden stabilt source-id.
+      const source=sourceRows.find(item=>sourceKey(item)===sourceKey(row));
+      if(source&&!seen.has(source.inventoryId)){
+        merged.push({...source,...row,inventoryId:source.inventoryId});seen.add(source.inventoryId);
+      }
+      return;
+    }
+    if(legacyNames.has(normalizeText(row.name))){
+      return; // gammel generisk alpha.40-linje fjernes uanset antal
+    }
+    // Et frit oprettet redskab bevares: brugeren må stadig tilføje ting, der faktisk findes.
+    merged.push(row);
   });
-  saveEquipmentInventory([...sourceRows,...customRows]);
+
+  sourceRows.forEach(row=>{
+    if(!seen.has(row.inventoryId)&&!merged.some(item=>sourceKey(item)===sourceKey(row)))merged.push(row);
+  });
+
+  saveEquipmentInventory(merged);
   localStorage.setItem(INVSOURCEMIGRATIONKEY,'1');
+  localStorage.setItem(INV42CLEANUPKEY,'1');
 }
 function inventoryLocationLabel(location){
   return location==='outdoor'?'Containeren · ude':'Gymnastiksalen · inde';
@@ -823,12 +848,9 @@ function inventoryRowsForView(){
 function renderInventoryEquipmentNames(){
   const host=byId('inventoryEquipmentNames');if(!host)return;
   const names=[...new Set([
-    ...EQUIPMENT_INVENTORY_DEFAULTS.map(row=>row[1]),
-    ...EQUIPMENT_CATALOG_STANDARD_NAMES,
-    ...exercises.flatMap(ex=>ex.equipment||[]).filter(name=>name!=='Kropsvægt'),
-    ...games().flatMap(game=>(game.equipment||[]).map(item=>item?.name)).filter(Boolean),
+    ...inventoryDefaultRows().map(row=>row.name),
     ...inventoryEquipmentNames()
-  ])].sort((a,b)=>a.localeCompare(b,'da'));
+  ].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'da'));
   host.innerHTML=names.map(name=>`<option value="${esc(name)}"></option>`).join('');
 }
 function renderInventorySummary(){
@@ -846,27 +868,12 @@ function renderInventorySummary(){
     <article><strong>${empty}</strong><span>linjer uden registreret antal</span></article>`;
 }
 
-function renderInventorySourceExtras(){
-  const pancakes=byId('inventoryPancakeExercises');
-  if(pancakes){
-    pancakes.innerHTML=PANCAKE_EXERCISES.map((name,index)=>`<span>${index+1}. ${esc(name)}</span>`).join('');
-  }
-  const purchases=byId('inventoryPurchases');
-  if(purchases){
-    purchases.innerHTML=INVENTORY_PURCHASES.map(item=>`<div class="inventory-purchase-row">
-      <strong>${esc(item.name)}</strong>
-      ${item.variant?`<span>${esc(item.variant)}</span>`:''}
-      ${item.note?`<small>${esc(item.note)}</small>`:''}
-    </div>`).join('');
-  }
-}
 
 function renderEquipmentInventory(){
   const host=byId('inventoryRows');if(!host)return;
   document.querySelectorAll('[data-inventory-location]').forEach(button=>button.classList.toggle('selected',button.dataset.inventoryLocation===inventoryLocation));
   renderInventoryEquipmentNames();
   renderInventorySummary();
-  renderInventorySourceExtras();
   const rows=inventoryRowsForView();
   host.innerHTML=rows.length?rows.map(row=>`<article class="inventory-row" data-inventory-id="${row.inventoryId}">
     <label class="inventory-location-field"><span>Sted</span><select data-inventory-field="location">
@@ -1247,18 +1254,33 @@ function gameToSection(rawGame){
   }).filter(Boolean);
   return normalizeSection(section);
 }
-function gameInstanceInfo(section){
+function gameInstanceInfo(section,index=null){
   if(!section?.gameSourceId)return '';
   const master=games().find(game=>game.gameId===section.gameSourceId);
   const sourceName=master?.name||section.name;
   const setup=Math.max(0,+section.gameSetupMinutes||0),active=Math.max(0,+section.gameActiveMinutes||0);
+  const total=Math.max(1,setup+active||+section.minutes||1);
   const selfSource=(section.gameEquipment||[]).filter(item=>item?.selfSource);
+  const editable=Number.isInteger(index);
   return `<section class="game-instance-card">
-    <div><span>🎲 Fra legebiblioteket</span><strong>${esc(sourceName)}</strong></div>
-    ${setup||active?`<p><strong>Tid:</strong> ${setup} min forklaring/forberedelse + ${active} min aktiv leg = ${setup+active} min samlet.</p>`:''}
+    <div><span>🎲 Fra Legebiblioteket</span><strong>${esc(sourceName)}</strong></div>
+    ${editable?`<div class="game-instance-time-editor">
+      <label>Forklaring/opsætning <input type="number" min="0" step="1" value="${setup}" data-game-time-field="setup" data-game-time-index="${index}"> min</label>
+      <label>Aktiv leg <input type="number" min="1" step="1" value="${Math.max(1,active)}" data-game-time-field="active" data-game-time-index="${index}"> min</label>
+      <strong>Samlet: <span>${total}</span> min</strong>
+    </div>`:`<p><strong>Tid:</strong> ${setup} min forklaring/forberedelse + ${active} min aktiv leg = ${total} min samlet.</p>`}
     ${selfSource.length?`<p class="game-instance-warning">⚠ <strong>OBS – skal selv skaffes:</strong> ${esc(selfSource.map(item=>`${item.quantity} × ${item.name}`).join(' · '))}</p>`:''}
-    <p>Denne træning bruger en selvstændig kopi. Du kan ændre eller tilføje øvelser her uden at ændre grundlegen.</p>
+    <p>Denne træning bruger en selvstændig kopi. Tiden og indholdet kan ændres her uden at ændre grundlegen.</p>
   </section>`;
+}
+function updateGameInstanceTime(index,field,value){
+  const section=sections[index];if(!section?.gameSourceId)return;
+  const numeric=Math.max(field==='active'?1:0,+value||0);
+  if(field==='setup')section.gameSetupMinutes=numeric;
+  if(field==='active')section.gameActiveMinutes=numeric;
+  section.minutes=Math.max(1,(+section.gameSetupMinutes||0)+(+section.gameActiveMinutes||0));
+  updateTimeControl();updateReview();renderFramework();
+  renderExerciseSections();
 }
 function useGameInWorkout(gameId){
   const game=games().find(item=>item.gameId===gameId);
@@ -2212,19 +2234,21 @@ function renderSectionEditStructure(){
     renderSectionEditStructure();
   });
 }
-function openSectionEditDialog(index,mode='structure'){
+function openSectionEditDialog(index,mode='all'){
   sectionEditIndex=index;
   sectionEditMode=mode;
   sectionEditDraft=structuredClone(normalizeSection(sections[index]));
-  const structure=mode==='structure';
-  $('#sectionEditTitle').textContent=structure?'Redigér struktur':'Redigér regler og trænertips';
-  $('#sectionEditHelp').textContent=structure
-    ?'Tilpas formål, arbejdsformat, opgavestruktur, repetitionsmodel, organisering og styring.'
+  const structureOnly=mode==='structure';
+  const guidanceOnly=mode==='guidance';
+  $('#sectionEditTitle').textContent=mode==='all'?'Redigér sektionen':structureOnly?'Redigér struktur':'Redigér regler og trænertips';
+  $('#sectionEditHelp').textContent=mode==='all'
+    ?'Her samles sektionens vigtigste indstillinger: format, organisering, regler og trænertips.'
+    :structureOnly?'Tilpas formål, arbejdsformat, opgavestruktur, repetitionsmodel, organisering og styring.'
     :'Ret de instruktioner, som vises i sektionen og bruges i instruktørmaterialet.';
-  $('#sectionEditStructureFields').classList.toggle('hidden',!structure);
-  $('#sectionEditGuidanceFields').classList.toggle('hidden',structure);
-  if(structure)renderSectionEditStructure();
-  else{
+  $('#sectionEditStructureFields').classList.toggle('hidden',guidanceOnly);
+  $('#sectionEditGuidanceFields').classList.toggle('hidden',structureOnly);
+  if(!guidanceOnly)renderSectionEditStructure();
+  if(!structureOnly){
     $('#sectionEditRules').value=sectionEditDraft.rules||'';
     $('#sectionEditCoachTips').value=sectionEditDraft.coachTips||'';
   }
@@ -2233,9 +2257,11 @@ function openSectionEditDialog(index,mode='structure'){
 function submitSectionEdit(event){
   event.preventDefault();
   if(sectionEditIndex===null||!sections[sectionEditIndex])return;
-  if(sectionEditMode==='structure'){
-    const original=normalizeSection(sections[sectionEditIndex]);
-    sections[sectionEditIndex]=normalizeSection({...original,
+  const original=normalizeSection(sections[sectionEditIndex]);
+  let next=structuredClone(original);
+
+  if(sectionEditMode!=='guidance'){
+    next=normalizeSection({...next,
       type:sectionEditDraft.type,
       sectionPurpose:sectionEditDraft.sectionPurpose,
       format:sectionEditDraft.format,
@@ -2245,11 +2271,13 @@ function submitSectionEdit(event){
       control:sectionEditDraft.control,
       style:sectionEditDraft.style
     });
-    enforceWorkoutStructure();
-  }else{
-    sections[sectionEditIndex].rules=$('#sectionEditRules').value.trim();
-    sections[sectionEditIndex].coachTips=$('#sectionEditCoachTips').value.trim();
   }
+  if(sectionEditMode!=='structure'){
+    next.rules=$('#sectionEditRules').value.trim();
+    next.coachTips=$('#sectionEditCoachTips').value.trim();
+  }
+  sections[sectionEditIndex]=next;
+  enforceWorkoutStructure();
   $('#sectionEditDialog').close();
   renderFramework();renderExerciseSections();updateReview();
 }
@@ -2318,7 +2346,6 @@ function bind(){
   });
   on('inventorySearch','input',renderEquipmentInventory);
   on('addInventoryRowBtn','click',addInventoryRow);
-  on('addInventoryDefaultsBtn','click',addMissingInventoryDefaults);
   on('useInventoryInPlannerBtn','click',useCurrentInventoryInPlanner);
   on('exportInventoryBtn','click',exportEquipmentInventory);
   on('importInventoryBtn','click',()=>byId('importInventoryFile')?.click());
@@ -2558,7 +2585,7 @@ function setCreationMode(mode){
 function selectedTrainingType(){return plannerConcept||'junior'}
 
 function verifyInteractiveControls(){
-  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','insertGameFromLibraryBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','aiSectionGameLibraryChoice','aiSectionGameLibraryBtn','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue','resetEquipmentProfileBtn','singleFundamentalChoices','adultExerciseOptions','addFinisherBtn','homeBrandBtn','aiSectionContext','inlineFundamentalChoices','inlineFinisherWrap','singleFinisherMode','singleFinisherCatalog','singleFinisherSuggestBtn','inlineFinisherMode','inlineFinisherCatalog','inlineFinisherSuggestBtn','sectionEditDialog','sectionEditForm','sectionEditStructureFields','sectionEditGuidanceFields','exportGamesBtn','importGamesBtn','importGamesFile','openEquipmentInventoryBtn','loadEquipmentInventoryBtn','inventoryRows','inventorySearch','addInventoryRowBtn','addInventoryDefaultsBtn','useInventoryInPlannerBtn','exportInventoryBtn','importInventoryBtn','importInventoryFile'];
+  const required=['manualModeBtn','aiModeBtn','singleSectionModeBtn','manualBuilderTrack','aiPlannerTrack','saveWorkoutBtn','playCurrentBtn','newWorkoutBtn','workoutImageInput','workoutCameraInput','workoutTextFileInput','generateSmartWorkoutBtn','aiBuildSectionBtn','insertGameFromLibraryBtn','aiBuildGameBtn','clearWorkoutBtn','undoClearWorkoutBtn','runDialog','aiSectionDialog','aiSectionGameLibraryChoice','aiSectionGameLibraryBtn','exerciseInfoDialog','addSectionDialog','manualTrainingType','manualVenue','resetEquipmentProfileBtn','singleFundamentalChoices','adultExerciseOptions','addFinisherBtn','homeBrandBtn','aiSectionContext','inlineFundamentalChoices','inlineFinisherWrap','singleFinisherMode','singleFinisherCatalog','singleFinisherSuggestBtn','inlineFinisherMode','inlineFinisherCatalog','inlineFinisherSuggestBtn','sectionEditDialog','sectionEditForm','sectionEditStructureFields','sectionEditGuidanceFields','exportGamesBtn','importGamesBtn','importGamesFile','openEquipmentInventoryBtn','loadEquipmentInventoryBtn','inventoryRows','inventorySearch','addInventoryRowBtn','useInventoryInPlannerBtn','exportInventoryBtn','importInventoryBtn','importInventoryFile'];
   const missing=required.filter(id=>!byId(id));
   if(missing.length)console.error('Manglende interaktive elementer:',missing);
   else console.info('FunkFit interaktive kontroller: OK');
@@ -2780,6 +2807,7 @@ function renderFramework(){
 }
 
 function inlineTimingControls(s,si){
+  if(s.sectionPurpose==='Leg'&&s.gameSourceId)return `<span class="section-stat">🎲 ${Math.max(1,+s.minutes||1)} min samlet</span>`;
   if(s.sectionPurpose==='Finisher'&&s.finisherMode==='song')return `<span class="section-stat">Én sang</span>`;
   if(s.sectionPurpose==='Finisher')return `<label>Tid <input data-inline-field="minutes" data-inline-index="${si}" type="number" min="1" value="${s.minutes||4}"> min</label><span class="section-stat">${esc(s.format)}</span>`;
   if(s.organization==='You go, I go')return `<label>Samlet tid <input data-inline-field="minutes" data-inline-index="${si}" type="number" min="1" value="${s.minutes}"> min</label><span class="ygig-note">Byt efter opgaven</span>`;
@@ -2826,16 +2854,13 @@ function renderExerciseSections(){
         <div class="section-card-actions">
           <button class="collapse-btn" data-collapse-exercise="${si}">${collapsed?'Fold ud':'Fold ind'}</button>
           <details class="section-card-menu"><summary aria-label="Flere handlinger">⋮</summary><div class="section-menu-popover">
-            ${(!finisher||s.finisherMode==='format')?`<button data-edit-structure="${si}">Redigér struktur</button>`:''}
-            <button data-edit-guidance="${si}">Redigér regler og trænertips</button>
+            <button data-edit-section="${si}">✏️ Redigér sektionen</button>
+            <button data-ai-exercise-section="${si}">✨ Hjælp mig med sektionen</button>
+            ${s.sectionPurpose==='Leg'?`<button data-pick-game="${si}">🎲 Vælg/udskift leg</button>`:''}
             <div class="section-menu-divider"></div>
-            <button data-ai-exercise-section="${si}">✨ Tilpas sektionen med AI</button>
-            <button data-regenerate-section="${si}">Lav et helt nyt forslag</button>
-            ${(!finisher||s.finisherMode==='format')?`<button data-suggest-one="${si}">Foreslå én øvelse</button>`:''}
-            <div class="section-menu-divider"></div>
-            <button data-move-up="${si}" ${canMoveUp?'':'disabled'}>Flyt op</button>
-            <button data-move-down="${si}" ${canMoveDown?'':'disabled'}>Flyt ned</button>
-            <button data-duplicate="${si}">Duplikér</button>
+            <button data-move-up="${si}" ${canMoveUp?'':'disabled'}>↑ Flyt op</button>
+            <button data-move-down="${si}" ${canMoveDown?'':'disabled'}>↓ Flyt ned</button>
+            <button data-duplicate="${si}">⧉ Duplikér sektion</button>
             <div class="section-menu-divider"></div>
             <button class="menu-danger" data-delete-section="${si}">Slet sektion</button>
           </div></details>
@@ -2843,7 +2868,7 @@ function renderExerciseSections(){
       </div>
       <div class="section-expanded-content">
         ${finisher?renderFinisherEditor(s,si,fam):`
-          ${s.sectionPurpose==='Leg'?gameInstanceInfo(s):''}
+          ${s.sectionPurpose==='Leg'?gameInstanceInfo(s,si):''}
           <div class="exercise-list exercise-list-primary">${s.exercises?.length?s.exercises.map((it,ai)=>activityRow(it,si,ai,fam)).join(''):'<div class="empty">Ingen aktiviteter endnu.</div>'}</div>
           ${s.sectionPurpose==='Teknik'?renderFundamentalsPicker(s,si,true):''}
           ${s.rules?`<section class="section-guidance-card rules-card"><div class="guidance-icon">📋</div><div><h4>Regler</h4><p>${esc(s.rules)}</p></div></section>`:''}
@@ -2861,8 +2886,7 @@ function renderExerciseSections(){
   const host=$('#exerciseSections');
   host.querySelectorAll('[data-fundamental-section]').forEach(b=>b.onclick=()=>applyFundamentalToSection(+b.dataset.fundamentalSection,b.dataset.fundamentalKey));
   host.querySelectorAll('[data-collapse-exercise]').forEach(b=>b.onclick=()=>toggleSectionCollapse(+b.dataset.collapseExercise));
-  host.querySelectorAll('[data-edit-structure]').forEach(b=>b.onclick=()=>{closeSectionMenuFrom(b);openSectionEditDialog(+b.dataset.editStructure,'structure')});
-  host.querySelectorAll('[data-edit-guidance]').forEach(b=>b.onclick=()=>{closeSectionMenuFrom(b);openSectionEditDialog(+b.dataset.editGuidance,'guidance')});
+  host.querySelectorAll('[data-edit-section]').forEach(b=>b.onclick=()=>{closeSectionMenuFrom(b);openSectionEditDialog(+b.dataset.editSection,'all')});
   host.querySelectorAll('[data-move-up]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveUp,+b.dataset.moveUp-1));
   host.querySelectorAll('[data-move-down]').forEach(b=>b.onclick=()=>moveSection(+b.dataset.moveDown,+b.dataset.moveDown+1));
   host.querySelectorAll('[data-duplicate]').forEach(b=>b.onclick=()=>duplicateSection(+b.dataset.duplicate));
@@ -2875,6 +2899,7 @@ function renderExerciseSections(){
     sections[a].exercises.splice(c,1);renderExerciseSections();renderFramework();updateReview();
   });
   host.querySelectorAll('[data-pick-game]').forEach(b=>b.onclick=()=>openGameLibraryForSection(+b.dataset.pickGame));
+  host.querySelectorAll('[data-game-time-field]').forEach(input=>input.onchange=()=>updateGameInstanceTime(+input.dataset.gameTimeIndex,input.dataset.gameTimeField,input.value));
   host.querySelectorAll('[data-save-exercise-element]').forEach(b=>b.onclick=()=>saveSectionToLibrary(+b.dataset.saveExerciseElement));
   host.querySelectorAll('[data-ai-exercise-section]').forEach(b=>b.onclick=()=>{closeSectionMenuFrom(b);openAISectionDialog('section',+b.dataset.aiExerciseSection)});
   host.querySelectorAll('[data-suggest-one]').forEach(b=>b.onclick=()=>suggestOneExercise(+b.dataset.suggestOne));
@@ -3248,7 +3273,7 @@ function openAISectionDialog(mode='section',target=null){
   const isGame=mode==='game';
   const current=aiTargetSection!==null?normalizeSection(sections[aiTargetSection]):null;
   const type=isGame?'Leg':(current?.type==='Ledopvarmning'?'Opvarmning':current?.type||'AMRAP');
-  $('#aiSectionDialogTitle').textContent=isGame?'🎲 Byg en leg':aiTargetSection!==null?'AI-forslag direkte i denne sektion':'Byg en sektion';
+  $('#aiSectionDialogTitle').textContent=isGame?'🎲 Byg en leg':aiTargetSection!==null?'✨ Hjælp mig med denne sektion':'Byg en sektion';
   $('#aiSectionType').value=type;$('#aiSectionType').disabled=isGame;
   $('#aiSectionMinutes').value=current?.minutes||(isGame?8:12);
   $('#aiSectionFocus').value=current?.description||'';$('#aiGameTheme').value='';
@@ -3818,6 +3843,72 @@ function generateSingleSectionFromPlanner(){
   $('#plannerResult').scrollIntoView({behavior:'smooth',block:'center'});
 }
 
+
+function recentJuniorMainTypes(limit=6){
+  return aiHistory()
+    .filter(item=>item?.concept==='junior'&&Array.isArray(item.mainTypes))
+    .slice(-limit)
+    .flatMap(item=>item.mainTypes)
+    .map(String);
+}
+function chooseJuniorMainTypes(count){
+  const recent=recentJuniorMainTypes();
+  const recentLast=recent.slice(-4);
+  const candidates=[
+    {type:'Stationer',base:14},
+    {type:'Chipper',base:13},
+    {type:'EMOM',base:12},
+    {type:'Ladder',base:12},
+    {type:'For time',base:11},
+    {type:'Team',base:11},
+    {type:'AMRAP',base:7},
+    {type:'YGIG',base:7}
+  ];
+  const selected=[];
+  while(selected.length<count){
+    const ranked=candidates
+      .filter(item=>!selected.includes(item.type))
+      .map(item=>{
+        let score=item.base+Math.random()*5;
+        const recentCount=recent.filter(type=>type===item.type).length;
+        score-=recentCount*4;
+        if(recentLast.includes(item.type))score-=8;
+        // AMRAP og YGIG minder i praksis ofte om hinanden i flow: undgå begge i samme Junior-træning.
+        if((item.type==='AMRAP'&&selected.includes('YGIG'))||(item.type==='YGIG'&&selected.includes('AMRAP')))score-=12;
+        return {...item,score};
+      })
+      .sort((a,b)=>b.score-a.score);
+    selected.push(ranked[0]?.type||'Stationer');
+  }
+  return selected;
+}
+function buildJuniorMainSection(variant,minutes,focus,index){
+  let s;
+  if(variant==='Ladder'){
+    s=buildSectionSuggestion('AMRAP',minutes,focus,'');
+    s.format='AMRAP';
+    s.taskStructure='Rundebaseret';
+    s.repetitionModel='Stigende ladder';
+    s.control='Samlet tid';
+    s.ladderStart=2;s.ladderStep=2;s.ladderEnd=10;
+    s.description='Ladder: gentagelserne stiger runde for runde. Hold flowet enkelt og skalerbart.';
+  }else if(variant==='For time'){
+    s=buildSectionSuggestion('Chipper',minutes,focus,'');
+    s.format='For time';s.taskStructure='Chipper';s.control='Time cap';s.timeCap=minutes;
+    s.description='For time/chipper med tydelig time cap. Fokus på fælles flow og god teknik frem for maksimal fart.';
+  }else if(variant==='Team'){
+    s=buildSectionSuggestion('Stationer',minutes,focus,'');
+    s.format='Fast antal runder';s.taskStructure='Rundebaseret';s.repetitionModel='Faste reps';
+    s.organization='Hold';s.control='Runder';s.rounds=3;
+    s.description='Holdblok: deltagerne fordeler arbejdet og hjælper hinanden gennem et fast antal runder.';
+  }else{
+    s=buildSectionSuggestion(variant,minutes,focus,'');
+  }
+  s.name=`Hovedelement ${index+1} – ${variant}`;
+  s.juniorVariant=variant;
+  return normalizeSection(s);
+}
+
 function generateSmartWorkout(){
   if(plannerConcept==='trx'&&!plannerEquipment.has('TRX')){
     return alert('TRX-sporet kræver en TRX Suspension Trainer. Markér TRX under Tilgængeligt udstyr først.');
@@ -3866,19 +3957,21 @@ function generateSmartWorkout(){
   if(includeGame)sections.push(buildGameSuggestion(gameMinutes,goals.join(', '),theme));
 
   const patterns={
-    junior:['AMRAP','YGIG','Chipper'],
-    family:['YGIG','Stationer','AMRAP'],
+    family:['Stationer','Chipper','YGIG','EMOM','AMRAP'],
     adult:['Styrke','AMRAP','YGIG'],
     trx:['Stationer','YGIG','EMOM'],
     hyrox:['Chipper','Stationer','YGIG'],
     hiit:['Stationer','Stationer','Stationer']
   };
-  const choices=patterns[plannerConcept]||patterns.junior;
+  const juniorMainTypes=plannerConcept==='junior'?chooseJuniorMainTypes(mainCount):null;
+  const choices=patterns[plannerConcept]||patterns.family;
   for(let i=0;i<mainCount;i++){
-    const type=choices[i%choices.length];
+    const type=plannerConcept==='junior'?juniorMainTypes[i]:choices[i%choices.length];
     const focus=[...goals,plannerBrief,plannerConcept==='hyrox'?'løb og Hyrox':plannerConcept==='trx'?'TRX':plannerConcept==='hiit'?'høj intensitet':''].filter(Boolean).join(', ');
-    const s=buildSectionSuggestion(type,mainMinutes[i],focus,'');
-    s.name=plannerConcept==='hiit'?`HIIT-blok ${i+1}`:plannerConcept==='hyrox'?`Hyrox-blok ${i+1}`:plannerConcept==='trx'?`TRX-blok ${i+1}`:`Hovedelement ${i+1} – ${type}`;
+    const s=plannerConcept==='junior'
+      ?buildJuniorMainSection(type,mainMinutes[i],focus,i)
+      :buildSectionSuggestion(type,mainMinutes[i],focus,'');
+    if(plannerConcept!=='junior')s.name=plannerConcept==='hiit'?`HIIT-blok ${i+1}`:plannerConcept==='hyrox'?`Hyrox-blok ${i+1}`:plannerConcept==='trx'?`TRX-blok ${i+1}`:`Hovedelement ${i+1} – ${type}`;
     if(type==='YGIG'){
       s.format='AMRAP';s.organization='You go, I go';s.control='Samlet tid';s.work=0;s.rest=0;
     }
@@ -3897,7 +3990,12 @@ function generateSmartWorkout(){
   if(plannerConcept==='family')$('#adultCount').value=+$('#plannerAdults').value||10;
 
   const history=aiHistory();
-  history.push({date:new Date().toISOString(),concept:plannerConcept,exerciseIds:sections.flatMap(s=>(s.exercises||[]).filter(a=>a.kind!=='run').map(x=>x.exerciseId))});
+  history.push({
+    date:new Date().toISOString(),
+    concept:plannerConcept,
+    mainTypes:sections.filter(s=>normalizeSection(s).sectionPurpose==='Hovedelement').map(s=>s.juniorVariant||s.type||s.format),
+    exerciseIds:sections.flatMap(s=>(s.exercises||[]).filter(a=>a.kind!=='run').map(x=>x.exerciseId))
+  });
   saveAiHistory(history);
 
   activeRunPlan=null;
