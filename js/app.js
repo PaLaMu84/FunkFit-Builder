@@ -93,7 +93,7 @@ const read=(key,fallback)=>{
     return fallback;
   }
 };
-const APP_VERSION='0.7.4-alpha.42';
+const APP_VERSION='0.7.4-alpha.43';
 function updateAddressVersion(){
   try{
     const url=new URL(window.location.href);
@@ -156,7 +156,8 @@ function resetEquipmentProfile(venue){
   const all=equipmentProfiles();
   delete all[venue];
   localStorage.setItem(EQKEY,JSON.stringify(all));
-  plannerEquipment=new Set(defaultEquipmentProfile(venue));
+  plannerEquipment=new Set(['Kropsvægt',...venueInventoryPlannerTypes(venue)]);
+  persistEquipmentProfile(venue,[...plannerEquipment]);
   renderEquipmentChoices();
 }
 let plannerEquipment=new Set(loadEquipmentProfile('indoor'));
@@ -822,8 +823,13 @@ function inventoryPlannerType(name){
   ];
   return map.find(([pattern])=>pattern.test(n))?.[1]||String(name||'').trim();
 }
-function inventoryEquipmentNames(){
-  return [...new Set(equipmentInventory().map(row=>row.name).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'da'));
+function inventoryEquipmentNames(location=null){
+  return [...new Set(
+    equipmentInventory()
+      .filter(row=>!location||row.location===location)
+      .map(row=>row.name)
+      .filter(Boolean)
+  )].sort((a,b)=>a.localeCompare(b,'da'));
 }
 function inventoryAvailableEquipment(location){
   const names=equipmentInventory()
@@ -847,9 +853,13 @@ function inventoryRowsForView(){
 }
 function renderInventoryEquipmentNames(){
   const host=byId('inventoryEquipmentNames');if(!host)return;
+  const activeLocation=inventoryLocation==='all'?null:inventoryLocation;
+  const sourceNames=inventoryDefaultRows()
+    .filter(row=>!activeLocation||row.location===activeLocation)
+    .map(row=>row.name);
   const names=[...new Set([
-    ...inventoryDefaultRows().map(row=>row.name),
-    ...inventoryEquipmentNames()
+    ...sourceNames,
+    ...inventoryEquipmentNames(activeLocation)
   ].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'da'));
   host.innerHTML=names.map(name=>`<option value="${esc(name)}"></option>`).join('');
 }
@@ -3335,8 +3345,9 @@ function bindPlanner(){
   });
   document.querySelectorAll('#goalChoices .goal-chip').forEach(b=>b.onclick=()=>b.classList.toggle('selected'));
   $('#selectAllEquipmentBtn').onclick=()=>{
-    const all=[...new Set(exercises.flatMap(x=>x.equipment||[]).concat(EQUIPMENT_PROFILES.indoor,EQUIPMENT_PROFILES.outdoor,EQUIPMENT_PROFILES.trx))];
-    plannerEquipment.size===all.length?plannerEquipment.clear():all.forEach(x=>plannerEquipment.add(x));
+    const all=['Kropsvægt',...venueInventoryPlannerTypes(plannerVenue)];
+    const allSelected=all.every(name=>plannerEquipment.has(name));
+    plannerEquipment=allSelected?new Set(['Kropsvægt']):new Set(all);
     persistEquipmentProfile(plannerVenue,[...plannerEquipment]);
     renderEquipmentChoices();
   };
@@ -3348,19 +3359,24 @@ function bindPlanner(){
   $('#plannerDuration').oninput=updateTimeControl;
   updateSingleFundamentalVisibility();
 }
+function venueInventoryPlannerTypes(venue){
+  return [...new Set(
+    equipmentInventory()
+      .filter(row=>row.location===venue&&row.name)
+      .map(row=>inventoryPlannerType(row.name))
+      .filter(Boolean)
+  )].sort((a,b)=>a.localeCompare(b,'da'));
+}
 function renderEquipmentChoices(){
   if(!$('#equipmentChoices'))return;
-  const standard=defaultEquipmentProfile(plannerVenue);
-  const fromExercises=[...new Set(exercises.flatMap(x=>x.equipment||[]))];
-  const fromInventory=inventoryEquipmentNames().map(inventoryPlannerType);
-  const all=[...new Set([...standard,...plannerEquipment,...fromExercises,...fromInventory])].sort((a,b)=>{
-    const ai=standard.includes(a)?0:1,bi=standard.includes(b)?0:1;
-    return ai-bi||a.localeCompare(b,'da');
-  });
-  const profileNames={indoor:'Gymnastiksalen',outdoor:'Containeren/udeområdet',trx:'TRX-profilen'};
-  const custom=Array.isArray(equipmentProfiles()[plannerVenue]);
-  $('#equipmentProfileText').textContent=`${custom?'Din gemte profil':'Standardprofil'}: ${profileNames[plannerVenue]||'Udstyr'}`;
-  $('#equipmentProfileStatus').textContent=`${plannerEquipment.size} valgte typer · ændringer gemmes automatisk.`;
+  const venueItems=venueInventoryPlannerTypes(plannerVenue);
+  const allowed=new Set(['Kropsvægt',...venueItems]);
+  plannerEquipment=new Set([...plannerEquipment].filter(name=>allowed.has(name)));
+  if(!plannerEquipment.has('Kropsvægt'))plannerEquipment.add('Kropsvægt');
+  const profileNames={indoor:'Gymnastiksalen',outdoor:'Containeren'};
+  $('#equipmentProfileText').textContent=`Faktisk inventar: ${profileNames[plannerVenue]||'Udstyr'}`;
+  $('#equipmentProfileStatus').textContent=`${plannerEquipment.size} valgte typer · kun udstyr fra dette sted vises.`;
+  const all=['Kropsvægt',...venueItems];
   $('#equipmentChoices').innerHTML=all.map(eq=>`<label class="equipment-option ${plannerEquipment.has(eq)?'active':''}">
     <input type="checkbox" data-equipment="${esc(eq)}" ${plannerEquipment.has(eq)?'checked':''}>${esc(eq)}
   </label>`).join('');
@@ -3370,6 +3386,7 @@ function renderEquipmentChoices(){
     persistEquipmentProfile(plannerVenue,[...plannerEquipment]);
     $('#equipmentProfileStatus').textContent=`${plannerEquipment.size} valgte typer · gemt automatisk.`;
   });
+  persistEquipmentProfile(plannerVenue,[...plannerEquipment]);
 }
 
 function goalValues(){return [...document.querySelectorAll('#goalChoices .goal-chip.selected')].map(x=>x.dataset.value)}
