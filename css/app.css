@@ -2430,3 +2430,24 @@ a{
   .inventory-source-extras{grid-template-columns:minmax(0,1fr)}
   .inventory-purchase-row{grid-template-columns:minmax(0,1fr)}
 }
+
+
+/* v0.7.4-alpha.42 – legens tid og enklere sektionsredigering */
+.game-instance-time-editor{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(150px,1fr)) auto;
+  gap:.65rem;
+  align-items:end;
+  margin:.65rem 0;
+  padding:.7rem;
+  border-radius:12px;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+}
+.game-instance-time-editor label{display:grid;gap:.25rem;font-size:.8rem;font-weight:800;color:#475569}
+.game-instance-time-editor input{width:100%;min-width:0}
+.game-instance-time-editor>strong{padding:.68rem .75rem;border-radius:10px;background:#ecfdf5;color:#166534;white-space:nowrap}
+@media(max-width:650px){
+  .game-instance-time-editor{grid-template-columns:1fr}
+  .game-instance-time-editor>strong{white-space:normal}
+}
